@@ -1,0 +1,165 @@
+using System.Reflection;
+using System.Text;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ONEERP.ERP.API.Data;
+using ONEERP.ERP.API.Middleware;
+using ONEERP.ERP.API.Repositories;
+using ONEERP.ERP.API.Security;
+using ONEERP.ERP.API.Services;
+using ONEERP.Shared.Constants;
+using ONEERP.Shared.Exceptions;
+using Serilog;
+
+var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/erp-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+builder.Services.AddControllers(options => options.Filters.Add<PermissionAuthorizationFilter>());
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "ONE ERP Tenant API",
+        Version = "v1",
+        Description = "Tenant-scoped ERP API. Use the X-Tenant-Code header to target a tenant database."
+    });
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Enter 'Bearer' followed by a space and the JWT token."
+    });
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpContextAccessor();
+
+// Data infrastructure
+builder.Services.AddSingleton<IPlatformDbConnectionFactory, PlatformDbConnectionFactory>();
+builder.Services.AddScoped<ISqlHelper, SqlHelper>();
+builder.Services.AddScoped<ITenantConnectionResolver, TenantConnectionResolver>();
+builder.Services.AddScoped<TenantAccessor>();
+
+// Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IApplicationSettingRepository, ApplicationSettingRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IBusinessTypeRepository, BusinessTypeRepository>();
+builder.Services.AddScoped<IIndustryTypeRepository, IndustryTypeRepository>();
+builder.Services.AddScoped<ICompanyGroupRepository, CompanyGroupRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IStateRepository, StateRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
+
+// Services
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IBusinessTypeService, BusinessTypeService>();
+builder.Services.AddScoped<IIndustryTypeService, IndustryTypeService>();
+builder.Services.AddScoped<ICompanyGroupService, CompanyGroupService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddScoped<ICityService, CityService>();
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+var jwt = builder.Configuration.GetSection("Jwt");
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwt["Issuer"],
+            ValidateAudience = true,
+            ValidAudience = jwt["Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = signingKey,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    var origins = builder.Configuration["Cors:Origins"]?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+        ?? new[] { "http://localhost:4200", "http://localhost:55762" };
+    options.AddPolicy("AngularUI", policy => policy
+        .WithOrigins(origins)
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials());
+});
+
+var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseSerilogRequestLogging();
+app.UseCors("AngularUI");
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ONE ERP Tenant API v1"));
+
+app.UseAuthentication();
+app.UseMiddleware<TenantContextMiddleware>();
+app.UseAuthorization();
+
+app.MapControllers();
+
+try
+{
+    Log.Information("ONE ERP Tenant API starting");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "ONE ERP Tenant API terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

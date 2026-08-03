@@ -1,0 +1,895 @@
+2026-08-03 09:46:03.238 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:24:58.451 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:31:58.519 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:33:41.702 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:33:53.205 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:36:54.979 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:39:21.321 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 10:39:23.317 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 150.0662 ms
+2026-08-03 10:39:23.417 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 93.8846 ms
+2026-08-03 10:39:23.652 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 84.7984 ms
+2026-08-03 10:43:16.165 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 7.6749 ms
+2026-08-03 10:43:17.919 +05:30 [INF] HTTP GET /api/roles responded 200 in 1731.2255 ms
+2026-08-03 10:43:21.040 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2127 ms
+2026-08-03 10:43:21.374 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 299.8654 ms
+2026-08-03 10:43:23.036 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 1.3045 ms
+2026-08-03 10:43:23.251 +05:30 [INF] HTTP GET /api/users responded 200 in 194.6279 ms
+2026-08-03 10:43:24.279 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.1384 ms
+2026-08-03 10:43:24.311 +05:30 [INF] HTTP GET /api/roles responded 200 in 14.0126 ms
+2026-08-03 10:43:27.308 +05:30 [INF] HTTP GET /api/users responded 200 in 39.6313 ms
+2026-08-03 10:43:28.802 +05:30 [INF] HTTP GET /api/roles responded 200 in 32.2254 ms
+2026-08-03 10:43:29.694 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.1195 ms
+2026-08-03 10:43:29.750 +05:30 [INF] HTTP GET /api/companies responded 200 in 37.8564 ms
+2026-08-03 10:43:35.611 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1670 ms
+2026-08-03 10:43:35.703 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 72.1620 ms
+2026-08-03 10:43:38.720 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.9201 ms
+2026-08-03 10:43:38.763 +05:30 [INF] HTTP GET /api/users responded 200 in 27.4079 ms
+2026-08-03 10:43:41.883 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0927 ms
+2026-08-03 10:43:41.970 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 80.3756 ms
+2026-08-03 10:43:43.518 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0969 ms
+2026-08-03 10:43:44.150 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 626.8977 ms
+2026-08-03 10:43:44.189 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2154 ms
+2026-08-03 10:43:44.273 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 70.1277 ms
+2026-08-03 10:53:07.313 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.2845 ms
+2026-08-03 10:53:07.482 +05:30 [INF] HTTP GET /api/users responded 200 in 163.3999 ms
+2026-08-03 10:53:08.456 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.1123 ms
+2026-08-03 10:53:08.505 +05:30 [INF] HTTP GET /api/roles responded 200 in 21.0720 ms
+2026-08-03 10:53:11.125 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.1019 ms
+2026-08-03 10:53:11.173 +05:30 [INF] HTTP GET /api/companies responded 200 in 30.0823 ms
+2026-08-03 10:53:20.548 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1981 ms
+2026-08-03 10:53:20.590 +05:30 [INF] HTTP GET /api/users responded 200 in 30.8070 ms
+2026-08-03 10:53:21.488 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2036 ms
+2026-08-03 10:53:21.603 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 99.8495 ms
+2026-08-03 10:53:24.685 +05:30 [INF] HTTP GET /api/users responded 200 in 40.4863 ms
+2026-08-03 10:53:25.689 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.1745 ms
+2026-08-03 10:53:25.816 +05:30 [INF] HTTP GET /api/roles responded 200 in 40.0050 ms
+2026-08-03 10:53:27.530 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0783 ms
+2026-08-03 10:53:27.623 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 63.1523 ms
+2026-08-03 10:53:29.429 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1337 ms
+2026-08-03 10:53:29.466 +05:30 [INF] HTTP GET /api/users responded 200 in 26.7260 ms
+2026-08-03 10:53:30.201 +05:30 [INF] HTTP GET /api/roles responded 200 in 10.7072 ms
+2026-08-03 10:53:32.483 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0633 ms
+2026-08-03 10:53:32.519 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 29.4195 ms
+2026-08-03 11:01:55.150 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 3.0435 ms
+2026-08-03 11:01:55.268 +05:30 [INF] HTTP GET /api/roles responded 401 in 57.2984 ms
+2026-08-03 11:01:55.321 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0816 ms
+2026-08-03 11:01:55.922 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 578.7589 ms
+2026-08-03 11:01:55.952 +05:30 [INF] HTTP GET /api/roles responded 200 in 21.7981 ms
+2026-08-03 11:01:58.598 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0736 ms
+2026-08-03 11:01:58.606 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 1.5864 ms
+2026-08-03 11:02:41.961 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2003 ms
+2026-08-03 11:02:42.276 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 299.2778 ms
+2026-08-03 11:02:42.348 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1053 ms
+2026-08-03 11:02:42.456 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 73.5872 ms
+2026-08-03 11:08:12.200 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0704 ms
+2026-08-03 11:08:12.636 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 395.2939 ms
+2026-08-03 11:12:59.832 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0977 ms
+2026-08-03 11:13:00.495 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 163.3057 ms
+2026-08-03 11:13:02.324 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.3459 ms
+2026-08-03 11:13:02.463 +05:30 [INF] HTTP GET /api/users responded 200 in 94.9101 ms
+2026-08-03 11:13:04.096 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0682 ms
+2026-08-03 11:13:04.151 +05:30 [INF] HTTP GET /api/roles responded 200 in 27.4401 ms
+2026-08-03 11:13:05.116 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.0934 ms
+2026-08-03 11:13:05.179 +05:30 [INF] HTTP GET /api/companies responded 200 in 18.1372 ms
+2026-08-03 11:13:10.408 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.2549 ms
+2026-08-03 11:13:10.419 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 2.5615 ms
+2026-08-03 11:30:08.233 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1113 ms
+2026-08-03 11:30:08.735 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 482.4774 ms
+2026-08-03 11:30:08.810 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0497 ms
+2026-08-03 11:30:08.931 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 99.9330 ms
+2026-08-03 11:30:37.796 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0945 ms
+2026-08-03 11:30:37.885 +05:30 [INF] HTTP GET /api/users responded 200 in 43.5172 ms
+2026-08-03 11:31:03.879 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0881 ms
+2026-08-03 11:31:03.958 +05:30 [INF] HTTP GET /api/roles responded 200 in 28.3169 ms
+2026-08-03 11:31:06.989 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0436 ms
+2026-08-03 11:31:06.997 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 1.4174 ms
+2026-08-03 11:31:12.599 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.4678 ms
+2026-08-03 11:31:12.632 +05:30 [INF] HTTP GET /api/companies responded 200 in 7.4394 ms
+2026-08-03 11:31:51.334 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0592 ms
+2026-08-03 11:31:51.418 +05:30 [INF] HTTP GET /api/users responded 200 in 67.6376 ms
+2026-08-03 11:32:15.003 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0735 ms
+2026-08-03 11:32:15.081 +05:30 [INF] HTTP GET /api/roles responded 200 in 22.8825 ms
+2026-08-03 11:32:21.897 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.2726 ms
+2026-08-03 11:32:21.906 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 1.6349 ms
+2026-08-03 11:33:53.813 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0403 ms
+2026-08-03 11:33:54.164 +05:30 [INF] HTTP GET /api/users responded 200 in 109.7819 ms
+2026-08-03 11:33:57.797 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0540 ms
+2026-08-03 11:33:57.943 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 1.3060 ms
+2026-08-03 11:34:22.503 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0493 ms
+2026-08-03 11:34:40.205 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 17678.5590 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid username or password.
+   at ONEERP.ERP.API.Services.AuthService.LoginAsync(String tenantCode, String username, String password)
+   at ONEERP.ERP.API.Controllers.AuthController.Login(LoginRequest request)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 11:34:43.577 +05:30 [WRN] Domain error 401: Invalid username or password.
+2026-08-03 11:34:53.668 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0448 ms
+2026-08-03 11:34:59.232 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 5320.9159 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid username or password.
+   at ONEERP.ERP.API.Services.AuthService.LoginAsync(String tenantCode, String username, String password)
+   at ONEERP.ERP.API.Controllers.AuthController.Login(LoginRequest request)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 11:35:02.431 +05:30 [WRN] Domain error 401: Invalid username or password.
+2026-08-03 11:35:31.318 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0485 ms
+2026-08-03 11:35:32.318 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 740.8525 ms
+2026-08-03 11:35:32.440 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0688 ms
+2026-08-03 11:35:32.917 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 202.5767 ms
+2026-08-03 11:35:37.763 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.2217 ms
+2026-08-03 11:35:38.020 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 48.0470 ms
+2026-08-03 11:35:50.258 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0575 ms
+2026-08-03 11:35:54.417 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 3986.4904 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid username or password.
+   at ONEERP.ERP.API.Services.AuthService.LoginAsync(String tenantCode, String username, String password)
+   at ONEERP.ERP.API.Controllers.AuthController.Login(LoginRequest request)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 11:35:57.342 +05:30 [WRN] Domain error 401: Invalid username or password.
+2026-08-03 11:36:06.572 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0501 ms
+2026-08-03 11:36:07.934 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 993.9176 ms
+2026-08-03 11:36:08.265 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.3345 ms
+2026-08-03 11:36:09.292 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 384.3098 ms
+2026-08-03 11:36:27.821 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0451 ms
+2026-08-03 11:36:28.678 +05:30 [INF] HTTP GET /api/users responded 200 in 199.6093 ms
+2026-08-03 11:36:36.270 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.2315 ms
+2026-08-03 11:36:36.616 +05:30 [INF] HTTP GET /api/users responded 200 in 86.4434 ms
+2026-08-03 11:36:38.987 +05:30 [INF] HTTP GET /api/users responded 200 in 124.7174 ms
+2026-08-03 11:36:43.132 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0448 ms
+2026-08-03 11:36:43.679 +05:30 [INF] HTTP GET /api/users responded 200 in 131.5620 ms
+2026-08-03 11:36:50.266 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0403 ms
+2026-08-03 11:36:50.802 +05:30 [INF] HTTP GET /api/users responded 200 in 108.1019 ms
+2026-08-03 11:36:54.256 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0818 ms
+2026-08-03 11:36:54.982 +05:30 [INF] HTTP GET /api/roles responded 200 in 155.1086 ms
+2026-08-03 11:36:55.662 +05:30 [INF] HTTP GET /api/roles responded 200 in 118.9378 ms
+2026-08-03 11:36:57.577 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0456 ms
+2026-08-03 11:36:57.827 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 27.8013 ms
+2026-08-03 11:37:24.643 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0502 ms
+2026-08-03 11:37:25.129 +05:30 [INF] HTTP POST /api/roles responded 200 in 343.3864 ms
+2026-08-03 11:37:25.193 +05:30 [INF] HTTP GET /api/roles responded 200 in 19.7718 ms
+2026-08-03 11:37:34.073 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0496 ms
+2026-08-03 11:37:34.407 +05:30 [INF] HTTP GET /api/users responded 200 in 38.3730 ms
+2026-08-03 11:37:36.704 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0440 ms
+2026-08-03 11:37:36.727 +05:30 [INF] HTTP GET /api/roles responded 200 in 14.5556 ms
+2026-08-03 11:37:41.034 +05:30 [INF] HTTP OPTIONS /api/users/10 responded 204 in 0.0453 ms
+2026-08-03 11:37:41.237 +05:30 [INF] HTTP PUT /api/users/10 responded 200 in 176.8373 ms
+2026-08-03 11:37:41.275 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0421 ms
+2026-08-03 11:37:41.330 +05:30 [INF] HTTP GET /api/users responded 200 in 40.2799 ms
+2026-08-03 11:38:12.029 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0426 ms
+2026-08-03 11:38:12.460 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 373.5329 ms
+2026-08-03 11:38:12.561 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0441 ms
+2026-08-03 11:38:12.794 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 141.6944 ms
+2026-08-03 11:38:16.014 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0463 ms
+2026-08-03 11:38:16.055 +05:30 [INF] HTTP GET /api/users responded 200 in 25.2473 ms
+2026-08-03 11:38:50.975 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0457 ms
+2026-08-03 11:38:51.066 +05:30 [INF] HTTP GET /api/users responded 200 in 71.1142 ms
+2026-08-03 11:40:15.442 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0648 ms
+2026-08-03 11:40:15.512 +05:30 [INF] HTTP GET /api/users responded 200 in 62.1096 ms
+2026-08-03 11:40:17.289 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0811 ms
+2026-08-03 11:40:17.391 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 93.5239 ms
+2026-08-03 11:40:18.983 +05:30 [INF] HTTP GET /api/users responded 200 in 20.6733 ms
+2026-08-03 11:40:20.238 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 85.8632 ms
+2026-08-03 11:48:32.969 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1612 ms
+2026-08-03 11:48:33.298 +05:30 [INF] HTTP GET /api/users responded 200 in 305.7219 ms
+2026-08-03 11:48:50.372 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0504 ms
+2026-08-03 11:48:50.373 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0524 ms
+2026-08-03 11:48:50.431 +05:30 [INF] HTTP GET /api/users responded 200 in 47.1409 ms
+2026-08-03 11:48:50.471 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 87.8918 ms
+2026-08-03 11:50:26.544 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0542 ms
+2026-08-03 11:50:26.661 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 100.2638 ms
+2026-08-03 11:50:28.064 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0493 ms
+2026-08-03 11:50:28.101 +05:30 [INF] HTTP GET /api/users responded 200 in 27.5443 ms
+2026-08-03 11:50:30.001 +05:30 [INF] HTTP GET /api/users responded 200 in 22.4362 ms
+2026-08-03 11:51:59.728 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0596 ms
+2026-08-03 11:51:59.810 +05:30 [INF] HTTP GET /api/users responded 200 in 58.9712 ms
+2026-08-03 11:52:03.151 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0904 ms
+2026-08-03 11:52:03.207 +05:30 [INF] HTTP GET /api/roles responded 200 in 20.6928 ms
+2026-08-03 11:52:06.223 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0494 ms
+2026-08-03 11:52:06.279 +05:30 [INF] HTTP GET /api/users responded 200 in 34.0675 ms
+2026-08-03 11:52:49.406 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0572 ms
+2026-08-03 11:52:49.759 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 336.6682 ms
+2026-08-03 11:52:49.859 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0751 ms
+2026-08-03 11:52:49.988 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 113.3664 ms
+2026-08-03 11:52:52.489 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0638 ms
+2026-08-03 11:52:52.530 +05:30 [INF] HTTP GET /api/users responded 200 in 32.2555 ms
+2026-08-03 11:52:54.810 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 105.9261 ms
+2026-08-03 11:52:55.832 +05:30 [INF] HTTP GET /api/users responded 200 in 38.9197 ms
+2026-08-03 11:53:09.801 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.8300 ms
+2026-08-03 11:53:09.850 +05:30 [INF] HTTP GET /api/companies responded 401 in 13.0413 ms
+2026-08-03 11:53:09.900 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0785 ms
+2026-08-03 11:53:10.044 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 132.2471 ms
+2026-08-03 11:53:10.068 +05:30 [INF] HTTP GET /api/companies responded 403 in 11.6257 ms
+2026-08-03 11:53:13.222 +05:30 [INF] HTTP GET /api/companies responded 403 in 0.4463 ms
+2026-08-03 11:53:17.750 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0613 ms
+2026-08-03 11:53:17.758 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 1.9355 ms
+2026-08-03 11:53:20.403 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0443 ms
+2026-08-03 11:53:20.712 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 301.6802 ms
+2026-08-03 11:53:20.788 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0483 ms
+2026-08-03 11:53:20.851 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 33.3901 ms
+2026-08-03 11:53:23.438 +05:30 [INF] HTTP OPTIONS /api/companies responded 204 in 0.0409 ms
+2026-08-03 11:53:23.493 +05:30 [INF] HTTP GET /api/companies responded 200 in 7.8822 ms
+2026-08-03 11:53:25.116 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0669 ms
+2026-08-03 11:53:25.172 +05:30 [INF] HTTP GET /api/roles responded 200 in 21.5943 ms
+2026-08-03 11:53:27.725 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0563 ms
+2026-08-03 11:53:27.735 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 0.6639 ms
+2026-08-03 11:53:31.267 +05:30 [INF] HTTP OPTIONS /api/roles/4 responded 204 in 0.0521 ms
+2026-08-03 11:53:31.382 +05:30 [INF] HTTP PUT /api/roles/4 responded 200 in 108.5426 ms
+2026-08-03 11:53:31.389 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0373 ms
+2026-08-03 11:53:31.402 +05:30 [INF] HTTP GET /api/roles responded 200 in 7.8896 ms
+2026-08-03 11:53:37.578 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0776 ms
+2026-08-03 11:53:37.635 +05:30 [INF] HTTP GET /api/users responded 200 in 37.1199 ms
+2026-08-03 11:53:41.043 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.1687 ms
+2026-08-03 11:53:41.051 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 1.1165 ms
+2026-08-03 11:53:42.853 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0418 ms
+2026-08-03 11:53:43.213 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 346.3633 ms
+2026-08-03 11:53:43.247 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0396 ms
+2026-08-03 11:53:43.295 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 39.8231 ms
+2026-08-03 11:53:47.272 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0591 ms
+2026-08-03 11:53:47.282 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 2.1676 ms
+2026-08-03 11:54:03.767 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0833 ms
+2026-08-03 11:54:04.186 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 410.5486 ms
+2026-08-03 11:54:04.215 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0443 ms
+2026-08-03 11:54:04.286 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 62.2659 ms
+2026-08-03 11:54:12.402 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0808 ms
+2026-08-03 11:54:12.440 +05:30 [INF] HTTP GET /api/users responded 200 in 24.0589 ms
+2026-08-03 11:54:19.544 +05:30 [INF] HTTP OPTIONS /api/roles/4 responded 204 in 0.0681 ms
+2026-08-03 11:54:19.629 +05:30 [INF] HTTP PUT /api/roles/4 responded 200 in 57.3297 ms
+2026-08-03 11:54:19.639 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0626 ms
+2026-08-03 11:54:19.657 +05:30 [INF] HTTP GET /api/roles responded 200 in 9.5397 ms
+2026-08-03 11:54:22.902 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1939 ms
+2026-08-03 11:54:22.947 +05:30 [INF] HTTP GET /api/users responded 200 in 24.4864 ms
+2026-08-03 11:54:24.102 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0736 ms
+2026-08-03 11:54:24.178 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 64.8184 ms
+2026-08-03 11:55:02.236 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0528 ms
+2026-08-03 11:55:02.452 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 208.7823 ms
+2026-08-03 11:55:03.976 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0638 ms
+2026-08-03 11:55:03.985 +05:30 [INF] HTTP POST /api/auth/logout responded 400 in 2.0883 ms
+2026-08-03 11:55:05.710 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0570 ms
+2026-08-03 15:03:06.160 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 15:03:07.678 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 15:03:07.982 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 144
+2026-08-03 15:03:42.298 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 15:03:44.309 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 15:03:44.563 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 144
+2026-08-03 15:04:19.288 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 15:04:19.767 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 15:04:19.939 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 144
+2026-08-03 15:16:52.856 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 15:16:53.634 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 15:16:53.816 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 144
+2026-08-03 17:14:55.484 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:15:00.470 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 201.5247 ms
+2026-08-03 17:15:00.678 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.8545 ms
+2026-08-03 17:15:01.166 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 167.3238 ms
+2026-08-03 17:15:20.509 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 6.1449 ms
+2026-08-03 17:15:20.510 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 9.6677 ms
+2026-08-03 17:15:20.510 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 9.8419 ms
+2026-08-03 17:15:22.482 +05:30 [INF] HTTP GET /api/states responded 200 in 1878.6315 ms
+2026-08-03 17:15:22.482 +05:30 [INF] HTTP GET /api/countries responded 200 in 1893.5182 ms
+2026-08-03 17:15:22.486 +05:30 [INF] HTTP GET /api/cities responded 200 in 1857.5523 ms
+2026-08-03 17:15:32.459 +05:30 [INF] HTTP OPTIONS /api/countries/1 responded 204 in 0.1380 ms
+2026-08-03 17:15:32.724 +05:30 [INF] HTTP PUT /api/countries/1 responded 200 in 240.1936 ms
+2026-08-03 17:15:32.732 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1032 ms
+2026-08-03 17:15:32.732 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.1169 ms
+2026-08-03 17:15:32.733 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.1076 ms
+2026-08-03 17:15:32.753 +05:30 [INF] HTTP GET /api/countries responded 200 in 15.4264 ms
+2026-08-03 17:15:32.759 +05:30 [INF] HTTP GET /api/states responded 200 in 17.3984 ms
+2026-08-03 17:15:32.763 +05:30 [INF] HTTP GET /api/cities responded 200 in 20.6108 ms
+2026-08-03 17:21:31.443 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:21:32.304 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 17:21:32.427 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156
+2026-08-03 17:21:51.463 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:21:52.419 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 17:21:52.560 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156
+2026-08-03 17:22:08.600 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:22:09.100 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 17:22:09.186 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156
+2026-08-03 17:23:26.595 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:23:27.163 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 17:23:27.276 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156
+2026-08-03 17:24:20.267 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:24:22.134 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 168.6151 ms
+2026-08-03 17:24:22.234 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 4.5781 ms
+2026-08-03 17:24:22.691 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 217.4317 ms
+2026-08-03 17:24:37.699 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 29.3558 ms
+2026-08-03 17:24:38.109 +05:30 [INF] HTTP GET /api/business-types responded 404 in 304.0972 ms
+2026-08-03 17:24:40.312 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.2853 ms
+2026-08-03 17:24:40.334 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 3.0484 ms
+2026-08-03 17:24:41.201 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.1564 ms
+2026-08-03 17:24:41.253 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 8.6838 ms
+2026-08-03 17:24:54.536 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:24:56.565 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 36.1451 ms
+2026-08-03 17:24:56.527 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 215.0302 ms
+2026-08-03 17:24:56.967 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 145.6359 ms
+2026-08-03 17:25:05.451 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 6.4124 ms
+2026-08-03 17:25:05.756 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 278.5314 ms
+2026-08-03 17:25:08.183 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.3017 ms
+2026-08-03 17:25:08.229 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 6.2228 ms
+2026-08-03 17:25:09.367 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.2049 ms
+2026-08-03 17:25:09.403 +05:30 [INF] HTTP GET /api/business-types responded 404 in 8.0190 ms
+2026-08-03 17:25:20.803 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.1325 ms
+2026-08-03 17:25:20.824 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 1.6217 ms
+2026-08-03 17:25:21.788 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.3231 ms
+2026-08-03 17:25:21.797 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.2662 ms
+2026-08-03 17:25:21.798 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.1599 ms
+2026-08-03 17:25:21.842 +05:30 [INF] HTTP GET /api/countries responded 401 in 37.2745 ms
+2026-08-03 17:25:21.842 +05:30 [INF] HTTP GET /api/cities responded 401 in 8.7999 ms
+2026-08-03 17:25:21.842 +05:30 [INF] HTTP GET /api/states responded 401 in 18.9033 ms
+2026-08-03 17:25:21.855 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2126 ms
+2026-08-03 17:25:21.857 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1405 ms
+2026-08-03 17:25:21.860 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1942 ms
+2026-08-03 17:25:23.558 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1691.9418 ms
+2026-08-03 17:25:23.558 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1694.4316 ms
+2026-08-03 17:25:23.561 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1691.6826 ms
+2026-08-03 17:25:23.701 +05:30 [INF] HTTP GET /api/countries responded 200 in 110.2432 ms
+2026-08-03 17:25:23.703 +05:30 [INF] HTTP GET /api/states responded 200 in 103.4466 ms
+2026-08-03 17:25:23.723 +05:30 [INF] HTTP GET /api/cities responded 200 in 140.0315 ms
+2026-08-03 17:25:25.665 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.2300 ms
+2026-08-03 17:25:25.689 +05:30 [INF] HTTP GET /api/business-types responded 404 in 1.6780 ms
+2026-08-03 17:25:36.258 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.2401 ms
+2026-08-03 17:25:36.535 +05:30 [INF] HTTP GET /api/business-types responded 404 in 2.4440 ms
+2026-08-03 17:26:20.518 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 3.1524 ms
+2026-08-03 17:26:20.639 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 1.9669 ms
+2026-08-03 17:27:06.822 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.1833 ms
+2026-08-03 17:27:06.839 +05:30 [INF] HTTP POST /api/industry-types responded 404 in 0.9201 ms
+2026-08-03 17:27:10.332 +05:30 [INF] HTTP POST /api/industry-types responded 404 in 0.6565 ms
+2026-08-03 17:27:11.022 +05:30 [INF] HTTP POST /api/industry-types responded 404 in 0.6653 ms
+2026-08-03 17:27:35.615 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.1320 ms
+2026-08-03 17:27:35.784 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 1.0957 ms
+2026-08-03 17:27:39.575 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.1681 ms
+2026-08-03 17:27:39.618 +05:30 [INF] HTTP GET /api/business-types responded 404 in 0.6497 ms
+2026-08-03 17:27:45.385 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1259 ms
+2026-08-03 17:27:45.424 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0938 ms
+2026-08-03 17:27:45.389 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0728 ms
+2026-08-03 17:27:45.577 +05:30 [INF] HTTP GET /api/countries responded 200 in 102.2707 ms
+2026-08-03 17:27:45.590 +05:30 [INF] HTTP GET /api/states responded 200 in 29.9500 ms
+2026-08-03 17:27:45.601 +05:30 [INF] HTTP GET /api/cities responded 200 in 50.8370 ms
+2026-08-03 17:27:57.535 +05:30 [INF] HTTP GET /api/business-types responded 404 in 0.2854 ms
+2026-08-03 17:27:57.565 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 0.1970 ms
+2026-08-03 17:27:57.570 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 0.1898 ms
+2026-08-03 17:27:57.575 +05:30 [INF] HTTP GET /api/countries responded 401 in 0.4036 ms
+2026-08-03 17:27:57.580 +05:30 [INF] HTTP GET /api/states responded 401 in 0.3632 ms
+2026-08-03 17:27:57.585 +05:30 [INF] HTTP GET /api/cities responded 401 in 0.2426 ms
+2026-08-03 17:27:57.590 +05:30 [INF] HTTP GET /api/users responded 401 in 0.3731 ms
+2026-08-03 17:27:57.597 +05:30 [INF] HTTP GET /api/roles responded 401 in 0.3187 ms
+2026-08-03 17:27:58.491 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0658 ms
+2026-08-03 17:27:58.523 +05:30 [INF] HTTP GET /api/business-types responded 404 in 5.4761 ms
+2026-08-03 17:27:59.545 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0602 ms
+2026-08-03 17:27:59.575 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 0.4654 ms
+2026-08-03 17:28:34.720 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 64.9991 ms
+2026-08-03 17:29:02.899 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.8023 ms
+2026-08-03 17:29:02.943 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 0.7825 ms
+2026-08-03 17:29:04.861 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 0.5972 ms
+2026-08-03 17:29:06.123 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0439 ms
+2026-08-03 17:29:06.140 +05:30 [INF] HTTP GET /api/business-types responded 404 in 0.5663 ms
+2026-08-03 17:29:48.558 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.1308 ms
+2026-08-03 17:29:48.571 +05:30 [INF] HTTP GET /api/business-types responded 404 in 0.7899 ms
+2026-08-03 17:29:57.328 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0560 ms
+2026-08-03 17:29:57.344 +05:30 [INF] HTTP GET /api/business-types responded 404 in 1.1456 ms
+2026-08-03 17:29:59.178 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0403 ms
+2026-08-03 17:29:59.199 +05:30 [INF] HTTP GET /api/industry-types responded 404 in 1.7752 ms
+2026-08-03 17:30:00.303 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0469 ms
+2026-08-03 17:30:00.324 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 0.6160 ms
+2026-08-03 17:30:59.568 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.1209 ms
+2026-08-03 17:30:59.582 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 1.1947 ms
+2026-08-03 17:31:14.931 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.2626 ms
+2026-08-03 17:31:14.943 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 0.6440 ms
+2026-08-03 17:31:17.599 +05:30 [INF] HTTP GET /api/company-groups responded 404 in 1.0597 ms
+2026-08-03 17:33:26.720 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 17:33:27.170 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-08-03 17:33:27.237 +05:30 [FTL] ONE ERP Tenant API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156

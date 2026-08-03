@@ -1,0 +1,5 @@
+ONEERP.Platform.UI/
+ONEERP.ERP.UI/
+.vs/
+bin/
+obj/

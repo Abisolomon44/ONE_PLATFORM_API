@@ -1,0 +1,4 @@
+1.https://github.com/Abisolomon44/ONE_ERP_UI.git
+2.https://github.com/Abisolomon44/ONE_PLATFORM_UI.git
+3.https://github.com/Abisolomon44/ONE_PLATFORM_API.git
+4.https://github.com/Abisolomon44/ONE_ERP_API.git
