@@ -1,0 +1,246 @@
+2026-08-02 11:41:03.017 +05:30 [INF] ONE ERP Platform API starting
+2026-08-02 11:41:56.868 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 4722.8772 ms
+2026-08-02 11:42:06.712 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 176.6201 ms
+2026-08-02 11:42:06.772 +05:30 [ERR] HTTP GET /api/plans responded 500 in 48.6210 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.Platform.API.Services.ICurrentUser' while attempting to activate 'ONEERP.Platform.API.Controllers.PlansController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method21(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-02 11:42:06.794 +05:30 [ERR] Unhandled exception for GET /api/plans
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.Platform.API.Services.ICurrentUser' while attempting to activate 'ONEERP.Platform.API.Controllers.PlansController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method21(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+2026-08-02 11:42:46.161 +05:30 [INF] ONE ERP Platform API starting
+2026-08-02 11:43:34.262 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 929.8338 ms
+2026-08-02 11:43:34.462 +05:30 [INF] HTTP GET /api/plans responded 200 in 175.3184 ms
+2026-08-02 11:43:41.533 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 351.1911 ms
+2026-08-02 11:43:42.031 +05:30 [INF] Created tenant database ERP_ACME
+2026-08-02 11:43:42.201 +05:30 [INF] Provisioned tenant schema and seed data for ERP_ACME
+2026-08-02 11:43:42.253 +05:30 [INF] HTTP POST /api/tenants responded 200 in 706.4751 ms
+2026-08-02 13:39:39.061 +05:30 [INF] HTTP GET /api/dashboard/summary responded 404 in 11.7491 ms
+2026-08-02 13:39:41.971 +05:30 [INF] HTTP GET / responded 404 in 0.3321 ms
+2026-08-02 13:39:43.113 +05:30 [INF] HTTP GET /api/plans responded 401 in 12.5048 ms
+2026-08-02 13:39:43.159 +05:30 [INF] HTTP GET /api/tenants responded 401 in 0.5028 ms
+2026-08-02 13:39:43.163 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 0.2634 ms
+2026-08-02 13:39:43.169 +05:30 [INF] HTTP GET /api/subscriptions responded 401 in 0.2750 ms
+2026-08-02 13:39:43.173 +05:30 [INF] HTTP GET / responded 404 in 0.1479 ms
+2026-08-02 13:41:30.990 +05:30 [INF] HTTP GET / responded 404 in 0.7113 ms
+2026-08-02 13:41:50.782 +05:30 [INF] ONE ERP Platform API starting
+2026-08-02 13:41:51.913 +05:30 [INF] HTTP GET /swagger/index.html responded 404 in 44.4695 ms
+2026-08-02 13:41:58.377 +05:30 [INF] HTTP GET /api/plans responded 401 in 16.8119 ms
+2026-08-02 13:42:11.366 +05:30 [INF] HTTP GET / responded 404 in 3.0503 ms
+2026-08-02 13:42:22.542 +05:30 [INF] HTTP GET /swagger/index.html responded 404 in 0.2451 ms
+2026-08-02 13:42:55.258 +05:30 [INF] ONE ERP Platform API starting
+2026-08-02 13:43:05.619 +05:30 [INF] HTTP GET /api/plans responded 401 in 73.9983 ms
+2026-08-02 13:43:39.051 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1701.6543 ms
+2026-08-02 13:43:47.688 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 306.2689 ms
+2026-08-02 13:43:47.962 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 226.1583 ms
+2026-08-02 13:43:48.043 +05:30 [INF] HTTP GET /api/plans responded 200 in 67.6941 ms
+2026-08-02 13:43:48.107 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 52.3383 ms
+2026-08-02 13:43:48.190 +05:30 [INF] HTTP GET /api/tenants responded 200 in 64.5369 ms
+2026-08-02 13:43:48.270 +05:30 [INF] HTTP GET /api/tenants/active responded 200 in 30.8717 ms
+2026-08-02 13:43:48.317 +05:30 [INF] HTTP GET /api/plans/active responded 200 in 43.0451 ms
+2026-08-02 13:44:12.323 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 71.7285 ms
+2026-08-02 13:44:12.346 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 1.4153 ms
+2026-08-02 13:44:12.347 +05:30 [INF] HTTP GET /swagger/index.css responded 200 in 10.9701 ms
+2026-08-02 13:44:12.364 +05:30 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 27.7205 ms
+2026-08-02 13:44:12.364 +05:30 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 22.2149 ms
+2026-08-02 13:44:12.404 +05:30 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 64.5060 ms
+2026-08-02 13:44:12.579 +05:30 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 0.5096 ms
+2026-08-02 13:44:12.725 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 172.7059 ms
+2026-08-02 13:45:43.887 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 0.6267 ms
+2026-08-02 13:45:43.915 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 0.9232 ms
+2026-08-02 13:45:44.296 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 52.1420 ms
+2026-08-02 13:48:01.953 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 359.8572 ms
+2026-08-02 13:50:52.386 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 237.7831 ms
+2026-08-02 13:51:45.511 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 321.7591 ms
+2026-08-02 13:51:45.647 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 69.8968 ms
+2026-08-02 13:58:55.645 +05:30 [INF] HTTP GET /api/health responded 404 in 0.4532 ms
+2026-08-02 13:58:55.658 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 0.5510 ms
+2026-08-02 14:01:26.607 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 492.9372 ms
+2026-08-02 14:01:55.120 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 7556.7077 ms
+2026-08-02 14:01:55.888 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 727.3663 ms
+2026-08-02 14:02:30.653 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 470.3761 ms
+2026-08-02 14:03:10.554 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 756.8214 ms
+2026-08-02 14:07:29.298 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 364.3653 ms
+2026-08-02 14:07:29.504 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 92.8428 ms
+2026-08-02 14:07:35.756 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 284.4300 ms
+2026-08-02 14:07:35.880 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 67.2453 ms
+2026-08-02 14:08:17.180 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 300.7040 ms
+2026-08-02 14:08:17.679 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 245.9538 ms
+2026-08-02 14:08:21.356 +05:30 [INF] HTTP GET /api/plans responded 200 in 56.3649 ms
+2026-08-02 14:08:21.412 +05:30 [INF] HTTP GET /api/tenants responded 200 in 88.7117 ms
+2026-08-02 14:08:22.395 +05:30 [INF] HTTP GET /api/plans responded 200 in 22.1651 ms
+2026-08-02 14:08:23.465 +05:30 [INF] HTTP GET /api/plans responded 200 in 11.9542 ms
+2026-08-02 14:08:23.472 +05:30 [INF] HTTP GET /api/tenants responded 200 in 24.3787 ms
+2026-08-02 14:08:23.507 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 55.4356 ms
+2026-08-02 14:08:29.888 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 185.8823 ms
+2026-08-02 14:08:33.599 +05:30 [INF] HTTP GET /api/plans responded 200 in 37.1797 ms
+2026-08-02 14:08:33.621 +05:30 [INF] HTTP GET /api/tenants responded 200 in 23.7226 ms
+2026-08-02 14:08:52.434 +05:30 [INF] HTTP GET /api/plans responded 200 in 38.7518 ms
+2026-08-02 14:08:55.205 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.5107 ms
+2026-08-02 14:08:55.234 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 43.4586 ms
+2026-08-02 14:08:55.256 +05:30 [INF] HTTP GET /api/tenants responded 200 in 99.7892 ms
+2026-08-02 14:10:00.708 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 0.4220 ms
+2026-08-02 14:10:00.747 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 0.7426 ms
+2026-08-02 14:10:00.944 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 53.0519 ms
+2026-08-02 14:14:38.374 +05:30 [INF] HTTP GET /api/plans responded 200 in 33.4962 ms
+2026-08-02 14:14:49.557 +05:30 [INF] HTTP GET /api/plans responded 200 in 5.4957 ms
+2026-08-02 14:14:49.619 +05:30 [INF] HTTP GET /api/tenants responded 200 in 50.9913 ms
+2026-08-02 14:14:50.583 +05:30 [INF] HTTP GET /api/plans responded 200 in 32.3973 ms
+2026-08-02 14:14:51.523 +05:30 [INF] HTTP GET /api/tenants responded 200 in 34.6654 ms
+2026-08-02 14:14:51.535 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.5833 ms
+2026-08-02 14:14:51.587 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 42.0627 ms
+2026-08-02 14:19:44.938 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 314.3272 ms
+2026-08-02 14:19:45.156 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 82.1034 ms
+2026-08-02 14:19:46.505 +05:30 [INF] HTTP GET /api/plans responded 200 in 30.6115 ms
+2026-08-02 14:19:46.537 +05:30 [INF] HTTP GET /api/tenants responded 200 in 41.2226 ms
+2026-08-02 14:21:32.102 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 102.9151 ms
+2026-08-02 14:21:32.815 +05:30 [INF] HTTP GET /api/plans responded 200 in 36.7433 ms
+2026-08-02 14:21:37.502 +05:30 [INF] HTTP GET /api/plans responded 200 in 52.0414 ms
+2026-08-02 14:21:37.854 +05:30 [INF] HTTP GET /api/plans responded 200 in 7.4208 ms
+2026-08-02 14:21:37.911 +05:30 [INF] HTTP GET /api/tenants responded 200 in 36.8978 ms
+2026-08-02 14:22:06.826 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 346.1272 ms
+ONEERP.Shared.Exceptions.DomainException: Database 'ERP_ONE' already exists on the server.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 109
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-02 14:22:07.011 +05:30 [WRN] Domain error 400: Database 'ERP_ONE' already exists on the server.
+2026-08-02 14:22:11.691 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 8.1031 ms
+ONEERP.Shared.Exceptions.DomainException: Database 'ERP_ONE' already exists on the server.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 109
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-02 14:22:11.716 +05:30 [WRN] Domain error 400: Database 'ERP_ONE' already exists on the server.
+2026-08-02 14:22:44.163 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 47.4507 ms
+2026-08-02 14:23:01.707 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 108.3262 ms
+2026-08-02 14:23:05.443 +05:30 [INF] HTTP GET /api/plans responded 200 in 42.8146 ms
+2026-08-02 14:23:05.447 +05:30 [INF] HTTP GET /api/tenants responded 200 in 20.2557 ms
+2026-08-02 14:23:09.310 +05:30 [INF] HTTP GET /api/plans responded 200 in 3.0926 ms
+2026-08-02 14:23:09.332 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3.1674 ms
+2026-08-02 14:23:14.366 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.9503 ms
+2026-08-02 14:23:14.369 +05:30 [INF] HTTP GET /api/plans responded 200 in 4.0087 ms
+2026-08-02 14:23:14.386 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 18.4415 ms
+2026-08-02 14:23:15.570 +05:30 [INF] HTTP GET /api/plans responded 200 in 3.9276 ms
+2026-08-02 14:24:01.536 +05:30 [INF] HTTP POST /api/tenants responded 401 in 1.3387 ms
+2026-08-02 14:24:10.827 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 330.4150 ms
+2026-08-02 14:24:11.372 +05:30 [INF] Created tenant database ERP_ACME2
+2026-08-02 14:24:11.542 +05:30 [INF] Provisioned tenant schema and seed data for ERP_ACME2
+2026-08-02 14:24:11.563 +05:30 [INF] HTTP POST /api/tenants responded 200 in 630.6569 ms
+2026-08-02 14:24:23.365 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 308.2459 ms
+2026-08-02 14:24:23.490 +05:30 [INF] HTTP GET /api/tenants responded 200 in 35.0415 ms
+2026-08-02 14:24:23.595 +05:30 [INF] HTTP GET /api/plans responded 200 in 12.6139 ms
+2026-08-02 14:24:49.546 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 34.3542 ms
+2026-08-02 14:24:49.615 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 43.4598 ms
+2026-08-02 14:24:49.687 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 58.2098 ms
+2026-08-02 14:24:50.853 +05:30 [INF] HTTP GET /api/plans responded 200 in 7.2946 ms
+2026-08-02 14:24:50.854 +05:30 [INF] HTTP GET /api/tenants responded 200 in 6.5915 ms
+2026-08-02 14:25:08.372 +05:30 [INF] HTTP GET /api/plans responded 200 in 24.6062 ms
+2026-08-02 14:25:08.399 +05:30 [INF] HTTP GET /api/tenants responded 200 in 42.4943 ms
+2026-08-02 14:25:38.867 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 307.2550 ms
+2026-08-02 14:25:39.062 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 57.5045 ms
+2026-08-02 14:25:44.311 +05:30 [INF] HTTP GET /api/plans responded 200 in 4.7763 ms
+2026-08-02 14:25:44.334 +05:30 [INF] HTTP GET /api/tenants responded 200 in 5.2378 ms
+2026-08-02 14:25:49.337 +05:30 [INF] Created tenant database ERP_HLC1
+2026-08-02 14:25:49.528 +05:30 [INF] Provisioned tenant schema and seed data for ERP_HLC1
+2026-08-02 14:25:49.544 +05:30 [INF] HTTP POST /api/tenants responded 200 in 506.5281 ms
+2026-08-02 14:25:49.560 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3.6375 ms
+2026-08-02 14:26:00.396 +05:30 [INF] HTTP POST /api/tenants responded 400 in 116.1294 ms
+2026-08-02 14:26:21.086 +05:30 [INF] HTTP GET /api/tenants responded 200 in 96.4861 ms
+2026-08-02 14:26:21.103 +05:30 [INF] HTTP GET /api/plans responded 200 in 155.0122 ms
+2026-08-02 14:26:21.389 +05:30 [INF] HTTP GET /api/plans responded 200 in 4.3468 ms
+2026-08-02 14:26:21.399 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.4487 ms
+2026-08-02 14:26:29.854 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.3407 ms
+2026-08-02 14:26:29.862 +05:30 [INF] HTTP GET /api/tenants responded 200 in 11.4724 ms
+2026-08-02 14:26:31.164 +05:30 [INF] HTTP GET /api/plans responded 200 in 3.0239 ms
+2026-08-02 14:26:31.196 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3.5666 ms
+2026-08-02 14:26:34.910 +05:30 [INF] HTTP GET /api/plans responded 200 in 4.5868 ms
+2026-08-02 14:26:34.932 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.1715 ms
+2026-08-02 14:26:35.663 +05:30 [INF] HTTP GET /api/plans responded 200 in 5.1335 ms
+2026-08-02 14:26:35.687 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3.1554 ms
+2026-08-02 14:27:36.785 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 445.7463 ms
+2026-08-02 14:27:37.305 +05:30 [INF] HTTP GET /api/tenants responded 200 in 99.1604 ms
+2026-08-02 14:27:38.024 +05:30 [INF] HTTP DELETE /api/tenants/3 responded 200 in 445.5387 ms
+2026-08-02 14:27:38.102 +05:30 [INF] HTTP DELETE /api/tenants/2 responded 200 in 8.1723 ms
+2026-08-02 14:27:40.125 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 66.5999 ms
+2026-08-02 14:27:42.177 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.0561 ms
+2026-08-02 14:27:42.207 +05:30 [INF] HTTP GET /api/plans responded 200 in 63.6667 ms
+2026-08-02 14:27:47.520 +05:30 [INF] HTTP GET /api/plans responded 200 in 37.8209 ms
+2026-08-02 14:27:47.620 +05:30 [INF] HTTP GET /api/tenants responded 200 in 131.7423 ms
+2026-08-02 14:27:49.782 +05:30 [INF] HTTP GET /api/plans responded 200 in 34.1722 ms
+2026-08-02 14:27:51.008 +05:30 [INF] HTTP GET /api/plans responded 200 in 23.4260 ms
+2026-08-02 14:27:51.038 +05:30 [INF] HTTP GET /api/tenants responded 200 in 58.1153 ms
+2026-08-02 14:27:51.064 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 75.7653 ms
+2026-08-02 14:27:52.120 +05:30 [INF] HTTP GET /api/plans responded 200 in 28.6631 ms
+2026-08-02 14:27:53.345 +05:30 [INF] HTTP GET /api/plans responded 200 in 10.2407 ms
+2026-08-02 14:27:53.372 +05:30 [INF] HTTP GET /api/tenants responded 200 in 56.5198 ms
+2026-08-02 14:27:53.392 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 48.5084 ms
+2026-08-02 14:28:02.287 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 303.1540 ms
+2026-08-02 14:28:02.384 +05:30 [INF] HTTP GET /api/tenants responded 200 in 2.3180 ms
+2026-08-02 14:28:03.408 +05:30 [INF] HTTP GET /api/plans responded 200 in 35.4733 ms
+2026-08-02 14:28:10.792 +05:30 [INF] HTTP GET /api/plans responded 200 in 54.7423 ms
+2026-08-02 14:28:10.823 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 53.4409 ms
+2026-08-02 14:28:10.826 +05:30 [INF] HTTP GET /api/tenants responded 200 in 138.3303 ms
+2026-08-02 14:28:17.239 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 91.8894 ms
+2026-08-02 14:28:17.713 +05:30 [INF] HTTP GET /api/plans responded 200 in 71.0000 ms
+2026-08-02 14:28:17.721 +05:30 [INF] HTTP GET /api/tenants responded 200 in 47.6145 ms
+2026-08-02 14:28:37.093 +05:30 [INF] HTTP GET /api/plans responded 200 in 8.3822 ms
+2026-08-02 14:28:37.095 +05:30 [INF] HTTP GET /api/tenants responded 200 in 5.9711 ms
+2026-08-02 14:29:05.100 +05:30 [INF] Created tenant database ONE_ERP
+2026-08-02 14:29:05.365 +05:30 [INF] Provisioned tenant schema and seed data for ONE_ERP
+2026-08-02 14:29:05.395 +05:30 [INF] HTTP POST /api/tenants responded 200 in 754.1651 ms
+2026-08-02 14:29:05.421 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.6804 ms
+2026-08-02 14:33:54.034 +05:30 [INF] HTTP GET /api/plans responded 200 in 29.2936 ms
+2026-08-02 14:33:54.973 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 66.4487 ms
+2026-08-02 14:33:56.237 +05:30 [INF] HTTP GET /api/plans responded 200 in 6.4408 ms
+2026-08-02 14:33:56.272 +05:30 [INF] HTTP GET /api/tenants responded 200 in 20.2469 ms
+2026-08-02 14:34:40.622 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 302.1133 ms
+2026-08-02 14:34:40.771 +05:30 [INF] HTTP PUT /api/subscriptions/4 responded 200 in 54.7347 ms
+2026-08-02 14:35:04.770 +05:30 [INF] HTTP GET /api/plans responded 200 in 11.2030 ms
+2026-08-02 14:35:04.817 +05:30 [INF] HTTP GET /api/tenants responded 200 in 21.2872 ms
