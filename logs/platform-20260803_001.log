@@ -367,3 +367,7 @@ System.IO.IOException: Failed to bind to address http://127.0.0.1:5180: address 
 2026-08-03 15:03:55.104 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 225.7072 ms
 2026-08-03 15:03:55.226 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 81.2322 ms
 2026-08-03 15:03:55.579 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 91.6153 ms
+2026-08-03 16:50:32.965 +05:30 [INF] ONE ERP Platform API starting
+2026-08-03 16:50:37.673 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 320.7041 ms
+2026-08-03 16:50:37.741 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 8.6189 ms
+2026-08-03 16:50:38.128 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 133.8274 ms

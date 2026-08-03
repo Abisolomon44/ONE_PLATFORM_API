@@ -105,4 +105,13 @@ C:\Users\abiso\AppData\Local\Temp\opencode\platapi-build\ONEERP.Platform.API.dep
 C:\Users\abiso\AppData\Local\Temp\opencode\platapi-build\ONEERP.Platform.API.runtimeconfig.json
 C:\Users\abiso\AppData\Local\Temp\opencode\platapi-build\ONEERP.Platform.API.dll
 C:\Users\abiso\AppData\Local\Temp\opencode\platapi-build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.exe
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\opencode\sln-build\ONEERP.Platform.API.pdb
+D:\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ONEERP.Platform.API.sourcelink.json
 D:\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
