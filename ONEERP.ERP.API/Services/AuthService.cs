@@ -161,14 +161,28 @@ public class AuthService : IAuthService
 
     private static CompanyDto ToCompanyDto(Company c) => new()
     {
-        CompanyId = c.CompanyId,
+        Id = c.Id,
         CompanyCode = c.CompanyCode,
         CompanyName = c.CompanyName,
-        Address = c.Address,
-        Email = c.Email,
-        Phone = c.Phone,
-        GST = c.GST,
-        Currency = c.Currency,
-        Status = c.Status
+        ShortName = c.ShortName,
+        Abbreviation = c.Abbreviation,
+        BusinessTypeId = c.BusinessTypeId,
+        IndustryTypeId = c.IndustryTypeId,
+        GSTRegistrationTypeId = c.GSTRegistrationTypeId,
+        GSTNumber = c.GSTNumber,
+        PANNumber = c.PANNumber,
+        TANNumber = c.TANNumber,
+        CINNumber = c.CINNumber,
+        RegistrationNumber = c.RegistrationNumber,
+        CurrencyId = c.CurrencyId,
+        LanguageId = c.LanguageId,
+        TimeZoneId = c.TimeZoneId,
+        IsActive = c.IsActive,
+        IsBlocked = c.IsBlocked,
+        LastLoginDate = c.LastLoginDate,
+        CreatedBy = c.CreatedBy,
+        CreatedDate = c.CreatedDate,
+        ModifiedBy = c.ModifiedBy,
+        ModifiedDate = c.ModifiedDate
     };
 }

@@ -69,9 +69,18 @@ public class UpdateCompanyRequestValidator : AbstractValidator<DTOs.UpdateCompan
     public UpdateCompanyRequestValidator()
     {
         RuleFor(x => x.CompanyName).NotEmpty().MaximumLength(200);
-        RuleFor(x => x.Currency).NotEmpty().MaximumLength(10);
-        RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
-        RuleFor(x => x.Status).NotEmpty().MaximumLength(20);
+        RuleFor(x => x.ShortName).MaximumLength(100);
+        RuleFor(x => x.Abbreviation).MaximumLength(20);
+        RuleFor(x => x.BusinessTypeId).GreaterThan(0);
+        RuleFor(x => x.IndustryTypeId).GreaterThan(0);
+        RuleFor(x => x.GSTNumber).MaximumLength(20);
+        RuleFor(x => x.PANNumber).MaximumLength(20);
+        RuleFor(x => x.TANNumber).MaximumLength(20);
+        RuleFor(x => x.CINNumber).MaximumLength(30);
+        RuleFor(x => x.RegistrationNumber).MaximumLength(100);
+        RuleFor(x => x.CurrencyId).GreaterThan(0);
+        RuleFor(x => x.LanguageId).GreaterThan(0);
+        RuleFor(x => x.TimeZoneId).GreaterThan(0);
     }
 }
 
@@ -79,13 +88,21 @@ public class CreateCompanyRequestValidator : AbstractValidator<DTOs.CreateCompan
 {
     public CreateCompanyRequestValidator()
     {
-        RuleFor(x => x.CompanyCode).NotEmpty().MaximumLength(50)
+        RuleFor(x => x.CompanyCode).NotEmpty().MaximumLength(20)
             .Matches("^[A-Za-z0-9_-]+$").WithMessage("Company code may only contain letters, digits, hyphens and underscores.");
         RuleFor(x => x.CompanyName).NotEmpty().MaximumLength(200);
-        RuleFor(x => x.Currency).NotEmpty().MaximumLength(10);
-        RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
-        RuleFor(x => x.Status).NotEmpty().MaximumLength(20)
-            .Must(s => s is "Active" or "Inactive").WithMessage("Status must be Active or Inactive.");
+        RuleFor(x => x.ShortName).MaximumLength(100);
+        RuleFor(x => x.Abbreviation).MaximumLength(20);
+        RuleFor(x => x.BusinessTypeId).GreaterThan(0);
+        RuleFor(x => x.IndustryTypeId).GreaterThan(0);
+        RuleFor(x => x.GSTNumber).MaximumLength(20);
+        RuleFor(x => x.PANNumber).MaximumLength(20);
+        RuleFor(x => x.TANNumber).MaximumLength(20);
+        RuleFor(x => x.CINNumber).MaximumLength(30);
+        RuleFor(x => x.RegistrationNumber).MaximumLength(100);
+        RuleFor(x => x.CurrencyId).GreaterThan(0);
+        RuleFor(x => x.LanguageId).GreaterThan(0);
+        RuleFor(x => x.TimeZoneId).GreaterThan(0);
     }
 }
 

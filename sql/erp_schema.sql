@@ -87,34 +87,196 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
-   Companies
---------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Companies]') AND type = N'U')
+    BusinessTypes (company business classification master)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BusinessTypes]') AND type = N'U')
 BEGIN
-    CREATE TABLE dbo.Companies (
-        CompanyId     INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Companies PRIMARY KEY,
-        CompanyCode   NVARCHAR(50)        NOT NULL CONSTRAINT UQ_Companies_CompanyCode UNIQUE,
-        CompanyName   NVARCHAR(200)       NOT NULL,
-        [Address]     NVARCHAR(500)       NULL,
-        Email         NVARCHAR(200)       NULL,
-        Phone         NVARCHAR(50)        NULL,
-        GST           NVARCHAR(50)        NULL,
-        Currency      NVARCHAR(10)        NOT NULL CONSTRAINT DF_Companies_Currency DEFAULT 'USD',
-        Status        NVARCHAR(20)        NOT NULL CONSTRAINT DF_Companies_Status DEFAULT 'Active',
-        CreatedBy     NVARCHAR(100)       NULL,
-        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_Companies_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy    NVARCHAR(100)       NULL,
-        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_Companies_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_Companies_IsDeleted DEFAULT 0
+    CREATE TABLE dbo.BusinessTypes (
+        BusinessTypeId INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_BusinessTypes PRIMARY KEY,
+        [Name]         NVARCHAR(100)       NOT NULL CONSTRAINT UQ_BusinessTypes_Name UNIQUE,
+        [Description]  NVARCHAR(250)       NULL,
+        SortOrder      INT                 NOT NULL CONSTRAINT DF_BusinessTypes_SortOrder DEFAULT 1,
+        IsActive       BIT                 NOT NULL CONSTRAINT DF_BusinessTypes_IsActive DEFAULT 1,
+        CreatedBy      NVARCHAR(100)       NULL,
+        CreatedDate    DATETIME2           NOT NULL CONSTRAINT DF_BusinessTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy     NVARCHAR(100)       NULL,
+        ModifiedDate   DATETIME2           NOT NULL CONSTRAINT DF_BusinessTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted      BIT                 NOT NULL CONSTRAINT DF_BusinessTypes_IsDeleted DEFAULT 0
     );
 
-    CREATE INDEX IX_Companies_Status ON dbo.Companies (Status);
+    CREATE INDEX IX_BusinessTypes_SortOrder ON dbo.BusinessTypes (SortOrder);
+    CREATE INDEX IX_BusinessTypes_IsActive ON dbo.BusinessTypes (IsActive);
 END
 ;
 
 /* ---------------------------------------------------------------------------
-   Users
---------------------------------------------------------------------------- */
+    IndustryTypes (company industry classification master)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IndustryTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.IndustryTypes (
+        IndustryTypeId INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_IndustryTypes PRIMARY KEY,
+        [Name]         NVARCHAR(100)       NOT NULL CONSTRAINT UQ_IndustryTypes_Name UNIQUE,
+        [Description]  NVARCHAR(250)       NULL,
+        SortOrder      INT                 NOT NULL CONSTRAINT DF_IndustryTypes_SortOrder DEFAULT 1,
+        IsActive       BIT                 NOT NULL CONSTRAINT DF_IndustryTypes_IsActive DEFAULT 1,
+        CreatedBy      NVARCHAR(100)       NULL,
+        CreatedDate    DATETIME2           NOT NULL CONSTRAINT DF_IndustryTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy     NVARCHAR(100)       NULL,
+        ModifiedDate   DATETIME2           NOT NULL CONSTRAINT DF_IndustryTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted      BIT                 NOT NULL CONSTRAINT DF_IndustryTypes_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_IndustryTypes_SortOrder ON dbo.IndustryTypes (SortOrder);
+    CREATE INDEX IX_IndustryTypes_IsActive ON dbo.IndustryTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    GSTRegistrationTypes (system master: GST registration classification)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GSTRegistrationTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.GSTRegistrationTypes (
+        GSTRegistrationTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_GSTRegistrationTypes PRIMARY KEY,
+        [Name]        NVARCHAR(100)       NOT NULL CONSTRAINT UQ_GSTRegistrationTypes_Name UNIQUE,
+        [Description] NVARCHAR(250)       NULL,
+        IsActive      BIT                 NOT NULL CONSTRAINT DF_GSTRegistrationTypes_IsActive DEFAULT 1,
+        CreatedBy     NVARCHAR(100)       NULL,
+        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_GSTRegistrationTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy    NVARCHAR(100)       NULL,
+        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_GSTRegistrationTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_GSTRegistrationTypes_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_GSTRegistrationTypes_IsActive ON dbo.GSTRegistrationTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    Currencies (system master: supported currencies with ISO codes and symbols)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Currencies]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Currencies (
+        Id            INT IDENTITY(1,1)      NOT NULL CONSTRAINT PK_Currencies PRIMARY KEY,
+        CurrencyCode  NVARCHAR(10)           NOT NULL CONSTRAINT UQ_Currencies_CurrencyCode UNIQUE,
+        CurrencyName  NVARCHAR(100)          NOT NULL,
+        Symbol        NVARCHAR(10)           NOT NULL,
+        ISOCode       NVARCHAR(10)           NULL,
+        DecimalPlaces TINYINT                NOT NULL CONSTRAINT DF_Currencies_DecimalPlaces DEFAULT 2,
+        IsBaseCurrency BIT                  NOT NULL CONSTRAINT DF_Currencies_IsBaseCurrency DEFAULT 0,
+        SortOrder     INT                    NOT NULL CONSTRAINT DF_Currencies_SortOrder DEFAULT 1,
+        IsActive      BIT                    NOT NULL CONSTRAINT DF_Currencies_IsActive DEFAULT 1,
+        CreatedBy     INT                    NULL,
+        CreatedDate   DATETIME2              NOT NULL CONSTRAINT DF_Currencies_CreatedDate DEFAULT GETDATE(),
+        ModifiedBy    INT                    NULL,
+        ModifiedDate  DATETIME2              NULL
+    );
+
+    CREATE INDEX IX_Currencies_CurrencyCode ON dbo.Currencies (CurrencyCode);
+    CREATE INDEX IX_Currencies_IsBaseCurrency ON dbo.Currencies (IsBaseCurrency);
+    CREATE INDEX IX_Currencies_SortOrder ON dbo.Currencies (SortOrder);
+    CREATE INDEX IX_Currencies_IsActive ON dbo.Currencies (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    Languages (system master: supported UI/localization languages)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Languages]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Languages (
+        LanguageId    INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Languages PRIMARY KEY,
+        [Name]        NVARCHAR(100)       NOT NULL,
+        Code          NVARCHAR(10)        NOT NULL CONSTRAINT UQ_Languages_Code UNIQUE,
+        CultureCode   NVARCHAR(20)        NULL,
+        IsRTL         BIT                 NOT NULL CONSTRAINT DF_Languages_IsRTL DEFAULT 0,
+        IsDefault     BIT                 NOT NULL CONSTRAINT DF_Languages_IsDefault DEFAULT 0,
+        SortOrder     INT                 NOT NULL CONSTRAINT DF_Languages_SortOrder DEFAULT 1,
+        IsActive      BIT                 NOT NULL CONSTRAINT DF_Languages_IsActive DEFAULT 1,
+        CreatedBy     NVARCHAR(100)       NULL,
+        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_Languages_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy    NVARCHAR(100)       NULL,
+        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_Languages_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_Languages_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_Languages_SortOrder ON dbo.Languages (SortOrder);
+    CREATE INDEX IX_Languages_IsActive ON dbo.Languages (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    TimeZones (system master: supported time zones)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TimeZones]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TimeZones (
+        TimeZoneId    INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_TimeZones PRIMARY KEY,
+        [Name]        NVARCHAR(100)       NOT NULL,
+        TimeZoneName  NVARCHAR(100)       NOT NULL CONSTRAINT UQ_TimeZones_TimeZoneName UNIQUE,
+        UTCOffset     NVARCHAR(20)        NULL,
+        IsActive      BIT                 NOT NULL CONSTRAINT DF_TimeZones_IsActive DEFAULT 1,
+        CreatedBy     NVARCHAR(100)       NULL,
+        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_TimeZones_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy    NVARCHAR(100)       NULL,
+        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_TimeZones_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_TimeZones_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_TimeZones_IsActive ON dbo.TimeZones (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    Companies
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Companies]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Companies (
+        Id                      INT IDENTITY(1,1)  NOT NULL CONSTRAINT PK_Companies PRIMARY KEY,
+        CompanyCode             NVARCHAR(20)       NOT NULL CONSTRAINT UQ_Companies_CompanyCode UNIQUE,
+        CompanyName             NVARCHAR(200)      NOT NULL,
+        ShortName               NVARCHAR(100)      NULL,
+        Abbreviation            NVARCHAR(20)       NULL,
+        BusinessTypeId          INT                NOT NULL,
+        IndustryTypeId          INT                NOT NULL,
+        GSTRegistrationTypeId   INT                NULL,
+        GSTNumber               NVARCHAR(20)       NULL,
+        PANNumber               NVARCHAR(20)       NULL,
+        TANNumber               NVARCHAR(20)       NULL,
+        CINNumber               NVARCHAR(30)       NULL,
+        RegistrationNumber      NVARCHAR(100)      NULL,
+        CurrencyId              INT                NOT NULL,
+        LanguageId              INT                NOT NULL,
+        TimeZoneId              INT                NOT NULL,
+        IsActive                BIT                NOT NULL CONSTRAINT DF_Companies_IsActive DEFAULT 1,
+        IsBlocked               BIT                NOT NULL CONSTRAINT DF_Companies_IsBlocked DEFAULT 0,
+        IsDeleted               BIT                NOT NULL CONSTRAINT DF_Companies_IsDeleted DEFAULT 0,
+        LastLoginDate           DATETIME2          NULL,
+        CreatedBy               INT                NOT NULL,
+        CreatedDate             DATETIME2          NOT NULL CONSTRAINT DF_Companies_CreatedDate DEFAULT GETDATE(),
+        ModifiedBy              INT                NULL,
+        ModifiedDate            DATETIME2          NULL,
+        CONSTRAINT FK_Companies_BusinessType FOREIGN KEY (BusinessTypeId) REFERENCES dbo.BusinessTypes (BusinessTypeId),
+        CONSTRAINT FK_Companies_IndustryType FOREIGN KEY (IndustryTypeId) REFERENCES dbo.IndustryTypes (IndustryTypeId),
+        CONSTRAINT FK_Companies_GSTRegistrationType FOREIGN KEY (GSTRegistrationTypeId) REFERENCES dbo.GSTRegistrationTypes (GSTRegistrationTypeId),
+        CONSTRAINT FK_Companies_Currency FOREIGN KEY (CurrencyId) REFERENCES dbo.Currencies (Id),
+        CONSTRAINT FK_Companies_Language FOREIGN KEY (LanguageId) REFERENCES dbo.Languages (LanguageId),
+        CONSTRAINT FK_Companies_TimeZone FOREIGN KEY (TimeZoneId) REFERENCES dbo.TimeZones (TimeZoneId)
+    );
+
+    CREATE INDEX IX_Companies_IsActive ON dbo.Companies (IsActive);
+    CREATE INDEX IX_Companies_BusinessTypeId ON dbo.Companies (BusinessTypeId);
+    CREATE INDEX IX_Companies_IndustryTypeId ON dbo.Companies (IndustryTypeId);
+    CREATE INDEX IX_Companies_CurrencyId ON dbo.Companies (CurrencyId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    Users
+    --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') AND type = N'U')
 BEGIN
     CREATE TABLE dbo.Users (
@@ -133,7 +295,7 @@ BEGIN
         ModifiedBy    NVARCHAR(100)       NULL,
         ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_Users_ModifiedDate DEFAULT SYSUTCDATETIME(),
         IsDeleted     BIT                 NOT NULL CONSTRAINT DF_Users_IsDeleted DEFAULT 0,
-        CONSTRAINT FK_Users_Company FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (CompanyId),
+        CONSTRAINT FK_Users_Company FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (Id),
         CONSTRAINT UQ_Users_Company_Username UNIQUE (CompanyId, Username)
     );
 
@@ -243,53 +405,7 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
-   BusinessTypes (company business classification master)
--------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BusinessTypes]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.BusinessTypes (
-        BusinessTypeId INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_BusinessTypes PRIMARY KEY,
-        [Name]         NVARCHAR(100)       NOT NULL CONSTRAINT UQ_BusinessTypes_Name UNIQUE,
-        [Description]  NVARCHAR(250)       NULL,
-        SortOrder      INT                 NOT NULL CONSTRAINT DF_BusinessTypes_SortOrder DEFAULT 1,
-        IsActive       BIT                 NOT NULL CONSTRAINT DF_BusinessTypes_IsActive DEFAULT 1,
-        CreatedBy      NVARCHAR(100)       NULL,
-        CreatedDate    DATETIME2           NOT NULL CONSTRAINT DF_BusinessTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy     NVARCHAR(100)       NULL,
-        ModifiedDate   DATETIME2           NOT NULL CONSTRAINT DF_BusinessTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted      BIT                 NOT NULL CONSTRAINT DF_BusinessTypes_IsDeleted DEFAULT 0
-    );
-
-    CREATE INDEX IX_BusinessTypes_SortOrder ON dbo.BusinessTypes (SortOrder);
-    CREATE INDEX IX_BusinessTypes_IsActive ON dbo.BusinessTypes (IsActive);
-END
-;
-
-/* ---------------------------------------------------------------------------
-   IndustryTypes (company industry classification master)
--------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IndustryTypes]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.IndustryTypes (
-        IndustryTypeId INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_IndustryTypes PRIMARY KEY,
-        [Name]         NVARCHAR(100)       NOT NULL CONSTRAINT UQ_IndustryTypes_Name UNIQUE,
-        [Description]  NVARCHAR(250)       NULL,
-        SortOrder      INT                 NOT NULL CONSTRAINT DF_IndustryTypes_SortOrder DEFAULT 1,
-        IsActive       BIT                 NOT NULL CONSTRAINT DF_IndustryTypes_IsActive DEFAULT 1,
-        CreatedBy      NVARCHAR(100)       NULL,
-        CreatedDate    DATETIME2           NOT NULL CONSTRAINT DF_IndustryTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy     NVARCHAR(100)       NULL,
-        ModifiedDate   DATETIME2           NOT NULL CONSTRAINT DF_IndustryTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted      BIT                 NOT NULL CONSTRAINT DF_IndustryTypes_IsDeleted DEFAULT 0
-    );
-
-    CREATE INDEX IX_IndustryTypes_SortOrder ON dbo.IndustryTypes (SortOrder);
-    CREATE INDEX IX_IndustryTypes_IsActive ON dbo.IndustryTypes (IsActive);
-END
-;
-
-/* ---------------------------------------------------------------------------
-   CompanyGroups (corporate ownership / company grouping master)
+    CompanyGroups (corporate ownership / company grouping master)
 -------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CompanyGroups]') AND type = N'U')
 BEGIN
@@ -337,76 +453,7 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
-   Languages (system master: supported UI/localization languages)
---------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Languages]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.Languages (
-        LanguageId    INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Languages PRIMARY KEY,
-        [Name]        NVARCHAR(100)       NOT NULL,
-        Code          NVARCHAR(10)        NOT NULL CONSTRAINT UQ_Languages_Code UNIQUE,
-        CultureCode   NVARCHAR(20)        NULL,
-        IsRTL         BIT                 NOT NULL CONSTRAINT DF_Languages_IsRTL DEFAULT 0,
-        IsDefault     BIT                 NOT NULL CONSTRAINT DF_Languages_IsDefault DEFAULT 0,
-        SortOrder     INT                 NOT NULL CONSTRAINT DF_Languages_SortOrder DEFAULT 1,
-        IsActive      BIT                 NOT NULL CONSTRAINT DF_Languages_IsActive DEFAULT 1,
-        CreatedBy     NVARCHAR(100)       NULL,
-        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_Languages_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy    NVARCHAR(100)       NULL,
-        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_Languages_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_Languages_IsDeleted DEFAULT 0
-    );
-
-    CREATE INDEX IX_Languages_SortOrder ON dbo.Languages (SortOrder);
-    CREATE INDEX IX_Languages_IsActive ON dbo.Languages (IsActive);
-END
-;
-
-/* ---------------------------------------------------------------------------
-   TimeZones (system master: supported time zones)
---------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TimeZones]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.TimeZones (
-        TimeZoneId    INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_TimeZones PRIMARY KEY,
-        [Name]        NVARCHAR(100)       NOT NULL,
-        TimeZoneName  NVARCHAR(100)       NOT NULL CONSTRAINT UQ_TimeZones_TimeZoneName UNIQUE,
-        UTCOffset     NVARCHAR(20)        NULL,
-        IsActive      BIT                 NOT NULL CONSTRAINT DF_TimeZones_IsActive DEFAULT 1,
-        CreatedBy     NVARCHAR(100)       NULL,
-        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_TimeZones_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy    NVARCHAR(100)       NULL,
-        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_TimeZones_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_TimeZones_IsDeleted DEFAULT 0
-    );
-
-    CREATE INDEX IX_TimeZones_IsActive ON dbo.TimeZones (IsActive);
-END
-;
-
-/* ---------------------------------------------------------------------------
-   GSTRegistrationTypes (system master: GST registration classification)
---------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GSTRegistrationTypes]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.GSTRegistrationTypes (
-        GSTRegistrationTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_GSTRegistrationTypes PRIMARY KEY,
-        [Name]        NVARCHAR(100)       NOT NULL CONSTRAINT UQ_GSTRegistrationTypes_Name UNIQUE,
-        [Description] NVARCHAR(250)       NULL,
-        IsActive      BIT                 NOT NULL CONSTRAINT DF_GSTRegistrationTypes_IsActive DEFAULT 1,
-        CreatedBy     NVARCHAR(100)       NULL,
-        CreatedDate   DATETIME2           NOT NULL CONSTRAINT DF_GSTRegistrationTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
-        ModifiedBy    NVARCHAR(100)       NULL,
-        ModifiedDate  DATETIME2           NOT NULL CONSTRAINT DF_GSTRegistrationTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
-        IsDeleted     BIT                 NOT NULL CONSTRAINT DF_GSTRegistrationTypes_IsDeleted DEFAULT 0
-    );
-
-    CREATE INDEX IX_GSTRegistrationTypes_IsActive ON dbo.GSTRegistrationTypes (IsActive);
-END
-;
-
-/* ---------------------------------------------------------------------------
-   AddressTypes (system master: address classifications)
+    AddressTypes (system master: address classifications)
 --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddressTypes]') AND type = N'U')
 BEGIN
@@ -489,5 +536,310 @@ BEGIN
 
     CREATE INDEX IX_OrganizationTypes_SortOrder ON dbo.OrganizationTypes (SortOrder);
     CREATE INDEX IX_OrganizationTypes_IsActive ON dbo.OrganizationTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   BranchTypes (organization: branch classification)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BranchTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.BranchTypes (
+        BranchTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_BranchTypes PRIMARY KEY,
+        [Name]        NVARCHAR(100)     NOT NULL CONSTRAINT UQ_BranchTypes_Name UNIQUE,
+        Code          NVARCHAR(20)      NOT NULL CONSTRAINT UQ_BranchTypes_Code UNIQUE,
+        [Description] NVARCHAR(250)     NULL,
+        SortOrder     INT               NOT NULL CONSTRAINT DF_BranchTypes_SortOrder DEFAULT 1,
+        IsActive      BIT               NOT NULL CONSTRAINT DF_BranchTypes_IsActive DEFAULT 1,
+        CreatedBy     NVARCHAR(100)     NULL,
+        CreatedDate   DATETIME2         NOT NULL CONSTRAINT DF_BranchTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy    NVARCHAR(100)     NULL,
+        ModifiedDate  DATETIME2         NOT NULL CONSTRAINT DF_BranchTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted     BIT               NOT NULL CONSTRAINT DF_BranchTypes_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_BranchTypes_SortOrder ON dbo.BranchTypes (SortOrder);
+    CREATE INDEX IX_BranchTypes_IsActive ON dbo.BranchTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   WarehouseTypes (inventory: warehouse classification)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.WarehouseTypes (
+        WarehouseTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_WarehouseTypes PRIMARY KEY,
+        [Name]          NVARCHAR(100)     NOT NULL CONSTRAINT UQ_WarehouseTypes_Name UNIQUE,
+        Code            NVARCHAR(20)      NOT NULL CONSTRAINT UQ_WarehouseTypes_Code UNIQUE,
+        [Description]   NVARCHAR(250)     NULL,
+        SortOrder       INT               NOT NULL CONSTRAINT DF_WarehouseTypes_SortOrder DEFAULT 1,
+        IsActive        BIT               NOT NULL CONSTRAINT DF_WarehouseTypes_IsActive DEFAULT 1,
+        CreatedBy       NVARCHAR(100)     NULL,
+        CreatedDate     DATETIME2         NOT NULL CONSTRAINT DF_WarehouseTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy      NVARCHAR(100)     NULL,
+        ModifiedDate    DATETIME2         NOT NULL CONSTRAINT DF_WarehouseTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted       BIT               NOT NULL CONSTRAINT DF_WarehouseTypes_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_WarehouseTypes_SortOrder ON dbo.WarehouseTypes (SortOrder);
+    CREATE INDEX IX_WarehouseTypes_IsActive ON dbo.WarehouseTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EmploymentTypes (HR: employment classification)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EmploymentTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EmploymentTypes (
+        EmploymentTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_EmploymentTypes PRIMARY KEY,
+        [Name]           NVARCHAR(100)     NOT NULL CONSTRAINT UQ_EmploymentTypes_Name UNIQUE,
+        Code             NVARCHAR(20)      NOT NULL CONSTRAINT UQ_EmploymentTypes_Code UNIQUE,
+        [Description]    NVARCHAR(250)     NULL,
+        SortOrder        INT               NOT NULL CONSTRAINT DF_EmploymentTypes_SortOrder DEFAULT 1,
+        IsActive         BIT               NOT NULL CONSTRAINT DF_EmploymentTypes_IsActive DEFAULT 1,
+        CreatedBy        NVARCHAR(100)     NULL,
+        CreatedDate      DATETIME2         NOT NULL CONSTRAINT DF_EmploymentTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy       NVARCHAR(100)     NULL,
+        ModifiedDate     DATETIME2         NOT NULL CONSTRAINT DF_EmploymentTypes_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted        BIT               NOT NULL CONSTRAINT DF_EmploymentTypes_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_EmploymentTypes_SortOrder ON dbo.EmploymentTypes (SortOrder);
+    CREATE INDEX IX_EmploymentTypes_IsActive ON dbo.EmploymentTypes (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Genders (HR: gender master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Genders]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Genders (
+        GenderId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Genders PRIMARY KEY,
+        [Name]   NVARCHAR(50)      NOT NULL CONSTRAINT UQ_Genders_Name UNIQUE,
+        Code     NVARCHAR(10)      NOT NULL CONSTRAINT UQ_Genders_Code UNIQUE,
+        IsActive BIT               NOT NULL CONSTRAINT DF_Genders_IsActive DEFAULT 1,
+        SortOrder INT              NOT NULL CONSTRAINT DF_Genders_SortOrder DEFAULT 1
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   MaritalStatuses (HR: marital status master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MaritalStatuses]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.MaritalStatuses (
+        MaritalStatusId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_MaritalStatuses PRIMARY KEY,
+        [Name]          NVARCHAR(50)      NOT NULL CONSTRAINT UQ_MaritalStatuses_Name UNIQUE,
+        Code            NVARCHAR(10)      NOT NULL CONSTRAINT UQ_MaritalStatuses_Code UNIQUE,
+        IsActive        BIT               NOT NULL CONSTRAINT DF_MaritalStatuses_IsActive DEFAULT 1,
+        SortOrder       INT               NOT NULL CONSTRAINT DF_MaritalStatuses_SortOrder DEFAULT 1
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Branches (organization: company branches)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Branches]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Branches (
+        Id                  INT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId           INT NOT NULL,
+        BranchCode          NVARCHAR(20) NOT NULL,
+        BranchName          NVARCHAR(200) NOT NULL,
+        ShortName           NVARCHAR(100) NULL,
+        BranchTypeId        INT NOT NULL,
+        ParentBranchId      INT NULL,
+        ManagerEmployeeId   INT NULL,
+        DefaultWarehouseId  INT NULL,
+        GSTNumber           NVARCHAR(20) NULL,
+        RegistrationNumber  NVARCHAR(100) NULL,
+        IsHeadOffice        BIT NOT NULL DEFAULT(0),
+        IsSalesBranch       BIT NOT NULL DEFAULT(1),
+        IsPurchaseBranch    BIT NOT NULL DEFAULT(1),
+        IsServiceBranch     BIT NOT NULL DEFAULT(0),
+        SortOrder           INT NOT NULL DEFAULT(1),
+        IsActive            BIT NOT NULL DEFAULT(1),
+        IsBlocked           BIT NOT NULL DEFAULT(0),
+        IsDeleted           BIT NOT NULL DEFAULT(0),
+        CreatedBy           INT NOT NULL,
+        CreatedDate         DATETIME2 NOT NULL DEFAULT(GETDATE()),
+        ModifiedBy          INT NULL,
+        ModifiedDate        DATETIME2 NULL,
+        CONSTRAINT UQ_Branches UNIQUE (CompanyId, BranchCode),
+        CONSTRAINT FK_Branches_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Branches_BranchType FOREIGN KEY (BranchTypeId) REFERENCES BranchTypes(BranchTypeId),
+        CONSTRAINT FK_Branches_Parent FOREIGN KEY (ParentBranchId) REFERENCES Branches(Id)
+    );
+
+    CREATE INDEX IX_Branches_Company ON dbo.Branches (CompanyId);
+    CREATE INDEX IX_Branches_BranchType ON dbo.Branches (BranchTypeId);
+    CREATE INDEX IX_Branches_Parent ON dbo.Branches (ParentBranchId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Departments (organization: company departments)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Departments]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Departments (
+        Id                  INT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId           INT NOT NULL,
+        BranchId            INT NOT NULL,
+        DepartmentCode      NVARCHAR(20) NOT NULL,
+        DepartmentName      NVARCHAR(150) NOT NULL,
+        ShortName           NVARCHAR(50) NULL,
+        ParentDepartmentId  INT NULL,
+        ManagerEmployeeId   INT NULL,
+        SortOrder           INT NOT NULL DEFAULT(1),
+        IsActive            BIT NOT NULL DEFAULT(1),
+        IsBlocked           BIT NOT NULL DEFAULT(0),
+        IsDeleted           BIT NOT NULL DEFAULT(0),
+        Remarks             NVARCHAR(500) NULL,
+        CreatedBy           INT NOT NULL,
+        CreatedDate         DATETIME2 NOT NULL DEFAULT(GETDATE()),
+        ModifiedBy          INT NULL,
+        ModifiedDate        DATETIME2 NULL,
+        CONSTRAINT UQ_Departments UNIQUE (CompanyId, BranchId, DepartmentCode),
+        CONSTRAINT FK_Departments_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Departments_Branch FOREIGN KEY (BranchId) REFERENCES Branches(Id),
+        CONSTRAINT FK_Departments_Parent FOREIGN KEY (ParentDepartmentId) REFERENCES Departments(Id)
+    );
+
+    CREATE INDEX IX_Departments_Company ON dbo.Departments (CompanyId);
+    CREATE INDEX IX_Departments_Branch ON dbo.Departments (BranchId);
+    CREATE INDEX IX_Departments_Parent ON dbo.Departments (ParentDepartmentId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Designations (organization: employee designations)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Designations]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Designations (
+        Id                  INT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId           INT NOT NULL,
+        DepartmentId        INT NULL,
+        DesignationCode     NVARCHAR(20) NOT NULL,
+        DesignationName     NVARCHAR(150) NOT NULL,
+        ShortName           NVARCHAR(50) NULL,
+        LevelNo             INT NULL,
+        Grade               NVARCHAR(20) NULL,
+        [Description]       NVARCHAR(500) NULL,
+        SortOrder           INT NOT NULL DEFAULT(1),
+        IsDefault           BIT NOT NULL DEFAULT(0),
+        IsActive            BIT NOT NULL DEFAULT(1),
+        IsBlocked           BIT NOT NULL DEFAULT(0),
+        IsDeleted           BIT NOT NULL DEFAULT(0),
+        CreatedBy           INT NOT NULL,
+        CreatedDate         DATETIME2 NOT NULL DEFAULT(GETDATE()),
+        ModifiedBy          INT NULL,
+        ModifiedDate        DATETIME2 NULL,
+        CONSTRAINT UQ_Designations UNIQUE (CompanyId, DesignationCode),
+        CONSTRAINT FK_Designations_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Designations_Department FOREIGN KEY (DepartmentId) REFERENCES Departments(Id)
+    );
+
+    CREATE INDEX IX_Designations_Company ON dbo.Designations (CompanyId);
+    CREATE INDEX IX_Designations_Department ON dbo.Designations (DepartmentId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Employees (HR: employee master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Employees]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Employees (
+        Id                  INT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId           INT NOT NULL,
+        BranchId            INT NOT NULL,
+        DepartmentId        INT NOT NULL,
+        DesignationId       INT NOT NULL,
+        EmployeeCode        NVARCHAR(20) NOT NULL,
+        EmployeeNumber      NVARCHAR(50) NULL,
+        FirstName           NVARCHAR(100) NOT NULL,
+        MiddleName          NVARCHAR(100) NULL,
+        LastName            NVARCHAR(100) NOT NULL,
+        DisplayName         NVARCHAR(250) NULL,
+        GenderId            INT NULL,
+        MaritalStatusId     INT NULL,
+        DateOfBirth         DATE NULL,
+        DateOfJoining       DATE NOT NULL,
+        DateOfLeaving       DATE NULL,
+        OfficialEmail       NVARCHAR(150) NULL,
+        PersonalEmail       NVARCHAR(150) NULL,
+        MobileNo            NVARCHAR(20) NULL,
+        AlternateMobileNo   NVARCHAR(20) NULL,
+        ReportingManagerId  INT NULL,
+        EmploymentTypeId    INT NULL,
+        IsActive            BIT NOT NULL DEFAULT(1),
+        IsBlocked           BIT NOT NULL DEFAULT(0),
+        IsDeleted           BIT NOT NULL DEFAULT(0),
+        Remarks             NVARCHAR(500) NULL,
+        CreatedBy           INT NOT NULL,
+        CreatedDate         DATETIME2 NOT NULL DEFAULT(GETDATE()),
+        ModifiedBy          INT NULL,
+        ModifiedDate        DATETIME2 NULL,
+        CONSTRAINT UQ_Employees UNIQUE (CompanyId, EmployeeCode),
+        CONSTRAINT FK_Employees_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Employees_Branch FOREIGN KEY (BranchId) REFERENCES Branches(Id),
+        CONSTRAINT FK_Employees_Department FOREIGN KEY (DepartmentId) REFERENCES Departments(Id),
+        CONSTRAINT FK_Employees_Designation FOREIGN KEY (DesignationId) REFERENCES Designations(Id),
+        CONSTRAINT FK_Employees_Manager FOREIGN KEY (ReportingManagerId) REFERENCES Employees(Id)
+    );
+
+    CREATE INDEX IX_Employees_Company ON dbo.Employees (CompanyId);
+    CREATE INDEX IX_Employees_Branch ON dbo.Employees (BranchId);
+    CREATE INDEX IX_Employees_Department ON dbo.Employees (DepartmentId);
+    CREATE INDEX IX_Employees_Designation ON dbo.Employees (DesignationId);
+    CREATE INDEX IX_Employees_Manager ON dbo.Employees (ReportingManagerId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Warehouses (inventory: warehouse master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Warehouses]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Warehouses (
+        Id                  INT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId           INT NOT NULL,
+        BranchId            INT NOT NULL,
+        WarehouseCode       NVARCHAR(20) NOT NULL,
+        WarehouseName       NVARCHAR(150) NOT NULL,
+        ShortName           NVARCHAR(50) NULL,
+        WarehouseTypeId     INT NOT NULL,
+        ParentWarehouseId   INT NULL,
+        ManagerEmployeeId   INT NULL,
+        AllowNegativeStock  BIT NOT NULL DEFAULT(0),
+        IsDefault           BIT NOT NULL DEFAULT(0),
+        SortOrder           INT NOT NULL DEFAULT(1),
+        Remarks             NVARCHAR(500) NULL,
+        IsActive            BIT NOT NULL DEFAULT(1),
+        IsBlocked           BIT NOT NULL DEFAULT(0),
+        IsDeleted           BIT NOT NULL DEFAULT(0),
+        CreatedBy           INT NOT NULL,
+        CreatedDate         DATETIME2 NOT NULL DEFAULT(GETDATE()),
+        ModifiedBy          INT NULL,
+        ModifiedDate        DATETIME2 NULL,
+        CONSTRAINT UQ_Warehouses UNIQUE (CompanyId, BranchId, WarehouseCode),
+        CONSTRAINT FK_Warehouses_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Warehouses_Branch FOREIGN KEY (BranchId) REFERENCES Branches(Id),
+        CONSTRAINT FK_Warehouses_Type FOREIGN KEY (WarehouseTypeId) REFERENCES WarehouseTypes(WarehouseTypeId),
+        CONSTRAINT FK_Warehouses_Parent FOREIGN KEY (ParentWarehouseId) REFERENCES Warehouses(Id),
+        CONSTRAINT FK_Warehouses_Manager FOREIGN KEY (ManagerEmployeeId) REFERENCES Employees(Id)
+    );
+
+    CREATE INDEX IX_Warehouses_Company ON dbo.Warehouses (CompanyId);
+    CREATE INDEX IX_Warehouses_Branch ON dbo.Warehouses (BranchId);
+    CREATE INDEX IX_Warehouses_Type ON dbo.Warehouses (WarehouseTypeId);
+    CREATE INDEX IX_Warehouses_Parent ON dbo.Warehouses (ParentWarehouseId);
 END
 ;

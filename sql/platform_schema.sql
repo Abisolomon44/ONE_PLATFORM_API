@@ -74,10 +74,10 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Te
 BEGIN
     CREATE TABLE dbo.Tenants (
         TenantId       INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Tenants PRIMARY KEY,
-        TenantCode     NVARCHAR(50)        NOT NULL CONSTRAINT UQ_Tenants_TenantCode UNIQUE,
+        TenantCode     NVARCHAR(50)        NOT NULL,
         TenantName     NVARCHAR(200)       NOT NULL,
         CompanyName    NVARCHAR(200)       NULL,
-        DatabaseName   NVARCHAR(128)       NOT NULL CONSTRAINT UQ_Tenants_DatabaseName UNIQUE,
+        DatabaseName   NVARCHAR(128)       NOT NULL,
         PlanId         INT                 NULL,
         ContactEmail   NVARCHAR(200)       NULL,
         AdminUsername  NVARCHAR(100)       NULL,
@@ -90,6 +90,8 @@ BEGIN
         IsDeleted      BIT                 NOT NULL CONSTRAINT DF_Tenants_IsDeleted DEFAULT 0
     );
 
+    CREATE UNIQUE INDEX UQ_Tenants_TenantCode ON dbo.Tenants (TenantCode) WHERE IsDeleted = 0;
+    CREATE UNIQUE INDEX UQ_Tenants_DatabaseName ON dbo.Tenants (DatabaseName) WHERE IsDeleted = 0;
     CREATE INDEX IX_Tenants_Status ON dbo.Tenants (Status);
 END
 GO
@@ -140,7 +142,7 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UQ_Tenants_AdminUsername' AND object_id = OBJECT_ID('dbo.Tenants'))
     CREATE UNIQUE INDEX UQ_Tenants_AdminUsername ON dbo.Tenants (AdminUsername)
-        WHERE AdminUsername IS NOT NULL AND AdminUsername <> '';
+        WHERE AdminUsername IS NOT NULL AND AdminUsername <> '' AND IsDeleted = 0;
 GO
 
 /* ---------------------------------------------------------------------------

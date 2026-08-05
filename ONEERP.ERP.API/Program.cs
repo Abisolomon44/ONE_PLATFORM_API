@@ -82,6 +82,14 @@ builder.Services.AddScoped<ICompanyGroupRepository, CompanyGroupRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+builder.Services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
+builder.Services.AddScoped<IGstRegistrationTypeRepository, GstRegistrationTypeRepository>();
+builder.Services.AddScoped<IAddressTypeRepository, AddressTypeRepository>();
+builder.Services.AddScoped<IContactTypeRepository, ContactTypeRepository>();
+builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+builder.Services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepository>();
+builder.Services.AddScoped<IAdministrationRepository, AdministrationRepository>();
 
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -100,6 +108,14 @@ builder.Services.AddScoped<ICompanyGroupService, CompanyGroupService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<ITimeZoneService, TimeZoneService>();
+builder.Services.AddScoped<IGstRegistrationTypeService, GstRegistrationTypeService>();
+builder.Services.AddScoped<IAddressTypeService, AddressTypeService>();
+builder.Services.AddScoped<IContactTypeService, ContactTypeService>();
+builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+builder.Services.AddScoped<IOrganizationTypeService, OrganizationTypeService>();
+builder.Services.AddScoped<IAdministrationService, AdministrationService>();
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

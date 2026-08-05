@@ -65,7 +65,7 @@ public class CompaniesController : BaseController
         if (errors.Count > 0)
             return BadRequest(ApiResponse<CompanyDto>.Fail("Validation failed", errors));
 
-        var result = await _companyService.CreateAsync(request, _currentUser.Username);
+        var result = await _companyService.CreateAsync(request);
         return Ok(ApiResponse<CompanyDto>.Ok(result, "Company created successfully"));
     }
 
@@ -78,7 +78,7 @@ public class CompaniesController : BaseController
         if (errors.Count > 0)
             return BadRequest(ApiResponse<CompanyDto>.Fail("Validation failed", errors));
 
-        var result = await _companyService.UpdateAsync(_currentUser.CompanyId, request, _currentUser.Username);
+        var result = await _companyService.UpdateAsync(_currentUser.CompanyId, request);
         return Ok(ApiResponse<CompanyDto>.Ok(result, "Company updated successfully"));
     }
 
@@ -91,7 +91,7 @@ public class CompaniesController : BaseController
         if (errors.Count > 0)
             return BadRequest(ApiResponse<CompanyDto>.Fail("Validation failed", errors));
 
-        var result = await _companyService.UpdateAsync(id, request, _currentUser.Username);
+        var result = await _companyService.UpdateAsync(id, request);
         return Ok(ApiResponse<CompanyDto>.Ok(result, "Company updated successfully"));
     }
 
@@ -99,7 +99,7 @@ public class CompaniesController : BaseController
     [Permission(Permissions.CompaniesEdit)]
     public async Task<IActionResult> Delete(int id)
     {
-        await _companyService.DeleteAsync(id, _currentUser.Username);
+        await _companyService.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Company deleted successfully"));
     }
 }

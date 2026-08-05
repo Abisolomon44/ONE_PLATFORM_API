@@ -60,15 +60,29 @@ public class ProfileService : IProfileService
             Permissions = permissions.ToList(),
             Company = company is null ? new CompanyDto() : new CompanyDto
             {
-                CompanyId = company.CompanyId,
+                Id = company.Id,
                 CompanyCode = company.CompanyCode,
                 CompanyName = company.CompanyName,
-                Address = company.Address,
-                Email = company.Email,
-                Phone = company.Phone,
-                GST = company.GST,
-                Currency = company.Currency,
-                Status = company.Status
+                ShortName = company.ShortName,
+                Abbreviation = company.Abbreviation,
+                BusinessTypeId = company.BusinessTypeId,
+                IndustryTypeId = company.IndustryTypeId,
+                GSTRegistrationTypeId = company.GSTRegistrationTypeId,
+                GSTNumber = company.GSTNumber,
+                PANNumber = company.PANNumber,
+                TANNumber = company.TANNumber,
+                CINNumber = company.CINNumber,
+                RegistrationNumber = company.RegistrationNumber,
+                CurrencyId = company.CurrencyId,
+                LanguageId = company.LanguageId,
+                TimeZoneId = company.TimeZoneId,
+                IsActive = company.IsActive,
+                IsBlocked = company.IsBlocked,
+                LastLoginDate = company.LastLoginDate,
+                CreatedBy = company.CreatedBy,
+                CreatedDate = company.CreatedDate,
+                ModifiedBy = company.ModifiedBy,
+                ModifiedDate = company.ModifiedDate
             }
         };
     }

@@ -52,8 +52,45 @@ public static class Permissions
     public const string DocumentTypesView = "document-types.view";
     public const string DocumentTypesManage = "document-types.manage";
 
-    public const string OrganizationTypesView = "organization-types.view";
+public const string OrganizationTypesView = "organization-types.view";
     public const string OrganizationTypesManage = "organization-types.manage";
+
+    public const string BranchTypesView = "branch-types.view";
+    public const string BranchTypesManage = "branch-types.manage";
+
+    public const string WarehouseTypesView = "warehouse-types.view";
+    public const string WarehouseTypesManage = "warehouse-types.manage";
+
+    public const string EmploymentTypesView = "employment-types.view";
+    public const string EmploymentTypesManage = "employment-types.manage";
+
+    public const string BranchesView = "branches.view";
+    public const string BranchesCreate = "branches.create";
+    public const string BranchesEdit = "branches.edit";
+    public const string BranchesDelete = "branches.delete";
+
+    public const string DepartmentsView = "departments.view";
+    public const string DepartmentsCreate = "departments.create";
+    public const string DepartmentsEdit = "departments.edit";
+    public const string DepartmentsDelete = "departments.delete";
+
+    public const string DesignationsView = "designations.view";
+    public const string DesignationsCreate = "designations.create";
+    public const string DesignationsEdit = "designations.edit";
+    public const string DesignationsDelete = "designations.delete";
+
+    public const string EmployeesView = "employees.view";
+    public const string EmployeesCreate = "employees.create";
+    public const string EmployeesEdit = "employees.edit";
+    public const string EmployeesDelete = "employees.delete";
+
+    public const string WarehousesView = "warehouses.view";
+    public const string WarehousesCreate = "warehouses.create";
+    public const string WarehousesEdit = "warehouses.edit";
+    public const string WarehousesDelete = "warehouses.delete";
+
+    public const string CurrenciesView = "currencies.view";
+    public const string CurrenciesManage = "currencies.manage";
 
     public const string SettingsView = "settings.view";
     public const string SettingsEdit = "settings.edit";
@@ -77,7 +114,16 @@ public static class Permissions
         AddressTypesView, AddressTypesManage,
         ContactTypesView, ContactTypesManage,
         DocumentTypesView, DocumentTypesManage,
-        OrganizationTypesView, OrganizationTypesManage,
+         OrganizationTypesView, OrganizationTypesManage,
+        BranchTypesView, BranchTypesManage,
+        WarehouseTypesView, WarehouseTypesManage,
+        EmploymentTypesView, EmploymentTypesManage,
+        BranchesView, BranchesCreate, BranchesEdit, BranchesDelete,
+        DepartmentsView, DepartmentsCreate, DepartmentsEdit, DepartmentsDelete,
+        DesignationsView, DesignationsCreate, DesignationsEdit, DesignationsDelete,
+        EmployeesView, EmployeesCreate, EmployeesEdit, EmployeesDelete,
+        WarehousesView, WarehousesCreate, WarehousesEdit, WarehousesDelete,
+        CurrenciesView, CurrenciesManage,
         SettingsView, SettingsEdit,
         AuditView, ProfileEdit
     };

@@ -1,5 +1,28 @@
-ONEERP.Platform.UI/
-ONEERP.ERP.UI/
+# Visual Studio
 .vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
 bin/
 obj/
+
+# ASP.NET logs
+logs/
+*.log
+
+# Node / Angular
+node_modules/
+dist/
+
+# Coverage
+coverage/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Environment
+.env

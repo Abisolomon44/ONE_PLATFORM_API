@@ -893,3 +893,926 @@ System.IO.IOException: Failed to bind to address http://127.0.0.1:5181: address 
    at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
    at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
    at Program.<Main>$(String[] args) in D:\AWS\ERP\ONEERP.ERP.API\Program.cs:line 156
+2026-08-03 19:12:06.424 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 19:12:10.720 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 139.9633 ms
+2026-08-03 19:12:10.781 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 4.0247 ms
+2026-08-03 19:12:11.342 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 217.4720 ms
+2026-08-03 19:12:22.372 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 6.2194 ms
+2026-08-03 19:12:24.603 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 2212.8714 ms
+2026-08-03 19:12:24.617 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1323 ms
+2026-08-03 19:12:26.069 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1315 ms
+2026-08-03 19:12:26.118 +05:30 [INF] HTTP GET /api/users responded 401 in 5.2683 ms
+2026-08-03 19:12:27.545 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2920.6967 ms
+2026-08-03 19:12:27.545 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1416.2689 ms
+2026-08-03 19:12:27.552 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0891 ms
+2026-08-03 19:12:27.665 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 104.5806 ms
+2026-08-03 19:12:27.687 +05:30 [INF] HTTP GET /api/users responded 200 in 128.5416 ms
+2026-08-03 19:12:28.856 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.1147 ms
+2026-08-03 19:12:28.903 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 30.5182 ms
+2026-08-03 19:12:30.236 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.1753 ms
+2026-08-03 19:12:30.346 +05:30 [INF] HTTP GET /api/business-types responded 200 in 69.7139 ms
+2026-08-03 19:12:32.873 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.5006 ms
+2026-08-03 19:12:32.919 +05:30 [INF] HTTP GET /api/users responded 200 in 15.2708 ms
+2026-08-03 19:12:34.656 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1774 ms
+2026-08-03 19:12:34.717 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 45.5039 ms
+2026-08-03 19:12:36.107 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 1.5401 ms
+2026-08-03 19:12:36.221 +05:30 [INF] HTTP GET /api/roles responded 200 in 46.9999 ms
+2026-08-03 19:12:40.140 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.4305 ms
+2026-08-03 19:12:40.167 +05:30 [INF] HTTP GET /api/business-types responded 200 in 5.8459 ms
+2026-08-03 19:13:15.468 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.5014 ms
+2026-08-03 19:13:15.619 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 117.4530 ms
+2026-08-03 19:13:16.229 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1664 ms
+2026-08-03 19:13:16.229 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0387 ms
+2026-08-03 19:13:16.304 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.1607 ms
+2026-08-03 19:13:16.433 +05:30 [INF] HTTP GET /api/countries responded 200 in 166.0424 ms
+2026-08-03 19:13:16.454 +05:30 [INF] HTTP GET /api/states responded 200 in 123.1087 ms
+2026-08-03 19:13:16.482 +05:30 [INF] HTTP GET /api/cities responded 200 in 143.1286 ms
+2026-08-03 19:13:21.028 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.2775 ms
+2026-08-03 19:13:21.068 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 6.9601 ms
+2026-08-03 19:38:33.842 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 19:38:36.938 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 16.9773 ms
+2026-08-03 19:38:36.916 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 188.6615 ms
+2026-08-03 19:38:37.419 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 254.5113 ms
+2026-08-03 19:38:54.547 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 9.9369 ms
+2026-08-03 19:38:54.862 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 298.0026 ms
+2026-08-03 19:38:54.885 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2061 ms
+2026-08-03 19:38:56.372 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1476.9996 ms
+2026-08-03 19:38:56.499 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 119.4624 ms
+2026-08-03 19:40:18.441 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.3554 ms
+2026-08-03 19:40:18.664 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 87.1947 ms
+2026-08-03 19:40:52.640 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.9951 ms
+2026-08-03 19:40:52.717 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 37.8663 ms
+2026-08-03 19:41:38.000 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1354 ms
+2026-08-03 19:41:38.157 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 100.3170 ms
+2026-08-03 19:41:39.431 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 66.0021 ms
+2026-08-03 19:41:40.447 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 28.5079 ms
+2026-08-03 19:41:43.251 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.1100 ms
+2026-08-03 19:41:43.413 +05:30 [INF] HTTP GET /api/users responded 200 in 130.2225 ms
+2026-08-03 19:42:32.754 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 1.9427 ms
+2026-08-03 19:42:32.877 +05:30 [INF] HTTP GET /api/users responded 200 in 69.4232 ms
+2026-08-03 19:42:34.823 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.7137 ms
+2026-08-03 19:42:34.886 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 41.2781 ms
+2026-08-03 19:44:03.698 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.1198 ms
+2026-08-03 19:44:03.727 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 9.1964 ms
+2026-08-03 20:03:47.741 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.1181 ms
+2026-08-03 20:03:47.801 +05:30 [INF] HTTP GET /api/companies/current responded 401 in 2.1807 ms
+2026-08-03 20:03:47.865 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2042 ms
+2026-08-03 20:03:48.755 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 867.7746 ms
+2026-08-03 20:03:48.798 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 25.3550 ms
+2026-08-03 20:03:51.253 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2242 ms
+2026-08-03 20:03:51.440 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 137.8326 ms
+2026-08-03 20:11:01.654 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2361 ms
+2026-08-03 20:11:02.303 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 632.2891 ms
+2026-08-03 20:16:47.642 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.1936 ms
+2026-08-03 20:16:47.869 +05:30 [INF] HTTP GET /api/business-types responded 200 in 199.9940 ms
+2026-08-03 20:16:49.350 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.1964 ms
+2026-08-03 20:16:49.428 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 44.0592 ms
+2026-08-03 20:16:50.179 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.3211 ms
+2026-08-03 20:16:50.281 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 46.6449 ms
+2026-08-03 20:17:35.338 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.1010 ms
+2026-08-03 20:17:35.450 +05:30 [INF] HTTP GET /api/business-types responded 200 in 51.2289 ms
+2026-08-03 20:17:36.625 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0982 ms
+2026-08-03 20:17:36.667 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 12.6894 ms
+2026-08-03 20:17:37.458 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0716 ms
+2026-08-03 20:17:37.486 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 11.9506 ms
+2026-08-03 20:17:38.677 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0574 ms
+2026-08-03 20:17:38.678 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0728 ms
+2026-08-03 20:17:38.724 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 3.7161 ms
+2026-08-03 20:17:38.859 +05:30 [INF] HTTP GET /api/countries responded 200 in 109.1807 ms
+2026-08-03 20:17:38.893 +05:30 [INF] HTTP GET /api/states responded 200 in 143.1536 ms
+2026-08-03 20:17:38.907 +05:30 [INF] HTTP GET /api/cities responded 200 in 149.6424 ms
+2026-08-03 20:18:33.260 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.4865 ms
+2026-08-03 20:18:33.262 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.4017 ms
+2026-08-03 20:18:33.314 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0668 ms
+2026-08-03 20:18:33.397 +05:30 [INF] HTTP GET /api/countries responded 200 in 70.5667 ms
+2026-08-03 20:18:33.398 +05:30 [INF] HTTP GET /api/states responded 200 in 27.7105 ms
+2026-08-03 20:18:33.416 +05:30 [INF] HTTP GET /api/cities responded 200 in 38.1341 ms
+2026-08-03 20:19:02.457 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0684 ms
+2026-08-03 20:19:02.462 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0788 ms
+2026-08-03 20:19:02.499 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.1107 ms
+2026-08-03 20:19:02.568 +05:30 [INF] HTTP GET /api/countries responded 200 in 38.1600 ms
+2026-08-03 20:19:02.576 +05:30 [INF] HTTP GET /api/states responded 200 in 38.6177 ms
+2026-08-03 20:19:02.622 +05:30 [INF] HTTP GET /api/cities responded 200 in 77.3485 ms
+2026-08-03 20:19:14.220 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0875 ms
+2026-08-03 20:19:14.222 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0655 ms
+2026-08-03 20:19:14.228 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0574 ms
+2026-08-03 20:19:14.280 +05:30 [INF] HTTP GET /api/countries responded 200 in 14.0611 ms
+2026-08-03 20:19:14.287 +05:30 [INF] HTTP GET /api/states responded 200 in 13.3660 ms
+2026-08-03 20:19:14.302 +05:30 [INF] HTTP GET /api/cities responded 200 in 20.7377 ms
+2026-08-03 20:19:16.017 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.9354 ms
+2026-08-03 20:19:16.147 +05:30 [INF] HTTP GET /api/languages responded 403 in 57.0384 ms
+2026-08-03 20:20:45.530 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0493 ms
+2026-08-03 20:20:45.575 +05:30 [INF] HTTP GET /api/business-types responded 401 in 2.4050 ms
+2026-08-03 20:20:45.601 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1418 ms
+2026-08-03 20:20:45.832 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 217.1169 ms
+2026-08-03 20:20:45.851 +05:30 [INF] HTTP GET /api/business-types responded 200 in 12.0170 ms
+2026-08-03 20:20:47.010 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1131 ms
+2026-08-03 20:20:47.018 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0745 ms
+2026-08-03 20:20:47.014 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.1615 ms
+2026-08-03 20:20:47.120 +05:30 [INF] HTTP GET /api/countries responded 200 in 6.8186 ms
+2026-08-03 20:20:47.148 +05:30 [INF] HTTP GET /api/cities responded 200 in 27.9714 ms
+2026-08-03 20:20:47.148 +05:30 [INF] HTTP GET /api/states responded 200 in 23.9412 ms
+2026-08-03 20:20:48.038 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 4.9420 ms
+2026-08-03 20:20:48.070 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.9873 ms
+2026-08-03 20:20:51.114 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0837 ms
+2026-08-03 20:20:51.187 +05:30 [INF] HTTP GET /api/business-types responded 200 in 6.7261 ms
+2026-08-03 20:21:44.956 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 1.4239 ms
+2026-08-03 20:21:44.991 +05:30 [INF] HTTP GET /api/business-types responded 200 in 8.0998 ms
+2026-08-03 20:22:21.219 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 217.7592 ms
+2026-08-03 20:24:42.649 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0829 ms
+2026-08-03 20:24:42.663 +05:30 [INF] HTTP GET /api/business-types responded 200 in 6.3678 ms
+2026-08-03 20:24:45.376 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0617 ms
+2026-08-03 20:24:45.419 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.8422 ms
+2026-08-03 20:30:26.050 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0601 ms
+2026-08-03 20:30:26.103 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.7844 ms
+2026-08-03 20:30:53.752 +05:30 [INF] HTTP GET /api/languages responded 401 in 41.1030 ms
+2026-08-03 20:31:45.714 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0465 ms
+2026-08-03 20:31:46.421 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.6503 ms
+2026-08-03 20:31:48.956 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.8309 ms
+2026-08-03 20:33:20.528 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0508 ms
+2026-08-03 20:33:21.045 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.6836 ms
+2026-08-03 20:33:28.162 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0511 ms
+2026-08-03 20:33:29.224 +05:30 [INF] HTTP GET /api/languages responded 403 in 0.5506 ms
+2026-08-03 20:36:55.146 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0556 ms
+2026-08-03 20:36:55.867 +05:30 [INF] HTTP GET /api/languages responded 401 in 45.6648 ms
+2026-08-03 20:36:55.907 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0799 ms
+2026-08-03 20:36:56.940 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1014.9685 ms
+2026-08-03 20:36:57.922 +05:30 [ERR] HTTP GET /api/languages responded 500 in 950.7253 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:36:58.208 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:39:20.716 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0520 ms
+2026-08-03 20:39:22.349 +05:30 [ERR] HTTP GET /api/languages responded 500 in 1149.5748 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:39:22.925 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:41:11.321 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0632 ms
+2026-08-03 20:41:12.234 +05:30 [ERR] HTTP GET /api/languages responded 500 in 249.1063 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:41:12.706 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:42:19.652 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0410 ms
+2026-08-03 20:42:21.485 +05:30 [ERR] HTTP GET /api/languages responded 500 in 349.7412 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:42:21.835 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:42:44.101 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0465 ms
+2026-08-03 20:42:46.494 +05:30 [ERR] HTTP GET /api/languages responded 500 in 595.1241 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:42:48.502 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:44:15.741 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 52.6280 ms
+2026-08-03 20:44:16.396 +05:30 [ERR] HTTP GET /api/languages responded 500 in 556.3029 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:44:17.620 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:44:28.688 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0877 ms
+2026-08-03 20:44:28.727 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0481 ms
+2026-08-03 20:44:28.805 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0700 ms
+2026-08-03 20:44:29.201 +05:30 [INF] HTTP GET /api/countries responded 200 in 314.4610 ms
+2026-08-03 20:44:29.318 +05:30 [INF] HTTP GET /api/cities responded 200 in 341.9171 ms
+2026-08-03 20:44:29.323 +05:30 [INF] HTTP GET /api/states responded 200 in 48.7320 ms
+2026-08-03 20:44:29.627 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0460 ms
+2026-08-03 20:44:30.753 +05:30 [ERR] HTTP GET /api/languages responded 500 in 271.4680 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:44:30.797 +05:30 [INF] HTTP GET /api/countries responded 200 in 44.5802 ms
+2026-08-03 20:44:30.820 +05:30 [INF] HTTP GET /api/cities responded 200 in 65.7999 ms
+2026-08-03 20:44:30.947 +05:30 [INF] HTTP GET /api/states responded 200 in 193.1833 ms
+2026-08-03 20:44:31.408 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:44:34.002 +05:30 [ERR] HTTP GET /api/languages responded 500 in 295.9914 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:44:34.130 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:47:29.636 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0616 ms
+2026-08-03 20:47:30.223 +05:30 [ERR] HTTP GET /api/languages responded 500 in 460.5471 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:47:34.929 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:52:56.892 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0539 ms
+2026-08-03 20:52:57.136 +05:30 [INF] HTTP GET /api/languages responded 401 in 124.7070 ms
+2026-08-03 20:52:57.580 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0818 ms
+2026-08-03 20:52:59.240 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0560 ms
+2026-08-03 20:52:59.320 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 5.8112 ms
+2026-08-03 20:52:59.411 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1533.6755 ms
+2026-08-03 20:53:16.030 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 1.1957 ms
+2026-08-03 20:53:16.183 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 148.7864 ms
+2026-08-03 20:53:16.187 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0444 ms
+2026-08-03 20:53:17.463 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 18047.0122 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.ERP.API.Services.AuthService.RefreshAsync(String username, String refreshToken) in D:\AWS\ERP\ONEERP.ERP.API\Services\AuthService.cs:line 96
+   at ONEERP.ERP.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\AWS\ERP\ONEERP.ERP.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:53:17.487 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0684 ms
+2026-08-03 20:53:17.562 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 2.1364 ms
+2026-08-03 20:53:16.033 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0524 ms
+2026-08-03 20:53:17.462 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0504 ms
+2026-08-03 20:53:18.636 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-08-03 20:53:27.508 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 8868.2015 ms
+2026-08-03 20:53:18.684 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 9.5366 ms
+2026-08-03 20:53:27.930 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 18.9713 ms
+2026-08-03 20:53:27.819 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 9167.8862 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.ERP.API.Services.AuthService.RefreshAsync(String username, String refreshToken) in D:\AWS\ERP\ONEERP.ERP.API\Services\AuthService.cs:line 96
+   at ONEERP.ERP.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\AWS\ERP\ONEERP.ERP.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:53:27.989 +05:30 [ERR] HTTP GET /api/languages responded 500 in 167.5466 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:53:28.081 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 572.8777 ms
+2026-08-03 20:53:28.079 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 70.8377 ms
+2026-08-03 20:53:28.756 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-08-03 20:53:27.992 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0880 ms
+2026-08-03 20:53:17.537 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 3.4191 ms
+2026-08-03 20:53:28.831 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:53:28.836 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0570 ms
+2026-08-03 20:53:28.859 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 10.2477 ms
+2026-08-03 20:53:29.086 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 141.9470 ms
+2026-08-03 20:53:29.119 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 13.0550 ms
+2026-08-03 20:53:34.599 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0730 ms
+2026-08-03 20:53:35.621 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1010.0560 ms
+2026-08-03 20:53:35.707 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0932 ms
+2026-08-03 20:53:35.841 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 38.3182 ms
+2026-08-03 20:53:42.161 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 1.0350 ms
+2026-08-03 20:53:42.247 +05:30 [INF] HTTP GET /api/business-types responded 200 in 18.8325 ms
+2026-08-03 20:53:43.724 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0515 ms
+2026-08-03 20:53:43.725 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0465 ms
+2026-08-03 20:53:43.728 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0564 ms
+2026-08-03 20:53:43.773 +05:30 [INF] HTTP GET /api/countries responded 200 in 15.2484 ms
+2026-08-03 20:53:43.811 +05:30 [INF] HTTP GET /api/states responded 200 in 40.5602 ms
+2026-08-03 20:53:43.829 +05:30 [INF] HTTP GET /api/cities responded 200 in 19.1210 ms
+2026-08-03 20:53:45.018 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0427 ms
+2026-08-03 20:53:45.131 +05:30 [ERR] HTTP GET /api/languages responded 500 in 96.1551 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:53:45.203 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:54:10.401 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0472 ms
+2026-08-03 20:54:10.661 +05:30 [ERR] HTTP GET /api/languages responded 500 in 207.1440 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:54:10.736 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 20:59:04.148 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0772 ms
+2026-08-03 20:59:04.835 +05:30 [ERR] HTTP GET /api/languages responded 500 in 275.9687 ms
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 20:59:04.991 +05:30 [ERR] Unhandled exception for GET /api/languages
+System.InvalidOperationException: Unable to resolve service for type 'ONEERP.ERP.API.Services.ILanguageService' while attempting to activate 'ONEERP.ERP.API.Controllers.LanguagesController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method168(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.ERP.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 26
+2026-08-03 21:01:33.124 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 21:03:14.692 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 21:03:28.179 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 29.8736 ms
+2026-08-03 21:03:29.997 +05:30 [INF] HTTP GET /api/languages responded 200 in 1749.7344 ms
+2026-08-03 21:03:30.374 +05:30 [INF] HTTP GET /api/languages responded 401 in 13.2270 ms
+2026-08-03 21:03:46.835 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.2522 ms
+2026-08-03 21:03:46.967 +05:30 [INF] HTTP GET /api/business-types responded 200 in 78.1297 ms
+2026-08-03 21:03:48.056 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.2769 ms
+2026-08-03 21:03:48.139 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 48.2180 ms
+2026-08-03 21:03:48.853 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.1226 ms
+2026-08-03 21:03:48.961 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 91.8127 ms
+2026-08-03 21:03:49.668 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1311 ms
+2026-08-03 21:03:49.679 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.1100 ms
+2026-08-03 21:03:49.685 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.9242 ms
+2026-08-03 21:03:49.785 +05:30 [INF] HTTP GET /api/countries responded 200 in 82.1294 ms
+2026-08-03 21:03:49.785 +05:30 [INF] HTTP GET /api/states responded 200 in 78.2502 ms
+2026-08-03 21:03:49.808 +05:30 [INF] HTTP GET /api/cities responded 200 in 96.1808 ms
+2026-08-03 21:03:50.561 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.1948 ms
+2026-08-03 21:03:50.596 +05:30 [INF] HTTP GET /api/languages responded 200 in 19.1367 ms
+2026-08-03 21:19:58.570 +05:30 [INF] ONE ERP Tenant API starting
+2026-08-03 21:20:02.335 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 210.6087 ms
+2026-08-03 21:20:02.401 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.5254 ms
+2026-08-03 21:20:03.127 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 258.8864 ms
+2026-08-03 21:27:59.578 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 34.5818 ms
+2026-08-03 21:28:02.475 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 2875.9429 ms
+2026-08-03 21:28:02.567 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2159 ms
+2026-08-03 21:28:02.903 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 285.4183 ms
+2026-08-03 21:28:05.677 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.1362 ms
+2026-08-03 21:28:05.872 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 74.0570 ms
+2026-08-03 21:28:08.077 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.6431 ms
+2026-08-03 21:28:08.299 +05:30 [INF] HTTP GET /api/business-types responded 200 in 117.7606 ms
+2026-08-03 21:28:10.136 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.4154 ms
+2026-08-03 21:28:10.222 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 67.0901 ms
+2026-08-03 21:28:11.195 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.1509 ms
+2026-08-03 21:28:11.271 +05:30 [INF] HTTP GET /api/address-types responded 200 in 48.0149 ms
+2026-08-03 21:28:12.580 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 17.3112 ms
+2026-08-03 21:28:14.023 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 0.2023 ms
+2026-08-03 21:28:14.093 +05:30 [INF] HTTP GET /api/timezones responded 200 in 51.4946 ms
+2026-08-03 21:28:15.077 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 19.4505 ms
+2026-08-03 21:28:16.297 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.2319 ms
+2026-08-03 21:28:16.343 +05:30 [INF] HTTP GET /api/address-types responded 200 in 7.2257 ms
+2026-08-03 21:28:18.346 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.1607 ms
+2026-08-03 21:28:18.440 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 72.3524 ms
+2026-08-03 21:28:21.764 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 0.3092 ms
+2026-08-03 21:28:21.851 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 78.8770 ms
+2026-08-03 21:28:28.422 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.5318 ms
+2026-08-03 21:28:28.534 +05:30 [INF] HTTP GET /api/document-types responded 200 in 65.5505 ms
+2026-08-03 21:28:29.540 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.1590 ms
+2026-08-03 21:28:29.606 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 6.4004 ms
+2026-08-03 21:28:30.515 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.3730 ms
+2026-08-03 21:28:30.545 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 6.2326 ms
+2026-08-03 21:28:31.745 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.1294 ms
+2026-08-03 21:28:31.754 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.1112 ms
+2026-08-03 21:28:31.758 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.2886 ms
+2026-08-03 21:28:31.852 +05:30 [INF] HTTP GET /api/countries responded 200 in 71.7178 ms
+2026-08-03 21:28:31.933 +05:30 [INF] HTTP GET /api/states responded 200 in 121.9561 ms
+2026-08-03 21:28:31.981 +05:30 [INF] HTTP GET /api/cities responded 200 in 182.4838 ms
+2026-08-03 21:28:32.494 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 1.2210 ms
+2026-08-03 21:28:32.601 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 77.7011 ms
+2026-08-03 21:28:36.449 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 1.9562 ms
+2026-08-03 21:28:36.489 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 5.9521 ms
+2026-08-03 21:36:26.227 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.0761 ms
+2026-08-03 21:36:26.362 +05:30 [INF] HTTP GET /api/document-types responded 200 in 117.5745 ms
+2026-08-03 21:36:27.465 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.1340 ms
+2026-08-03 21:36:27.512 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 34.5713 ms
+2026-08-03 21:36:28.548 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.1078 ms
+2026-08-03 21:36:28.577 +05:30 [INF] HTTP GET /api/address-types responded 200 in 16.7541 ms
+2026-08-03 21:36:29.482 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.0480 ms
+2026-08-03 21:36:29.504 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 8.7495 ms
+2026-08-03 21:36:30.715 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 0.0816 ms
+2026-08-03 21:36:30.738 +05:30 [INF] HTTP GET /api/timezones responded 200 in 9.3852 ms
+2026-08-03 21:36:31.648 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0757 ms
+2026-08-03 21:36:31.714 +05:30 [INF] HTTP GET /api/languages responded 200 in 47.4936 ms
+2026-08-03 21:36:32.617 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0562 ms
+2026-08-03 21:36:32.624 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0950 ms
+2026-08-03 21:36:32.627 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0865 ms
+2026-08-03 21:36:32.680 +05:30 [INF] HTTP GET /api/countries responded 200 in 49.9710 ms
+2026-08-03 21:36:32.700 +05:30 [INF] HTTP GET /api/cities responded 200 in 61.2236 ms
+2026-08-03 21:36:32.702 +05:30 [INF] HTTP GET /api/states responded 200 in 66.5533 ms
+2026-08-03 21:36:33.596 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0623 ms
+2026-08-03 21:36:33.616 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 8.5165 ms
+2026-08-03 21:36:36.996 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0974 ms
+2026-08-03 21:36:37.063 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 61.2768 ms
+2026-08-03 21:36:38.114 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0499 ms
+2026-08-03 21:36:38.137 +05:30 [INF] HTTP GET /api/business-types responded 200 in 9.5353 ms
+2026-08-03 21:36:48.226 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.0659 ms
+2026-08-03 21:36:48.278 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 16.5574 ms
+2026-08-03 21:37:52.171 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0962 ms
+2026-08-03 21:37:52.235 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 13.0374 ms
+2026-08-03 21:37:53.617 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0385 ms
+2026-08-03 21:37:53.625 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0483 ms
+2026-08-03 21:37:53.626 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0417 ms
+2026-08-03 21:37:53.692 +05:30 [INF] HTTP GET /api/states responded 200 in 26.5027 ms
+2026-08-03 21:37:53.692 +05:30 [INF] HTTP GET /api/countries responded 200 in 26.5090 ms
+2026-08-03 21:37:53.750 +05:30 [INF] HTTP GET /api/cities responded 200 in 71.0566 ms
+2026-08-03 21:37:54.851 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0412 ms
+2026-08-03 21:37:54.883 +05:30 [INF] HTTP GET /api/languages responded 200 in 19.1031 ms
+2026-08-03 21:37:55.819 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 0.4178 ms
+2026-08-03 21:37:55.844 +05:30 [INF] HTTP GET /api/timezones responded 200 in 11.5770 ms
+2026-08-03 21:37:56.889 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.0454 ms
+2026-08-03 21:37:56.921 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 6.7637 ms
+2026-08-03 21:37:58.005 +05:30 [INF] HTTP GET /api/timezones responded 200 in 3.1643 ms
+2026-08-03 21:38:12.783 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.0638 ms
+2026-08-03 21:38:12.810 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 13.1643 ms
+2026-08-03 21:38:13.617 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.0430 ms
+2026-08-03 21:38:13.639 +05:30 [INF] HTTP GET /api/address-types responded 200 in 8.3054 ms
+2026-08-03 21:38:14.885 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.0423 ms
+2026-08-03 21:38:14.906 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 9.9154 ms
+2026-08-03 21:38:20.291 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 0.0457 ms
+2026-08-03 21:38:20.307 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 9.4989 ms
+2026-08-03 21:38:23.318 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.0482 ms
+2026-08-03 21:38:23.347 +05:30 [INF] HTTP GET /api/document-types responded 200 in 12.2415 ms
+2026-08-03 21:38:28.613 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.0432 ms
+2026-08-03 21:38:28.657 +05:30 [INF] HTTP GET /api/address-types responded 200 in 3.2016 ms
+2026-08-03 21:38:31.002 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.0464 ms
+2026-08-03 21:38:31.017 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 3.5465 ms
+2026-08-03 21:38:32.116 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.0426 ms
+2026-08-03 21:38:32.133 +05:30 [INF] HTTP GET /api/document-types responded 200 in 5.1611 ms
+2026-08-03 21:38:33.653 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 0.0417 ms
+2026-08-03 21:38:33.666 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 2.8786 ms
+2026-08-03 21:40:25.754 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 1.5882 ms
+2026-08-03 21:40:25.782 +05:30 [INF] HTTP GET /api/timezones responded 200 in 5.8521 ms
+2026-08-03 21:42:36.016 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.0922 ms
+2026-08-03 21:42:36.051 +05:30 [INF] HTTP GET /api/document-types responded 200 in 10.0056 ms
+2026-08-03 21:42:36.894 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 0.0493 ms
+2026-08-03 21:42:36.910 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 5.8621 ms
+2026-08-03 21:42:39.746 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.0409 ms
+2026-08-03 21:42:39.798 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 34.9961 ms
+2026-08-03 21:42:41.296 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0440 ms
+2026-08-03 21:42:41.398 +05:30 [INF] HTTP GET /api/roles responded 200 in 63.7438 ms
+2026-08-03 21:42:42.880 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0375 ms
+2026-08-03 21:42:42.983 +05:30 [INF] HTTP GET /api/users responded 200 in 91.0413 ms
+2026-08-03 21:42:44.577 +05:30 [INF] HTTP GET /api/roles responded 200 in 4.1483 ms
+2026-08-03 21:43:22.306 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0424 ms
+2026-08-03 21:43:22.347 +05:30 [INF] HTTP GET /api/roles responded 200 in 9.7454 ms
+2026-08-03 21:43:26.042 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0394 ms
+2026-08-03 21:43:26.082 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 25.9540 ms
+2026-08-03 21:43:45.241 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0575 ms
+2026-08-03 21:43:45.302 +05:30 [INF] HTTP GET /api/users responded 200 in 52.1400 ms
+2026-08-03 21:43:46.497 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0475 ms
+2026-08-03 21:43:46.660 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 147.5019 ms
+2026-08-03 21:43:48.147 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.0432 ms
+2026-08-03 21:43:48.195 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 17.8298 ms
+2026-08-03 21:43:50.233 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0431 ms
+2026-08-03 21:43:50.265 +05:30 [INF] HTTP GET /api/business-types responded 200 in 15.3390 ms
+2026-08-03 21:44:19.866 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0442 ms
+2026-08-03 21:44:19.925 +05:30 [INF] HTTP GET /api/industry-types responded 401 in 39.2164 ms
+2026-08-03 21:44:19.933 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1248 ms
+2026-08-03 21:44:20.099 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 160.9788 ms
+2026-08-03 21:44:20.136 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 6.6753 ms
+2026-08-03 21:44:20.663 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0393 ms
+2026-08-03 21:44:20.696 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 10.4272 ms
+2026-08-03 21:44:21.521 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0676 ms
+2026-08-03 21:44:21.521 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0141 ms
+2026-08-03 21:44:21.523 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.0468 ms
+2026-08-03 21:44:21.814 +05:30 [INF] HTTP GET /api/states responded 200 in 63.1164 ms
+2026-08-03 21:44:21.857 +05:30 [INF] HTTP GET /api/countries responded 200 in 41.9784 ms
+2026-08-03 21:44:21.915 +05:30 [INF] HTTP GET /api/cities responded 200 in 99.1334 ms
+2026-08-03 21:44:22.288 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0414 ms
+2026-08-03 21:44:22.392 +05:30 [INF] HTTP GET /api/languages responded 200 in 18.9075 ms
+2026-08-03 21:44:23.718 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 0.1898 ms
+2026-08-03 21:44:23.753 +05:30 [INF] HTTP GET /api/timezones responded 200 in 10.0129 ms
+2026-08-03 21:44:24.630 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.0398 ms
+2026-08-03 21:44:24.680 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 8.6420 ms
+2026-08-03 21:44:25.482 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.0428 ms
+2026-08-03 21:44:25.499 +05:30 [INF] HTTP GET /api/address-types responded 200 in 6.9554 ms
+2026-08-03 21:44:26.285 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 0.0441 ms
+2026-08-03 21:44:26.327 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 8.4473 ms
+2026-08-03 21:47:01.177 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.1303 ms
+2026-08-03 21:47:01.220 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 31.9249 ms
+2026-08-03 21:47:03.244 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0547 ms
+2026-08-03 21:47:08.186 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 4936.4617 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid username or password.
+   at ONEERP.ERP.API.Services.AuthService.LoginAsync(String username, String password) in D:\AWS\ERP\ONEERP.ERP.API\Services\AuthService.cs:line 55
+   at ONEERP.ERP.API.Controllers.AuthController.Login(LoginRequest request) in D:\AWS\ERP\ONEERP.ERP.API\Controllers\AuthController.cs:line 36
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at ONEERP.ERP.API.Middleware.TenantContextMiddleware.InvokeAsync(HttpContext context, TenantAccessor accessor, ITenantConnectionResolver resolver) in D:\AWS\ERP\ONEERP.ERP.API\Middleware\Middleware.cs:line 78
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-03 21:47:08.936 +05:30 [WRN] Domain error 401: Invalid username or password.
+2026-08-03 21:47:12.869 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0604 ms
+2026-08-03 21:47:13.348 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 447.9820 ms
+2026-08-03 21:47:13.394 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0484 ms
+2026-08-03 21:47:13.634 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 159.4532 ms
+2026-08-03 21:47:18.322 +05:30 [INF] HTTP OPTIONS /api/users responded 204 in 0.0484 ms
+2026-08-03 21:47:18.388 +05:30 [INF] HTTP GET /api/users responded 200 in 47.4800 ms
+2026-08-03 21:47:20.138 +05:30 [INF] HTTP OPTIONS /api/companies/current responded 204 in 0.0533 ms
+2026-08-03 21:47:20.200 +05:30 [INF] HTTP GET /api/companies/current responded 200 in 22.3041 ms
+2026-08-03 21:47:21.465 +05:30 [INF] HTTP OPTIONS /api/roles responded 204 in 0.0397 ms
+2026-08-03 21:47:21.512 +05:30 [INF] HTTP GET /api/roles responded 200 in 19.5359 ms
+2026-08-03 21:47:24.197 +05:30 [INF] HTTP OPTIONS /api/roles/permissions responded 204 in 0.0360 ms
+2026-08-03 21:47:24.202 +05:30 [INF] HTTP GET /api/roles/permissions responded 200 in 0.6970 ms
+2026-08-03 21:47:29.634 +05:30 [INF] HTTP OPTIONS /api/business-types responded 204 in 0.0718 ms
+2026-08-03 21:47:29.705 +05:30 [INF] HTTP GET /api/business-types responded 200 in 17.7019 ms
+2026-08-03 21:47:31.229 +05:30 [INF] HTTP OPTIONS /api/industry-types responded 204 in 0.0513 ms
+2026-08-03 21:47:31.291 +05:30 [INF] HTTP GET /api/industry-types responded 200 in 15.0148 ms
+2026-08-03 21:47:32.171 +05:30 [INF] HTTP OPTIONS /api/company-groups responded 204 in 0.0449 ms
+2026-08-03 21:47:32.227 +05:30 [INF] HTTP GET /api/company-groups responded 200 in 11.5797 ms
+2026-08-03 21:47:33.107 +05:30 [INF] HTTP OPTIONS /api/countries responded 204 in 0.0506 ms
+2026-08-03 21:47:33.110 +05:30 [INF] HTTP OPTIONS /api/states responded 204 in 0.0458 ms
+2026-08-03 21:47:33.121 +05:30 [INF] HTTP OPTIONS /api/cities responded 204 in 0.8480 ms
+2026-08-03 21:47:33.185 +05:30 [INF] HTTP GET /api/countries responded 200 in 19.6140 ms
+2026-08-03 21:47:33.241 +05:30 [INF] HTTP GET /api/cities responded 200 in 61.4414 ms
+2026-08-03 21:47:33.242 +05:30 [INF] HTTP GET /api/states responded 200 in 65.6692 ms
+2026-08-03 21:47:33.906 +05:30 [INF] HTTP OPTIONS /api/languages responded 204 in 0.0746 ms
+2026-08-03 21:47:33.994 +05:30 [INF] HTTP GET /api/languages responded 200 in 7.8090 ms
+2026-08-03 21:47:34.713 +05:30 [INF] HTTP OPTIONS /api/timezones responded 204 in 0.0412 ms
+2026-08-03 21:47:34.844 +05:30 [INF] HTTP GET /api/timezones responded 200 in 13.2125 ms
+2026-08-03 21:47:35.532 +05:30 [INF] HTTP OPTIONS /api/gst-registration-types responded 204 in 0.0437 ms
+2026-08-03 21:47:35.562 +05:30 [INF] HTTP GET /api/gst-registration-types responded 200 in 12.9356 ms
+2026-08-03 21:47:36.783 +05:30 [INF] HTTP OPTIONS /api/address-types responded 204 in 0.0435 ms
+2026-08-03 21:47:36.806 +05:30 [INF] HTTP GET /api/address-types responded 200 in 9.3045 ms
+2026-08-03 21:47:37.642 +05:30 [INF] HTTP OPTIONS /api/contact-types responded 204 in 1.5156 ms
+2026-08-03 21:47:37.695 +05:30 [INF] HTTP GET /api/contact-types responded 200 in 8.5705 ms
+2026-08-03 21:47:40.523 +05:30 [INF] HTTP OPTIONS /api/organization-types responded 204 in 0.1139 ms
+2026-08-03 21:47:40.554 +05:30 [INF] HTTP GET /api/organization-types responded 200 in 11.1897 ms
+2026-08-03 21:47:41.728 +05:30 [INF] HTTP OPTIONS /api/document-types responded 204 in 0.0455 ms
+2026-08-03 21:47:41.754 +05:30 [INF] HTTP GET /api/document-types responded 200 in 13.9911 ms

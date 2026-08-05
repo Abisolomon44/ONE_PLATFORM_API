@@ -9,21 +9,37 @@ public record SetRolePermissionsRequest(List<string> PermissionCodes);
 public record CreateCompanyRequest(
     string CompanyCode,
     string CompanyName,
-    string? Address,
-    string? Email,
-    string? Phone,
-    string? GST,
-    string Currency,
-    string Status);
+    string? ShortName,
+    string? Abbreviation,
+    int BusinessTypeId,
+    int IndustryTypeId,
+    int? GSTRegistrationTypeId,
+    string? GSTNumber,
+    string? PANNumber,
+    string? TANNumber,
+    string? CINNumber,
+    string? RegistrationNumber,
+    int CurrencyId,
+    int LanguageId,
+    int TimeZoneId);
 
 public record UpdateCompanyRequest(
     string CompanyName,
-    string? Address,
-    string? Email,
-    string? Phone,
-    string? GST,
-    string Currency,
-    string Status);
+    string? ShortName,
+    string? Abbreviation,
+    int BusinessTypeId,
+    int IndustryTypeId,
+    int? GSTRegistrationTypeId,
+    string? GSTNumber,
+    string? PANNumber,
+    string? TANNumber,
+    string? CINNumber,
+    string? RegistrationNumber,
+    int CurrencyId,
+    int LanguageId,
+    int TimeZoneId,
+    bool IsActive,
+    bool IsBlocked);
 
 public record UpdateSettingsRequest(Dictionary<string, string> Settings);
 

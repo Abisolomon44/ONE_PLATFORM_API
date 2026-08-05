@@ -8,19 +8,29 @@ public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 
 public class CompanyDto
 {
-    public int CompanyId { get; set; }
+    public int Id { get; set; }
     public string CompanyCode { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
-    public string? Address { get; set; }
-    public string? Email { get; set; }
-    public string? Phone { get; set; }
-    public string? GST { get; set; }
-    public string Currency { get; set; } = "USD";
-    public string Status { get; set; } = string.Empty;
-    public string? CreatedBy { get; set; }
+    public string? ShortName { get; set; }
+    public string? Abbreviation { get; set; }
+    public int BusinessTypeId { get; set; }
+    public int IndustryTypeId { get; set; }
+    public int? GSTRegistrationTypeId { get; set; }
+    public string? GSTNumber { get; set; }
+    public string? PANNumber { get; set; }
+    public string? TANNumber { get; set; }
+    public string? CINNumber { get; set; }
+    public string? RegistrationNumber { get; set; }
+    public int CurrencyId { get; set; }
+    public int LanguageId { get; set; }
+    public int TimeZoneId { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public DateTime? LastLoginDate { get; set; }
+    public int CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; }
-    public string? ModifiedBy { get; set; }
-    public DateTime ModifiedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
 }
 
 public class UserDto
