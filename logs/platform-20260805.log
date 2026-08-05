@@ -1,0 +1,337 @@
+2026-08-05 16:26:48.391 +05:30 [INF] ONE ERP Platform API starting
+2026-08-05 16:26:51.548 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 58.3359 ms
+2026-08-05 16:26:51.482 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 134.3891 ms
+2026-08-05 16:26:51.728 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 56.3967 ms
+2026-08-05 16:56:38.958 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 14.7810 ms
+2026-08-05 16:56:42.595 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3386 ms
+2026-08-05 16:56:42.747 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1648 ms
+2026-08-05 16:56:42.992 +05:30 [INF] HTTP GET /api/plans responded 401 in 222.9023 ms
+2026-08-05 16:56:42.992 +05:30 [INF] HTTP GET /api/tenants responded 401 in 133.0405 ms
+2026-08-05 16:56:42.992 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 3991.6483 ms
+2026-08-05 16:56:43.093 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1331 ms
+2026-08-05 16:56:43.097 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1564 ms
+2026-08-05 16:56:43.101 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1575 ms
+2026-08-05 16:56:47.656 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 4547.0288 ms
+2026-08-05 16:56:47.656 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 4529.6062 ms
+2026-08-05 16:56:47.656 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 4542.1244 ms
+2026-08-05 16:56:47.679 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1090 ms
+2026-08-05 16:56:48.041 +05:30 [INF] HTTP GET /api/tenants responded 200 in 352.4970 ms
+2026-08-05 16:56:48.041 +05:30 [INF] HTTP GET /api/plans responded 200 in 368.7665 ms
+2026-08-05 16:56:48.063 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 365.0661 ms
+2026-08-05 16:59:33.439 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1995 ms
+2026-08-05 16:59:35.174 +05:30 [INF] Created tenant database SMB
+2026-08-05 16:59:39.644 +05:30 [WRN] Dropped tenant database SMB (cleanup after failed provisioning)
+2026-08-05 17:00:09.264 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 35781.7415 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:00:09.960 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-05 17:05:20.588 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2665 ms
+2026-08-05 17:05:20.683 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 3.0609 ms
+2026-08-05 17:05:20.893 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1058 ms
+2026-08-05 17:05:21.036 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 91.6832 ms
+2026-08-05 17:05:21.185 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 129.6873 ms
+2026-08-05 17:05:22.922 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1150 ms
+2026-08-05 17:05:22.931 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1062 ms
+2026-08-05 17:05:23.057 +05:30 [INF] HTTP GET /api/plans responded 200 in 60.2654 ms
+2026-08-05 17:05:23.138 +05:30 [INF] HTTP GET /api/tenants responded 200 in 135.9040 ms
+2026-08-05 17:06:27.109 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 30.4728 ms
+2026-08-05 17:06:27.946 +05:30 [INF] Created tenant database SMB
+2026-08-05 17:06:31.770 +05:30 [WRN] Dropped tenant database SMB (cleanup after failed provisioning)
+2026-08-05 17:07:29.392 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 62269.7244 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:07:29.657 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-05 17:12:52.992 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1227 ms
+2026-08-05 17:12:52.987 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2540 ms
+2026-08-05 17:12:54.945 +05:30 [INF] HTTP GET /api/plans responded 401 in 51.7699 ms
+2026-08-05 17:12:55.846 +05:30 [INF] HTTP GET /api/tenants responded 401 in 262.8422 ms
+2026-08-05 17:12:57.541 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2253 ms
+2026-08-05 17:12:57.760 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0874 ms
+2026-08-05 17:12:57.797 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0784 ms
+2026-08-05 17:12:58.780 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1288 ms
+2026-08-05 17:13:04.156 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 437.3884 ms
+2026-08-05 17:13:05.575 +05:30 [INF] HTTP GET /api/plans responded 200 in 3765.4504 ms
+2026-08-05 17:13:05.576 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3233.3054 ms
+2026-08-05 17:13:12.292 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 7500.4112 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:13:12.319 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0824 ms
+2026-08-05 17:13:15.354 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-08-05 17:13:15.711 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0779 ms
+2026-08-05 17:13:15.753 +05:30 [INF] HTTP GET /api/plans responded 200 in 113.1256 ms
+2026-08-05 17:13:15.857 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 1.0710 ms
+2026-08-05 17:13:16.276 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 118.1266 ms
+2026-08-05 17:13:17.341 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 512.2965 ms
+2026-08-05 17:16:16.215 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 30.2890 ms
+2026-08-05 17:16:16.222 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0751 ms
+2026-08-05 17:16:16.255 +05:30 [INF] HTTP GET /api/plans responded 200 in 23.3233 ms
+2026-08-05 17:16:16.296 +05:30 [INF] HTTP GET /api/tenants responded 200 in 59.1466 ms
+2026-08-05 17:16:48.931 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0779 ms
+2026-08-05 17:16:49.740 +05:30 [INF] Created tenant database SMARTERP
+2026-08-05 17:16:53.552 +05:30 [WRN] Dropped tenant database SMARTERP (cleanup after failed provisioning)
+2026-08-05 17:34:45.573 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 1076616.7192 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:34:45.685 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 4.6394 ms
+2026-08-05 17:34:45.711 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 26.2677 ms
+2026-08-05 17:34:46.014 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Branches_BranchType' references invalid column 'Id' in referenced table 'BranchTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-05 17:34:46.025 +05:30 [INF] HTTP GET /api/tenants responded 401 in 2.0737 ms
+2026-08-05 17:34:46.029 +05:30 [INF] HTTP GET /api/plans responded 401 in 1.3268 ms
+2026-08-05 17:34:46.042 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1344 ms
+2026-08-05 17:34:46.045 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0656 ms
+2026-08-05 17:34:46.208 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 149.3005 ms
+2026-08-05 17:34:46.208 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 158.0315 ms
+2026-08-05 17:34:46.236 +05:30 [INF] HTTP GET /api/plans responded 200 in 16.3499 ms
+2026-08-05 17:34:46.262 +05:30 [INF] HTTP GET /api/tenants responded 200 in 33.9638 ms
+2026-08-05 17:35:30.508 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0976 ms
+2026-08-05 17:35:31.283 +05:30 [INF] Created tenant database SMARTERP
+2026-08-05 17:35:35.132 +05:30 [WRN] Dropped tenant database SMARTERP (cleanup after failed provisioning)
+2026-08-05 17:36:02.576 +05:30 [INF] ONE ERP Platform API starting
+2026-08-05 17:36:05.535 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 210.0107 ms
+2026-08-05 17:36:06.111 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 25.8975 ms
+2026-08-05 17:36:06.789 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 88.0496 ms
+2026-08-05 17:39:58.969 +05:30 [INF] ONE ERP Platform API starting
+2026-08-05 17:40:02.467 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 338.5719 ms
+2026-08-05 17:40:02.541 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 28.1476 ms
+2026-08-05 17:40:03.328 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 229.1122 ms
+2026-08-05 17:40:11.107 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 14.7221 ms
+2026-08-05 17:40:13.799 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 2656.2249 ms
+2026-08-05 17:40:13.900 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.6063 ms
+2026-08-05 17:40:14.556 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 587.1506 ms
+2026-08-05 17:40:16.594 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1256 ms
+2026-08-05 17:40:16.594 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1256 ms
+2026-08-05 17:40:16.931 +05:30 [INF] HTTP GET /api/tenants responded 200 in 308.9253 ms
+2026-08-05 17:40:16.931 +05:30 [INF] HTTP GET /api/plans responded 200 in 315.5011 ms
+2026-08-05 17:40:18.074 +05:30 [INF] HTTP GET /api/plans responded 200 in 38.0276 ms
+2026-08-05 17:40:19.075 +05:30 [INF] HTTP GET /api/plans responded 200 in 52.5085 ms
+2026-08-05 17:40:19.085 +05:30 [INF] HTTP GET /api/tenants responded 200 in 59.7306 ms
+2026-08-05 17:40:25.137 +05:30 [INF] HTTP OPTIONS /api/tenants/32/status responded 204 in 0.1450 ms
+2026-08-05 17:40:25.284 +05:30 [INF] HTTP PUT /api/tenants/32/status responded 200 in 136.0905 ms
+2026-08-05 17:40:25.334 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1078 ms
+2026-08-05 17:40:25.387 +05:30 [INF] HTTP GET /api/tenants responded 200 in 42.1441 ms
+2026-08-05 17:40:28.684 +05:30 [INF] HTTP OPTIONS /api/tenants/32 responded 204 in 0.1378 ms
+2026-08-05 17:40:31.956 +05:30 [WRN] Dropped tenant database TMB (cleanup after failed provisioning)
+2026-08-05 17:40:31.991 +05:30 [INF] HTTP DELETE /api/tenants/32 responded 200 in 3250.2309 ms
+2026-08-05 17:40:32.006 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1344 ms
+2026-08-05 17:40:32.079 +05:30 [INF] HTTP GET /api/tenants responded 200 in 59.8469 ms
+2026-08-05 17:41:14.163 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3125 ms
+2026-08-05 17:41:15.878 +05:30 [INF] Created tenant database SERP
+2026-08-05 17:41:20.583 +05:30 [WRN] Dropped tenant database SERP (cleanup after failed provisioning)
+2026-08-05 17:41:34.958 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 20720.5369 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:41:35.526 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+2026-08-05 17:43:02.538 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.5850 ms
+2026-08-05 17:43:03.314 +05:30 [INF] Created tenant database SERP
+2026-08-05 17:43:07.441 +05:30 [WRN] Dropped tenant database SERP (cleanup after failed provisioning)
+2026-08-05 17:43:34.093 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 31526.2514 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 17:43:34.417 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+2026-08-05 17:58:49.678 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 29.9864 ms
+2026-08-05 17:58:49.725 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1017 ms
+2026-08-05 17:58:49.749 +05:30 [INF] HTTP GET /api/plans responded 401 in 15.9365 ms
+2026-08-05 17:58:49.749 +05:30 [INF] HTTP GET /api/tenants responded 401 in 12.6018 ms
+2026-08-05 17:58:49.765 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2337 ms
+2026-08-05 17:58:49.777 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1338 ms
+2026-08-05 17:58:49.984 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 173.9201 ms
+2026-08-05 17:58:49.986 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 174.8355 ms
+2026-08-05 17:58:50.007 +05:30 [INF] HTTP GET /api/plans responded 200 in 16.6067 ms
+2026-08-05 17:58:50.024 +05:30 [INF] HTTP GET /api/tenants responded 200 in 29.2051 ms
+2026-08-05 17:59:44.211 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3175 ms
+2026-08-05 17:59:44.862 +05:30 [INF] Created tenant database SMB
+2026-08-05 17:59:48.503 +05:30 [WRN] Dropped tenant database SMB (cleanup after failed provisioning)
+2026-08-05 18:05:13.944 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 329700.5146 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 18:05:13.966 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0848 ms
+2026-08-05 18:05:14.020 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0577 ms
+2026-08-05 18:05:14.560 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+Incorrect syntax near the keyword 'AS'.
+2026-08-05 18:05:14.094 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0793 ms
+2026-08-05 18:05:14.620 +05:30 [INF] HTTP GET /api/plans responded 401 in 9.8550 ms
+2026-08-05 18:05:14.681 +05:30 [INF] HTTP GET /api/tenants responded 401 in 5.5546 ms
+2026-08-05 18:05:16.193 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1481.4499 ms
+2026-08-05 18:05:16.329 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0720 ms
+2026-08-05 18:05:16.333 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0596 ms
+2026-08-05 18:05:16.754 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 53.2887 ms
+2026-08-05 18:05:16.978 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0733 ms
+2026-08-05 18:05:39.299 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 22534.0850 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-05 18:05:39.324 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0569 ms
+2026-08-05 18:05:39.551 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-08-05 18:05:39.601 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0754 ms
+2026-08-05 18:05:39.615 +05:30 [INF] HTTP GET /api/plans responded 200 in 46.5623 ms
+2026-08-05 18:05:39.634 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 21.7896 ms
+2026-08-05 18:05:39.646 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 323.0130 ms
+2026-08-05 18:05:39.711 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 0.3013 ms
+2026-08-05 18:08:34.501 +05:30 [INF] ONE ERP Platform API starting
+2026-08-05 18:08:36.455 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 183.6445 ms
+2026-08-05 18:08:36.475 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 7.9760 ms
+2026-08-05 18:08:36.687 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 78.2791 ms
+2026-08-05 18:08:56.157 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 4.2769 ms
+2026-08-05 18:08:57.757 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1593.3149 ms
+2026-08-05 18:08:57.802 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.8240 ms
+2026-08-05 18:08:58.134 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 299.9197 ms
+2026-08-05 18:10:02.696 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2105 ms
+2026-08-05 18:10:02.724 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.3935 ms
+2026-08-05 18:10:02.821 +05:30 [INF] HTTP GET /api/plans responded 200 in 118.3321 ms
+2026-08-05 18:10:02.852 +05:30 [INF] HTTP GET /api/tenants responded 200 in 122.7168 ms
+2026-08-05 18:10:34.850 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1124 ms
+2026-08-05 18:10:35.883 +05:30 [INF] Created tenant database SMB
+2026-08-05 18:10:36.792 +05:30 [INF] Provisioned tenant schema and seed data for SMB
+2026-08-05 18:10:36.852 +05:30 [INF] HTTP POST /api/tenants responded 200 in 1996.1817 ms
+2026-08-05 18:10:36.861 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1122 ms
+2026-08-05 18:10:36.936 +05:30 [INF] HTTP GET /api/tenants responded 200 in 62.9783 ms
+2026-08-05 18:14:06.347 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1267 ms
+2026-08-05 18:14:06.469 +05:30 [INF] HTTP GET /api/plans responded 200 in 82.1698 ms

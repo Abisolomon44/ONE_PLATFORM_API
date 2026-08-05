@@ -897,6 +897,14 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "dropDatabase",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {

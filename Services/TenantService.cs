@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.Data.SqlClient;
 using ONEERP.Platform.API.Data;
 using ONEERP.Platform.API.DTOs;
 using ONEERP.Platform.API.Models;
@@ -17,7 +18,7 @@ public interface ITenantService
     Task<TenantDto> CreateAsync(CreateTenantRequest request, string? currentUser);
     Task<TenantDto> UpdateAsync(int tenantId, UpdateTenantRequest request, string? currentUser);
     Task<TenantDto> UpdateStatusAsync(int tenantId, string status, string? currentUser);
-    Task<bool> DeleteAsync(int tenantId, string? currentUser);
+    Task<bool> DeleteAsync(int tenantId, string? currentUser, bool dropDatabase = false);
     Task<IEnumerable<TenantConnectionDto>> GetConnectionsAsync(int tenantId);
 }
 
@@ -126,47 +127,60 @@ public class TenantService : ITenantService
             : request.ContactEmail.Trim();
         var adminPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.AdminPassword);
 
-        // --- 1. Persist tenant + initial subscription in a single transaction ---
-        int tenantId;
-        using (var connection = _factory.CreatePlatformConnection())
-        {
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
+         // --- 1. Persist tenant + initial subscription in a single transaction ---
+         int tenantId;
+         try
+         {
+             using (var connection = _factory.CreatePlatformConnection())
+             {
+                 connection.Open();
+                 using var transaction = connection.BeginTransaction();
 
-            var tenant = new Tenant
-            {
-                TenantCode = request.TenantCode.Trim(),
-                TenantName = request.TenantName.Trim(),
-                CompanyName = companyName,
-                DatabaseName = databaseName,
-                PlanId = request.PlanId,
-                ContactEmail = request.ContactEmail,
-                AdminUsername = adminUsername,
-                AdminPassword = request.AdminPassword,
-                Status = request.Status,
-                CreatedBy = currentUser,
-                ModifiedBy = currentUser
-            };
+                 var tenant = new Tenant
+                 {
+                     TenantCode = request.TenantCode.Trim(),
+                     TenantName = request.TenantName.Trim(),
+                     CompanyName = companyName,
+                     DatabaseName = databaseName,
+                     PlanId = request.PlanId,
+                     ContactEmail = request.ContactEmail,
+                     AdminUsername = adminUsername,
+                     AdminPassword = request.AdminPassword,
+                     Status = request.Status,
+                     CreatedBy = currentUser,
+                     ModifiedBy = currentUser
+                 };
 
-            tenantId = await _tenantRepository.InsertAsync(tenant, connection, transaction);
+                 tenantId = await _tenantRepository.InsertAsync(tenant, connection, transaction);
 
-            var subscription = new Subscription
-            {
-                TenantId = tenantId,
-                PlanId = request.PlanId,
-                StartDate = request.SubscriptionStart,
-                EndDate = request.SubscriptionEnd,
-                Amount = plan.MonthlyPrice,
-                Status = SubscriptionStatus.Active,
-                CreatedBy = currentUser,
-                ModifiedBy = currentUser
-            };
+                 var subscription = new Subscription
+                 {
+                     TenantId = tenantId,
+                     PlanId = request.PlanId,
+                     StartDate = request.SubscriptionStart,
+                     EndDate = request.SubscriptionEnd,
+                     Amount = plan.MonthlyPrice,
+                     Status = SubscriptionStatus.Active,
+                     CreatedBy = currentUser,
+                     ModifiedBy = currentUser
+                 };
 
-            await _subscriptionRepository.InsertAsync(subscription, connection, transaction);
-            await _tenantRepository.UpdatePlanAsync(tenantId, request.PlanId, connection, transaction);
+                 await _subscriptionRepository.InsertAsync(subscription, connection, transaction);
+                 await _tenantRepository.UpdatePlanAsync(tenantId, request.PlanId, connection, transaction);
 
-            transaction.Commit();
-        }
+                 transaction.Commit();
+             }
+         }
+         catch (SqlException ex) when (ex.Number is 2627 or 2601)
+         {
+             if (ex.Message.Contains("UQ_Tenants_TenantCode", StringComparison.OrdinalIgnoreCase))
+                 throw new DomainException($"Tenant code '{request.TenantCode.Trim()}' is already in use.", 409);
+             if (ex.Message.Contains("UQ_Tenants_DatabaseName", StringComparison.OrdinalIgnoreCase))
+                 throw new DomainException($"Database name '{databaseName}' is already in use.", 409);
+             if (ex.Message.Contains("UQ_Tenants_AdminUsername", StringComparison.OrdinalIgnoreCase))
+                 throw new DomainException($"Admin username '{adminUsername}' is already in use.", 409);
+             throw new DomainException("A tenant with these details already exists.", 409);
+         }
 
         // --- 2. Provision the tenant database (create DB + schema + seed) ---
         try
@@ -253,10 +267,15 @@ public class TenantService : ITenantService
         return await GetByIdAsync(tenantId);
     }
 
-    public async Task<bool> DeleteAsync(int tenantId, string? currentUser)
+    public async Task<bool> DeleteAsync(int tenantId, string? currentUser, bool dropDatabase = false)
     {
         var tenant = await _tenantRepository.GetByIdAsync(tenantId)
             ?? throw new NotFoundException($"Tenant '{tenantId}' was not found.");
+
+        if (dropDatabase && !string.IsNullOrWhiteSpace(tenant.DatabaseName))
+        {
+            await _provisioningService.DropDatabaseAsync(tenant.DatabaseName);
+        }
 
         await _tenantRepository.SoftDeleteAsync(tenantId, currentUser);
         await _auditService.WriteAsync("Tenant", tenantId.ToString(), "Delete", currentUser, tenantId);

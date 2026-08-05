@@ -1,0 +1,858 @@
+2026-08-04 14:08:21.271 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 14:08:28.436 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 361.0263 ms
+2026-08-04 14:08:28.523 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 9.9041 ms
+2026-08-04 14:08:28.980 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 151.2436 ms
+2026-08-04 14:47:53.229 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 25.2905 ms
+2026-08-04 14:47:53.918 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 609.2190 ms
+2026-08-04 14:47:53.959 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1666 ms
+2026-08-04 14:47:55.989 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2016.3956 ms
+2026-08-04 14:47:56.391 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 377.0165 ms
+2026-08-04 14:47:58.051 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1122 ms
+2026-08-04 14:47:58.066 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 4.7422 ms
+2026-08-04 14:47:58.231 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1074 ms
+2026-08-04 14:47:58.291 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 35.6588 ms
+2026-08-04 14:47:58.417 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 103.1444 ms
+2026-08-04 14:48:00.102 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1322 ms
+2026-08-04 14:48:00.244 +05:30 [INF] HTTP GET /api/plans responded 200 in 116.7173 ms
+2026-08-04 14:48:01.104 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0971 ms
+2026-08-04 14:48:01.122 +05:30 [INF] HTTP GET /api/plans responded 200 in 27.2414 ms
+2026-08-04 14:48:01.277 +05:30 [INF] HTTP GET /api/tenants responded 200 in 132.6548 ms
+2026-08-04 14:49:52.089 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1253 ms
+2026-08-04 14:49:53.629 +05:30 [INF] Created tenant database ERP_PAY
+2026-08-04 14:49:57.995 +05:30 [WRN] Dropped tenant database ERP_PAY (cleanup after failed provisioning)
+2026-08-04 14:51:02.726 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 70590.3199 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 190
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 14:51:03.085 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-04 14:52:10.862 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 5.0596 ms
+2026-08-04 14:52:24.595 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 13694.0939 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_DatabaseName'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (ERP_PAY).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:52:24.897 +05:30 [ERR] Unhandled exception for POST /api/tenants
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_DatabaseName'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (ERP_PAY).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:52:33.596 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1260 ms
+2026-08-04 14:52:41.372 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 7762.9702 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (PAL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:52:41.735 +05:30 [ERR] Unhandled exception for POST /api/tenants
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (PAL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:55:18.105 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2373 ms
+2026-08-04 14:55:24.568 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 6456.5960 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (PAL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:55:24.966 +05:30 [ERR] Unhandled exception for POST /api/tenants
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (PAL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:1a8dbcc7-dfd5-40a7-98ea-02f9de201938
+Error Number:2627,State:1,Class:14
+2026-08-04 14:56:58.657 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3074 ms
+2026-08-04 14:56:58.792 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2000 ms
+2026-08-04 14:56:58.972 +05:30 [INF] HTTP GET /api/plans responded 200 in 99.1666 ms
+2026-08-04 14:57:13.478 +05:30 [INF] HTTP GET /api/tenants responded 200 in 14520.0703 ms
+2026-08-04 14:59:56.791 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.6706 ms
+2026-08-04 14:59:57.514 +05:30 [INF] Created tenant database ERP_TMP
+2026-08-04 15:00:00.998 +05:30 [WRN] Dropped tenant database ERP_TMP (cleanup after failed provisioning)
+2026-08-04 15:00:38.119 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 41322.1499 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 190
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:00:38.369 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-04 15:09:13.747 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 3.9322 ms
+2026-08-04 15:09:13.757 +05:30 [INF] HTTP POST /api/tenants responded 401 in 1.5325 ms
+2026-08-04 15:09:13.810 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2010 ms
+2026-08-04 15:09:14.040 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 216.0490 ms
+2026-08-04 15:09:15.210 +05:30 [INF] Created tenant database ERP
+2026-08-04 15:09:18.863 +05:30 [WRN] Dropped tenant database ERP (cleanup after failed provisioning)
+2026-08-04 15:09:26.810 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 12759.2930 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 190
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:09:27.086 +05:30 [WRN] Domain error 500: Database provisioning failed: Foreign key 'FK_Companies_BusinessType' references invalid table 'dbo.BusinessTypes'.
+Could not create constraint or index. See previous errors.
+2026-08-04 15:15:36.705 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:15:40.039 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 222.2239 ms
+2026-08-04 15:15:40.231 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 25.9928 ms
+2026-08-04 15:15:40.988 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 77.7347 ms
+2026-08-04 15:16:34.629 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:16:35.789 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 44.7445 ms
+2026-08-04 15:16:35.789 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 44.7097 ms
+2026-08-04 15:16:37.606 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 352.0830 ms
+2026-08-04 15:16:37.676 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 55.8183 ms
+2026-08-04 15:16:38.045 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 135.8506 ms
+2026-08-04 15:16:38.592 +05:30 [INF] HTTP GET /api/plans responded 200 in 2704.4523 ms
+2026-08-04 15:16:38.600 +05:30 [INF] HTTP GET /api/tenants responded 200 in 2712.3456 ms
+2026-08-04 15:18:05.201 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.4773 ms
+2026-08-04 15:18:05.207 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1729 ms
+2026-08-04 15:18:05.421 +05:30 [INF] HTTP GET /api/plans responded 200 in 114.8809 ms
+2026-08-04 15:18:05.432 +05:30 [INF] HTTP GET /api/tenants responded 200 in 35.7763 ms
+2026-08-04 15:18:44.174 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 79.8360 ms
+2026-08-04 15:18:44.174 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1160 ms
+2026-08-04 15:18:44.227 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1709 ms
+2026-08-04 15:18:44.340 +05:30 [INF] HTTP GET /api/plans responded 200 in 86.4008 ms
+2026-08-04 15:18:44.376 +05:30 [INF] HTTP GET /api/tenants responded 200 in 118.4968 ms
+2026-08-04 15:18:44.476 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 221.3182 ms
+2026-08-04 15:18:47.021 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 307.1842 ms
+2026-08-04 15:18:47.026 +05:30 [INF] HTTP GET /api/tenants responded 200 in 330.5622 ms
+2026-08-04 15:18:47.200 +05:30 [INF] HTTP GET /api/plans responded 200 in 493.7533 ms
+2026-08-04 15:20:01.507 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1911 ms
+2026-08-04 15:20:01.680 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 32.3680 ms
+2026-08-04 15:20:01.704 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.7385 ms
+2026-08-04 15:20:02.180 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 443.6939 ms
+2026-08-04 15:20:02.460 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 253.5526 ms
+2026-08-04 15:20:22.745 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2241 ms
+2026-08-04 15:20:22.750 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2098 ms
+2026-08-04 15:20:22.822 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 31.5315 ms
+2026-08-04 15:20:22.905 +05:30 [INF] HTTP GET /api/plans responded 200 in 38.3282 ms
+2026-08-04 15:20:22.919 +05:30 [INF] HTTP GET /api/tenants responded 200 in 68.6276 ms
+2026-08-04 15:20:22.944 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 56.0802 ms
+2026-08-04 15:20:28.475 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.2907 ms
+2026-08-04 15:20:28.524 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 39.4344 ms
+2026-08-04 15:20:31.130 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1238 ms
+2026-08-04 15:20:31.195 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 30.5859 ms
+2026-08-04 15:20:37.363 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1506 ms
+2026-08-04 15:20:37.553 +05:30 [INF] HTTP GET /api/plans responded 200 in 85.8423 ms
+2026-08-04 15:20:38.190 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1928 ms
+2026-08-04 15:20:38.268 +05:30 [INF] HTTP GET /api/plans responded 200 in 81.7377 ms
+2026-08-04 15:20:38.356 +05:30 [INF] HTTP GET /api/tenants responded 200 in 83.2147 ms
+2026-08-04 15:22:32.253 +05:30 [INF] HTTP OPTIONS /api/tenants/1 responded 204 in 18.7755 ms
+2026-08-04 15:22:32.715 +05:30 [WRN] Dropped tenant database ERP_ACME (cleanup after failed provisioning)
+2026-08-04 15:22:32.770 +05:30 [INF] HTTP DELETE /api/tenants/1 responded 200 in 492.5085 ms
+2026-08-04 15:22:32.781 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0903 ms
+2026-08-04 15:22:32.818 +05:30 [INF] HTTP GET /api/tenants responded 200 in 30.0735 ms
+2026-08-04 15:22:48.125 +05:30 [INF] HTTP OPTIONS /api/tenants/5 responded 204 in 0.2730 ms
+2026-08-04 15:22:48.307 +05:30 [WRN] Dropped tenant database ERP_TESTCO (cleanup after failed provisioning)
+2026-08-04 15:22:48.314 +05:30 [INF] HTTP DELETE /api/tenants/5 responded 200 in 177.2541 ms
+2026-08-04 15:22:48.327 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1032 ms
+2026-08-04 15:22:48.350 +05:30 [INF] HTTP GET /api/tenants responded 200 in 8.0752 ms
+2026-08-04 15:22:51.462 +05:30 [INF] HTTP OPTIONS /api/tenants/4 responded 204 in 0.0712 ms
+2026-08-04 15:22:51.612 +05:30 [WRN] Dropped tenant database ONE_ERP (cleanup after failed provisioning)
+2026-08-04 15:22:51.620 +05:30 [INF] HTTP DELETE /api/tenants/4 responded 200 in 150.3319 ms
+2026-08-04 15:22:51.638 +05:30 [INF] HTTP GET /api/tenants responded 200 in 5.4835 ms
+2026-08-04 15:22:55.232 +05:30 [INF] HTTP OPTIONS /api/tenants/8 responded 204 in 0.3204 ms
+2026-08-04 15:22:55.427 +05:30 [WRN] Dropped tenant database UBILL (cleanup after failed provisioning)
+2026-08-04 15:22:55.446 +05:30 [INF] HTTP DELETE /api/tenants/8 responded 200 in 205.8713 ms
+2026-08-04 15:22:55.460 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0832 ms
+2026-08-04 15:22:55.476 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4.8810 ms
+2026-08-04 15:24:30.705 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 1.0215 ms
+2026-08-04 15:25:02.190 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 31455.6783 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (UBILL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:2b62e59c-ecaa-45f1-bd29-c0609646d9a4
+Error Number:2627,State:1,Class:14
+2026-08-04 15:25:02.708 +05:30 [ERR] Unhandled exception for POST /api/tenants
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Tenants_TenantCode'. Cannot insert duplicate key in object 'dbo.Tenants'. The duplicate key value is (UBILL).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Repositories.TenantRepository.InsertAsync(Tenant tenant, IDbConnection connection, IDbTransaction transaction) in D:\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 146
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 151
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:2b62e59c-ecaa-45f1-bd29-c0609646d9a4
+Error Number:2627,State:1,Class:14
+2026-08-04 15:27:56.633 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:27:59.605 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 274.1399 ms
+2026-08-04 15:27:59.643 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 18.9945 ms
+2026-08-04 15:28:00.084 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 111.5221 ms
+2026-08-04 15:28:08.748 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 22.7101 ms
+2026-08-04 15:28:09.095 +05:30 [INF] HTTP POST /api/tenants responded 401 in 307.8810 ms
+2026-08-04 15:28:09.109 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1784 ms
+2026-08-04 15:28:10.532 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1413.5375 ms
+2026-08-04 15:28:24.335 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 13787.0909 ms
+ONEERP.Shared.Exceptions.DomainException: Admin username 'ERPNEXT' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 179
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:28:24.854 +05:30 [WRN] Domain error 409: Admin username 'ERPNEXT' is already in use.
+2026-08-04 15:29:04.351 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2050 ms
+2026-08-04 15:29:33.217 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 28847.8508 ms
+ONEERP.Shared.Exceptions.DomainException: Admin username 'ERPNEXT' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 179
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:29:33.670 +05:30 [WRN] Domain error 409: Admin username 'ERPNEXT' is already in use.
+2026-08-04 15:29:48.437 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1853 ms
+2026-08-04 15:30:05.523 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 1.9016 ms
+2026-08-04 15:30:05.529 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 17085.0256 ms
+ONEERP.Shared.Exceptions.DomainException: Admin username 'ERPNEXT' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 179
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:30:05.658 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 31.7064 ms
+2026-08-04 15:30:06.050 +05:30 [WRN] Domain error 409: Admin username 'ERPNEXT' is already in use.
+2026-08-04 15:30:06.174 +05:30 [INF] HTTP GET /api/tenants responded 200 in 118.0236 ms
+2026-08-04 15:30:06.179 +05:30 [INF] HTTP GET /api/plans responded 200 in 480.4113 ms
+2026-08-04 15:31:22.083 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:31:24.774 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 313.0808 ms
+2026-08-04 15:31:24.826 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.9945 ms
+2026-08-04 15:31:25.210 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 179.8879 ms
+2026-08-04 15:31:40.507 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 6.8679 ms
+2026-08-04 15:31:40.507 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.8710 ms
+2026-08-04 15:31:42.497 +05:30 [INF] HTTP GET /api/plans responded 200 in 1916.7215 ms
+2026-08-04 15:31:42.502 +05:30 [INF] HTTP GET /api/tenants responded 200 in 1848.9205 ms
+2026-08-04 15:32:45.151 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 26.9017 ms
+2026-08-04 15:37:21.010 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:37:23.398 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 11.0495 ms
+2026-08-04 15:37:23.384 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 250.5910 ms
+2026-08-04 15:37:23.824 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 133.5929 ms
+2026-08-04 15:37:44.160 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.9416 ms
+2026-08-04 15:37:51.358 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 7179.5812 ms
+ONEERP.Shared.Exceptions.DomainException: Tenant code 'TMB' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 177
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:37:51.904 +05:30 [WRN] Domain error 409: Tenant code 'TMB' is already in use.
+2026-08-04 15:37:56.678 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2806 ms
+2026-08-04 15:37:56.846 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1481 ms
+2026-08-04 15:37:57.013 +05:30 [INF] HTTP GET /api/tenants responded 200 in 157.0088 ms
+2026-08-04 15:37:57.014 +05:30 [INF] HTTP GET /api/plans responded 200 in 320.6114 ms
+2026-08-04 15:38:43.475 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3877 ms
+2026-08-04 15:38:44.674 +05:30 [INF] Created tenant database ERPNXT
+2026-08-04 15:38:49.294 +05:30 [WRN] Dropped tenant database ERPNXT (cleanup after failed provisioning)
+2026-08-04 15:38:53.214 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 9726.7938 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 202
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:38:53.505 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+2026-08-04 15:38:57.425 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1216 ms
+2026-08-04 15:39:52.266 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:39:55.963 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 7.3445 ms
+2026-08-04 15:39:55.956 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 323.1439 ms
+2026-08-04 15:39:57.235 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 109.4779 ms
+2026-08-04 15:40:07.420 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 7.2000 ms
+2026-08-04 15:40:10.007 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 2568.0574 ms
+2026-08-04 15:40:10.103 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2704 ms
+2026-08-04 15:40:10.512 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 393.8577 ms
+2026-08-04 15:40:12.587 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1555 ms
+2026-08-04 15:40:12.589 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1459 ms
+2026-08-04 15:40:12.804 +05:30 [INF] HTTP GET /api/plans responded 200 in 202.4512 ms
+2026-08-04 15:40:12.867 +05:30 [INF] HTTP GET /api/tenants responded 200 in 235.9151 ms
+2026-08-04 15:40:49.462 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1410 ms
+2026-08-04 15:43:07.932 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:43:10.911 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 219.2821 ms
+2026-08-04 15:43:10.951 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.8376 ms
+2026-08-04 15:43:11.576 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 73.7398 ms
+2026-08-04 15:43:28.205 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.2375 ms
+2026-08-04 15:43:34.735 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 6513.6644 ms
+ONEERP.Shared.Exceptions.DomainException: Admin username 'ERPNEXT' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 181
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:43:35.300 +05:30 [WRN] Domain error 409: Admin username 'ERPNEXT' is already in use.
+2026-08-04 15:44:10.579 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2801 ms
+2026-08-04 15:44:16.710 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 6109.3642 ms
+ONEERP.Shared.Exceptions.DomainException: Tenant code 'PAL' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 177
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:44:17.021 +05:30 [WRN] Domain error 409: Tenant code 'PAL' is already in use.
+2026-08-04 15:44:24.339 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2603 ms
+2026-08-04 15:44:25.509 +05:30 [INF] Created tenant database PAL
+2026-08-04 15:44:29.305 +05:30 [WRN] Dropped tenant database PAL (cleanup after failed provisioning)
+2026-08-04 15:45:59.403 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 95015.7361 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:45:59.647 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+Incorrect syntax near the keyword 'TOP'.
+2026-08-04 15:49:45.583 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:49:48.587 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 386.9469 ms
+2026-08-04 15:49:48.725 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 27.3498 ms
+2026-08-04 15:49:49.132 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 99.2719 ms
+2026-08-04 15:49:55.432 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 5.2601 ms
+2026-08-04 15:52:19.227 +05:30 [INF] ONE ERP Platform API starting
+2026-08-04 15:52:21.940 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 8.9158 ms
+2026-08-04 15:52:21.921 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 204.6581 ms
+2026-08-04 15:52:22.341 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 153.9068 ms
+2026-08-04 15:52:25.838 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.2036 ms
+2026-08-04 15:52:32.474 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 6624.5206 ms
+ONEERP.Shared.Exceptions.DomainException: Database name 'PAL' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 179
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:52:33.132 +05:30 [WRN] Domain error 409: Database name 'PAL' is already in use.
+2026-08-04 15:52:36.015 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2708 ms
+2026-08-04 15:54:19.736 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 103713.9808 ms
+ONEERP.Shared.Exceptions.DomainException: Database name 'PAL' is already in use.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 179
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 15:54:20.315 +05:30 [WRN] Domain error 409: Database name 'PAL' is already in use.
+2026-08-04 15:54:22.440 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1639 ms
+2026-08-04 15:54:23.778 +05:30 [INF] Created tenant database PAL
+2026-08-04 15:54:25.068 +05:30 [INF] Provisioned tenant schema and seed data for PAL
+2026-08-04 15:54:25.263 +05:30 [INF] HTTP POST /api/tenants responded 200 in 2800.7074 ms
+2026-08-04 15:54:25.286 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1249 ms
+2026-08-04 15:54:25.461 +05:30 [INF] HTTP GET /api/tenants responded 200 in 135.9215 ms
+2026-08-04 16:02:28.410 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3450 ms
+2026-08-04 16:02:28.508 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1007 ms
+2026-08-04 16:02:28.617 +05:30 [INF] HTTP GET /api/plans responded 401 in 88.7647 ms
+2026-08-04 16:02:28.669 +05:30 [INF] HTTP GET /api/tenants responded 401 in 7.1405 ms
+2026-08-04 16:02:28.676 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0917 ms
+2026-08-04 16:02:28.700 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1710 ms
+2026-08-04 16:02:29.054 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 278.7235 ms
+2026-08-04 16:02:29.054 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 274.3611 ms
+2026-08-04 16:02:29.139 +05:30 [INF] HTTP GET /api/tenants responded 200 in 56.8782 ms
+2026-08-04 16:02:29.185 +05:30 [INF] HTTP GET /api/plans responded 200 in 110.0619 ms
+2026-08-04 16:02:33.237 +05:30 [INF] HTTP OPTIONS /api/tenants/6 responded 204 in 1.4026 ms
+2026-08-04 16:02:33.655 +05:30 [WRN] Dropped tenant database ERP_SMP (cleanup after failed provisioning)
+2026-08-04 16:02:33.691 +05:30 [INF] HTTP DELETE /api/tenants/6 responded 200 in 295.2437 ms
+2026-08-04 16:02:33.702 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0967 ms
+2026-08-04 16:02:33.719 +05:30 [INF] HTTP GET /api/tenants responded 200 in 7.4749 ms
+2026-08-04 16:02:36.317 +05:30 [INF] HTTP OPTIONS /api/tenants/29 responded 204 in 1.0485 ms
+2026-08-04 16:02:36.492 +05:30 [WRN] Dropped tenant database PAL (cleanup after failed provisioning)
+2026-08-04 16:02:36.508 +05:30 [INF] HTTP DELETE /api/tenants/29 responded 200 in 172.1505 ms
+2026-08-04 16:02:36.540 +05:30 [INF] HTTP GET /api/tenants responded 200 in 7.6369 ms
+2026-08-04 16:04:10.622 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1722 ms
+2026-08-04 16:04:11.230 +05:30 [INF] Created tenant database ERP_SMART
+2026-08-04 16:04:11.929 +05:30 [INF] Provisioned tenant schema and seed data for ERP_SMART
+2026-08-04 16:04:11.957 +05:30 [INF] HTTP POST /api/tenants responded 200 in 1322.8390 ms
+2026-08-04 16:04:11.967 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2021 ms
+2026-08-04 16:04:12.023 +05:30 [INF] HTTP GET /api/tenants responded 200 in 50.2720 ms
+2026-08-04 16:14:38.947 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 10504.9753 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid username or password.
+   at ONEERP.Platform.API.Services.PlatformAuthService.LoginAsync(String username, String password) in D:\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 42
+   at ONEERP.Platform.API.Controllers.AuthController.Login(LoginRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 36
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 16:14:42.357 +05:30 [WRN] Domain error 401: Invalid username or password.
+2026-08-04 16:15:31.376 +05:30 [INF] HTTP GET /api/Tenants/active responded 401 in 7.6426 ms
+2026-08-04 16:15:31.750 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 24017.5970 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-08-04 16:16:00.744 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-08-04 16:55:29.154 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 4.2435 ms
+2026-08-04 16:55:29.211 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 26.2152 ms
+2026-08-04 16:55:29.230 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.3999 ms
+2026-08-04 16:55:29.382 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 143.1232 ms
+2026-08-04 16:55:29.606 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 216.6969 ms
+2026-08-04 16:55:30.653 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.5335 ms
+2026-08-04 16:55:30.706 +05:30 [INF] HTTP GET /api/plans responded 200 in 22.3703 ms
+2026-08-04 17:30:27.446 +05:30 [INF] HTTP OPTIONS /api/tenants/29/status responded 204 in 10.0260 ms
+2026-08-04 17:30:27.474 +05:30 [INF] HTTP PUT /api/tenants/29/status responded 401 in 13.0296 ms
+2026-08-04 17:30:27.494 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0640 ms
+2026-08-04 17:30:27.665 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 166.6580 ms
+2026-08-04 17:30:27.796 +05:30 [INF] HTTP PUT /api/tenants/29/status responded 200 in 121.2180 ms
+2026-08-04 17:30:27.802 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0837 ms
+2026-08-04 17:30:27.837 +05:30 [INF] HTTP GET /api/tenants responded 200 in 28.6587 ms
+2026-08-04 18:16:54.642 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 20.1557 ms
+2026-08-04 18:16:54.680 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 22.0999 ms
+2026-08-04 18:16:54.696 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0985 ms
+2026-08-04 18:16:55.224 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 518.7617 ms
+2026-08-04 18:16:55.526 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 253.5096 ms
+2026-08-04 18:16:56.911 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0680 ms
+2026-08-04 18:16:56.911 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0795 ms
+2026-08-04 18:16:57.043 +05:30 [INF] HTTP GET /api/tenants responded 200 in 84.3090 ms
+2026-08-04 18:16:57.068 +05:30 [INF] HTTP GET /api/plans responded 200 in 116.1756 ms
+2026-08-04 18:16:59.037 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0614 ms
+2026-08-04 18:16:59.041 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0622 ms
+2026-08-04 18:16:59.081 +05:30 [INF] HTTP GET /api/plans responded 200 in 21.8532 ms
+2026-08-04 18:16:59.113 +05:30 [INF] HTTP GET /api/tenants responded 200 in 33.1418 ms
+2026-08-04 18:16:59.242 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 161.4614 ms
+2026-08-04 18:17:01.664 +05:30 [INF] HTTP GET /api/tenants responded 200 in 68.7133 ms
+2026-08-04 18:17:01.708 +05:30 [INF] HTTP GET /api/plans responded 200 in 85.7122 ms
+2026-08-04 18:17:01.739 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 115.2715 ms
+2026-08-04 18:17:06.476 +05:30 [INF] HTTP OPTIONS /api/subscriptions/14 responded 204 in 0.3513 ms
+2026-08-04 18:17:06.599 +05:30 [INF] HTTP PUT /api/subscriptions/14 responded 200 in 118.4249 ms
+2026-08-04 18:17:06.606 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0492 ms
+2026-08-04 18:17:06.640 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 30.2123 ms
+2026-08-04 18:17:07.873 +05:30 [INF] HTTP OPTIONS /api/subscriptions/13 responded 204 in 0.1258 ms
+2026-08-04 18:17:07.909 +05:30 [INF] HTTP PUT /api/subscriptions/13 responded 200 in 31.3350 ms
+2026-08-04 18:17:07.936 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 21.8841 ms
+2026-08-04 18:17:08.749 +05:30 [INF] HTTP OPTIONS /api/subscriptions/12 responded 204 in 0.0403 ms
+2026-08-04 18:17:08.773 +05:30 [INF] HTTP PUT /api/subscriptions/12 responded 200 in 20.9396 ms
+2026-08-04 18:17:08.801 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 22.4665 ms
+2026-08-04 18:17:10.158 +05:30 [INF] HTTP OPTIONS /api/subscriptions/11 responded 204 in 0.0469 ms
+2026-08-04 18:17:10.185 +05:30 [INF] HTTP PUT /api/subscriptions/11 responded 200 in 22.8584 ms
+2026-08-04 18:17:10.210 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 17.7283 ms
+2026-08-04 18:17:11.004 +05:30 [INF] HTTP OPTIONS /api/subscriptions/10 responded 204 in 0.0662 ms
+2026-08-04 18:17:11.030 +05:30 [INF] HTTP PUT /api/subscriptions/10 responded 200 in 21.8112 ms
+2026-08-04 18:17:11.054 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 18.3364 ms
+2026-08-04 18:17:12.473 +05:30 [INF] HTTP OPTIONS /api/subscriptions/9 responded 204 in 0.0675 ms
+2026-08-04 18:17:12.499 +05:30 [INF] HTTP PUT /api/subscriptions/9 responded 200 in 21.6037 ms
+2026-08-04 18:17:12.505 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0418 ms
+2026-08-04 18:17:12.529 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 19.1708 ms
+2026-08-04 18:17:19.108 +05:30 [INF] HTTP OPTIONS /api/subscriptions/6 responded 204 in 0.0516 ms
+2026-08-04 18:17:19.150 +05:30 [INF] HTTP PUT /api/subscriptions/6 responded 200 in 38.1176 ms
+2026-08-04 18:17:19.156 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0414 ms
+2026-08-04 18:17:19.179 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 18.0369 ms
+2026-08-04 18:31:45.438 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.6207 ms
+2026-08-04 18:31:45.438 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 8.6335 ms
+2026-08-04 18:31:45.438 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 8.5897 ms
+2026-08-04 18:31:46.467 +05:30 [INF] HTTP GET /api/plans responded 200 in 962.6595 ms
+2026-08-04 18:31:46.483 +05:30 [INF] HTTP GET /api/tenants responded 200 in 980.8282 ms
+2026-08-04 18:31:46.521 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 1018.1259 ms
+2026-08-04 18:41:15.409 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0596 ms
+2026-08-04 18:41:15.451 +05:30 [INF] HTTP GET /api/plans responded 401 in 13.0585 ms
+2026-08-04 18:41:15.462 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0799 ms
+2026-08-04 18:41:15.563 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 92.3324 ms
+2026-08-04 18:41:15.594 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.8875 ms
+2026-08-04 18:48:22.633 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0539 ms
+2026-08-04 18:48:24.776 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0497 ms
+2026-08-04 18:48:24.783 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0547 ms
+2026-08-04 18:48:24.786 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0519 ms
+2026-08-04 18:48:24.939 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 100.9818 ms
+2026-08-04 18:48:24.941 +05:30 [INF] HTTP GET /api/plans responded 200 in 103.3914 ms
+2026-08-04 18:48:26.244 +05:30 [INF] HTTP GET /api/plans responded 200 in 24.3409 ms
+2026-08-04 18:48:28.040 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0465 ms
+2026-08-04 18:48:28.058 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.7989 ms
+2026-08-04 18:48:32.498 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0822 ms
+2026-08-04 18:48:32.552 +05:30 [INF] HTTP GET /api/plans responded 200 in 41.4518 ms
+2026-08-04 18:48:40.969 +05:30 [INF] HTTP GET /api/tenants responded 200 in 8462.1927 ms
+2026-08-04 18:48:40.976 +05:30 [INF] HTTP GET /api/tenants responded 200 in 12914.2671 ms
+2026-08-04 18:48:40.976 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 18322.2209 ms
+2026-08-04 18:48:40.976 +05:30 [INF] HTTP GET /api/tenants responded 200 in 16138.9039 ms
+2026-08-04 18:48:59.956 +05:30 [INF] HTTP OPTIONS /api/tenants/30 responded 204 in 0.0556 ms
+2026-08-04 18:49:03.237 +05:30 [WRN] Dropped tenant database ERP_SMART (cleanup after failed provisioning)
+2026-08-04 18:49:03.287 +05:30 [INF] HTTP DELETE /api/tenants/30 responded 200 in 3311.3589 ms
+2026-08-04 18:49:03.294 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0361 ms
+2026-08-04 18:49:03.321 +05:30 [INF] HTTP GET /api/tenants responded 200 in 23.7472 ms
+2026-08-04 18:50:06.663 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0517 ms
+2026-08-04 18:50:07.558 +05:30 [INF] Created tenant database SMP
+2026-08-04 18:50:08.433 +05:30 [INF] Provisioned tenant schema and seed data for SMP
+2026-08-04 18:50:08.464 +05:30 [INF] HTTP POST /api/tenants responded 200 in 1722.3655 ms
+2026-08-04 18:50:08.474 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0486 ms
+2026-08-04 18:50:08.540 +05:30 [INF] HTTP GET /api/tenants responded 200 in 51.4719 ms
+2026-08-04 18:51:40.786 +05:30 [INF] HTTP OPTIONS /api/tenants/31 responded 204 in 0.1925 ms
+2026-08-04 18:51:43.900 +05:30 [WRN] Dropped tenant database SMP (cleanup after failed provisioning)
+2026-08-04 18:51:43.919 +05:30 [INF] HTTP DELETE /api/tenants/31 responded 200 in 3094.3660 ms
+2026-08-04 18:51:43.926 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0449 ms
+2026-08-04 18:51:43.958 +05:30 [INF] HTTP GET /api/tenants responded 200 in 26.4338 ms
+2026-08-04 18:52:32.148 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0880 ms
+2026-08-04 18:52:32.873 +05:30 [INF] Created tenant database TMB
+2026-08-04 18:52:33.668 +05:30 [INF] Provisioned tenant schema and seed data for TMB
+2026-08-04 18:52:33.697 +05:30 [INF] HTTP POST /api/tenants responded 200 in 1527.4133 ms
+2026-08-04 18:52:33.705 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0478 ms
+2026-08-04 18:52:33.746 +05:30 [INF] HTTP GET /api/tenants responded 200 in 32.5115 ms

@@ -93,9 +93,9 @@ public class TenantsController : BaseController
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, [FromQuery] bool dropDatabase = false)
     {
-        await _tenantService.DeleteAsync(id, _currentUser.Username);
-        return Ok(ApiResponse.Ok("Tenant deleted successfully"));
+        await _tenantService.DeleteAsync(id, _currentUser.Username, dropDatabase);
+        return Ok(ApiResponse.Ok(dropDatabase ? "Tenant and database deleted successfully" : "Tenant deleted successfully"));
     }
 }
