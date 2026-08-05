@@ -104,3 +104,51 @@ public class OrganizationTypeDto
     public int SortOrder { get; set; }
     public bool IsActive { get; set; }
 }
+
+/* ---------------- BranchTypes ---------------- */
+
+public record CreateBranchTypeRequest(string Name, string Code, string? Description, int SortOrder = 1);
+
+public record UpdateBranchTypeRequest(string Name, string Code, string? Description, int SortOrder, bool IsActive);
+
+public class BranchTypeDto
+{
+    public int BranchTypeId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}
+
+/* ---------------- WarehouseTypes ---------------- */
+
+public record CreateWarehouseTypeRequest(string Name, string Code, string? Description, int SortOrder = 1);
+
+public record UpdateWarehouseTypeRequest(string Name, string Code, string? Description, int SortOrder, bool IsActive);
+
+public class WarehouseTypeDto
+{
+    public int WarehouseTypeId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}
+
+/* ---------------- EmploymentTypes ---------------- */
+
+public record CreateEmploymentTypeRequest(string Name, string Code, string? Description, int SortOrder = 1);
+
+public record UpdateEmploymentTypeRequest(string Name, string Code, string? Description, int SortOrder, bool IsActive);
+
+public class EmploymentTypeDto
+{
+    public int EmploymentTypeId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}

@@ -558,7 +558,7 @@ public class WarehouseService : IWarehouseService
     public async Task<WarehouseDto> CreateAsync(CreateWarehouseRequest request)
     {
         var warehouseCode = request.WarehouseCode.Trim();
-        if (await _repository.CodeInUseAsync(request.CompanyId, request.BranchId, warehouseCode))
+        if (await _repository.CodeInUseAsync(request.CompanyId, request.BranchId ?? 0, warehouseCode))
             throw new DomainException($"Warehouse code '{warehouseCode}' is already in use.");
 
         var warehouse = new Warehouse

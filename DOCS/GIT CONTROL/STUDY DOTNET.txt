@@ -1,0 +1,185 @@
+## .NET Full Stack Developer Roadmap (Year-wise)
+
+### **2 Years (Current Level)**
+
+**Core Skills**
+
+* C#
+* OOP, SOLID Principles
+* ASP.NET Core
+* ASP.NET MVC
+* Web API (REST)
+* Entity Framework Core
+* LINQ
+* SQL Server
+* Stored Procedures
+* JWT Authentication
+* Angular (16+)
+* TypeScript
+* HTML5, CSS3, Bootstrap
+* JavaScript
+* Git & GitHub
+* Postman
+* IIS Deployment
+* Swagger/OpenAPI
+
+**Tools**
+
+* Visual Studio
+* VS Code
+* SSMS
+* GitHub
+
+---
+
+### **3 Years**
+
+**Concepts**
+
+* Clean Architecture
+* Repository Pattern
+* Unit of Work
+* Dependency Injection
+* Async/Await
+* Design Patterns
+* Unit Testing (xUnit, NUnit)
+* Logging (Serilog, NLog)
+
+**Cloud & DevOps**
+
+* Azure App Service
+* Azure SQL
+* Azure Functions
+* Azure Storage
+* Azure DevOps
+* CI/CD Pipelines
+* Docker
+
+**Tools**
+
+* Azure DevOps
+* Docker Desktop
+* SonarQube
+
+---
+
+### **4 Years**
+
+**Architecture**
+
+* Microservices
+* API Gateway
+* Redis Caching
+* RabbitMQ
+* SignalR
+* OAuth2 / OpenID Connect
+* Identity Server
+* Performance Tuning
+
+**Frontend**
+
+* Angular Advanced
+* RxJS
+* NgRx
+* React Basics
+
+**Cloud**
+
+* Kubernetes Basics
+* Azure Key Vault
+* Application Insights
+
+---
+
+### **5 Years**
+
+**Advanced**
+
+* System Design
+* DDD (Domain Driven Design)
+* CQRS
+* MediatR
+* Event-Driven Architecture
+* Distributed Systems
+* Azure Service Bus
+* Cosmos DB
+
+**DevOps**
+
+* Kubernetes
+* Helm
+* Terraform
+* Monitoring
+* Grafana
+* Prometheus
+
+---
+
+### **6–8 Years (Technical Lead)**
+
+**Leadership**
+
+* Solution Architecture
+* High-Level Design (HLD)
+* Low-Level Design (LLD)
+* Scalability
+* Security Best Practices
+* Code Review
+* Team Mentoring
+* Agile & Scrum Leadership
+
+**Cloud**
+
+* Azure Architecture
+* Multi-Region Deployment
+* Disaster Recovery
+* High Availability
+
+---
+
+## AI Tools (Most Companies Expect)
+
+* GitHub Copilot
+* ChatGPT
+* Cursor AI
+* Claude
+* Visual Studio IntelliCode
+* Postman AI
+* Azure AI Studio (Basic)
+
+---
+
+## Tools Checklist
+
+* Visual Studio
+* VS Code
+* SQL Server Management Studio (SSMS)
+* Git & GitHub
+* Azure DevOps
+* Docker
+* Kubernetes
+* Postman
+* Swagger
+* SonarQube
+* Jira
+* Confluence
+* Figma (Basic)
+* Firebase Hosting
+* AWS EC2
+* IIS
+
+### High-Priority Skills for Your Next Role (2–3 Years Experience)
+
+* ASP.NET Core 8/9
+* Angular 18/19
+* Azure
+* Docker
+* Microservices
+* Clean Architecture
+* Redis
+* RabbitMQ
+* CI/CD (Azure DevOps/GitHub Actions)
+* Unit Testing (xUnit + Moq)
+* AI-assisted development (GitHub Copilot, ChatGPT)
+
+These are the technologies and concepts that appear most frequently in current .NET Full Stack job descriptions from companies such as Indium Software, Luxoft, Maxpro Technologies, Aroopa, E-Merge Tech, Hubfly, and similar employers.

@@ -209,3 +209,131 @@ public class City
     public string? CountryName { get; set; }
     public string? StateName { get; set; }
 }
+
+public class Branch
+{
+    public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public string BranchCode { get; set; } = string.Empty;
+    public string BranchName { get; set; } = string.Empty;
+    public string? ShortName { get; set; }
+    public int? BranchTypeId { get; set; }
+    public int? ParentBranchId { get; set; }
+    public int? ManagerEmployeeId { get; set; }
+    public int? DefaultWarehouseId { get; set; }
+    public string? GSTNumber { get; set; }
+    public string? RegistrationNumber { get; set; }
+    public bool IsHeadOffice { get; set; }
+    public bool IsSalesBranch { get; set; }
+    public bool IsPurchaseBranch { get; set; }
+    public bool IsServiceBranch { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsDeleted { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class Department
+{
+    public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public int BranchId { get; set; }
+    public string DepartmentCode { get; set; } = string.Empty;
+    public string DepartmentName { get; set; } = string.Empty;
+    public string? ShortName { get; set; }
+    public int? ParentDepartmentId { get; set; }
+    public int? ManagerEmployeeId { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? Remarks { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class Designation
+{
+    public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public int? DepartmentId { get; set; }
+    public string DesignationCode { get; set; } = string.Empty;
+    public string DesignationName { get; set; } = string.Empty;
+    public string? ShortName { get; set; }
+    public int? LevelNo { get; set; }
+    public string? Grade { get; set; }
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsDefault { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsDeleted { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class Employee
+{
+    public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int? DepartmentId { get; set; }
+    public int? DesignationId { get; set; }
+    public string EmployeeCode { get; set; } = string.Empty;
+    public string? EmployeeNumber { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string? MiddleName { get; set; }
+    public string LastName { get; set; } = string.Empty;
+    public string? DisplayName { get; set; }
+    public int? GenderId { get; set; }
+    public int? MaritalStatusId { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    public DateTime DateOfJoining { get; set; }
+    public DateTime? DateOfLeaving { get; set; }
+    public string? OfficialEmail { get; set; }
+    public string? PersonalEmail { get; set; }
+    public string? MobileNo { get; set; }
+    public string? AlternateMobileNo { get; set; }
+    public int? ReportingManagerId { get; set; }
+    public int? EmploymentTypeId { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? Remarks { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class Warehouse
+{
+    public int Id { get; set; }
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public string WarehouseCode { get; set; } = string.Empty;
+    public string WarehouseName { get; set; } = string.Empty;
+    public string? ShortName { get; set; }
+    public int? WarehouseTypeId { get; set; }
+    public int? ParentWarehouseId { get; set; }
+    public int? ManagerEmployeeId { get; set; }
+    public bool AllowNegativeStock { get; set; }
+    public bool IsDefault { get; set; }
+    public int SortOrder { get; set; }
+    public string? Remarks { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsDeleted { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
