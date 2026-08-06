@@ -183,3 +183,686 @@
 * AI-assisted development (GitHub Copilot, ChatGPT)
 
 These are the technologies and concepts that appear most frequently in current .NET Full Stack job descriptions from companies such as Indium Software, Luxoft, Maxpro Technologies, Aroopa, E-Merge Tech, Hubfly, and similar employers.
+
+
+
+
+
+
+
+
+
+
+
+
+Since you're targeting **2-year .NET Full Stack Developer** roles, here are **Top 20 interview questions with concise answers**.
+
+---
+
+# 1. What is .NET Core?
+
+**Answer:**
+.NET Core (now .NET) is Microsoft's open-source, cross-platform framework used to build web applications, Web APIs, desktop applications, cloud services, and microservices. It runs on Windows, Linux, and macOS.
+
+---
+
+# 2. What is ASP.NET Core Web API?
+
+**Answer:**
+ASP.NET Core Web API is a framework used to create RESTful APIs that allow frontend applications like Angular, React, or mobile apps to communicate with the backend using HTTP methods.
+
+---
+
+# 3. What is REST API?
+
+**Answer:**
+REST API is an architectural style where client and server communicate using HTTP methods.
+
+* GET → Retrieve data
+* POST → Create data
+* PUT → Update data
+* DELETE → Delete data
+
+---
+
+# 4. What is Dependency Injection (DI)?
+
+**Answer:**
+Dependency Injection is a design pattern used to provide objects to a class instead of creating them inside the class.
+
+**Benefits**
+
+* Loose coupling
+* Easy testing
+* Better maintainability
+
+---
+
+# 5. What is Middleware?
+
+**Answer:**
+Middleware is software that executes on every HTTP request and response.
+
+Examples:
+
+* Authentication
+* Authorization
+* Exception Handling
+* Logging
+* CORS
+
+---
+
+# 6. What is Entity Framework Core?
+
+**Answer:**
+Entity Framework Core is Microsoft's ORM (Object Relational Mapper). It allows us to work with databases using C# objects instead of writing SQL for every operation.
+
+---
+
+# 7. What is LINQ?
+
+**Answer:**
+LINQ (Language Integrated Query) is used to query collections and databases using C# syntax.
+
+Example:
+
+```csharp
+var users = db.Users.Where(x => x.IsActive);
+```
+
+---
+
+# 8. What is JWT Authentication?
+
+**Answer:**
+JWT (JSON Web Token) is a token-based authentication mechanism.
+
+Flow:
+
+* User logs in
+* Server validates credentials
+* Server generates JWT Token
+* Client sends token in Authorization Header
+* Server validates token for every request
+
+---
+
+# 9. What is SQL Index?
+
+**Answer:**
+An Index improves database query performance by reducing data search time.
+
+Types:
+
+* Clustered Index
+* Non-Clustered Index
+
+---
+
+# 10. Difference between Stored Procedure and View?
+
+**Stored Procedure**
+
+* Contains SQL logic
+* Accepts parameters
+* Used for INSERT/UPDATE/DELETE
+
+**View**
+
+* Virtual table
+* Used only for displaying data
+* No business logic
+
+---
+
+# 11. Explain N-Tier Architecture.
+
+**Answer**
+
+Presentation Layer
+↓
+Business Layer
+↓
+Data Access Layer
+↓
+Database
+
+Benefits:
+
+* Easy maintenance
+* Better security
+* Scalability
+
+---
+
+# 12. What is Clean Architecture?
+
+**Answer**
+Clean Architecture separates the application into layers:
+
+* Presentation
+* Application
+* Domain
+* Infrastructure
+
+Business logic remains independent of frameworks and databases.
+
+---
+
+# 13. What is Angular?
+
+**Answer**
+Angular is a TypeScript-based frontend framework used to build Single Page Applications (SPA).
+
+Features:
+
+* Components
+* Services
+* Routing
+* Dependency Injection
+
+---
+
+# 14. What is RxJS?
+
+**Answer**
+RxJS is a library used for asynchronous programming in Angular.
+
+Common Operators:
+
+* map()
+* filter()
+* switchMap()
+* mergeMap()
+
+---
+
+# 15. What is Observable?
+
+**Answer**
+Observable is used to receive asynchronous data.
+
+Example:
+
+```typescript
+this.http.get().subscribe();
+```
+
+---
+
+# 16. Explain your BI Reports Project.
+
+**Answer**
+I developed reporting modules using ASP.NET Core Web API, Angular, Entity Framework Core, and SQL Server. I created REST APIs for report retrieval, optimized SQL queries and stored procedures, and built responsive Angular dashboards for report visualization.
+
+---
+
+# 17. Explain JWT implementation in your project.
+
+**Answer**
+After successful login:
+
+* API generates JWT Token.
+* Token is stored on the client.
+* Angular sends the token in the Authorization header.
+* Backend validates the token before allowing access to secured APIs.
+
+---
+
+# 18. How did you optimize SQL queries?
+
+**Answer**
+
+* Created indexes
+* Optimized stored procedures
+* Used joins efficiently
+* Reduced unnecessary data retrieval
+* Implemented pagination
+
+---
+
+# 19. Explain your deployment process.
+
+**Answer**
+
+* Publish ASP.NET Core application.
+* Copy files to IIS server.
+* Configure Application Pool.
+* Configure `web.config`.
+* Update connection string.
+* Start IIS website.
+* Test APIs using Swagger/Postman.
+
+---
+
+# 20. Tell me about yourself.
+
+**Answer**
+I am Abiraj, a Full Stack .NET Developer with over 2 years of experience in C#, ASP.NET Core, Web API, Angular, Entity Framework Core, and SQL Server. I have worked on BI Reporting, Buyback Management, Expense Tracker, and Logistics Management projects. My experience includes developing REST APIs, building Angular UI, optimizing SQL queries, implementing JWT authentication, and deploying applications using IIS. I enjoy solving technical problems and continuously improving my full-stack development skills.
+
+---
+
+These 20 questions cover many of the topics commonly asked in **2-year .NET Full Stack Developer** interviews. From here, you can expand into deeper topics like C#, ASP.NET Core internals, Angular, SQL Server, Entity Framework Core, Azure, and deployment as your preparation progresses.
+
+
+
+
+
+
+
+
+
+For a **2-year .NET Full Stack Developer**, SQL is one of the most important interview topics. A good learning order is below.
+
+# SQL Roadmap (Interview Preparation)
+
+## 1. Database Basics
+
+Learn:
+
+* What is a Database?
+* DBMS vs RDBMS
+* Tables
+* Rows
+* Columns
+* Data Types
+* Constraints
+
+Practice:
+
+```sql
+CREATE DATABASE CompanyDB;
+CREATE TABLE Employee(
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Salary DECIMAL(10,2)
+);
+```
+
+---
+
+# 2. DDL (Data Definition Language)
+
+Commands:
+
+* CREATE
+* ALTER
+* DROP
+* TRUNCATE
+* RENAME
+
+Practice:
+
+```sql
+CREATE TABLE Department(
+    Id INT PRIMARY KEY,
+    DepartmentName VARCHAR(100)
+);
+```
+
+---
+
+# 3. DML (Data Manipulation Language)
+
+Commands:
+
+* INSERT
+* UPDATE
+* DELETE
+
+Practice:
+
+```sql
+INSERT INTO Employee(Name,Salary)
+VALUES('Abiraj',35000);
+
+UPDATE Employee
+SET Salary=40000
+WHERE Id=1;
+
+DELETE FROM Employee
+WHERE Id=2;
+```
+
+---
+
+# 4. SELECT Queries
+
+Learn:
+
+* SELECT
+* WHERE
+* DISTINCT
+* TOP
+* ORDER BY
+
+Practice:
+
+```sql
+SELECT * FROM Employee;
+
+SELECT Name,Salary
+FROM Employee
+WHERE Salary>30000;
+
+SELECT TOP 5 *
+FROM Employee
+ORDER BY Salary DESC;
+```
+
+---
+
+# 5. Aggregate Functions
+
+Learn:
+
+* COUNT()
+* SUM()
+* AVG()
+* MAX()
+* MIN()
+
+Practice:
+
+```sql
+SELECT COUNT(*) FROM Employee;
+
+SELECT AVG(Salary)
+FROM Employee;
+```
+
+---
+
+# 6. GROUP BY & HAVING
+
+Practice:
+
+```sql
+SELECT DepartmentId,
+COUNT(*)
+FROM Employee
+GROUP BY DepartmentId;
+
+SELECT DepartmentId,
+AVG(Salary)
+FROM Employee
+GROUP BY DepartmentId
+HAVING AVG(Salary)>40000;
+```
+
+---
+
+# 7. Joins ⭐⭐⭐⭐⭐
+
+Learn:
+
+* INNER JOIN
+* LEFT JOIN
+* RIGHT JOIN
+* FULL JOIN
+* SELF JOIN
+
+Practice:
+
+```sql
+SELECT e.Name,
+d.DepartmentName
+FROM Employee e
+INNER JOIN Department d
+ON e.DepartmentId=d.Id;
+```
+
+---
+
+# 8. Subqueries
+
+Practice:
+
+```sql
+SELECT *
+FROM Employee
+WHERE Salary>(
+SELECT AVG(Salary)
+FROM Employee);
+```
+
+---
+
+# 9. Common Table Expressions (CTE)
+
+Practice:
+
+```sql
+WITH EmployeeCTE AS
+(
+SELECT *
+FROM Employee
+WHERE Salary>50000
+)
+SELECT *
+FROM EmployeeCTE;
+```
+
+---
+
+# 10. Window Functions
+
+Learn:
+
+* ROW_NUMBER()
+* RANK()
+* DENSE_RANK()
+* NTILE()
+
+Practice:
+
+```sql
+SELECT Name,
+Salary,
+ROW_NUMBER() OVER(ORDER BY Salary DESC)
+AS RowNum
+FROM Employee;
+```
+
+---
+
+# 11. String Functions
+
+Practice:
+
+```sql
+UPPER()
+LOWER()
+LEN()
+SUBSTRING()
+LTRIM()
+RTRIM()
+REPLACE()
+CONCAT()
+```
+
+---
+
+# 12. Date Functions
+
+Practice:
+
+```sql
+GETDATE()
+
+DATEADD()
+
+DATEDIFF()
+
+FORMAT()
+```
+
+---
+
+# 13. CASE
+
+Practice:
+
+```sql
+SELECT Name,
+CASE
+WHEN Salary>50000 THEN 'High'
+ELSE 'Normal'
+END
+FROM Employee;
+```
+
+---
+
+# 14. Views
+
+Practice:
+
+```sql
+CREATE VIEW EmployeeView
+AS
+SELECT *
+FROM Employee;
+```
+
+---
+
+# 15. Stored Procedures ⭐⭐⭐⭐⭐
+
+Practice:
+
+```sql
+CREATE PROCEDURE GetEmployee
+AS
+BEGIN
+SELECT *
+FROM Employee;
+END
+```
+
+---
+
+# 16. Functions
+
+Practice:
+
+```sql
+CREATE FUNCTION fn_TotalEmployee()
+RETURNS INT
+AS
+BEGIN
+RETURN(
+SELECT COUNT(*)
+FROM Employee)
+END
+```
+
+---
+
+# 17. Triggers
+
+Practice:
+
+```sql
+CREATE TRIGGER trgInsert
+ON Employee
+AFTER INSERT
+AS
+PRINT 'Inserted Successfully';
+```
+
+---
+
+# 18. Indexes ⭐⭐⭐⭐⭐
+
+Learn:
+
+* Clustered Index
+* Non-Clustered Index
+* Composite Index
+* Unique Index
+
+---
+
+# 19. Transactions
+
+Practice:
+
+```sql
+BEGIN TRANSACTION
+
+UPDATE Employee
+SET Salary=50000
+WHERE Id=1;
+
+COMMIT;
+
+ROLLBACK;
+```
+
+---
+
+# 20. Query Optimization
+
+Learn:
+
+* Execution Plan
+* Indexing
+* Avoid `SELECT *`
+* Use WHERE Clause
+* Pagination
+* EXISTS vs IN
+
+---
+
+# Most Asked SQL Interview Queries
+
+1. Find duplicate records.
+2. Remove duplicate records.
+3. Second highest salary.
+4. Third highest salary.
+5. Top 5 salaries.
+6. Employees earning more than average salary.
+7. Employees without a department.
+8. Department-wise highest salary.
+9. Count employees by department.
+10. Nth highest salary.
+11. Even and odd records.
+12. Delete duplicate rows.
+13. Find missing IDs.
+14. INNER JOIN vs LEFT JOIN.
+15. RANK vs DENSE_RANK vs ROW_NUMBER.
+16. CTE vs Temp Table.
+17. Stored Procedure vs Function.
+18. DELETE vs TRUNCATE vs DROP.
+19. Clustered vs Non-Clustered Index.
+20. EXISTS vs IN.
+
+## Interview Priority (Study in this order)
+
+1. ⭐ SELECT, WHERE, ORDER BY
+2. ⭐ INSERT, UPDATE, DELETE
+3. ⭐ Aggregate Functions
+4. ⭐ GROUP BY, HAVING
+5. ⭐⭐⭐⭐⭐ JOINS
+6. ⭐⭐⭐⭐⭐ Stored Procedures
+7. ⭐⭐⭐⭐⭐ Indexes
+8. ⭐⭐⭐⭐⭐ SQL Interview Queries
+9. ⭐⭐⭐ Window Functions
+10. ⭐⭐⭐ Transactions
+11. ⭐⭐⭐ Views
+12. ⭐⭐⭐ Triggers
+13. ⭐⭐⭐ Functions
+14. ⭐⭐⭐ Query Optimization
+
+Mastering these topics will cover the majority of SQL questions asked in **2-year .NET Full Stack Developer** interviews.
+
+
+
+
+
+
+
+
+

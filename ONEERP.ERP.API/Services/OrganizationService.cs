@@ -51,6 +51,21 @@ public interface IWarehouseService
     Task<bool> DeleteAsync(int id);
 }
 
+public interface IBranchTypeService
+{
+    Task<IEnumerable<BranchTypeDto>> GetAllAsync(bool includeInactive);
+}
+
+public interface IWarehouseTypeService
+{
+    Task<IEnumerable<WarehouseTypeDto>> GetAllAsync(bool includeInactive);
+}
+
+public interface IEmploymentTypeService
+{
+    Task<IEnumerable<EmploymentTypeDto>> GetAllAsync(bool includeInactive);
+}
+
 public class BranchService : IBranchService
 {
     private readonly IBranchRepository _repository;
@@ -129,7 +144,7 @@ public class BranchService : IBranchService
         branch.BranchCode = request.BranchCode.Trim();
         branch.BranchName = request.BranchName.Trim();
         branch.ShortName = request.ShortName?.Trim();
-        branch.BranchTypeId = request.BranchTypeId;
+        branch.BranchTypeId = request.BranchTypeId ?? branch.BranchTypeId;
         branch.ParentBranchId = request.ParentBranchId;
         branch.ManagerEmployeeId = request.ManagerEmployeeId;
         branch.DefaultWarehouseId = request.DefaultWarehouseId;
@@ -630,4 +645,76 @@ public class WarehouseService : IWarehouseService
         Remarks = w.Remarks, IsActive = w.IsActive, IsBlocked = w.IsBlocked, IsDeleted = w.IsDeleted,
         CreatedBy = w.CreatedBy, CreatedDate = w.CreatedDate, ModifiedBy = w.ModifiedBy, ModifiedDate = w.ModifiedDate
     };
+}
+
+public class BranchTypeService : IBranchTypeService
+{
+    private readonly IBranchTypeRepository _repository;
+
+    public BranchTypeService(IBranchTypeRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<IEnumerable<BranchTypeDto>> GetAllAsync(bool includeInactive)
+    {
+        var types = await _repository.GetAllAsync(includeInactive);
+        return types.Select(t => new BranchTypeDto
+        {
+            BranchTypeId = t.BranchTypeId,
+            Name = t.Name,
+            Code = t.Code,
+            Description = t.Description,
+            SortOrder = t.SortOrder,
+            IsActive = t.IsActive,
+        });
+    }
+}
+
+public class WarehouseTypeService : IWarehouseTypeService
+{
+    private readonly IWarehouseTypeRepository _repository;
+
+    public WarehouseTypeService(IWarehouseTypeRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<IEnumerable<WarehouseTypeDto>> GetAllAsync(bool includeInactive)
+    {
+        var types = await _repository.GetAllAsync(includeInactive);
+        return types.Select(t => new WarehouseTypeDto
+        {
+            WarehouseTypeId = t.WarehouseTypeId,
+            Name = t.Name,
+            Code = t.Code,
+            Description = t.Description,
+            SortOrder = t.SortOrder,
+            IsActive = t.IsActive,
+        });
+    }
+}
+
+public class EmploymentTypeService : IEmploymentTypeService
+{
+    private readonly IEmploymentTypeRepository _repository;
+
+    public EmploymentTypeService(IEmploymentTypeRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<IEnumerable<EmploymentTypeDto>> GetAllAsync(bool includeInactive)
+    {
+        var types = await _repository.GetAllAsync(includeInactive);
+        return types.Select(t => new EmploymentTypeDto
+        {
+            EmploymentTypeId = t.EmploymentTypeId,
+            Name = t.Name,
+            Code = t.Code,
+            Description = t.Description,
+            SortOrder = t.SortOrder,
+            IsActive = t.IsActive,
+        });
+    }
 }

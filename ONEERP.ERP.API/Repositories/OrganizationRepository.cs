@@ -606,3 +606,63 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         }
     }
 }
+
+public interface IBranchTypeRepository
+{
+    Task<IEnumerable<BranchType>> GetAllAsync(bool includeInactive);
+}
+
+public interface IWarehouseTypeRepository
+{
+    Task<IEnumerable<WarehouseType>> GetAllAsync(bool includeInactive);
+}
+
+public interface IEmploymentTypeRepository
+{
+    Task<IEnumerable<EmploymentType>> GetAllAsync(bool includeInactive);
+}
+
+public class BranchTypeRepository : TenantRepositoryBase, IBranchTypeRepository
+{
+    public BranchTypeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<BranchType>> GetAllAsync(bool includeInactive)
+    {
+        using var connection = OpenTenant();
+        const string sql = "SELECT * FROM dbo.BranchTypes ORDER BY SortOrder;";
+        return await Sql.QueryAsync<BranchType>(connection, sql);
+    }
+}
+
+public class WarehouseTypeRepository : TenantRepositoryBase, IWarehouseTypeRepository
+{
+    public WarehouseTypeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<WarehouseType>> GetAllAsync(bool includeInactive)
+    {
+        using var connection = OpenTenant();
+        const string sql = "SELECT * FROM dbo.WarehouseTypes ORDER BY SortOrder;";
+        return await Sql.QueryAsync<WarehouseType>(connection, sql);
+    }
+}
+
+public class EmploymentTypeRepository : TenantRepositoryBase, IEmploymentTypeRepository
+{
+    public EmploymentTypeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<EmploymentType>> GetAllAsync(bool includeInactive)
+    {
+        using var connection = OpenTenant();
+        const string sql = "SELECT * FROM dbo.EmploymentTypes ORDER BY SortOrder;";
+        return await Sql.QueryAsync<EmploymentType>(connection, sql);
+    }
+}

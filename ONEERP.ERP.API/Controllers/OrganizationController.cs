@@ -18,6 +18,9 @@ public class OrganizationController : BaseController
     private readonly IDesignationService _designationService;
     private readonly IEmployeeService _employeeService;
     private readonly IWarehouseService _warehouseService;
+    private readonly IBranchTypeService _branchTypeService;
+    private readonly IWarehouseTypeService _warehouseTypeService;
+    private readonly IEmploymentTypeService _employmentTypeService;
     private readonly IValidator<CreateBranchRequest> _createBranchValidator;
     private readonly IValidator<UpdateBranchRequest> _updateBranchValidator;
     private readonly IValidator<CreateDepartmentRequest> _createDepartmentValidator;
@@ -35,6 +38,9 @@ public class OrganizationController : BaseController
         IDesignationService designationService,
         IEmployeeService employeeService,
         IWarehouseService warehouseService,
+        IBranchTypeService branchTypeService,
+        IWarehouseTypeService warehouseTypeService,
+        IEmploymentTypeService employmentTypeService,
         IValidator<CreateBranchRequest> createBranchValidator,
         IValidator<UpdateBranchRequest> updateBranchValidator,
         IValidator<CreateDepartmentRequest> createDepartmentValidator,
@@ -51,6 +57,9 @@ public class OrganizationController : BaseController
         _designationService = designationService;
         _employeeService = employeeService;
         _warehouseService = warehouseService;
+        _branchTypeService = branchTypeService;
+        _warehouseTypeService = warehouseTypeService;
+        _employmentTypeService = employmentTypeService;
         _createBranchValidator = createBranchValidator;
         _updateBranchValidator = updateBranchValidator;
         _createDepartmentValidator = createDepartmentValidator;
@@ -61,6 +70,40 @@ public class OrganizationController : BaseController
         _updateEmployeeValidator = updateEmployeeValidator;
         _createWarehouseValidator = createWarehouseValidator;
         _updateWarehouseValidator = updateWarehouseValidator;
+    }
+
+    /* ==================== Branch Types ==================== */
+    [HttpGet("branch-types")]
+    [Permission(Permissions.BranchTypesView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<BranchTypeDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetBranchTypes([FromQuery] bool includeInactive = false)
+    {
+        var result = await _branchTypeService.GetAllAsync(includeInactive);
+
+        return Ok(ApiResponse<IEnumerable<BranchTypeDto>>.Ok(result));
+    }
+    /* ==================== Warehouse Types ==================== */
+
+    [HttpGet("warehouse-types")]
+    [Permission(Permissions.WarehousesView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<WarehouseTypeDto>>), 200)]
+    public async Task<IActionResult> GetWarehouseTypes([FromQuery] bool includeInactive = false)
+    {
+        var result = await _warehouseTypeService.GetAllAsync(includeInactive);
+        return Ok(ApiResponse<IEnumerable<WarehouseTypeDto>>.Ok(result));
+    }
+
+    /* ==================== Employment Types ==================== */
+
+    [HttpGet("employment-types")]
+    [Permission(Permissions.EmployeesView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<EmploymentTypeDto>>), 200)]
+    public async Task<IActionResult> GetEmploymentTypes([FromQuery] bool includeInactive = false)
+    {
+        var result = await _employmentTypeService.GetAllAsync(includeInactive);
+        return Ok(ApiResponse<IEnumerable<EmploymentTypeDto>>.Ok(result));
     }
 
     /* ==================== Branches ==================== */

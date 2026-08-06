@@ -35,7 +35,9 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception for {Method} {Path}", context.Request.Method, context.Request.Path);
+            _logger.LogError(ex, "Unhandled exception for {Method} {Path}",
+                context.Request.Method,
+                context.Request.Path);
 
             if (context.Response.HasStarted)
                 throw;
@@ -43,8 +45,12 @@ public class GlobalExceptionMiddleware
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 
-            var response = ApiResponse.Fail("An unexpected error occurred. Please try again later.");
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+            {
+                Success = false,
+                Message = ex.Message,
+                Exception = ex.ToString()
+            }));
         }
     }
 }

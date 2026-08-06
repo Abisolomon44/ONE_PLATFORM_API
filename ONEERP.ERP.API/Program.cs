@@ -90,6 +90,17 @@ builder.Services.AddScoped<IContactTypeRepository, ContactTypeRepository>();
 builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
 builder.Services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepository>();
 builder.Services.AddScoped<IAdministrationRepository, AdministrationRepository>();
+builder.Services.AddScoped<IBranchTypeRepository, BranchTypeRepository>();
+builder.Services.AddScoped<IWarehouseTypeRepository, WarehouseTypeRepository>();
+builder.Services.AddScoped<IEmploymentTypeRepository, EmploymentTypeRepository>();
+// Organization Repositories
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IDesignationRepository, DesignationRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+
+
 
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -115,7 +126,16 @@ builder.Services.AddScoped<IAddressTypeService, AddressTypeService>();
 builder.Services.AddScoped<IContactTypeService, ContactTypeService>();
 builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
 builder.Services.AddScoped<IOrganizationTypeService, OrganizationTypeService>();
-builder.Services.AddScoped<IAdministrationService, AdministrationService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IDesignationService, DesignationService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+
+builder.Services.AddScoped<IBranchTypeService, BranchTypeService>();
+builder.Services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
+builder.Services.AddScoped<IEmploymentTypeService, EmploymentTypeService>();
+
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

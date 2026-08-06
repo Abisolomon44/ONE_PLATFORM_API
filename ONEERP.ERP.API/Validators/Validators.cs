@@ -408,3 +408,124 @@ public class UpdateOrganizationTypeRequestValidator : AbstractValidator<DTOs.Upd
         RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
     }
 }
+
+public class CreateBranchRequestValidator : AbstractValidator<DTOs.CreateBranchRequest>
+{
+    public CreateBranchRequestValidator()
+    {
+        RuleFor(x => x.CompanyId).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.BranchCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Branch code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.BranchName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.BranchTypeId).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.GSTNumber).MaximumLength(15);
+        RuleFor(x => x.RegistrationNumber).MaximumLength(100);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateBranchRequestValidator : AbstractValidator<DTOs.UpdateBranchRequest>
+{
+    public UpdateBranchRequestValidator()
+    {
+        RuleFor(x => x.BranchCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Branch code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.BranchName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.BranchTypeId).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.GSTNumber).MaximumLength(15);
+        RuleFor(x => x.RegistrationNumber).MaximumLength(100);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class CreateDepartmentRequestValidator : AbstractValidator<DTOs.CreateDepartmentRequest>
+{
+    public CreateDepartmentRequestValidator()
+    {
+        RuleFor(x => x.CompanyId).GreaterThan(0);
+        RuleFor(x => x.BranchId).GreaterThan(0);
+        RuleFor(x => x.DepartmentCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Department code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.DepartmentName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateDepartmentRequestValidator : AbstractValidator<DTOs.UpdateDepartmentRequest>
+{
+    public UpdateDepartmentRequestValidator()
+    {
+        RuleFor(x => x.DepartmentCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Department code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.DepartmentName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class CreateDesignationRequestValidator : AbstractValidator<DTOs.CreateDesignationRequest>
+{
+    public CreateDesignationRequestValidator()
+    {
+        RuleFor(x => x.CompanyId).GreaterThan(0);
+        RuleFor(x => x.DesignationCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Designation code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.DesignationName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateDesignationRequestValidator : AbstractValidator<DTOs.UpdateDesignationRequest>
+{
+    public UpdateDesignationRequestValidator()
+    {
+        RuleFor(x => x.DesignationCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Designation code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.DesignationName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class CreateEmployeeRequestValidator : AbstractValidator<DTOs.CreateEmployeeRequest>
+{
+    public CreateEmployeeRequestValidator()
+    {
+        RuleFor(x => x.CompanyId).GreaterThan(0);
+        RuleFor(x => x.EmployeeCode).NotEmpty().MaximumLength(20);
+        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.DateOfJoining).LessThanOrEqualTo(DateTime.UtcNow);
+    }
+}
+
+public class UpdateEmployeeRequestValidator : AbstractValidator<DTOs.UpdateEmployeeRequest>
+{
+    public UpdateEmployeeRequestValidator()
+    {
+        RuleFor(x => x.EmployeeCode).NotEmpty().MaximumLength(20);
+        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
+    }
+}
+
+public class CreateWarehouseRequestValidator : AbstractValidator<DTOs.CreateWarehouseRequest>
+{
+    public CreateWarehouseRequestValidator()
+    {
+        RuleFor(x => x.CompanyId).GreaterThan(0);
+        RuleFor(x => x.WarehouseCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Warehouse code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.WarehouseName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateWarehouseRequestValidator : AbstractValidator<DTOs.UpdateWarehouseRequest>
+{
+    public UpdateWarehouseRequestValidator()
+    {
+        RuleFor(x => x.WarehouseCode).NotEmpty().MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Warehouse code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.WarehouseName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
