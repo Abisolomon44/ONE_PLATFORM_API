@@ -6,6 +6,7 @@ namespace ONEERP.ERP.API.Repositories;
 public interface IRoleRepository
 {
     Task<IEnumerable<Role>> GetAllAsync(bool includeInactive = false);
+    Task<Dictionary<int, string>> GetAllNamesAsync();
     Task<Role?> GetByIdAsync(int roleId);
     Task<Role?> GetByCodeAsync(string code);
     Task<int> InsertAsync(Role role, IDbConnection? connection = null, IDbTransaction? transaction = null);
@@ -41,6 +42,14 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
             ? "SELECT * FROM dbo.Roles WHERE IsDeleted = 0 ORDER BY RoleId"
             : "SELECT * FROM dbo.Roles WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY RoleId";
         return await Sql.QueryAsync<Role>(connection, sql);
+    }
+
+    public async Task<Dictionary<int, string>> GetAllNamesAsync()
+    {
+        using var connection = OpenTenant();
+        var roles = await Sql.QueryAsync<Role>(connection,
+            "SELECT RoleId, [Name] FROM dbo.Roles WHERE IsDeleted = 0");
+        return roles.ToDictionary(r => r.RoleId, r => r.Name);
     }
 
     public async Task<Role?> GetByIdAsync(int roleId)
@@ -134,7 +143,7 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
     {
         using var connection = OpenTenant();
         return await Sql.QueryAsync<string>(connection,
-            "SELECT PermissionCode FROM dbo.RolePermissions WHERE RoleId = @roleId ORDER BY PermissionCode", new { roleId });
+            "SELECT PermissionCode FROM dbo.RolePermissionsLegacy WHERE RoleId = @roleId ORDER BY PermissionCode", new { roleId });
     }
 
     public async Task<IEnumerable<string>> GetPermissionsForUserAsync(int userId)
@@ -142,7 +151,7 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
         using var connection = OpenTenant();
         return await Sql.QueryAsync<string>(connection, @"
             SELECT DISTINCT rp.PermissionCode
-            FROM dbo.RolePermissions rp
+            FROM dbo.RolePermissionsLegacy rp
             INNER JOIN dbo.UserRoles ur ON ur.RoleId = rp.RoleId
             WHERE ur.UserId = @userId
             ORDER BY rp.PermissionCode",
@@ -153,7 +162,7 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
     {
         using var connection = OpenTenant();
         return await Sql.QueryAsync<RolePermission>(connection,
-            "SELECT * FROM dbo.RolePermissions ORDER BY RoleId, PermissionCode");
+            "SELECT * FROM dbo.RolePermissionsLegacy ORDER BY RoleId, PermissionCode");
     }
 
     public async Task<IEnumerable<UserRoleAssignment>> GetRoleAssignmentsForUsersAsync(IEnumerable<int> userIds)
@@ -177,12 +186,12 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
         var own = connection is null;
         try
         {
-            await Sql.ExecuteAsync(conn, "DELETE FROM dbo.RolePermissions WHERE RoleId = @roleId", new { roleId }, transaction);
+            await Sql.ExecuteAsync(conn, "DELETE FROM dbo.RolePermissionsLegacy WHERE RoleId = @roleId", new { roleId }, transaction);
 
             foreach (var permission in permissionCodes.Distinct())
             {
                 await Sql.ExecuteAsync(conn, @"
-                    INSERT INTO dbo.RolePermissions (RoleId, PermissionCode, CreatedBy)
+                    INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
                     VALUES (@roleId, @permission, @createdBy);",
                     new { roleId, permission, createdBy }, transaction);
             }

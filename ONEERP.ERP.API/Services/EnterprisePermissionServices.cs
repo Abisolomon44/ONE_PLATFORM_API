@@ -1,0 +1,938 @@
+using ONEERP.ERP.API.DTOs;
+using ONEERP.ERP.API.Models;
+using ONEERP.ERP.API.Repositories;
+using ONEERP.Shared.Exceptions;
+
+namespace ONEERP.ERP.API.Services;
+
+/* ---------------------------------------------------------------------------
+   Workspace Service
+   --------------------------------------------------------------------------- */
+public interface IWorkspaceService
+{
+    Task<IEnumerable<WorkspaceDto>> GetAllAsync();
+    Task<WorkspaceDto> GetByIdAsync(int id);
+    Task<WorkspaceDto> CreateAsync(CreateWorkspaceRequest request);
+    Task<WorkspaceDto> UpdateAsync(int id, UpdateWorkspaceRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class WorkspaceService : IWorkspaceService
+{
+    private readonly IWorkspaceRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public WorkspaceService(IWorkspaceRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<WorkspaceDto>> GetAllAsync()
+        => (await _repo.GetAllAsync()).Select(Map).ToList();
+
+    public async Task<WorkspaceDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Workspace '{id}' not found.");
+        return Map(e);
+    }
+
+    public async Task<WorkspaceDto> CreateAsync(CreateWorkspaceRequest r)
+    {
+        var e = new Workspace
+        {
+            WorkspaceCode = r.WorkspaceCode, WorkspaceName = r.WorkspaceName,
+            Icon = r.Icon, Route = r.Route, SortOrder = r.SortOrder,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Workspace", e.Id.ToString(), "Create", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<WorkspaceDto> UpdateAsync(int id, UpdateWorkspaceRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Workspace '{id}' not found.");
+        e.WorkspaceCode = r.WorkspaceCode;
+        e.WorkspaceName = r.WorkspaceName;
+        e.Icon = r.Icon;
+        e.Route = r.Route;
+        e.SortOrder = r.SortOrder;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Workspace", id.ToString(), "Update", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Workspace '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Workspace", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static WorkspaceDto Map(Workspace e) => new()
+    {
+        Id = e.Id, WorkspaceCode = e.WorkspaceCode, WorkspaceName = e.WorkspaceName,
+        Icon = e.Icon, Route = e.Route, SortOrder = e.SortOrder,
+        IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   Domain Service
+   --------------------------------------------------------------------------- */
+public interface IDomainService
+{
+    Task<IEnumerable<DomainDto>> GetAllAsync();
+    Task<IEnumerable<DomainDto>> GetByWorkspaceAsync(int workspaceId);
+    Task<DomainDto> GetByIdAsync(int id);
+    Task<DomainDto> CreateAsync(CreateDomainRequest request);
+    Task<DomainDto> UpdateAsync(int id, UpdateDomainRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class DomainService : IDomainService
+{
+    private readonly IDomainRepository _repo;
+    private readonly IWorkspaceRepository _wsRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public DomainService(IDomainRepository repo, IWorkspaceRepository wsRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _wsRepo = wsRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<DomainDto>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+        var wsNames = (await _wsRepo.GetAllAsync(true)).ToDictionary(w => w.Id, w => w.WorkspaceName);
+        return items.Select(e => Map(e, wsNames.TryGetValue(e.WorkspaceId, out var wn) ? wn : null)).ToList();
+    }
+
+    public async Task<IEnumerable<DomainDto>> GetByWorkspaceAsync(int workspaceId)
+    {
+        var items = await _repo.GetByWorkspaceAsync(workspaceId);
+        var ws = await _wsRepo.GetByIdAsync(workspaceId);
+        return items.Select(e => Map(e, ws?.WorkspaceName)).ToList();
+    }
+
+    public async Task<DomainDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Domain '{id}' not found.");
+        var ws = await _wsRepo.GetByIdAsync(e.WorkspaceId);
+        return Map(e, ws?.WorkspaceName);
+    }
+
+    public async Task<DomainDto> CreateAsync(CreateDomainRequest r)
+    {
+        var e = new Domain
+        {
+            WorkspaceId = r.WorkspaceId, DomainCode = r.DomainCode, DomainName = r.DomainName,
+            Icon = r.Icon, SortOrder = r.SortOrder, IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Domain", e.Id.ToString(), "Create", _user.Username);
+        var ws = await _wsRepo.GetByIdAsync(e.WorkspaceId);
+        return Map(e, ws?.WorkspaceName);
+    }
+
+    public async Task<DomainDto> UpdateAsync(int id, UpdateDomainRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Domain '{id}' not found.");
+        e.DomainCode = r.DomainCode;
+        e.DomainName = r.DomainName;
+        e.Icon = r.Icon;
+        e.SortOrder = r.SortOrder;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Domain", id.ToString(), "Update", _user.Username);
+        var ws = await _wsRepo.GetByIdAsync(e.WorkspaceId);
+        return Map(e, ws?.WorkspaceName);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Domain '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Domain", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static DomainDto Map(Domain e, string? wsName = null) => new()
+    {
+        Id = e.Id, WorkspaceId = e.WorkspaceId, WorkspaceName = wsName,
+        DomainCode = e.DomainCode, DomainName = e.DomainName, Icon = e.Icon,
+        SortOrder = e.SortOrder, IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   Module Service
+   --------------------------------------------------------------------------- */
+public interface IModuleService
+{
+    Task<IEnumerable<ModuleDto>> GetAllAsync();
+    Task<IEnumerable<ModuleDto>> GetByDomainAsync(int domainId);
+    Task<ModuleDto> GetByIdAsync(int id);
+    Task<ModuleDto> CreateAsync(CreateModuleRequest request);
+    Task<ModuleDto> UpdateAsync(int id, UpdateModuleRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class ModuleService : IModuleService
+{
+    private readonly IModuleRepository _repo;
+    private readonly IDomainRepository _domRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public ModuleService(IModuleRepository repo, IDomainRepository domRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _domRepo = domRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<ModuleDto>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+        var domNames = (await _domRepo.GetAllAsync(true)).ToDictionary(d => d.Id, d => d.DomainName);
+        return items.Select(e => Map(e, domNames.TryGetValue(e.DomainId, out var dn) ? dn : null)).ToList();
+    }
+
+    public async Task<IEnumerable<ModuleDto>> GetByDomainAsync(int domainId)
+    {
+        var items = await _repo.GetByDomainAsync(domainId);
+        var dom = await _domRepo.GetByIdAsync(domainId);
+        return items.Select(e => Map(e, dom?.DomainName)).ToList();
+    }
+
+    public async Task<ModuleDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Module '{id}' not found.");
+        var dom = await _domRepo.GetByIdAsync(e.DomainId);
+        return Map(e, dom?.DomainName);
+    }
+
+    public async Task<ModuleDto> CreateAsync(CreateModuleRequest r)
+    {
+        var e = new Module
+        {
+            DomainId = r.DomainId, ModuleCode = r.ModuleCode, ModuleName = r.ModuleName,
+            Icon = r.Icon, RouteUrl = r.RouteUrl, SortOrder = r.SortOrder,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Module", e.Id.ToString(), "Create", _user.Username);
+        var dom = await _domRepo.GetByIdAsync(e.DomainId);
+        return Map(e, dom?.DomainName);
+    }
+
+    public async Task<ModuleDto> UpdateAsync(int id, UpdateModuleRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Module '{id}' not found.");
+        e.ModuleCode = r.ModuleCode;
+        e.ModuleName = r.ModuleName;
+        e.Icon = r.Icon;
+        e.RouteUrl = r.RouteUrl;
+        e.SortOrder = r.SortOrder;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Module", id.ToString(), "Update", _user.Username);
+        var dom = await _domRepo.GetByIdAsync(e.DomainId);
+        return Map(e, dom?.DomainName);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Module '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Module", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static ModuleDto Map(Module e, string? domName = null) => new()
+    {
+        Id = e.Id, DomainId = e.DomainId, DomainName = domName,
+        ModuleCode = e.ModuleCode, ModuleName = e.ModuleName, Icon = e.Icon,
+        RouteUrl = e.RouteUrl, SortOrder = e.SortOrder, IsActive = e.IsActive,
+        CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   Screen Service
+   --------------------------------------------------------------------------- */
+public interface IScreenService
+{
+    Task<IEnumerable<ScreenDto>> GetAllAsync();
+    Task<IEnumerable<ScreenDto>> GetByModuleAsync(int moduleId);
+    Task<ScreenDto> GetByIdAsync(int id);
+    Task<ScreenDto> CreateAsync(CreateScreenRequest request);
+    Task<ScreenDto> UpdateAsync(int id, UpdateScreenRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class ScreenService : IScreenService
+{
+    private readonly IScreenRepository _repo;
+    private readonly IModuleRepository _modRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public ScreenService(IScreenRepository repo, IModuleRepository modRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _modRepo = modRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<ScreenDto>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+        var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleName);
+        return items.Select(e => Map(e, modNames.TryGetValue(e.ModuleId, out var mn) ? mn : null)).ToList();
+    }
+
+    public async Task<IEnumerable<ScreenDto>> GetByModuleAsync(int moduleId)
+    {
+        var items = await _repo.GetByModuleAsync(moduleId);
+        var mod = await _modRepo.GetByIdAsync(moduleId);
+        return items.Select(e => Map(e, mod?.ModuleName)).ToList();
+    }
+
+    public async Task<ScreenDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<ScreenDto> CreateAsync(CreateScreenRequest r)
+    {
+        var e = new Screen
+        {
+            ModuleId = r.ModuleId, ScreenCode = r.ScreenCode, ScreenName = r.ScreenName,
+            RouteUrl = r.RouteUrl, ComponentName = r.ComponentName, SortOrder = r.SortOrder,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Screen", e.Id.ToString(), "Create", _user.Username);
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<ScreenDto> UpdateAsync(int id, UpdateScreenRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
+        e.ScreenCode = r.ScreenCode;
+        e.ScreenName = r.ScreenName;
+        e.RouteUrl = r.RouteUrl;
+        e.ComponentName = r.ComponentName;
+        e.SortOrder = r.SortOrder;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Screen", id.ToString(), "Update", _user.Username);
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Screen", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static ScreenDto Map(Screen e, string? modName = null) => new()
+    {
+        Id = e.Id, ModuleId = e.ModuleId, ModuleName = modName,
+        ScreenCode = e.ScreenCode, ScreenName = e.ScreenName, RouteUrl = e.RouteUrl,
+        ComponentName = e.ComponentName, SortOrder = e.SortOrder, IsActive = e.IsActive,
+        CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   Field Service
+   --------------------------------------------------------------------------- */
+public interface IFieldService
+{
+    Task<IEnumerable<FieldDto>> GetAllAsync();
+    Task<IEnumerable<FieldDto>> GetByScreenAsync(int screenId);
+    Task<FieldDto> GetByIdAsync(int id);
+    Task<FieldDto> CreateAsync(CreateFieldRequest request);
+    Task<FieldDto> UpdateAsync(int id, UpdateFieldRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class FieldService : IFieldService
+{
+    private readonly IFieldRepository _repo;
+    private readonly IScreenRepository _scrRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public FieldService(IFieldRepository repo, IScreenRepository scrRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _scrRepo = scrRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<FieldDto>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+        var scrNames = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.ScreenName);
+        return items.Select(e => Map(e, scrNames.TryGetValue(e.ScreenId, out var sn) ? sn : null)).ToList();
+    }
+
+    public async Task<IEnumerable<FieldDto>> GetByScreenAsync(int screenId)
+    {
+        var items = await _repo.GetByScreenAsync(screenId);
+        var scr = await _scrRepo.GetByIdAsync(screenId);
+        return items.Select(e => Map(e, scr?.ScreenName)).ToList();
+    }
+
+    public async Task<FieldDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Field '{id}' not found.");
+        var scr = await _scrRepo.GetByIdAsync(e.ScreenId);
+        return Map(e, scr?.ScreenName);
+    }
+
+    public async Task<FieldDto> CreateAsync(CreateFieldRequest r)
+    {
+        var e = new Field
+        {
+            ScreenId = r.ScreenId, FieldCode = r.FieldCode, FieldName = r.FieldName,
+            DisplayName = r.DisplayName, DataType = r.DataType, DisplayOrder = r.DisplayOrder,
+            DefaultValue = r.DefaultValue, IsSystemField = r.IsSystemField, IsRequired = r.IsRequired,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Field", e.Id.ToString(), "Create", _user.Username);
+        var scr = await _scrRepo.GetByIdAsync(e.ScreenId);
+        return Map(e, scr?.ScreenName);
+    }
+
+    public async Task<FieldDto> UpdateAsync(int id, UpdateFieldRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Field '{id}' not found.");
+        e.FieldCode = r.FieldCode;
+        e.FieldName = r.FieldName;
+        e.DisplayName = r.DisplayName;
+        e.DataType = r.DataType;
+        e.DisplayOrder = r.DisplayOrder;
+        e.DefaultValue = r.DefaultValue;
+        e.IsRequired = r.IsRequired;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Field", id.ToString(), "Update", _user.Username);
+        var scr = await _scrRepo.GetByIdAsync(e.ScreenId);
+        return Map(e, scr?.ScreenName);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Field '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Field", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static FieldDto Map(Field e, string? scrName = null) => new()
+    {
+        Id = e.Id, ScreenId = e.ScreenId, ScreenName = scrName,
+        FieldCode = e.FieldCode, FieldName = e.FieldName, DisplayName = e.DisplayName,
+        DataType = e.DataType, DisplayOrder = e.DisplayOrder, DefaultValue = e.DefaultValue,
+        IsSystemField = e.IsSystemField, IsRequired = e.IsRequired, IsActive = e.IsActive,
+        CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   Action Service (PermissionActionEntry)
+   --------------------------------------------------------------------------- */
+public interface IActionService
+{
+    Task<IEnumerable<ActionDto>> GetAllAsync();
+    Task<ActionDto> GetByIdAsync(int id);
+    Task<ActionDto> CreateAsync(CreateActionRequest request);
+    Task<ActionDto> UpdateAsync(int id, UpdateActionRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class ActionService : IActionService
+{
+    private readonly IActionRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public ActionService(IActionRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<ActionDto>> GetAllAsync()
+        => (await _repo.GetAllAsync()).Select(Map).ToList();
+
+    public async Task<ActionDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Action '{id}' not found.");
+        return Map(e);
+    }
+
+    public async Task<ActionDto> CreateAsync(CreateActionRequest r)
+    {
+        if (await _repo.GetByCodeAsync(r.ActionCode) is not null)
+            throw new DomainException($"Action '{r.ActionCode}' already exists.");
+        var e = new PermissionActionEntry
+        {
+            ActionCode = r.ActionCode, ActionName = r.ActionName,
+            DisplayOrder = r.DisplayOrder, IsActive = r.IsActive
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("Action", e.Id.ToString(), "Create", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<ActionDto> UpdateAsync(int id, UpdateActionRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Action '{id}' not found.");
+        e.ActionCode = r.ActionCode;
+        e.ActionName = r.ActionName;
+        e.DisplayOrder = r.DisplayOrder;
+        e.IsActive = r.IsActive;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("Action", id.ToString(), "Update", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Action '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("Action", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static ActionDto Map(PermissionActionEntry e) => new()
+    {
+        Id = e.Id, ActionCode = e.ActionCode, ActionName = e.ActionName,
+        DisplayOrder = e.DisplayOrder, IsActive = e.IsActive
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   RolePermissionEntry Service (hierarchical)
+   --------------------------------------------------------------------------- */
+public interface IRolePermissionEntryService
+{
+    Task<IEnumerable<RolePermissionEntryDto>> GetByRoleAsync(int roleId);
+    Task<RolePermissionEntryDto> AssignAsync(AssignRolePermissionRequest request);
+    Task<bool> BulkAssignAsync(BulkAssignRolePermissionRequest request);
+    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAllForRoleAsync(int roleId);
+}
+
+public class RolePermissionEntryService : IRolePermissionEntryService
+{
+    private readonly IRolePermissionEntryRepository _repo;
+    private readonly IRoleRepository _roleRepo;
+    private readonly IWorkspaceRepository _wsRepo;
+    private readonly IDomainRepository _domRepo;
+    private readonly IModuleRepository _modRepo;
+    private readonly IScreenRepository _scrRepo;
+    private readonly IActionRepository _actRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public RolePermissionEntryService(
+        IRolePermissionEntryRepository repo, IRoleRepository roleRepo,
+        IWorkspaceRepository wsRepo, IDomainRepository domRepo, IModuleRepository modRepo,
+        IScreenRepository scrRepo, IActionRepository actRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _roleRepo = roleRepo; _wsRepo = wsRepo; _domRepo = domRepo; _modRepo = modRepo; _scrRepo = scrRepo; _actRepo = actRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<RolePermissionEntryDto>> GetByRoleAsync(int roleId)
+    {
+        var items = await _repo.GetByRoleAsync(roleId);
+        var roleNames = await _roleRepo.GetAllNamesAsync();
+        var wsNames = (await _wsRepo.GetAllAsync(true)).ToDictionary(w => w.Id, w => w.WorkspaceName);
+        var domNames = (await _domRepo.GetAllAsync(true)).ToDictionary(d => d.Id, d => d.DomainName);
+        var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleName);
+        var scrNames = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.ScreenName);
+        var actNames = (await _actRepo.GetAllAsync(true)).ToDictionary(a => a.Id, a => a.ActionName);
+
+        return items.Select(e => new RolePermissionEntryDto
+        {
+            Id = e.Id,
+            RoleId = e.RoleId,
+            RoleName = roleNames.TryGetValue(e.RoleId, out var rn) ? rn : null,
+            WorkspaceId = e.WorkspaceId,
+            WorkspaceName = wsNames.TryGetValue(e.WorkspaceId, out var wn) ? wn : null,
+            DomainId = e.DomainId,
+            DomainName = domNames.TryGetValue(e.DomainId, out var dn) ? dn : null,
+            ModuleId = e.ModuleId,
+            ModuleName = modNames.TryGetValue(e.ModuleId, out var mn) ? mn : null,
+            ScreenId = e.ScreenId,
+            ScreenName = scrNames.TryGetValue(e.ScreenId, out var sn) ? sn : null,
+            ActionId = e.ActionId,
+            ActionName = actNames.TryGetValue(e.ActionId, out var an) ? an : null,
+            Allow = e.Allow,
+            DisplayOrder = e.DisplayOrder,
+            IsActive = e.IsActive,
+            CreatedDate = e.CreatedDate
+        }).ToList();
+    }
+
+    public async Task<RolePermissionEntryDto> AssignAsync(AssignRolePermissionRequest r)
+    {
+        var e = new RolePermissionEntry
+        {
+            RoleId = r.RoleId, WorkspaceId = r.WorkspaceId, DomainId = r.DomainId,
+            ModuleId = r.ModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
+            Allow = r.Allow, DisplayOrder = r.DisplayOrder,
+            IsActive = true, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("RolePermission", e.Id.ToString(), "Assign", _user.Username);
+        return (await GetByRoleAsync(r.RoleId)).First(x => x.Id == e.Id);
+    }
+
+    public async Task<bool> BulkAssignAsync(BulkAssignRolePermissionRequest r)
+    {
+        var entities = r.Permissions.Select(p => new RolePermissionEntry
+        {
+            RoleId = r.RoleId, WorkspaceId = p.WorkspaceId, DomainId = p.DomainId,
+            ModuleId = p.ModuleId, ScreenId = p.ScreenId, ActionId = p.ActionId,
+            Allow = p.Allow, IsActive = true, CreatedBy = _user.Username
+        });
+        await _repo.BulkInsertAsync(entities);
+        await _audit.WriteAsync("RolePermission", r.RoleId.ToString(), "BulkAssign", _user.Username);
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("RolePermission", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    public async Task<bool> DeleteAllForRoleAsync(int roleId)
+    {
+        var r = await _repo.DeleteAllForRoleAsync(roleId);
+        if (r) await _audit.WriteAsync("RolePermission", roleId.ToString(), "DeleteAll", _user.Username);
+        return r;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   UserPermissionOverride Service
+   --------------------------------------------------------------------------- */
+public interface IUserPermissionOverrideService
+{
+    Task<IEnumerable<UserPermissionOverrideDto>> GetByUserAsync(int userId);
+    Task<UserPermissionOverrideDto> CreateAsync(CreateUserPermissionOverrideRequest request);
+    Task<UserPermissionOverrideDto> UpdateAsync(int id, UpdateUserPermissionOverrideRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class UserPermissionOverrideService : IUserPermissionOverrideService
+{
+    private readonly IUserPermissionOverrideRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public UserPermissionOverrideService(IUserPermissionOverrideRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<UserPermissionOverrideDto>> GetByUserAsync(int userId)
+        => (await _repo.GetByUserAsync(userId)).Select(Map).ToList();
+
+    public async Task<UserPermissionOverrideDto> CreateAsync(CreateUserPermissionOverrideRequest r)
+    {
+        var e = new UserPermissionOverride
+        {
+            UserId = r.UserId, WorkspaceId = r.WorkspaceId, DomainId = r.DomainId,
+            ModuleId = r.ModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
+            PermissionType = r.PermissionType, Allow = r.Allow,
+            EffectiveFrom = r.EffectiveFrom ?? DateTime.UtcNow, EffectiveTo = r.EffectiveTo,
+            Remarks = r.Remarks, IsActive = true, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("UserPermissionOverride", e.Id.ToString(), "Create", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<UserPermissionOverrideDto> UpdateAsync(int id, UpdateUserPermissionOverrideRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"UserPermissionOverride '{id}' not found.");
+        e.PermissionType = r.PermissionType;
+        e.Allow = r.Allow;
+        e.EffectiveFrom = r.EffectiveFrom ?? e.EffectiveFrom;
+        e.EffectiveTo = r.EffectiveTo;
+        e.Remarks = r.Remarks;
+        e.IsActive = r.IsActive;
+        e.ModifiedBy = _user.Username;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("UserPermissionOverride", id.ToString(), "Update", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("UserPermissionOverride", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static UserPermissionOverrideDto Map(UserPermissionOverride e) => new()
+    {
+        Id = e.Id, UserId = e.UserId, WorkspaceId = e.WorkspaceId, DomainId = e.DomainId,
+        ModuleId = e.ModuleId, ScreenId = e.ScreenId, ActionId = e.ActionId,
+        PermissionType = e.PermissionType, Allow = e.Allow,
+        EffectiveFrom = e.EffectiveFrom, EffectiveTo = e.EffectiveTo,
+        Remarks = e.Remarks, IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   RoleFieldPermissionEntry Service
+   --------------------------------------------------------------------------- */
+public interface IRoleFieldPermissionEntryService
+{
+    Task<IEnumerable<RoleFieldPermissionEntryDto>> GetByRoleAsync(int roleId);
+    Task<IEnumerable<RoleFieldPermissionEntryDto>> GetByRoleScreenAsync(int roleId, int screenId);
+    Task<RoleFieldPermissionEntryDto> SetAsync(SetRoleFieldPermissionRequest request);
+    Task<bool> BulkSetAsync(BulkSetRoleFieldPermissionRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class RoleFieldPermissionEntryService : IRoleFieldPermissionEntryService
+{
+    private readonly IRoleFieldPermissionEntryRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public RoleFieldPermissionEntryService(IRoleFieldPermissionEntryRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<RoleFieldPermissionEntryDto>> GetByRoleAsync(int roleId)
+        => (await _repo.GetByRoleAsync(roleId)).Select(Map).ToList();
+
+    public async Task<IEnumerable<RoleFieldPermissionEntryDto>> GetByRoleScreenAsync(int roleId, int screenId)
+        => (await _repo.GetByRoleScreenAsync(roleId, screenId)).Select(Map).ToList();
+
+    public async Task<RoleFieldPermissionEntryDto> SetAsync(SetRoleFieldPermissionRequest r)
+    {
+        var e = new RoleFieldPermissionEntry
+        {
+            RoleId = r.RoleId, ScreenId = r.ScreenId, FieldId = r.FieldId,
+            CanView = r.CanView, CanEdit = r.CanEdit, IsHidden = r.IsHidden,
+            IsReadOnly = r.IsReadOnly, IsMandatory = r.IsMandatory,
+            DisplayOrder = r.DisplayOrder, IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("RoleFieldPermission", e.Id.ToString(), "Set", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> BulkSetAsync(BulkSetRoleFieldPermissionRequest r)
+    {
+        var entities = r.Fields.Select(f => new RoleFieldPermissionEntry
+        {
+            RoleId = r.RoleId, ScreenId = r.ScreenId, FieldId = f.FieldId,
+            CanView = f.CanView, CanEdit = f.CanEdit, IsHidden = f.IsHidden,
+            IsReadOnly = f.IsReadOnly, IsMandatory = f.IsMandatory,
+            DisplayOrder = f.DisplayOrder, IsActive = true, CreatedBy = _user.Username
+        });
+        await _repo.BulkInsertAsync(entities);
+        await _audit.WriteAsync("RoleFieldPermission", r.RoleId.ToString(), "BulkSet", _user.Username);
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("RoleFieldPermission", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static RoleFieldPermissionEntryDto Map(RoleFieldPermissionEntry e) => new()
+    {
+        Id = e.Id, RoleId = e.RoleId, ScreenId = e.ScreenId, FieldId = e.FieldId,
+        CanView = e.CanView, CanEdit = e.CanEdit, IsHidden = e.IsHidden,
+        IsReadOnly = e.IsReadOnly, IsMandatory = e.IsMandatory,
+        DisplayOrder = e.DisplayOrder, IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   UserFieldPermissionEntry Service
+   --------------------------------------------------------------------------- */
+public interface IUserFieldPermissionEntryService
+{
+    Task<IEnumerable<UserFieldPermissionEntryDto>> GetByUserAsync(int userId);
+    Task<IEnumerable<UserFieldPermissionEntryDto>> GetByUserScreenAsync(int userId, int screenId);
+    Task<UserFieldPermissionEntryDto> SetAsync(SetUserFieldPermissionRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class UserFieldPermissionEntryService : IUserFieldPermissionEntryService
+{
+    private readonly IUserFieldPermissionEntryRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public UserFieldPermissionEntryService(IUserFieldPermissionEntryRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<UserFieldPermissionEntryDto>> GetByUserAsync(int userId)
+        => (await _repo.GetByUserAsync(userId)).Select(Map).ToList();
+
+    public async Task<IEnumerable<UserFieldPermissionEntryDto>> GetByUserScreenAsync(int userId, int screenId)
+        => (await _repo.GetByUserScreenAsync(userId, screenId)).Select(Map).ToList();
+
+    public async Task<UserFieldPermissionEntryDto> SetAsync(SetUserFieldPermissionRequest r)
+    {
+        var e = new UserFieldPermissionEntry
+        {
+            UserId = r.UserId, ScreenId = r.ScreenId, FieldId = r.FieldId,
+            CanView = r.CanView, CanEdit = r.CanEdit, IsHidden = r.IsHidden,
+            IsReadOnly = r.IsReadOnly, IsMandatory = r.IsMandatory,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("UserFieldPermission", e.Id.ToString(), "Set", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("UserFieldPermission", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static UserFieldPermissionEntryDto Map(UserFieldPermissionEntry e) => new()
+    {
+        Id = e.Id, UserId = e.UserId, ScreenId = e.ScreenId, FieldId = e.FieldId,
+        CanView = e.CanView, CanEdit = e.CanEdit, IsHidden = e.IsHidden,
+        IsReadOnly = e.IsReadOnly, IsMandatory = e.IsMandatory,
+        IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   DataScope Service (one-per-role, upsert)
+   --------------------------------------------------------------------------- */
+public interface IDataScopeService
+{
+    Task<DataScopeDto?> GetByRoleAsync(int roleId);
+    Task<DataScopeDto> SetAsync(SetDataScopeRequest request);
+    Task<bool> DeleteAsync(int roleId);
+}
+
+public class DataScopeService : IDataScopeService
+{
+    private readonly IDataScopeRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public DataScopeService(IDataScopeRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<DataScopeDto?> GetByRoleAsync(int roleId)
+    {
+        var e = await _repo.GetByRoleAsync(roleId);
+        return e is null ? null : Map(e);
+    }
+
+    public async Task<DataScopeDto> SetAsync(SetDataScopeRequest r)
+    {
+        var existing = await _repo.GetByRoleAsync(r.RoleId);
+        if (existing is not null)
+        {
+            existing.CompanyId = r.CompanyId;
+            existing.BranchId = r.BranchId;
+            existing.DepartmentId = r.DepartmentId;
+            existing.WarehouseId = r.WarehouseId;
+            existing.BusinessUnitId = r.BusinessUnitId;
+            existing.CostCenterId = r.CostCenterId;
+            existing.ProfitCenterId = r.ProfitCenterId;
+            existing.CanViewAll = r.CanViewAll;
+            existing.CanEditAll = r.CanEditAll;
+            existing.IsActive = r.IsActive;
+            await _repo.UpdateAsync(existing);
+            await _audit.WriteAsync("DataScope", r.RoleId.ToString(), "Update", _user.Username);
+            return Map(existing);
+        }
+        var e = new DataScope
+        {
+            RoleId = r.RoleId, CompanyId = r.CompanyId, BranchId = r.BranchId,
+            DepartmentId = r.DepartmentId, WarehouseId = r.WarehouseId,
+            BusinessUnitId = r.BusinessUnitId, CostCenterId = r.CostCenterId,
+            ProfitCenterId = r.ProfitCenterId, CanViewAll = r.CanViewAll,
+            CanEditAll = r.CanEditAll, IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("DataScope", e.Id.ToString(), "Create", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int roleId)
+    {
+        var r = await _repo.DeleteAsync(roleId);
+        if (r) await _audit.WriteAsync("DataScope", roleId.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static DataScopeDto Map(DataScope e) => new()
+    {
+        Id = e.Id, RoleId = e.RoleId, CompanyId = e.CompanyId, BranchId = e.BranchId,
+        DepartmentId = e.DepartmentId, WarehouseId = e.WarehouseId,
+        BusinessUnitId = e.BusinessUnitId, CostCenterId = e.CostCenterId,
+        ProfitCenterId = e.ProfitCenterId, CanViewAll = e.CanViewAll,
+        CanEditAll = e.CanEditAll, IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   WorkflowPermissionEntry Service
+   --------------------------------------------------------------------------- */
+public interface IWorkflowPermissionEntryService
+{
+    Task<IEnumerable<WorkflowPermissionEntryDto>> GetByRoleAsync(int roleId);
+    Task<WorkflowPermissionEntryDto> SetAsync(SetWorkflowPermissionRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class WorkflowPermissionEntryService : IWorkflowPermissionEntryService
+{
+    private readonly IWorkflowPermissionEntryRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public WorkflowPermissionEntryService(IWorkflowPermissionEntryRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<WorkflowPermissionEntryDto>> GetByRoleAsync(int roleId)
+        => (await _repo.GetByRoleAsync(roleId)).Select(Map).ToList();
+
+    public async Task<WorkflowPermissionEntryDto> SetAsync(SetWorkflowPermissionRequest r)
+    {
+        var e = new WorkflowPermissionEntry
+        {
+            RoleId = r.RoleId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
+            CanSubmit = r.CanSubmit, CanApprove = r.CanApprove, CanReject = r.CanReject,
+            CanCancel = r.CanCancel, CanClose = r.CanClose,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("WorkflowPermission", e.Id.ToString(), "Set", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("WorkflowPermission", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static WorkflowPermissionEntryDto Map(WorkflowPermissionEntry e) => new()
+    {
+        Id = e.Id, RoleId = e.RoleId, ModuleId = e.ModuleId, ScreenId = e.ScreenId,
+        CanSubmit = e.CanSubmit, CanApprove = e.CanApprove, CanReject = e.CanReject,
+        CanCancel = e.CanCancel, CanClose = e.CanClose,
+        IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}

@@ -98,6 +98,12 @@ public const string OrganizationTypesView = "organization-types.view";
     public const string AuditView = "audit.view";
     public const string ProfileEdit = "profile.edit";
 
+    public const string PermissionModulesView = "permission-modules.view";
+    public const string PermissionModulesManage = "permission-modules.manage";
+
+    public const string PermissionActionsView = "permission-actions.view";
+    public const string PermissionActionsManage = "permission-actions.manage";
+
     public static readonly string[] All =
     {
         DashboardView,
@@ -125,6 +131,8 @@ public const string OrganizationTypesView = "organization-types.view";
         WarehousesView, WarehousesCreate, WarehousesEdit, WarehousesDelete,
         CurrenciesView, CurrenciesManage,
         SettingsView, SettingsEdit,
-        AuditView, ProfileEdit
+        AuditView, ProfileEdit,
+        PermissionModulesView, PermissionModulesManage,
+        PermissionActionsView, PermissionActionsManage
     };
 }

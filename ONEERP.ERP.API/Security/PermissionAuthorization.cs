@@ -46,6 +46,9 @@ public class PermissionAuthorizationFilter : IAsyncAuthorizationFilter
             return;
         }
 
+        if (user.HasClaim(ClaimTypes.Role, "Super Admin"))
+            return;
+
         var hasAny = requiredPermissions.Any(p => user.HasClaim(ClaimTypes.Permission, p));
 
         if (!hasAny)

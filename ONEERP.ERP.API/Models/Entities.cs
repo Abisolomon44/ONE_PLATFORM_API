@@ -123,15 +123,17 @@ public class RefreshToken
 
 public class AuditLog
 {
-    public long AuditLogId { get; set; }
-    public string EntityName { get; set; } = string.Empty;
-    public string? EntityId { get; set; }
+    public long Id { get; set; }
+    public int? UserId { get; set; }
+    public int? ModuleId { get; set; }
+    public int? ScreenId { get; set; }
     public string Action { get; set; } = string.Empty;
-    public string? PerformedBy { get; set; }
-    public DateTime PerformedDate { get; set; }
-    public string? OldValues { get; set; }
-    public string? NewValues { get; set; }
-    public string? IpAddress { get; set; }
+    public string? ReferenceId { get; set; }
+    public string? OldValue { get; set; }
+    public string? NewValue { get; set; }
+    public string? IPAddress { get; set; }
+    public string? Browser { get; set; }
+    public DateTime CreatedDate { get; set; }
 }
 
 public class BusinessType
@@ -356,4 +358,275 @@ public class Warehouse
     public DateTime CreatedDate { get; set; }
     public int? ModifiedBy { get; set; }
     public DateTime? ModifiedDate { get; set; }
+}
+
+/* ---------------------------------------------------------------------------
+    Permission System Entities
+    --------------------------------------------------------------------------- */
+
+public class PermissionModule
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public int? ParentId { get; set; }
+    public string Level { get; set; } = string.Empty;
+    public int SortOrder { get; set; }
+    public bool IsVisible { get; set; } = true;
+    public string? Icon { get; set; }
+    public string? RoutePath { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+    public bool IsDeleted { get; set; }
+}
+
+public enum PermissionScope
+{
+    Platform,
+    Tenant,
+    Company,
+    Branch,
+    User
+}
+
+public class PermissionAction
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class ModulePermission
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int PermissionModuleId { get; set; }
+    public int PermissionActionId { get; set; }
+    public string Scope { get; set; } = string.Empty;
+    public int? ScopeId { get; set; }
+    public string? GrantedBy { get; set; }
+    public DateTime GrantedDate { get; set; }
+    public bool IsRevoked { get; set; }
+    public string? RevokedBy { get; set; }
+    public DateTime? RevokedDate { get; set; }
+}
+
+public class FieldPermission
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int PermissionModuleId { get; set; }
+    public string FieldName { get; set; } = string.Empty;
+    public bool CanView { get; set; } = true;
+    public bool CanEdit { get; set; } = true;
+    public bool IsMandatory { get; set; }
+    public bool IsHidden { get; set; }
+    public string Scope { get; set; } = string.Empty;
+    public int? ScopeId { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+/* ---------------------------------------------------------------------------
+    Enterprise Permission Engine Entities
+    --------------------------------------------------------------------------- */
+
+public class Workspace
+{
+    public int Id { get; set; }
+    public string WorkspaceCode { get; set; } = string.Empty;
+    public string WorkspaceName { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public string? Route { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class Domain
+{
+    public int Id { get; set; }
+    public int WorkspaceId { get; set; }
+    public string DomainCode { get; set; } = string.Empty;
+    public string DomainName { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class Module
+{
+    public int Id { get; set; }
+    public int DomainId { get; set; }
+    public string ModuleCode { get; set; } = string.Empty;
+    public string ModuleName { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public string? RouteUrl { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class Screen
+{
+    public int Id { get; set; }
+    public int ModuleId { get; set; }
+    public string ScreenCode { get; set; } = string.Empty;
+    public string ScreenName { get; set; } = string.Empty;
+    public string? RouteUrl { get; set; }
+    public string? ComponentName { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class Field
+{
+    public int Id { get; set; }
+    public int ScreenId { get; set; }
+    public string FieldCode { get; set; } = string.Empty;
+    public string FieldName { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
+    public string DataType { get; set; } = "text";
+    public int DisplayOrder { get; set; }
+    public string? DefaultValue { get; set; }
+    public bool IsSystemField { get; set; }
+    public bool IsRequired { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class PermissionActionEntry
+{
+    public int Id { get; set; }
+    public string ActionCode { get; set; } = string.Empty;
+    public string ActionName { get; set; } = string.Empty;
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+public class RolePermissionEntry
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int WorkspaceId { get; set; }
+    public int DomainId { get; set; }
+    public int ModuleId { get; set; }
+    public int ScreenId { get; set; }
+    public int ActionId { get; set; }
+    public bool Allow { get; set; } = true;
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class UserPermissionOverride
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public int WorkspaceId { get; set; }
+    public int DomainId { get; set; }
+    public int ModuleId { get; set; }
+    public int ScreenId { get; set; }
+    public int ActionId { get; set; }
+    public string PermissionType { get; set; } = "Grant";
+    public bool Allow { get; set; } = true;
+    public DateTime EffectiveFrom { get; set; }
+    public DateTime? EffectiveTo { get; set; }
+    public string? Remarks { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class RoleFieldPermissionEntry
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int ScreenId { get; set; }
+    public int FieldId { get; set; }
+    public bool CanView { get; set; } = true;
+    public bool CanEdit { get; set; } = true;
+    public bool IsHidden { get; set; }
+    public bool IsReadOnly { get; set; }
+    public bool IsMandatory { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class UserFieldPermissionEntry
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public int ScreenId { get; set; }
+    public int FieldId { get; set; }
+    public bool CanView { get; set; } = true;
+    public bool CanEdit { get; set; } = true;
+    public bool IsHidden { get; set; }
+    public bool IsReadOnly { get; set; }
+    public bool IsMandatory { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class DataScope
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int? CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int? DepartmentId { get; set; }
+    public int? WarehouseId { get; set; }
+    public int? BusinessUnitId { get; set; }
+    public int? CostCenterId { get; set; }
+    public int? ProfitCenterId { get; set; }
+    public bool CanViewAll { get; set; }
+    public bool CanEditAll { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+
+public class WorkflowPermissionEntry
+{
+    public int Id { get; set; }
+    public int RoleId { get; set; }
+    public int ModuleId { get; set; }
+    public int ScreenId { get; set; }
+    public bool CanSubmit { get; set; }
+    public bool CanApprove { get; set; }
+    public bool CanReject { get; set; }
+    public bool CanCancel { get; set; }
+    public bool CanClose { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
 }

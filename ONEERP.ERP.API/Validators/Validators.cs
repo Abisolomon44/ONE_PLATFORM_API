@@ -555,3 +555,53 @@ public class UpdateWarehouseRequestValidator : AbstractValidator<DTOs.UpdateWare
         RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
     }
 }
+
+public class CreatePermissionModuleRequestValidator : AbstractValidator<DTOs.CreatePermissionModuleRequest>
+{
+    public CreatePermissionModuleRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(100)
+            .Matches("^[A-Za-z0-9._-]+$").WithMessage("Code may only contain letters, digits, dots, hyphens and underscores.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Level).NotEmpty().MaximumLength(20);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.Icon).MaximumLength(100);
+        RuleFor(x => x.RoutePath).MaximumLength(200);
+    }
+}
+
+public class UpdatePermissionModuleRequestValidator : AbstractValidator<DTOs.UpdatePermissionModuleRequest>
+{
+    public UpdatePermissionModuleRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(100)
+            .Matches("^[A-Za-z0-9._-]+$").WithMessage("Code may only contain letters, digits, dots, hyphens and underscores.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Level).NotEmpty().MaximumLength(20);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.Icon).MaximumLength(100);
+        RuleFor(x => x.RoutePath).MaximumLength(200);
+    }
+}
+
+public class CreatePermissionActionRequestValidator : AbstractValidator<DTOs.CreatePermissionActionRequest>
+{
+    public CreatePermissionActionRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdatePermissionActionRequestValidator : AbstractValidator<DTOs.UpdatePermissionActionRequest>
+{
+    public UpdatePermissionActionRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}

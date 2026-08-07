@@ -136,6 +136,46 @@ builder.Services.AddScoped<IBranchTypeService, BranchTypeService>();
 builder.Services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 builder.Services.AddScoped<IEmploymentTypeService, EmploymentTypeService>();
 
+// Permission System Repositories (Legacy)
+builder.Services.AddScoped<IPermissionModuleRepository, PermissionModuleRepository>();
+builder.Services.AddScoped<IPermissionActionRepository, PermissionActionRepository>();
+builder.Services.AddScoped<IModulePermissionRepository, ModulePermissionRepository>();
+builder.Services.AddScoped<IFieldPermissionRepository, FieldPermissionRepository>();
+
+// Permission System Services (Legacy)
+builder.Services.AddScoped<IPermissionModuleService, PermissionModuleService>();
+builder.Services.AddScoped<IPermissionActionService, PermissionActionService>();
+builder.Services.AddScoped<IModulePermissionService, ModulePermissionService>();
+builder.Services.AddScoped<IFieldPermissionService, FieldPermissionService>();
+
+// Enterprise Permission Engine Repositories
+builder.Services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
+builder.Services.AddScoped<IDomainRepository, DomainRepository>();
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IScreenRepository, ScreenRepository>();
+builder.Services.AddScoped<IFieldRepository, FieldRepository>();
+builder.Services.AddScoped<IActionRepository, ActionRepository>();
+builder.Services.AddScoped<IRolePermissionEntryRepository, RolePermissionEntryRepository>();
+builder.Services.AddScoped<IUserPermissionOverrideRepository, UserPermissionOverrideRepository>();
+builder.Services.AddScoped<IRoleFieldPermissionEntryRepository, RoleFieldPermissionEntryRepository>();
+builder.Services.AddScoped<IUserFieldPermissionEntryRepository, UserFieldPermissionEntryRepository>();
+builder.Services.AddScoped<IDataScopeRepository, DataScopeRepository>();
+builder.Services.AddScoped<IWorkflowPermissionEntryRepository, WorkflowPermissionEntryRepository>();
+
+// Enterprise Permission Engine Services
+builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
+builder.Services.AddScoped<IDomainService, DomainService>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IScreenService, ScreenService>();
+builder.Services.AddScoped<IFieldService, FieldService>();
+builder.Services.AddScoped<IActionService, ActionService>();
+builder.Services.AddScoped<IRolePermissionEntryService, RolePermissionEntryService>();
+builder.Services.AddScoped<IUserPermissionOverrideService, UserPermissionOverrideService>();
+builder.Services.AddScoped<IRoleFieldPermissionEntryService, RoleFieldPermissionEntryService>();
+builder.Services.AddScoped<IUserFieldPermissionEntryService, UserFieldPermissionEntryService>();
+builder.Services.AddScoped<IDataScopeService, DataScopeService>();
+builder.Services.AddScoped<IWorkflowPermissionEntryService, WorkflowPermissionEntryService>();
+
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

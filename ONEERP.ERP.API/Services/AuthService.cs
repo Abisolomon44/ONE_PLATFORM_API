@@ -24,6 +24,13 @@ public class AuthService : IAuthService
     private readonly ITokenService _tokenService;
     private readonly IAuditService _auditService;
     private readonly IConfiguration _configuration;
+    private readonly IRolePermissionEntryRepository _rolePermRepo;
+    private readonly IWorkspaceRepository _wsRepo;
+    private readonly IDomainRepository _domRepo;
+    private readonly IModuleRepository _modRepo;
+    private readonly IScreenRepository _scrRepo;
+    private readonly IActionRepository _actRepo;
+    private readonly IUserPermissionOverrideRepository _userPermOverrideRepo;
 
     public AuthService(
         ITenantConnectionResolver resolver,
@@ -34,7 +41,14 @@ public class AuthService : IAuthService
         IRefreshTokenRepository refreshTokenRepository,
         ITokenService tokenService,
         IAuditService auditService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IRolePermissionEntryRepository rolePermRepo,
+        IWorkspaceRepository wsRepo,
+        IDomainRepository domRepo,
+        IModuleRepository modRepo,
+        IScreenRepository scrRepo,
+        IActionRepository actRepo,
+        IUserPermissionOverrideRepository userPermOverrideRepo)
     {
         _resolver = resolver;
         _accessor = accessor;
@@ -45,13 +59,19 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
         _auditService = auditService;
         _configuration = configuration;
+        _rolePermRepo = rolePermRepo;
+        _wsRepo = wsRepo;
+        _domRepo = domRepo;
+        _modRepo = modRepo;
+        _scrRepo = scrRepo;
+        _actRepo = actRepo;
+        _userPermOverrideRepo = userPermOverrideRepo;
     }
 
     public async Task<LoginResponse> LoginAsync(string username, string password)
     {
         username = username.Trim();
 
-        // 1. Resolve the owning tenant from the globally unique username
         var tenantCode = await _resolver.ResolveTenantCodeByUsernameAsync(username)
             ?? throw new UnauthorizedAccess("Invalid username or password.");
 
@@ -59,7 +79,6 @@ public class AuthService : IAuthService
         _accessor.TenantCode = tenant.TenantCode;
         _accessor.ConnectionString = tenant.ConnectionString;
 
-        // 2. Validate user credentials inside the tenant database
         var user = await _userRepository.GetByUsernameAsync(username);
 
         if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
@@ -68,9 +87,8 @@ public class AuthService : IAuthService
         if (user.Status != ONEERP.Shared.Constants.EntityStatus.Active)
             throw new UnauthorizedAccess("User account is not active.");
 
-        // 3. Load roles, permissions and company
         var roles = await _roleRepository.GetRolesForUserAsync(user.UserId);
-        var permissions = await _roleRepository.GetPermissionsForUserAsync(user.UserId);
+        var permissions = await ResolveAllPermissionsAsync(user.UserId);
         var company = await _companyRepository.GetByIdAsync(user.CompanyId)
             ?? throw new DomainException("Company not found for this user.");
 
@@ -99,16 +117,14 @@ public class AuthService : IAuthService
         if (user is null || user.Status != ONEERP.Shared.Constants.EntityStatus.Active)
             throw new UnauthorizedAccess("User account is no longer active.");
 
-        // Sliding window: extend the existing refresh token instead of revoking + creating new
         var refreshDays = int.Parse(_configuration["Jwt:RefreshTokenDays"] ?? "7");
         await _refreshTokenRepository.ExtendExpiryAsync(refreshToken, DateTime.UtcNow.AddDays(refreshDays));
 
         var roles = await _roleRepository.GetRolesForUserAsync(user.UserId);
-        var permissions = await _roleRepository.GetPermissionsForUserAsync(user.UserId);
+        var permissions = await ResolveAllPermissionsAsync(user.UserId);
         var company = await _companyRepository.GetByIdAsync(user.CompanyId)
             ?? throw new DomainException("Company not found for this user.");
 
-        // Generate access token but reuse the existing refresh token
         var accessToken = _tokenService.GenerateAccessToken(user, tenant, roles.ToList(), permissions.ToList());
 
         return new LoginResponse
@@ -138,6 +154,66 @@ public class AuthService : IAuthService
 
     public async Task<bool> LogoutAsync(string refreshToken)
         => await _refreshTokenRepository.RevokeAsync(refreshToken);
+
+    private async Task<IEnumerable<string>> ResolveAllPermissionsAsync(int userId)
+    {
+        var legacyPermissions = await _roleRepository.GetPermissionsForUserAsync(userId);
+        var hierarchicalPermissions = await ResolveHierarchicalPermissionsAsync(userId);
+        return legacyPermissions.Concat(hierarchicalPermissions).Distinct().ToList();
+    }
+
+    private async Task<IEnumerable<string>> ResolveHierarchicalPermissionsAsync(int userId)
+    {
+        var roleIds = await _roleRepository.GetRoleIdsForUserAsync(userId);
+        var wsNames = (await _wsRepo.GetAllAsync(true)).ToDictionary(w => w.Id, w => w.WorkspaceCode);
+        var domNames = (await _domRepo.GetAllAsync(true)).ToDictionary(d => d.Id, d => d.DomainCode);
+        var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleCode);
+        var scrNames = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.ScreenCode);
+        var actNames = (await _actRepo.GetAllAsync(true)).ToDictionary(a => a.Id, a => a.ActionCode);
+
+        var permCodes = new List<string>();
+
+        foreach (var roleId in roleIds)
+        {
+            var rolePerms = await _rolePermRepo.GetByRoleAsync(roleId);
+            foreach (var rp in rolePerms.Where(p => p.Allow && p.IsActive))
+            {
+                if (wsNames.TryGetValue(rp.WorkspaceId, out var wc) &&
+                    domNames.TryGetValue(rp.DomainId, out var dc) &&
+                    modNames.TryGetValue(rp.ModuleId, out var mc) &&
+                    scrNames.TryGetValue(rp.ScreenId, out var sc) &&
+                    actNames.TryGetValue(rp.ActionId, out var ac))
+                {
+                    permCodes.Add($"{wc}.{dc}.{mc}.{sc}.{ac}");
+                    permCodes.Add($"{mc}.{ac}");
+                }
+            }
+        }
+
+        var overrides = await _userPermOverrideRepo.GetByUserAsync(userId);
+        foreach (var o in overrides.Where(o => o.IsActive && o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+        {
+            if (wsNames.TryGetValue(o.WorkspaceId, out var wc) &&
+                domNames.TryGetValue(o.DomainId, out var dc) &&
+                modNames.TryGetValue(o.ModuleId, out var mc) &&
+                scrNames.TryGetValue(o.ScreenId, out var sc) &&
+                actNames.TryGetValue(o.ActionId, out var ac))
+            {
+                if (o.Allow)
+                {
+                    permCodes.Add($"{wc}.{dc}.{mc}.{sc}.{ac}");
+                    permCodes.Add($"{mc}.{ac}");
+                }
+                else
+                {
+                    permCodes.Remove($"{wc}.{dc}.{mc}.{sc}.{ac}");
+                    permCodes.Remove($"{mc}.{ac}");
+                }
+            }
+        }
+
+        return permCodes.Distinct();
+    }
 
     private async Task<LoginResponse> BuildLoginResponseAsync(
         TenantSession tenant,
