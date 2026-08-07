@@ -21,7 +21,26 @@ public record CreateCompanyRequest(
     string? RegistrationNumber,
     int CurrencyId,
     int LanguageId,
-    int TimeZoneId);
+    int TimeZoneId,
+    int? CompanyGroupId,
+    int? BusinessUnitId,
+    string? Website,
+    string? Email,
+    string? Phone,
+    string? Mobile,
+    string? LogoUrl,
+    int? DefaultFinancialYearId,
+    bool MultiBranchEnabled,
+    bool MultiWarehouseEnabled,
+    bool MultiCurrencyEnabled,
+    string? DateFormat,
+    string? TimeFormat,
+    string? NumberFormat,
+    int? DefaultWarehouseId,
+    string? Theme,
+    string? PrimaryColor,
+    string? SecondaryColor,
+    string? Remarks);
 
 public record UpdateCompanyRequest(
     string CompanyName,
@@ -39,7 +58,26 @@ public record UpdateCompanyRequest(
     int LanguageId,
     int TimeZoneId,
     bool IsActive,
-    bool IsBlocked);
+    bool IsBlocked,
+    int? CompanyGroupId,
+    int? BusinessUnitId,
+    string? Website,
+    string? Email,
+    string? Phone,
+    string? Mobile,
+    string? LogoUrl,
+    int? DefaultFinancialYearId,
+    bool? MultiBranchEnabled,
+    bool? MultiWarehouseEnabled,
+    bool? MultiCurrencyEnabled,
+    string? DateFormat,
+    string? TimeFormat,
+    string? NumberFormat,
+    int? DefaultWarehouseId,
+    string? Theme,
+    string? PrimaryColor,
+    string? SecondaryColor,
+    string? Remarks);
 
 public record UpdateSettingsRequest(Dictionary<string, string> Settings);
 

@@ -82,7 +82,6 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse> RefreshAsync(string username, string refreshToken)
     {
-        // Resolve the owning tenant from the globally unique username
         var tenantCode = await _resolver.ResolveTenantCodeByUsernameAsync(username.Trim())
             ?? throw new UnauthorizedAccess("Invalid or expired refresh token.");
 
@@ -100,14 +99,41 @@ public class AuthService : IAuthService
         if (user is null || user.Status != ONEERP.Shared.Constants.EntityStatus.Active)
             throw new UnauthorizedAccess("User account is no longer active.");
 
-        await _refreshTokenRepository.RevokeAsync(refreshToken);
+        // Sliding window: extend the existing refresh token instead of revoking + creating new
+        var refreshDays = int.Parse(_configuration["Jwt:RefreshTokenDays"] ?? "7");
+        await _refreshTokenRepository.ExtendExpiryAsync(refreshToken, DateTime.UtcNow.AddDays(refreshDays));
 
         var roles = await _roleRepository.GetRolesForUserAsync(user.UserId);
         var permissions = await _roleRepository.GetPermissionsForUserAsync(user.UserId);
         var company = await _companyRepository.GetByIdAsync(user.CompanyId)
             ?? throw new DomainException("Company not found for this user.");
 
-        return await BuildLoginResponseAsync(tenant, user, company, roles, permissions);
+        // Generate access token but reuse the existing refresh token
+        var accessToken = _tokenService.GenerateAccessToken(user, tenant, roles.ToList(), permissions.ToList());
+
+        return new LoginResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            ExpiresIn = int.Parse(_configuration["Jwt:AccessTokenMinutes"] ?? "15") * 60,
+            User = new UserDto
+            {
+                UserId = user.UserId,
+                CompanyId = user.CompanyId,
+                Username = user.Username,
+                FullName = user.FullName,
+                Email = user.Email,
+                Mobile = user.Mobile,
+                Status = user.Status,
+                IsSuperAdmin = user.IsSuperAdmin,
+                Roles = roles.Select(r => r.Name).ToList()
+            },
+            Roles = roles.Select(r => r.Name).ToList(),
+            Permissions = permissions.ToList(),
+            Company = ToCompanyDto(company),
+            TenantCode = tenant.TenantCode,
+            TenantName = tenant.TenantName
+        };
     }
 
     public async Task<bool> LogoutAsync(string refreshToken)

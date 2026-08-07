@@ -61,6 +61,7 @@ public interface IWarehouseRepository
     Task<int> InsertAsync(Warehouse warehouse, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Warehouse warehouse, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<IEnumerable<Warehouse>> GetAllAsync(bool includeInactive);
 }
 
 public class BranchRepository : TenantRepositoryBase, IBranchRepository
@@ -604,6 +605,17 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<IEnumerable<Warehouse>> GetAllAsync(bool includeInactive)
+    {
+        using var connection = OpenTenant();
+        var sql = @"
+            SELECT * FROM dbo.Warehouses
+            WHERE IsDeleted = 0"
+                  + (includeInactive ? "" : " AND IsActive = 1")
+                  + @" ORDER BY SortOrder, Id;";
+        return await Sql.QueryAsync<Warehouse>(connection, sql);
     }
 }
 

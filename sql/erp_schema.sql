@@ -273,6 +273,39 @@ BEGIN
     CREATE INDEX IX_Companies_CurrencyId ON dbo.Companies (CurrencyId);
 END
 ;
+;
+
+/* ---------------------------------------------------------------------------
+    Companies - Extended Columns (ALTER TABLE Migration)
+    --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.Companies') AND name = 'CompanyGroupId')
+BEGIN
+    ALTER TABLE dbo.Companies
+    ADD
+        CompanyGroupId INT NULL,
+        BusinessUnitId INT NULL,
+        Website NVARCHAR(200) NULL,
+        Email NVARCHAR(150) NULL,
+        Phone NVARCHAR(30) NULL,
+        Mobile NVARCHAR(30) NULL,
+        LogoUrl NVARCHAR(500) NULL,
+        DefaultFinancialYearId INT NULL,
+        MultiBranchEnabled BIT NOT NULL CONSTRAINT DF_Companies_MultiBranchEnabled DEFAULT 1,
+        MultiWarehouseEnabled BIT NOT NULL CONSTRAINT DF_Companies_MultiWarehouseEnabled DEFAULT 1,
+        MultiCurrencyEnabled BIT NOT NULL CONSTRAINT DF_Companies_MultiCurrencyEnabled DEFAULT 0,
+        DateFormat NVARCHAR(20) NULL,
+        TimeFormat NVARCHAR(20) NULL,
+        NumberFormat NVARCHAR(20) NULL,
+        DefaultWarehouseId INT NULL,
+        Theme NVARCHAR(50) NULL,
+        PrimaryColor NVARCHAR(20) NULL,
+        SecondaryColor NVARCHAR(20) NULL,
+        Remarks NVARCHAR(1000) NULL;
+
+    ALTER TABLE dbo.Companies
+        ADD CONSTRAINT FK_Companies_CompanyGroup FOREIGN KEY (CompanyGroupId) REFERENCES dbo.CompanyGroups (CompanyGroupId);
+END
+;
 
 /* ---------------------------------------------------------------------------
     Users

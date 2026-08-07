@@ -333,6 +333,15 @@ public class OrganizationController : BaseController
         return Ok(ApiResponse<PaginatedResult<WarehouseDto>>.Ok(result));
     }
 
+    [HttpGet("warehouses/all")]
+    [Permission(Permissions.WarehousesView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<WarehouseDto>>), 200)]
+    public async Task<IActionResult> GetAllWarehouses([FromQuery] bool includeInactive = false)
+    {
+        var result = await _warehouseService.GetAllAsync(includeInactive);
+        return Ok(ApiResponse<IEnumerable<WarehouseDto>>.Ok(result));
+    }
+
     [HttpGet("warehouses/{id:int}")]
     [Permission(Permissions.WarehousesView)]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), 200)]

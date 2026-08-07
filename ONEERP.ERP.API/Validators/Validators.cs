@@ -81,6 +81,19 @@ public class UpdateCompanyRequestValidator : AbstractValidator<DTOs.UpdateCompan
         RuleFor(x => x.CurrencyId).GreaterThan(0);
         RuleFor(x => x.LanguageId).GreaterThan(0);
         RuleFor(x => x.TimeZoneId).GreaterThan(0);
+        RuleFor(x => x.Website).MaximumLength(200);
+        RuleFor(x => x.Email).MaximumLength(150).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
+        RuleFor(x => x.Phone).MaximumLength(30);
+        RuleFor(x => x.Mobile).MaximumLength(30);
+        RuleFor(x => x.LogoUrl).MaximumLength(500);
+        RuleFor(x => x.DefaultFinancialYearId).GreaterThan(0).When(x => x.DefaultFinancialYearId.HasValue);
+        RuleFor(x => x.DateFormat).MaximumLength(20);
+        RuleFor(x => x.TimeFormat).MaximumLength(20);
+        RuleFor(x => x.NumberFormat).MaximumLength(20);
+        RuleFor(x => x.Theme).MaximumLength(50);
+        RuleFor(x => x.PrimaryColor).MaximumLength(20);
+        RuleFor(x => x.SecondaryColor).MaximumLength(20);
+        RuleFor(x => x.Remarks).MaximumLength(1000);
     }
 }
 
@@ -103,6 +116,19 @@ public class CreateCompanyRequestValidator : AbstractValidator<DTOs.CreateCompan
         RuleFor(x => x.CurrencyId).GreaterThan(0);
         RuleFor(x => x.LanguageId).GreaterThan(0);
         RuleFor(x => x.TimeZoneId).GreaterThan(0);
+        RuleFor(x => x.Website).MaximumLength(200);
+        RuleFor(x => x.Email).MaximumLength(150).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
+        RuleFor(x => x.Phone).MaximumLength(30);
+        RuleFor(x => x.Mobile).MaximumLength(30);
+        RuleFor(x => x.LogoUrl).MaximumLength(500);
+        RuleFor(x => x.DefaultFinancialYearId).GreaterThan(0).When(x => x.DefaultFinancialYearId.HasValue);
+        RuleFor(x => x.DateFormat).MaximumLength(20);
+        RuleFor(x => x.TimeFormat).MaximumLength(20);
+        RuleFor(x => x.NumberFormat).MaximumLength(20);
+        RuleFor(x => x.Theme).MaximumLength(50);
+        RuleFor(x => x.PrimaryColor).MaximumLength(20);
+        RuleFor(x => x.SecondaryColor).MaximumLength(20);
+        RuleFor(x => x.Remarks).MaximumLength(1000);
     }
 }
 

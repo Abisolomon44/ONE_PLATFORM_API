@@ -49,6 +49,7 @@ public interface IWarehouseService
     Task<WarehouseDto> CreateAsync(CreateWarehouseRequest request);
     Task<WarehouseDto> UpdateAsync(int id, UpdateWarehouseRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<IEnumerable<WarehouseDto>> GetAllAsync(bool includeInactive);
 }
 
 public interface IBranchTypeService
@@ -568,6 +569,12 @@ public class WarehouseService : IWarehouseService
         var warehouse = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Warehouse '{id}' was not found.");
         return ToDto(warehouse);
+    }
+
+    public async Task<IEnumerable<WarehouseDto>> GetAllAsync(bool includeInactive)
+    {
+        var warehouses = await _repository.GetAllAsync(includeInactive);
+        return warehouses.Select(ToDto);
     }
 
     public async Task<WarehouseDto> CreateAsync(CreateWarehouseRequest request)

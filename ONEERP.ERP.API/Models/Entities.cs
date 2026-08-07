@@ -26,6 +26,26 @@ public class Company
     public DateTime CreatedDate { get; set; }
     public int? ModifiedBy { get; set; }
     public DateTime? ModifiedDate { get; set; }
+
+    public int? CompanyGroupId { get; set; }
+    public int? BusinessUnitId { get; set; }
+    public string? Website { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public string? Mobile { get; set; }
+    public string? LogoUrl { get; set; }
+    public int? DefaultFinancialYearId { get; set; }
+    public bool MultiBranchEnabled { get; set; } = true;
+    public bool MultiWarehouseEnabled { get; set; } = true;
+    public bool MultiCurrencyEnabled { get; set; } = false;
+    public string? DateFormat { get; set; }
+    public string? TimeFormat { get; set; }
+    public string? NumberFormat { get; set; }
+    public int? DefaultWarehouseId { get; set; }
+    public string? Theme { get; set; }
+    public string? PrimaryColor { get; set; }
+    public string? SecondaryColor { get; set; }
+    public string? Remarks { get; set; }
 }
 
 public class User

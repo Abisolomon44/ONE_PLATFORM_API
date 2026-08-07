@@ -8,6 +8,7 @@ public interface IRefreshTokenRepository
     Task<RefreshToken?> GetByTokenAsync(string token);
     Task<bool> RevokeAsync(string token);
     Task<bool> RevokeAllForUserAsync(int userId);
+    Task<bool> ExtendExpiryAsync(string token, DateTime newExpiry);
 }
 
 public class RefreshTokenRepository : TenantRepositoryBase, IRefreshTokenRepository
@@ -47,6 +48,14 @@ public class RefreshTokenRepository : TenantRepositoryBase, IRefreshTokenReposit
         return await Sql.ExecuteAsync(connection,
             "UPDATE dbo.RefreshTokens SET IsRevoked = 1, RevokedDate = SYSUTCDATETIME() WHERE UserId = @userId AND IsRevoked = 0",
             new { userId }) > 0;
+    }
+
+    public async Task<bool> ExtendExpiryAsync(string token, DateTime newExpiry)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteAsync(connection,
+            "UPDATE dbo.RefreshTokens SET ExpiryDate = @newExpiry WHERE Token = @token AND IsRevoked = 0",
+            new { token, newExpiry }) > 0;
     }
 }
 

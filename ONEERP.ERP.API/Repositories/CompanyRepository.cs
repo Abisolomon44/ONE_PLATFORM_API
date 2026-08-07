@@ -82,10 +82,18 @@ public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
             const string sql = @"
                 INSERT INTO dbo.Companies (CompanyCode, CompanyName, ShortName, Abbreviation, BusinessTypeId, IndustryTypeId,
                     GSTRegistrationTypeId, GSTNumber, PANNumber, TANNumber, CINNumber, RegistrationNumber,
-                    CurrencyId, LanguageId, TimeZoneId, IsActive, IsBlocked, IsDeleted, LastLoginDate, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                    CurrencyId, LanguageId, TimeZoneId, IsActive, IsBlocked, IsDeleted, LastLoginDate,
+                    CompanyGroupId, BusinessUnitId, Website, Email, Phone, Mobile, LogoUrl, DefaultFinancialYearId,
+                    MultiBranchEnabled, MultiWarehouseEnabled, MultiCurrencyEnabled, DateFormat, TimeFormat, NumberFormat,
+                    DefaultWarehouseId, Theme, PrimaryColor, SecondaryColor, Remarks,
+                    CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
                 VALUES (@CompanyCode, @CompanyName, @ShortName, @Abbreviation, @BusinessTypeId, @IndustryTypeId,
                     @GSTRegistrationTypeId, @GSTNumber, @PANNumber, @TANNumber, @CINNumber, @RegistrationNumber,
-                    @CurrencyId, @LanguageId, @TimeZoneId, @IsActive, @IsBlocked, @IsDeleted, @LastLoginDate, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                    @CurrencyId, @LanguageId, @TimeZoneId, @IsActive, @IsBlocked, @IsDeleted, @LastLoginDate,
+                    @CompanyGroupId, @BusinessUnitId, @Website, @Email, @Phone, @Mobile, @LogoUrl, @DefaultFinancialYearId,
+                    @MultiBranchEnabled, @MultiWarehouseEnabled, @MultiCurrencyEnabled, @DateFormat, @TimeFormat, @NumberFormat,
+                    @DefaultWarehouseId, @Theme, @PrimaryColor, @SecondaryColor, @Remarks,
+                    @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS int);";
             return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, company, transaction);
         }
@@ -120,6 +128,25 @@ public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
                     TimeZoneId = @TimeZoneId,
                     IsActive = @IsActive,
                     IsBlocked = @IsBlocked,
+                    CompanyGroupId = @CompanyGroupId,
+                    BusinessUnitId = @BusinessUnitId,
+                    Website = @Website,
+                    Email = @Email,
+                    Phone = @Phone,
+                    Mobile = @Mobile,
+                    LogoUrl = @LogoUrl,
+                    DefaultFinancialYearId = @DefaultFinancialYearId,
+                    MultiBranchEnabled = @MultiBranchEnabled,
+                    MultiWarehouseEnabled = @MultiWarehouseEnabled,
+                    MultiCurrencyEnabled = @MultiCurrencyEnabled,
+                    DateFormat = @DateFormat,
+                    TimeFormat = @TimeFormat,
+                    NumberFormat = @NumberFormat,
+                    DefaultWarehouseId = @DefaultWarehouseId,
+                    Theme = @Theme,
+                    PrimaryColor = @PrimaryColor,
+                    SecondaryColor = @SecondaryColor,
+                    Remarks = @Remarks,
                     ModifiedBy = @ModifiedBy,
                     ModifiedDate = SYSUTCDATETIME()
                 WHERE Id = @Id;";
