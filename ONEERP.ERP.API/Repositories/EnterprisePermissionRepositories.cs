@@ -60,8 +60,14 @@ public class WorkspaceRepository : TenantRepositoryBase, IWorkspaceRepository
     public async Task<bool> DeleteAsync(int id)
     {
         using var conn = OpenTenant();
-        return await Sql.ExecuteAsync(conn,
-            "DELETE FROM dbo.Workspaces WHERE Id = @id", new { id }) > 0;
+        await Sql.ExecuteAsync(conn, @"
+            DELETE FROM dbo.Fields WHERE ScreenId IN (SELECT Id FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId IN (SELECT Id FROM dbo.Domains WHERE WorkspaceId = @id))));
+            DELETE FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId IN (SELECT Id FROM dbo.Domains WHERE WorkspaceId = @id)));
+            DELETE FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId IN (SELECT Id FROM dbo.Domains WHERE WorkspaceId = @id));
+            DELETE FROM dbo.Modules WHERE DomainId IN (SELECT Id FROM dbo.Domains WHERE WorkspaceId = @id);
+            DELETE FROM dbo.Domains WHERE WorkspaceId = @id;
+            DELETE FROM dbo.Workspaces WHERE Id = @id;", new { id });
+        return true;
     }
 }
 
@@ -131,8 +137,13 @@ public class DomainRepository : TenantRepositoryBase, IDomainRepository
     public async Task<bool> DeleteAsync(int id)
     {
         using var conn = OpenTenant();
-        return await Sql.ExecuteAsync(conn,
-            "DELETE FROM dbo.Domains WHERE Id = @id", new { id }) > 0;
+        await Sql.ExecuteAsync(conn, @"
+            DELETE FROM dbo.Fields WHERE ScreenId IN (SELECT Id FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId = @id)));
+            DELETE FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId = @id));
+            DELETE FROM dbo.SubModules WHERE ModuleId IN (SELECT Id FROM dbo.Modules WHERE DomainId = @id);
+            DELETE FROM dbo.Modules WHERE DomainId = @id;
+            DELETE FROM dbo.Domains WHERE Id = @id;", new { id });
+        return true;
     }
 }
 
@@ -202,8 +213,87 @@ public class ModuleRepository : TenantRepositoryBase, IModuleRepository
     public async Task<bool> DeleteAsync(int id)
     {
         using var conn = OpenTenant();
-        return await Sql.ExecuteAsync(conn,
-            "DELETE FROM dbo.Modules WHERE Id = @id", new { id }) > 0;
+        await Sql.ExecuteAsync(conn, @"
+            DELETE FROM dbo.Fields WHERE ScreenId IN (SELECT Id FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId = @id));
+            DELETE FROM dbo.Screens WHERE SubModuleId IN (SELECT Id FROM dbo.SubModules WHERE ModuleId = @id);
+            DELETE FROM dbo.SubModules WHERE ModuleId = @id;
+            DELETE FROM dbo.Modules WHERE Id = @id;", new { id });
+        return true;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   SubModule Repository
+   --------------------------------------------------------------------------- */
+public interface ISubModuleRepository
+{
+    Task<IEnumerable<SubModule>> GetAllAsync(bool includeInactive = false);
+    Task<IEnumerable<SubModule>> GetByModuleAsync(int moduleId);
+    Task<SubModule?> GetByIdAsync(int id);
+    Task<int> InsertAsync(SubModule entity);
+    Task<bool> UpdateAsync(SubModule entity);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class SubModuleRepository : TenantRepositoryBase, ISubModuleRepository
+{
+    public SubModuleRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory) { }
+
+    public async Task<IEnumerable<SubModule>> GetAllAsync(bool includeInactive = false)
+    {
+        using var conn = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.SubModules ORDER BY SortOrder, SubModuleCode"
+            : "SELECT * FROM dbo.SubModules WHERE IsActive = 1 ORDER BY SortOrder, SubModuleCode";
+        return await Sql.QueryAsync<SubModule>(conn, sql);
+    }
+
+    public async Task<IEnumerable<SubModule>> GetByModuleAsync(int moduleId)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QueryAsync<SubModule>(conn,
+            "SELECT * FROM dbo.SubModules WHERE ModuleId = @moduleId AND IsActive = 1 ORDER BY SortOrder",
+            new { moduleId });
+    }
+
+    public async Task<SubModule?> GetByIdAsync(int id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<SubModule>(conn,
+            "SELECT * FROM dbo.SubModules WHERE Id = @id", new { id });
+    }
+
+    public async Task<int> InsertAsync(SubModule entity)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+            VALUES (@ModuleId, @SubModuleCode, @SubModuleName, @Icon, @RouteUrl, @SortOrder, @IsActive, @CreatedBy);
+            SELECT CAST(SCOPE_IDENTITY() AS int);";
+        return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
+    }
+
+    public async Task<bool> UpdateAsync(SubModule entity)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            UPDATE dbo.SubModules
+            SET SubModuleCode = @SubModuleCode, SubModuleName = @SubModuleName, Icon = @Icon,
+                RouteUrl = @RouteUrl, SortOrder = @SortOrder, IsActive = @IsActive,
+                ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()
+            WHERE Id = @Id;";
+        return await Sql.ExecuteAsync(conn, sql, entity) > 0;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        using var conn = OpenTenant();
+        await Sql.ExecuteAsync(conn, @"
+            DELETE FROM dbo.Fields WHERE ScreenId IN (SELECT Id FROM dbo.Screens WHERE SubModuleId = @id);
+            DELETE FROM dbo.Screens WHERE SubModuleId = @id;
+            DELETE FROM dbo.SubModules WHERE Id = @id;", new { id });
+        return true;
     }
 }
 
@@ -213,7 +303,7 @@ public class ModuleRepository : TenantRepositoryBase, IModuleRepository
 public interface IScreenRepository
 {
     Task<IEnumerable<Screen>> GetAllAsync(bool includeInactive = false);
-    Task<IEnumerable<Screen>> GetByModuleAsync(int moduleId);
+    Task<IEnumerable<Screen>> GetBySubModuleAsync(int subModuleId);
     Task<Screen?> GetByIdAsync(int id);
     Task<int> InsertAsync(Screen entity);
     Task<bool> UpdateAsync(Screen entity);
@@ -234,12 +324,12 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
         return await Sql.QueryAsync<Screen>(conn, sql);
     }
 
-    public async Task<IEnumerable<Screen>> GetByModuleAsync(int moduleId)
+    public async Task<IEnumerable<Screen>> GetBySubModuleAsync(int subModuleId)
     {
         using var conn = OpenTenant();
         return await Sql.QueryAsync<Screen>(conn,
-            "SELECT * FROM dbo.Screens WHERE ModuleId = @moduleId AND IsActive = 1 ORDER BY SortOrder",
-            new { moduleId });
+            "SELECT * FROM dbo.Screens WHERE SubModuleId = @subModuleId AND IsActive = 1 ORDER BY SortOrder",
+            new { subModuleId });
     }
 
     public async Task<Screen?> GetByIdAsync(int id)
@@ -253,8 +343,8 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.Screens (ModuleId, ScreenCode, ScreenName, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-            VALUES (@ModuleId, @ScreenCode, @ScreenName, @RouteUrl, @ComponentName, @SortOrder, @IsActive, @CreatedBy);
+            INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+            VALUES (@SubModuleId, @ScreenCode, @ScreenName, @ScreenType, @RouteUrl, @ComponentName, @SortOrder, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -264,8 +354,8 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
         using var conn = OpenTenant();
         const string sql = @"
             UPDATE dbo.Screens
-            SET ScreenCode = @ScreenCode, ScreenName = @ScreenName, RouteUrl = @RouteUrl,
-                ComponentName = @ComponentName, SortOrder = @SortOrder, IsActive = @IsActive
+            SET ScreenCode = @ScreenCode, ScreenName = @ScreenName, ScreenType = @ScreenType,
+                RouteUrl = @RouteUrl, ComponentName = @ComponentName, SortOrder = @SortOrder, IsActive = @IsActive
             WHERE Id = @Id;";
         return await Sql.ExecuteAsync(conn, sql, entity) > 0;
     }
@@ -273,8 +363,10 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
     public async Task<bool> DeleteAsync(int id)
     {
         using var conn = OpenTenant();
-        return await Sql.ExecuteAsync(conn,
-            "DELETE FROM dbo.Screens WHERE Id = @id", new { id }) > 0;
+        await Sql.ExecuteAsync(conn, @"
+            DELETE FROM dbo.Fields WHERE ScreenId = @id;
+            DELETE FROM dbo.Screens WHERE Id = @id;", new { id });
+        return true;
     }
 }
 
@@ -457,8 +549,8 @@ public class RolePermissionEntryRepository : TenantRepositoryBase, IRolePermissi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
-            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);
+            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
+            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -467,8 +559,8 @@ public class RolePermissionEntryRepository : TenantRepositoryBase, IRolePermissi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
-            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);";
+            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
+            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);";
         foreach (var entity in entities)
             await Sql.ExecuteAsync(conn, sql, entity);
         return true;
@@ -525,8 +617,8 @@ public class UserPermissionOverrideRepository : TenantRepositoryBase, IUserPermi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.UserPermissionOverrides (UserId, WorkspaceId, DomainId, ModuleId, ScreenId, PermissionActionEntryId, PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
-            VALUES (@UserId, @WorkspaceId, @DomainId, @ModuleId, @ScreenId, @PermissionActionEntryId, @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);
+            INSERT INTO dbo.UserPermissionOverrides (UserId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
+            VALUES (@UserId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -706,14 +798,15 @@ public class UserFieldPermissionEntryRepository : TenantRepositoryBase, IUserFie
 }
 
 /* ---------------------------------------------------------------------------
-   DataScope Repository
+   DataScope Repository (RoleDataScopes - multi-row per role)
    --------------------------------------------------------------------------- */
 public interface IDataScopeRepository
 {
-    Task<DataScope?> GetByRoleAsync(int roleId);
+    Task<IEnumerable<DataScope>> GetByRoleAsync(int roleId);
+    Task<DataScope?> GetByIdAsync(int id);
     Task<int> InsertAsync(DataScope entity);
     Task<bool> UpdateAsync(DataScope entity);
-    Task<bool> DeleteAsync(int roleId);
+    Task<bool> DeleteAsync(int id);
 }
 
 public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
@@ -721,19 +814,30 @@ public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
     public DataScopeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
         : base(sql, accessor, platformFactory) { }
 
-    public async Task<DataScope?> GetByRoleAsync(int roleId)
+    public async Task<IEnumerable<DataScope>> GetByRoleAsync(int roleId)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QueryAsync<DataScope>(conn,
+            "SELECT * FROM dbo.RoleDataScopes WHERE RoleId = @roleId AND IsActive = 1", new { roleId });
+    }
+
+    public async Task<DataScope?> GetByIdAsync(int id)
     {
         using var conn = OpenTenant();
         return await Sql.QuerySingleOrDefaultAsync<DataScope>(conn,
-            "SELECT * FROM dbo.DataScopes WHERE RoleId = @roleId", new { roleId });
+            "SELECT * FROM dbo.RoleDataScopes WHERE Id = @id", new { id });
     }
 
     public async Task<int> InsertAsync(DataScope entity)
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.DataScopes (RoleId, CompanyId, BranchId, DepartmentId, WarehouseId, BusinessUnitId, CostCenterId, ProfitCenterId, CanViewAll, CanEditAll, IsActive, CreatedBy)
-            VALUES (@RoleId, @CompanyId, @BranchId, @DepartmentId, @WarehouseId, @BusinessUnitId, @CostCenterId, @ProfitCenterId, @CanViewAll, @CanEditAll, @IsActive, @CreatedBy);
+            INSERT INTO dbo.RoleDataScopes (RoleId, ModuleId, ScreenId, CompanyId, BranchId, DepartmentId,
+                WarehouseId, BusinessUnitId, CostCenterId, ProfitCenterId, CanView, CanCreate, CanEdit, CanDelete,
+                IsActive, CreatedBy)
+            VALUES (@RoleId, @ModuleId, @ScreenId, @CompanyId, @BranchId, @DepartmentId,
+                @WarehouseId, @BusinessUnitId, @CostCenterId, @ProfitCenterId, @CanView, @CanCreate, @CanEdit, @CanDelete,
+                @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -742,20 +846,84 @@ public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
     {
         using var conn = OpenTenant();
         const string sql = @"
-            UPDATE dbo.DataScopes
-            SET CompanyId = @CompanyId, BranchId = @BranchId, DepartmentId = @DepartmentId,
-                WarehouseId = @WarehouseId, BusinessUnitId = @BusinessUnitId, CostCenterId = @CostCenterId,
-                ProfitCenterId = @ProfitCenterId, CanViewAll = @CanViewAll, CanEditAll = @CanEditAll,
-                IsActive = @IsActive
-            WHERE RoleId = @RoleId;";
+            UPDATE dbo.RoleDataScopes
+            SET ModuleId = @ModuleId, ScreenId = @ScreenId, CompanyId = @CompanyId, BranchId = @BranchId,
+                DepartmentId = @DepartmentId, WarehouseId = @WarehouseId, BusinessUnitId = @BusinessUnitId,
+                CostCenterId = @CostCenterId, ProfitCenterId = @ProfitCenterId,
+                CanView = @CanView, CanCreate = @CanCreate, CanEdit = @CanEdit, CanDelete = @CanDelete,
+                IsActive = @IsActive, ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()
+            WHERE Id = @Id;";
         return await Sql.ExecuteAsync(conn, sql, entity) > 0;
     }
 
-    public async Task<bool> DeleteAsync(int roleId)
+    public async Task<bool> DeleteAsync(int id)
     {
         using var conn = OpenTenant();
         return await Sql.ExecuteAsync(conn,
-            "DELETE FROM dbo.DataScopes WHERE RoleId = @roleId", new { roleId }) > 0;
+            "DELETE FROM dbo.RoleDataScopes WHERE Id = @id", new { id }) > 0;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   UserDataScopeOverride Repository
+   --------------------------------------------------------------------------- */
+public interface IUserDataScopeOverrideRepository
+{
+    Task<IEnumerable<UserDataScopeOverride>> GetByUserAsync(int userId);
+    Task<UserDataScopeOverride?> GetByIdAsync(int id);
+    Task<int> InsertAsync(UserDataScopeOverride entity);
+    Task<bool> UpdateAsync(UserDataScopeOverride entity);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class UserDataScopeOverrideRepository : TenantRepositoryBase, IUserDataScopeOverrideRepository
+{
+    public UserDataScopeOverrideRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory) { }
+
+    public async Task<IEnumerable<UserDataScopeOverride>> GetByUserAsync(int userId)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QueryAsync<UserDataScopeOverride>(conn,
+            "SELECT * FROM dbo.UserDataScopeOverrides WHERE UserId = @userId AND IsActive = 1", new { userId });
+    }
+
+    public async Task<UserDataScopeOverride?> GetByIdAsync(int id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<UserDataScopeOverride>(conn,
+            "SELECT * FROM dbo.UserDataScopeOverrides WHERE Id = @id", new { id });
+    }
+
+    public async Task<int> InsertAsync(UserDataScopeOverride entity)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            INSERT INTO dbo.UserDataScopeOverrides (UserId, ModuleId, ScreenId, ScopeType, ScopeValue,
+                PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
+            VALUES (@UserId, @ModuleId, @ScreenId, @ScopeType, @ScopeValue,
+                @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);
+            SELECT CAST(SCOPE_IDENTITY() AS int);";
+        return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
+    }
+
+    public async Task<bool> UpdateAsync(UserDataScopeOverride entity)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            UPDATE dbo.UserDataScopeOverrides
+            SET ScopeType = @ScopeType, ScopeValue = @ScopeValue, PermissionType = @PermissionType,
+                Allow = @Allow, EffectiveFrom = @EffectiveFrom, EffectiveTo = @EffectiveTo,
+                Remarks = @Remarks, IsActive = @IsActive, ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()
+            WHERE Id = @Id;";
+        return await Sql.ExecuteAsync(conn, sql, entity) > 0;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.ExecuteAsync(conn,
+            "DELETE FROM dbo.UserDataScopeOverrides WHERE Id = @id", new { id }) > 0;
     }
 }
 
@@ -796,8 +964,8 @@ public class WorkflowPermissionEntryRepository : TenantRepositoryBase, IWorkflow
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.WorkflowPermissions (RoleId, ModuleId, ScreenId, CanSubmit, CanApprove, CanReject, CanCancel, CanClose, IsActive, CreatedBy)
-            VALUES (@RoleId, @ModuleId, @ScreenId, @CanSubmit, @CanApprove, @CanReject, @CanCancel, @CanClose, @IsActive, @CreatedBy);
+            INSERT INTO dbo.WorkflowPermissions (RoleId, ModuleId, SubModuleId, ScreenId, CanSubmit, CanApprove, CanReject, CanCancel, CanClose, IsActive, CreatedBy)
+            VALUES (@RoleId, @ModuleId, @SubModuleId, @ScreenId, @CanSubmit, @CanApprove, @CanReject, @CanCancel, @CanClose, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -824,8 +992,8 @@ public class WorkflowPermissionEntryRepository : TenantRepositoryBase, IWorkflow
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.WorkflowPermissions (RoleId, ModuleId, ScreenId, CanSubmit, CanApprove, CanReject, CanCancel, CanClose, IsActive, CreatedBy)
-            VALUES (@RoleId, @ModuleId, @ScreenId, @CanSubmit, @CanApprove, @CanReject, @CanCancel, @CanClose, @IsActive, @CreatedBy);";
+            INSERT INTO dbo.WorkflowPermissions (RoleId, ModuleId, SubModuleId, ScreenId, CanSubmit, CanApprove, CanReject, CanCancel, CanClose, IsActive, CreatedBy)
+            VALUES (@RoleId, @ModuleId, @SubModuleId, @ScreenId, @CanSubmit, @CanApprove, @CanReject, @CanCancel, @CanClose, @IsActive, @CreatedBy);";
         foreach (var entity in entities)
             await Sql.ExecuteAsync(conn, sql, entity);
         return true;

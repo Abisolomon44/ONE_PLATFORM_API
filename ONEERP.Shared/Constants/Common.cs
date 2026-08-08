@@ -29,4 +29,7 @@ public static class ClaimTypes
     public const string CompanyId = "company_id";
     public const string Permission = "permission";
     public const string PlatformRole = "platform_role";
+    public const string IsSuperAdmin = "is_super_admin";
+    public const string RoleId = "role_id";
+    public const string PermissionVersion = "permission_version";
 }

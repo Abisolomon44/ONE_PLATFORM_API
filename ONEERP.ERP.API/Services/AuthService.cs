@@ -2,6 +2,7 @@ using ONEERP.ERP.API.Data;
 using ONEERP.ERP.API.DTOs;
 using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
+using ONEERP.ERP.API.Security;
 using ONEERP.Shared.Exceptions;
 
 namespace ONEERP.ERP.API.Services;
@@ -28,9 +29,12 @@ public class AuthService : IAuthService
     private readonly IWorkspaceRepository _wsRepo;
     private readonly IDomainRepository _domRepo;
     private readonly IModuleRepository _modRepo;
+    private readonly ISubModuleRepository _subModRepo;
     private readonly IScreenRepository _scrRepo;
     private readonly IActionRepository _actRepo;
     private readonly IUserPermissionOverrideRepository _userPermOverrideRepo;
+    private readonly IDataScopeRepository _dataScopeRepo;
+    private readonly IUserDataScopeOverrideRepository _userDataScopeOverrideRepo;
 
     public AuthService(
         ITenantConnectionResolver resolver,
@@ -46,9 +50,12 @@ public class AuthService : IAuthService
         IWorkspaceRepository wsRepo,
         IDomainRepository domRepo,
         IModuleRepository modRepo,
+        ISubModuleRepository subModRepo,
         IScreenRepository scrRepo,
         IActionRepository actRepo,
-        IUserPermissionOverrideRepository userPermOverrideRepo)
+        IUserPermissionOverrideRepository userPermOverrideRepo,
+        IDataScopeRepository dataScopeRepo,
+        IUserDataScopeOverrideRepository userDataScopeOverrideRepo)
     {
         _resolver = resolver;
         _accessor = accessor;
@@ -63,9 +70,12 @@ public class AuthService : IAuthService
         _wsRepo = wsRepo;
         _domRepo = domRepo;
         _modRepo = modRepo;
+        _subModRepo = subModRepo;
         _scrRepo = scrRepo;
         _actRepo = actRepo;
         _userPermOverrideRepo = userPermOverrideRepo;
+        _dataScopeRepo = dataScopeRepo;
+        _userDataScopeOverrideRepo = userDataScopeOverrideRepo;
     }
 
     public async Task<LoginResponse> LoginAsync(string username, string password)
@@ -168,6 +178,7 @@ public class AuthService : IAuthService
         var wsNames = (await _wsRepo.GetAllAsync(true)).ToDictionary(w => w.Id, w => w.WorkspaceCode);
         var domNames = (await _domRepo.GetAllAsync(true)).ToDictionary(d => d.Id, d => d.DomainCode);
         var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleCode);
+        var subModNames = (await _subModRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.SubModuleCode);
         var scrNames = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.ScreenCode);
         var actNames = (await _actRepo.GetAllAsync(true)).ToDictionary(a => a.Id, a => a.ActionCode);
 
@@ -181,38 +192,86 @@ public class AuthService : IAuthService
                 if (wsNames.TryGetValue(rp.WorkspaceId, out var wc) &&
                     domNames.TryGetValue(rp.DomainId, out var dc) &&
                     modNames.TryGetValue(rp.ModuleId, out var mc) &&
+                    subModNames.TryGetValue(rp.SubModuleId, out var smc) &&
                     scrNames.TryGetValue(rp.ScreenId, out var sc) &&
                     actNames.TryGetValue(rp.ActionId, out var ac))
                 {
-                    permCodes.Add($"{wc}.{dc}.{mc}.{sc}.{ac}");
-                    permCodes.Add($"{mc}.{ac}");
+                    permCodes.Add($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
+                    permCodes.Add($"{mc}.{smc}.{ac}");
                 }
             }
         }
 
         var overrides = await _userPermOverrideRepo.GetByUserAsync(userId);
-        foreach (var o in overrides.Where(o => o.IsActive && o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+        foreach (var o in overrides.Where(o => o.IsActive && o.EffectiveFrom <= DateTime.UtcNow && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow)))
         {
             if (wsNames.TryGetValue(o.WorkspaceId, out var wc) &&
                 domNames.TryGetValue(o.DomainId, out var dc) &&
                 modNames.TryGetValue(o.ModuleId, out var mc) &&
+                subModNames.TryGetValue(o.SubModuleId, out var smc) &&
                 scrNames.TryGetValue(o.ScreenId, out var sc) &&
                 actNames.TryGetValue(o.ActionId, out var ac))
             {
                 if (o.Allow)
                 {
-                    permCodes.Add($"{wc}.{dc}.{mc}.{sc}.{ac}");
-                    permCodes.Add($"{mc}.{ac}");
+                    permCodes.Add($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
+                    permCodes.Add($"{mc}.{smc}.{ac}");
                 }
                 else
                 {
-                    permCodes.Remove($"{wc}.{dc}.{mc}.{sc}.{ac}");
-                    permCodes.Remove($"{mc}.{ac}");
+                    permCodes.Remove($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
+                    permCodes.Remove($"{mc}.{smc}.{ac}");
                 }
             }
         }
 
         return permCodes.Distinct();
+    }
+
+    /// <summary>
+    /// Resolves data scopes for all roles assigned to a user.
+    /// Returns combined RoleDataScopeEntry list with user overrides applied.
+    /// </summary>
+    public async Task<(List<RoleDataScopeEntry> DataScopes, List<UserDataScopeOverrideEntry> UserOverrides)> ResolveDataScopesAsync(int userId)
+    {
+        var roleIds = await _roleRepository.GetRoleIdsForUserAsync(userId);
+        var allDataScopes = new List<RoleDataScopeEntry>();
+
+        foreach (var roleId in roleIds)
+        {
+            var scopes = await _dataScopeRepo.GetByRoleAsync(roleId);
+            allDataScopes.AddRange(scopes.Select(s => new RoleDataScopeEntry
+            {
+                RoleId = s.RoleId,
+                ModuleId = s.ModuleId,
+                ScreenId = s.ScreenId,
+                BranchId = s.BranchId,
+                DepartmentId = s.DepartmentId,
+                WarehouseId = s.WarehouseId,
+                CanView = s.CanView,
+                CanCreate = s.CanCreate,
+                CanEdit = s.CanEdit,
+                CanDelete = s.CanDelete
+            }));
+        }
+
+        var userOverrides = await _userDataScopeOverrideRepo.GetByUserAsync(userId);
+        var userOverrideEntries = userOverrides
+            .Where(o => o.IsActive && o.EffectiveFrom <= DateTime.UtcNow && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+            .Select(o => new UserDataScopeOverrideEntry
+            {
+                UserId = o.UserId,
+                ModuleId = o.ModuleId,
+                ScreenId = o.ScreenId,
+                ScopeType = o.ScopeType,
+                ScopeValue = o.ScopeValue,
+                PermissionType = o.PermissionType,
+                Allow = o.Allow,
+                EffectiveFrom = o.EffectiveFrom,
+                EffectiveTo = o.EffectiveTo
+            }).ToList();
+
+        return (allDataScopes, userOverrideEntries);
     }
 
     private async Task<LoginResponse> BuildLoginResponseAsync(

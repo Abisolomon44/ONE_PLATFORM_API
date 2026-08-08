@@ -29,6 +29,7 @@ public class TokenService : ITokenService
         var jwt = _configuration.GetSection("Jwt");
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
         var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+        var roleList = roles.ToList();
 
         var claims = new List<Claim>
         {
@@ -36,17 +37,19 @@ public class TokenService : ITokenService
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.GivenName, user.FullName),
             new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name))),
             new(SharedClaimTypes.TenantId, tenant.TenantId.ToString()),
             new(SharedClaimTypes.TenantCode, tenant.TenantCode),
-            new(SharedClaimTypes.CompanyId, user.CompanyId.ToString())
+            new(SharedClaimTypes.CompanyId, user.CompanyId.ToString()),
+            new(SharedClaimTypes.IsSuperAdmin, user.IsSuperAdmin.ToString().ToLower()),
+            new(SharedClaimTypes.RoleId, roleList.FirstOrDefault()?.RoleId.ToString() ?? "0"),
+            new(SharedClaimTypes.PermissionVersion, "1")
         };
 
-        foreach (var role in roles)
+        foreach (var role in roleList)
             claims.Add(new Claim(ClaimTypes.Role, role.Name));
 
-        foreach (var permission in permissions)
-            claims.Add(new Claim(SharedClaimTypes.Permission, permission));
+        // Do NOT put individual permission claims in JWT to avoid bloat.
+        // Permissions are resolved server-side via IPermissionCache.
 
         var token = new JwtSecurityToken(
             issuer: jwt["Issuer"],

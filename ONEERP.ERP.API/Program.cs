@@ -152,6 +152,7 @@ builder.Services.AddScoped<IFieldPermissionService, FieldPermissionService>();
 builder.Services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
 builder.Services.AddScoped<IDomainRepository, DomainRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<ISubModuleRepository, SubModuleRepository>();
 builder.Services.AddScoped<IScreenRepository, ScreenRepository>();
 builder.Services.AddScoped<IFieldRepository, FieldRepository>();
 builder.Services.AddScoped<IActionRepository, ActionRepository>();
@@ -160,12 +161,14 @@ builder.Services.AddScoped<IUserPermissionOverrideRepository, UserPermissionOver
 builder.Services.AddScoped<IRoleFieldPermissionEntryRepository, RoleFieldPermissionEntryRepository>();
 builder.Services.AddScoped<IUserFieldPermissionEntryRepository, UserFieldPermissionEntryRepository>();
 builder.Services.AddScoped<IDataScopeRepository, DataScopeRepository>();
+builder.Services.AddScoped<IUserDataScopeOverrideRepository, UserDataScopeOverrideRepository>();
 builder.Services.AddScoped<IWorkflowPermissionEntryRepository, WorkflowPermissionEntryRepository>();
 
 // Enterprise Permission Engine Services
 builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
 builder.Services.AddScoped<IDomainService, DomainService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<ISubModuleService, SubModuleService>();
 builder.Services.AddScoped<IScreenService, ScreenService>();
 builder.Services.AddScoped<IFieldService, FieldService>();
 builder.Services.AddScoped<IActionService, ActionService>();
@@ -174,8 +177,12 @@ builder.Services.AddScoped<IUserPermissionOverrideService, UserPermissionOverrid
 builder.Services.AddScoped<IRoleFieldPermissionEntryService, RoleFieldPermissionEntryService>();
 builder.Services.AddScoped<IUserFieldPermissionEntryService, UserFieldPermissionEntryService>();
 builder.Services.AddScoped<IDataScopeService, DataScopeService>();
+builder.Services.AddScoped<IUserDataScopeOverrideService, UserDataScopeOverrideService>();
 builder.Services.AddScoped<IWorkflowPermissionEntryService, WorkflowPermissionEntryService>();
 
+// Permission Cache & Navigation
+builder.Services.AddSingleton<IPermissionCache, InMemoryPermissionCache>();
+builder.Services.AddScoped<INavigationService, NavigationService>();
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

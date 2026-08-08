@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ONEERP.Shared.Constants;
 using ONEERP.Shared.Models;
+using SharedClaimTypes = ONEERP.Shared.Constants.ClaimTypes;
 
 namespace ONEERP.ERP.API.Security;
 
@@ -46,10 +46,10 @@ public class PermissionAuthorizationFilter : IAsyncAuthorizationFilter
             return;
         }
 
-        if (user.HasClaim(ClaimTypes.Role, "Super Admin"))
+        if (user.HasClaim(SharedClaimTypes.IsSuperAdmin, "true"))
             return;
 
-        var hasAny = requiredPermissions.Any(p => user.HasClaim(ClaimTypes.Permission, p));
+        var hasAny = requiredPermissions.Any(p => user.HasClaim(SharedClaimTypes.Permission, p));
 
         if (!hasAny)
         {

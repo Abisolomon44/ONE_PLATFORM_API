@@ -256,12 +256,103 @@ public class ModuleService : IModuleService
 }
 
 /* ---------------------------------------------------------------------------
+   SubModule Service
+   --------------------------------------------------------------------------- */
+public interface ISubModuleService
+{
+    Task<IEnumerable<SubModuleDto>> GetAllAsync();
+    Task<IEnumerable<SubModuleDto>> GetByModuleAsync(int moduleId);
+    Task<SubModuleDto> GetByIdAsync(int id);
+    Task<SubModuleDto> CreateAsync(CreateSubModuleRequest request);
+    Task<SubModuleDto> UpdateAsync(int id, UpdateSubModuleRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class SubModuleService : ISubModuleService
+{
+    private readonly ISubModuleRepository _repo;
+    private readonly IModuleRepository _modRepo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public SubModuleService(ISubModuleRepository repo, IModuleRepository modRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _modRepo = modRepo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<SubModuleDto>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+        var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleName);
+        return items.Select(e => Map(e, modNames.TryGetValue(e.ModuleId, out var mn) ? mn : null)).ToList();
+    }
+
+    public async Task<IEnumerable<SubModuleDto>> GetByModuleAsync(int moduleId)
+    {
+        var items = await _repo.GetByModuleAsync(moduleId);
+        var mod = await _modRepo.GetByIdAsync(moduleId);
+        return items.Select(e => Map(e, mod?.ModuleName)).ToList();
+    }
+
+    public async Task<SubModuleDto> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"SubModule '{id}' not found.");
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<SubModuleDto> CreateAsync(CreateSubModuleRequest r)
+    {
+        var e = new SubModule
+        {
+            ModuleId = r.ModuleId, SubModuleCode = r.SubModuleCode, SubModuleName = r.SubModuleName,
+            Icon = r.Icon, RouteUrl = r.RouteUrl, SortOrder = r.SortOrder,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("SubModule", e.Id.ToString(), "Create", _user.Username);
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<SubModuleDto> UpdateAsync(int id, UpdateSubModuleRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"SubModule '{id}' not found.");
+        e.SubModuleCode = r.SubModuleCode;
+        e.SubModuleName = r.SubModuleName;
+        e.Icon = r.Icon;
+        e.RouteUrl = r.RouteUrl;
+        e.SortOrder = r.SortOrder;
+        e.IsActive = r.IsActive;
+        e.ModifiedBy = _user.Username;
+        await _repo.UpdateAsync(e);
+        await _audit.WriteAsync("SubModule", id.ToString(), "Update", _user.Username);
+        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
+        return Map(e, mod?.ModuleName);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        _ = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"SubModule '{id}' not found.");
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("SubModule", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static SubModuleDto Map(SubModule e, string? modName = null) => new()
+    {
+        Id = e.Id, ModuleId = e.ModuleId, ModuleName = modName,
+        SubModuleCode = e.SubModuleCode, SubModuleName = e.SubModuleName, Icon = e.Icon,
+        RouteUrl = e.RouteUrl, SortOrder = e.SortOrder, IsActive = e.IsActive,
+        CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
    Screen Service
    --------------------------------------------------------------------------- */
 public interface IScreenService
 {
     Task<IEnumerable<ScreenDto>> GetAllAsync();
-    Task<IEnumerable<ScreenDto>> GetByModuleAsync(int moduleId);
+    Task<IEnumerable<ScreenDto>> GetBySubModuleAsync(int subModuleId);
     Task<ScreenDto> GetByIdAsync(int id);
     Task<ScreenDto> CreateAsync(CreateScreenRequest request);
     Task<ScreenDto> UpdateAsync(int id, UpdateScreenRequest request);
@@ -271,46 +362,46 @@ public interface IScreenService
 public class ScreenService : IScreenService
 {
     private readonly IScreenRepository _repo;
-    private readonly IModuleRepository _modRepo;
+    private readonly ISubModuleRepository _subModRepo;
     private readonly IAuditService _audit;
     private readonly ICurrentUser _user;
 
-    public ScreenService(IScreenRepository repo, IModuleRepository modRepo, IAuditService audit, ICurrentUser user)
-    { _repo = repo; _modRepo = modRepo; _audit = audit; _user = user; }
+    public ScreenService(IScreenRepository repo, ISubModuleRepository subModRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _subModRepo = subModRepo; _audit = audit; _user = user; }
 
     public async Task<IEnumerable<ScreenDto>> GetAllAsync()
     {
         var items = await _repo.GetAllAsync();
-        var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleName);
-        return items.Select(e => Map(e, modNames.TryGetValue(e.ModuleId, out var mn) ? mn : null)).ToList();
+        var subModNames = (await _subModRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.SubModuleName);
+        return items.Select(e => Map(e, subModNames.TryGetValue(e.SubModuleId, out var sn) ? sn : null)).ToList();
     }
 
-    public async Task<IEnumerable<ScreenDto>> GetByModuleAsync(int moduleId)
+    public async Task<IEnumerable<ScreenDto>> GetBySubModuleAsync(int subModuleId)
     {
-        var items = await _repo.GetByModuleAsync(moduleId);
-        var mod = await _modRepo.GetByIdAsync(moduleId);
-        return items.Select(e => Map(e, mod?.ModuleName)).ToList();
+        var items = await _repo.GetBySubModuleAsync(subModuleId);
+        var subMod = await _subModRepo.GetByIdAsync(subModuleId);
+        return items.Select(e => Map(e, subMod?.SubModuleName)).ToList();
     }
 
     public async Task<ScreenDto> GetByIdAsync(int id)
     {
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
-        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
-        return Map(e, mod?.ModuleName);
+        var subMod = await _subModRepo.GetByIdAsync(e.SubModuleId);
+        return Map(e, subMod?.SubModuleName);
     }
 
     public async Task<ScreenDto> CreateAsync(CreateScreenRequest r)
     {
         var e = new Screen
         {
-            ModuleId = r.ModuleId, ScreenCode = r.ScreenCode, ScreenName = r.ScreenName,
-            RouteUrl = r.RouteUrl, ComponentName = r.ComponentName, SortOrder = r.SortOrder,
-            IsActive = r.IsActive, CreatedBy = _user.Username
+            SubModuleId = r.SubModuleId, ScreenCode = r.ScreenCode, ScreenName = r.ScreenName,
+            ScreenType = r.ScreenType, RouteUrl = r.RouteUrl, ComponentName = r.ComponentName,
+            SortOrder = r.SortOrder, IsActive = r.IsActive, CreatedBy = _user.Username
         };
         e.Id = await _repo.InsertAsync(e);
         await _audit.WriteAsync("Screen", e.Id.ToString(), "Create", _user.Username);
-        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
-        return Map(e, mod?.ModuleName);
+        var subMod = await _subModRepo.GetByIdAsync(e.SubModuleId);
+        return Map(e, subMod?.SubModuleName);
     }
 
     public async Task<ScreenDto> UpdateAsync(int id, UpdateScreenRequest r)
@@ -318,14 +409,15 @@ public class ScreenService : IScreenService
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
         e.ScreenCode = r.ScreenCode;
         e.ScreenName = r.ScreenName;
+        e.ScreenType = r.ScreenType;
         e.RouteUrl = r.RouteUrl;
         e.ComponentName = r.ComponentName;
         e.SortOrder = r.SortOrder;
         e.IsActive = r.IsActive;
         await _repo.UpdateAsync(e);
         await _audit.WriteAsync("Screen", id.ToString(), "Update", _user.Username);
-        var mod = await _modRepo.GetByIdAsync(e.ModuleId);
-        return Map(e, mod?.ModuleName);
+        var subMod = await _subModRepo.GetByIdAsync(e.SubModuleId);
+        return Map(e, subMod?.SubModuleName);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -336,12 +428,12 @@ public class ScreenService : IScreenService
         return r;
     }
 
-    private static ScreenDto Map(Screen e, string? modName = null) => new()
+    private static ScreenDto Map(Screen e, string? subModName = null) => new()
     {
-        Id = e.Id, ModuleId = e.ModuleId, ModuleName = modName,
-        ScreenCode = e.ScreenCode, ScreenName = e.ScreenName, RouteUrl = e.RouteUrl,
-        ComponentName = e.ComponentName, SortOrder = e.SortOrder, IsActive = e.IsActive,
-        CreatedDate = e.CreatedDate
+        Id = e.Id, SubModuleId = e.SubModuleId, SubModuleName = subModName,
+        ScreenCode = e.ScreenCode, ScreenName = e.ScreenName, ScreenType = e.ScreenType,
+        RouteUrl = e.RouteUrl, ComponentName = e.ComponentName, SortOrder = e.SortOrder,
+        IsActive = e.IsActive, CreatedDate = e.CreatedDate
     };
 }
 
@@ -529,6 +621,7 @@ public class RolePermissionEntryService : IRolePermissionEntryService
     private readonly IWorkspaceRepository _wsRepo;
     private readonly IDomainRepository _domRepo;
     private readonly IModuleRepository _modRepo;
+    private readonly ISubModuleRepository _subModRepo;
     private readonly IScreenRepository _scrRepo;
     private readonly IActionRepository _actRepo;
     private readonly IAuditService _audit;
@@ -537,8 +630,8 @@ public class RolePermissionEntryService : IRolePermissionEntryService
     public RolePermissionEntryService(
         IRolePermissionEntryRepository repo, IRoleRepository roleRepo,
         IWorkspaceRepository wsRepo, IDomainRepository domRepo, IModuleRepository modRepo,
-        IScreenRepository scrRepo, IActionRepository actRepo, IAuditService audit, ICurrentUser user)
-    { _repo = repo; _roleRepo = roleRepo; _wsRepo = wsRepo; _domRepo = domRepo; _modRepo = modRepo; _scrRepo = scrRepo; _actRepo = actRepo; _audit = audit; _user = user; }
+        ISubModuleRepository subModRepo, IScreenRepository scrRepo, IActionRepository actRepo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _roleRepo = roleRepo; _wsRepo = wsRepo; _domRepo = domRepo; _modRepo = modRepo; _subModRepo = subModRepo; _scrRepo = scrRepo; _actRepo = actRepo; _audit = audit; _user = user; }
 
     public async Task<IEnumerable<RolePermissionEntryDto>> GetByRoleAsync(int roleId)
     {
@@ -547,6 +640,7 @@ public class RolePermissionEntryService : IRolePermissionEntryService
         var wsNames = (await _wsRepo.GetAllAsync(true)).ToDictionary(w => w.Id, w => w.WorkspaceName);
         var domNames = (await _domRepo.GetAllAsync(true)).ToDictionary(d => d.Id, d => d.DomainName);
         var modNames = (await _modRepo.GetAllAsync(true)).ToDictionary(m => m.Id, m => m.ModuleName);
+        var subModNames = (await _subModRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.SubModuleName);
         var scrNames = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.ScreenName);
         var actNames = (await _actRepo.GetAllAsync(true)).ToDictionary(a => a.Id, a => a.ActionName);
 
@@ -561,6 +655,8 @@ public class RolePermissionEntryService : IRolePermissionEntryService
             DomainName = domNames.TryGetValue(e.DomainId, out var dn) ? dn : null,
             ModuleId = e.ModuleId,
             ModuleName = modNames.TryGetValue(e.ModuleId, out var mn) ? mn : null,
+            SubModuleId = e.SubModuleId,
+            SubModuleName = subModNames.TryGetValue(e.SubModuleId, out var smn) ? smn : null,
             ScreenId = e.ScreenId,
             ScreenName = scrNames.TryGetValue(e.ScreenId, out var sn) ? sn : null,
             ActionId = e.ActionId,
@@ -577,7 +673,7 @@ public class RolePermissionEntryService : IRolePermissionEntryService
         var e = new RolePermissionEntry
         {
             RoleId = r.RoleId, WorkspaceId = r.WorkspaceId, DomainId = r.DomainId,
-            ModuleId = r.ModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
+            ModuleId = r.ModuleId, SubModuleId = r.SubModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
             Allow = r.Allow, DisplayOrder = r.DisplayOrder,
             IsActive = true, CreatedBy = _user.Username
         };
@@ -591,7 +687,7 @@ public class RolePermissionEntryService : IRolePermissionEntryService
         var entities = r.Permissions.Select(p => new RolePermissionEntry
         {
             RoleId = r.RoleId, WorkspaceId = p.WorkspaceId, DomainId = p.DomainId,
-            ModuleId = p.ModuleId, ScreenId = p.ScreenId, ActionId = p.ActionId,
+            ModuleId = p.ModuleId, SubModuleId = p.SubModuleId, ScreenId = p.ScreenId, ActionId = p.ActionId,
             Allow = p.Allow, IsActive = true, CreatedBy = _user.Username
         });
         await _repo.BulkInsertAsync(entities);
@@ -642,7 +738,7 @@ public class UserPermissionOverrideService : IUserPermissionOverrideService
         var e = new UserPermissionOverride
         {
             UserId = r.UserId, WorkspaceId = r.WorkspaceId, DomainId = r.DomainId,
-            ModuleId = r.ModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
+            ModuleId = r.ModuleId, SubModuleId = r.SubModuleId, ScreenId = r.ScreenId, ActionId = r.ActionId,
             PermissionType = r.PermissionType, Allow = r.Allow,
             EffectiveFrom = r.EffectiveFrom ?? DateTime.UtcNow, EffectiveTo = r.EffectiveTo,
             Remarks = r.Remarks, IsActive = true, CreatedBy = _user.Username
@@ -677,7 +773,7 @@ public class UserPermissionOverrideService : IUserPermissionOverrideService
     private static UserPermissionOverrideDto Map(UserPermissionOverride e) => new()
     {
         Id = e.Id, UserId = e.UserId, WorkspaceId = e.WorkspaceId, DomainId = e.DomainId,
-        ModuleId = e.ModuleId, ScreenId = e.ScreenId, ActionId = e.ActionId,
+        ModuleId = e.ModuleId, SubModuleId = e.SubModuleId, ScreenId = e.ScreenId, ActionId = e.ActionId,
         PermissionType = e.PermissionType, Allow = e.Allow,
         EffectiveFrom = e.EffectiveFrom, EffectiveTo = e.EffectiveTo,
         Remarks = e.Remarks, IsActive = e.IsActive, CreatedDate = e.CreatedDate
@@ -812,13 +908,15 @@ public class UserFieldPermissionEntryService : IUserFieldPermissionEntryService
 }
 
 /* ---------------------------------------------------------------------------
-   DataScope Service (one-per-role, upsert)
+   DataScope Service (multi-row per role, CRUD)
    --------------------------------------------------------------------------- */
 public interface IDataScopeService
 {
-    Task<DataScopeDto?> GetByRoleAsync(int roleId);
-    Task<DataScopeDto> SetAsync(SetDataScopeRequest request);
-    Task<bool> DeleteAsync(int roleId);
+    Task<IEnumerable<DataScopeDto>> GetByRoleAsync(int roleId);
+    Task<DataScopeDto?> GetByIdAsync(int id);
+    Task<DataScopeDto> CreateAsync(SetDataScopeRequest request);
+    Task<DataScopeDto> UpdateAsync(int id, SetDataScopeRequest request);
+    Task<bool> DeleteAsync(int id);
 }
 
 public class DataScopeService : IDataScopeService
@@ -830,58 +928,157 @@ public class DataScopeService : IDataScopeService
     public DataScopeService(IDataScopeRepository repo, IAuditService audit, ICurrentUser user)
     { _repo = repo; _audit = audit; _user = user; }
 
-    public async Task<DataScopeDto?> GetByRoleAsync(int roleId)
+    public async Task<IEnumerable<DataScopeDto>> GetByRoleAsync(int roleId)
     {
-        var e = await _repo.GetByRoleAsync(roleId);
+        var items = await _repo.GetByRoleAsync(roleId);
+        return items.Select(Map).ToList();
+    }
+
+    public async Task<DataScopeDto?> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id);
         return e is null ? null : Map(e);
     }
 
-    public async Task<DataScopeDto> SetAsync(SetDataScopeRequest r)
+    public async Task<DataScopeDto> CreateAsync(SetDataScopeRequest r)
     {
-        var existing = await _repo.GetByRoleAsync(r.RoleId);
-        if (existing is not null)
-        {
-            existing.CompanyId = r.CompanyId;
-            existing.BranchId = r.BranchId;
-            existing.DepartmentId = r.DepartmentId;
-            existing.WarehouseId = r.WarehouseId;
-            existing.BusinessUnitId = r.BusinessUnitId;
-            existing.CostCenterId = r.CostCenterId;
-            existing.ProfitCenterId = r.ProfitCenterId;
-            existing.CanViewAll = r.CanViewAll;
-            existing.CanEditAll = r.CanEditAll;
-            existing.IsActive = r.IsActive;
-            await _repo.UpdateAsync(existing);
-            await _audit.WriteAsync("DataScope", r.RoleId.ToString(), "Update", _user.Username);
-            return Map(existing);
-        }
         var e = new DataScope
         {
-            RoleId = r.RoleId, CompanyId = r.CompanyId, BranchId = r.BranchId,
-            DepartmentId = r.DepartmentId, WarehouseId = r.WarehouseId,
-            BusinessUnitId = r.BusinessUnitId, CostCenterId = r.CostCenterId,
-            ProfitCenterId = r.ProfitCenterId, CanViewAll = r.CanViewAll,
-            CanEditAll = r.CanEditAll, IsActive = r.IsActive, CreatedBy = _user.Username
+            RoleId = r.RoleId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
+            CompanyId = r.CompanyId, BranchId = r.BranchId, DepartmentId = r.DepartmentId,
+            WarehouseId = r.WarehouseId, BusinessUnitId = r.BusinessUnitId,
+            CostCenterId = r.CostCenterId, ProfitCenterId = r.ProfitCenterId,
+            CanView = r.CanView, CanCreate = r.CanCreate, CanEdit = r.CanEdit, CanDelete = r.CanDelete,
+            IsActive = r.IsActive, CreatedBy = _user.Username
         };
         e.Id = await _repo.InsertAsync(e);
         await _audit.WriteAsync("DataScope", e.Id.ToString(), "Create", _user.Username);
         return Map(e);
     }
 
-    public async Task<bool> DeleteAsync(int roleId)
+    public async Task<DataScopeDto> UpdateAsync(int id, SetDataScopeRequest r)
     {
-        var r = await _repo.DeleteAsync(roleId);
-        if (r) await _audit.WriteAsync("DataScope", roleId.ToString(), "Delete", _user.Username);
+        var existing = await _repo.GetByIdAsync(id)
+            ?? throw new InvalidOperationException("Data scope not found");
+        existing.ModuleId = r.ModuleId;
+        existing.ScreenId = r.ScreenId;
+        existing.CompanyId = r.CompanyId;
+        existing.BranchId = r.BranchId;
+        existing.DepartmentId = r.DepartmentId;
+        existing.WarehouseId = r.WarehouseId;
+        existing.BusinessUnitId = r.BusinessUnitId;
+        existing.CostCenterId = r.CostCenterId;
+        existing.ProfitCenterId = r.ProfitCenterId;
+        existing.CanView = r.CanView;
+        existing.CanCreate = r.CanCreate;
+        existing.CanEdit = r.CanEdit;
+        existing.CanDelete = r.CanDelete;
+        existing.IsActive = r.IsActive;
+        existing.ModifiedBy = _user.Username;
+        await _repo.UpdateAsync(existing);
+        await _audit.WriteAsync("DataScope", id.ToString(), "Update", _user.Username);
+        return Map(existing);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("DataScope", id.ToString(), "Delete", _user.Username);
         return r;
     }
 
     private static DataScopeDto Map(DataScope e) => new()
     {
-        Id = e.Id, RoleId = e.RoleId, CompanyId = e.CompanyId, BranchId = e.BranchId,
-        DepartmentId = e.DepartmentId, WarehouseId = e.WarehouseId,
-        BusinessUnitId = e.BusinessUnitId, CostCenterId = e.CostCenterId,
-        ProfitCenterId = e.ProfitCenterId, CanViewAll = e.CanViewAll,
-        CanEditAll = e.CanEditAll, IsActive = e.IsActive, CreatedDate = e.CreatedDate
+        Id = e.Id, RoleId = e.RoleId, ModuleId = e.ModuleId, ScreenId = e.ScreenId,
+        CompanyId = e.CompanyId, BranchId = e.BranchId, DepartmentId = e.DepartmentId,
+        WarehouseId = e.WarehouseId, BusinessUnitId = e.BusinessUnitId,
+        CostCenterId = e.CostCenterId, ProfitCenterId = e.ProfitCenterId,
+        CanView = e.CanView, CanCreate = e.CanCreate, CanEdit = e.CanEdit, CanDelete = e.CanDelete,
+        IsActive = e.IsActive, CreatedDate = e.CreatedDate
+    };
+}
+
+/* ---------------------------------------------------------------------------
+   UserDataScopeOverride Service
+   --------------------------------------------------------------------------- */
+public interface IUserDataScopeOverrideService
+{
+    Task<IEnumerable<UserDataScopeOverrideDto>> GetByUserAsync(int userId);
+    Task<UserDataScopeOverrideDto?> GetByIdAsync(int id);
+    Task<UserDataScopeOverrideDto> CreateAsync(SetUserDataScopeOverrideRequest request);
+    Task<UserDataScopeOverrideDto> UpdateAsync(int id, SetUserDataScopeOverrideRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class UserDataScopeOverrideService : IUserDataScopeOverrideService
+{
+    private readonly IUserDataScopeOverrideRepository _repo;
+    private readonly IAuditService _audit;
+    private readonly ICurrentUser _user;
+
+    public UserDataScopeOverrideService(IUserDataScopeOverrideRepository repo, IAuditService audit, ICurrentUser user)
+    { _repo = repo; _audit = audit; _user = user; }
+
+    public async Task<IEnumerable<UserDataScopeOverrideDto>> GetByUserAsync(int userId)
+    {
+        var items = await _repo.GetByUserAsync(userId);
+        return items.Select(Map).ToList();
+    }
+
+    public async Task<UserDataScopeOverrideDto?> GetByIdAsync(int id)
+    {
+        var e = await _repo.GetByIdAsync(id);
+        return e is null ? null : Map(e);
+    }
+
+    public async Task<UserDataScopeOverrideDto> CreateAsync(SetUserDataScopeOverrideRequest r)
+    {
+        var e = new UserDataScopeOverride
+        {
+            UserId = r.UserId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
+            ScopeType = r.ScopeType, ScopeValue = r.ScopeValue,
+            PermissionType = r.PermissionType, Allow = r.Allow,
+            EffectiveFrom = r.EffectiveFrom ?? DateTime.UtcNow,
+            EffectiveTo = r.EffectiveTo, Remarks = r.Remarks,
+            IsActive = r.IsActive, CreatedBy = _user.Username
+        };
+        e.Id = await _repo.InsertAsync(e);
+        await _audit.WriteAsync("UserDataScopeOverride", e.Id.ToString(), "Create", _user.Username);
+        return Map(e);
+    }
+
+    public async Task<UserDataScopeOverrideDto> UpdateAsync(int id, SetUserDataScopeOverrideRequest r)
+    {
+        var existing = await _repo.GetByIdAsync(id)
+            ?? throw new InvalidOperationException("User data scope override not found");
+        existing.ScopeType = r.ScopeType;
+        existing.ScopeValue = r.ScopeValue;
+        existing.PermissionType = r.PermissionType;
+        existing.Allow = r.Allow;
+        existing.EffectiveFrom = r.EffectiveFrom ?? existing.EffectiveFrom;
+        existing.EffectiveTo = r.EffectiveTo;
+        existing.Remarks = r.Remarks;
+        existing.IsActive = r.IsActive;
+        existing.ModifiedBy = _user.Username;
+        await _repo.UpdateAsync(existing);
+        await _audit.WriteAsync("UserDataScopeOverride", id.ToString(), "Update", _user.Username);
+        return Map(existing);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var r = await _repo.DeleteAsync(id);
+        if (r) await _audit.WriteAsync("UserDataScopeOverride", id.ToString(), "Delete", _user.Username);
+        return r;
+    }
+
+    private static UserDataScopeOverrideDto Map(UserDataScopeOverride e) => new()
+    {
+        Id = e.Id, UserId = e.UserId, ModuleId = e.ModuleId, ScreenId = e.ScreenId,
+        ScopeType = e.ScopeType, ScopeValue = e.ScopeValue,
+        PermissionType = e.PermissionType, Allow = e.Allow,
+        EffectiveFrom = e.EffectiveFrom, EffectiveTo = e.EffectiveTo,
+        Remarks = e.Remarks, IsActive = e.IsActive, CreatedDate = e.CreatedDate
     };
 }
 
@@ -911,7 +1108,7 @@ public class WorkflowPermissionEntryService : IWorkflowPermissionEntryService
     {
         var e = new WorkflowPermissionEntry
         {
-            RoleId = r.RoleId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
+            RoleId = r.RoleId, ModuleId = r.ModuleId, SubModuleId = r.SubModuleId, ScreenId = r.ScreenId,
             CanSubmit = r.CanSubmit, CanApprove = r.CanApprove, CanReject = r.CanReject,
             CanCancel = r.CanCancel, CanClose = r.CanClose,
             IsActive = r.IsActive, CreatedBy = _user.Username
@@ -930,7 +1127,7 @@ public class WorkflowPermissionEntryService : IWorkflowPermissionEntryService
 
     private static WorkflowPermissionEntryDto Map(WorkflowPermissionEntry e) => new()
     {
-        Id = e.Id, RoleId = e.RoleId, ModuleId = e.ModuleId, ScreenId = e.ScreenId,
+        Id = e.Id, RoleId = e.RoleId, ModuleId = e.ModuleId, SubModuleId = e.SubModuleId, ScreenId = e.ScreenId,
         CanSubmit = e.CanSubmit, CanApprove = e.CanApprove, CanReject = e.CanReject,
         CanCancel = e.CanCancel, CanClose = e.CanClose,
         IsActive = e.IsActive, CreatedDate = e.CreatedDate

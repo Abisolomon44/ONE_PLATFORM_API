@@ -4,8 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
- 
   </PropertyGroup>
+
+  <Target Name="KillRunningProcess" BeforeTargets="CoreCompile">
+    <Exec Command="powershell -Command &quot;Get-Process -Name ONEERP.ERP.API -ErrorAction SilentlyContinue | Stop-Process -Force&quot;" IgnoreExitCode="true" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\ONEERP.Shared\ONEERP.Shared.csproj" />

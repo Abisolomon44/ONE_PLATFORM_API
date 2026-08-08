@@ -481,12 +481,29 @@ public class Module
     public DateTime CreatedDate { get; set; }
 }
 
-public class Screen
+public class SubModule
 {
     public int Id { get; set; }
     public int ModuleId { get; set; }
+    public string SubModuleCode { get; set; } = string.Empty;
+    public string SubModuleName { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public string? RouteUrl { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class Screen
+{
+    public int Id { get; set; }
+    public int SubModuleId { get; set; }
     public string ScreenCode { get; set; } = string.Empty;
     public string ScreenName { get; set; } = string.Empty;
+    public string ScreenType { get; set; } = "MASTER";
     public string? RouteUrl { get; set; }
     public string? ComponentName { get; set; }
     public int SortOrder { get; set; }
@@ -528,6 +545,7 @@ public class RolePermissionEntry
     public int WorkspaceId { get; set; }
     public int DomainId { get; set; }
     public int ModuleId { get; set; }
+    public int SubModuleId { get; set; }
     public int ScreenId { get; set; }
     public int ActionId { get; set; }
     public bool Allow { get; set; } = true;
@@ -546,6 +564,7 @@ public class UserPermissionOverride
     public int WorkspaceId { get; set; }
     public int DomainId { get; set; }
     public int ModuleId { get; set; }
+    public int SubModuleId { get; set; }
     public int ScreenId { get; set; }
     public int ActionId { get; set; }
     public string PermissionType { get; set; } = "Grant";
@@ -601,6 +620,8 @@ public class DataScope
 {
     public int Id { get; set; }
     public int RoleId { get; set; }
+    public int? ModuleId { get; set; }
+    public int? ScreenId { get; set; }
     public int? CompanyId { get; set; }
     public int? BranchId { get; set; }
     public int? DepartmentId { get; set; }
@@ -608,11 +629,35 @@ public class DataScope
     public int? BusinessUnitId { get; set; }
     public int? CostCenterId { get; set; }
     public int? ProfitCenterId { get; set; }
-    public bool CanViewAll { get; set; }
-    public bool CanEditAll { get; set; }
+    public bool CanView { get; set; } = true;
+    public bool CanCreate { get; set; }
+    public bool CanEdit { get; set; }
+    public bool CanDelete { get; set; }
     public bool IsActive { get; set; } = true;
     public string? CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+}
+
+public class UserDataScopeOverride
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public int? ModuleId { get; set; }
+    public int? ScreenId { get; set; }
+    public string ScopeType { get; set; } = string.Empty;   // Company, Branch, Department, Warehouse, etc.
+    public string ScopeValue { get; set; } = string.Empty;   // The ID value as string
+    public string PermissionType { get; set; } = string.Empty; // Grant, Deny
+    public bool Allow { get; set; }
+    public DateTime EffectiveFrom { get; set; } = DateTime.UtcNow;
+    public DateTime? EffectiveTo { get; set; }
+    public string? Remarks { get; set; }
+    public bool IsActive { get; set; } = true;
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedDate { get; set; }
 }
 
 public class WorkflowPermissionEntry
@@ -620,6 +665,7 @@ public class WorkflowPermissionEntry
     public int Id { get; set; }
     public int RoleId { get; set; }
     public int ModuleId { get; set; }
+    public int SubModuleId { get; set; }
     public int ScreenId { get; set; }
     public bool CanSubmit { get; set; }
     public bool CanApprove { get; set; }

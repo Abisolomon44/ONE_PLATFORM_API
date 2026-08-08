@@ -108,6 +108,40 @@ public class ModulesController : ControllerBase
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+public class SubModulesController : ControllerBase
+{
+    private readonly ISubModuleService _service;
+    public SubModulesController(ISubModuleService service) => _service = service;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll() => Ok(ApiResponse<IEnumerable<SubModuleDto>>.Ok(await _service.GetAllAsync()));
+
+    [HttpGet("module/{moduleId:int}")]
+    public async Task<IActionResult> GetByModule(int moduleId)
+        => Ok(ApiResponse<IEnumerable<SubModuleDto>>.Ok(await _service.GetByModuleAsync(moduleId)));
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id) => Ok(ApiResponse<SubModuleDto>.Ok(await _service.GetByIdAsync(id)));
+
+    [HttpPost]
+    [Permission("submodules.manage")]
+    public async Task<IActionResult> Create([FromBody] CreateSubModuleRequest request)
+        => Ok(ApiResponse<SubModuleDto>.Ok(await _service.CreateAsync(request)));
+
+    [HttpPut("{id:int}")]
+    [Permission("submodules.manage")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateSubModuleRequest request)
+        => Ok(ApiResponse<SubModuleDto>.Ok(await _service.UpdateAsync(id, request)));
+
+    [HttpDelete("{id:int}")]
+    [Permission("submodules.manage")]
+    public async Task<IActionResult> Delete(int id)
+        => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(id)));
+}
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
 public class ScreensController : ControllerBase
 {
     private readonly IScreenService _service;
@@ -116,9 +150,9 @@ public class ScreensController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll() => Ok(ApiResponse<IEnumerable<ScreenDto>>.Ok(await _service.GetAllAsync()));
 
-    [HttpGet("module/{moduleId:int}")]
-    public async Task<IActionResult> GetByModule(int moduleId)
-        => Ok(ApiResponse<IEnumerable<ScreenDto>>.Ok(await _service.GetByModuleAsync(moduleId)));
+    [HttpGet("submodule/{subModuleId:int}")]
+    public async Task<IActionResult> GetBySubModule(int subModuleId)
+        => Ok(ApiResponse<IEnumerable<ScreenDto>>.Ok(await _service.GetBySubModuleAsync(subModuleId)));
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id) => Ok(ApiResponse<ScreenDto>.Ok(await _service.GetByIdAsync(id)));
@@ -333,17 +367,58 @@ public class DataScopesController : ControllerBase
 
     [HttpGet("role/{roleId:int}")]
     public async Task<IActionResult> GetByRole(int roleId)
-        => Ok(ApiResponse<DataScopeDto?>.Ok(await _service.GetByRoleAsync(roleId)));
+        => Ok(ApiResponse<IEnumerable<DataScopeDto>>.Ok(await _service.GetByRoleAsync(roleId)));
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+        => Ok(ApiResponse<DataScopeDto?>.Ok(await _service.GetByIdAsync(id)));
 
     [HttpPost]
     [Permission("data-scopes.manage")]
-    public async Task<IActionResult> Set([FromBody] SetDataScopeRequest request)
-        => Ok(ApiResponse<DataScopeDto>.Ok(await _service.SetAsync(request)));
+    public async Task<IActionResult> Create([FromBody] SetDataScopeRequest request)
+        => Ok(ApiResponse<DataScopeDto>.Ok(await _service.CreateAsync(request)));
 
-    [HttpDelete("role/{roleId:int}")]
+    [HttpPut("{id:int}")]
     [Permission("data-scopes.manage")]
-    public async Task<IActionResult> Delete(int roleId)
-        => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(roleId)));
+    public async Task<IActionResult> Update(int id, [FromBody] SetDataScopeRequest request)
+        => Ok(ApiResponse<DataScopeDto>.Ok(await _service.UpdateAsync(id, request)));
+
+    [HttpDelete("{id:int}")]
+    [Permission("data-scopes.manage")]
+    public async Task<IActionResult> Delete(int id)
+        => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(id)));
+}
+
+[ApiController]
+[Route("api/user-data-scope-overrides")]
+[Authorize]
+public class UserDataScopeOverridesController : ControllerBase
+{
+    private readonly IUserDataScopeOverrideService _service;
+    public UserDataScopeOverridesController(IUserDataScopeOverrideService service) => _service = service;
+
+    [HttpGet("user/{userId:int}")]
+    public async Task<IActionResult> GetByUser(int userId)
+        => Ok(ApiResponse<IEnumerable<UserDataScopeOverrideDto>>.Ok(await _service.GetByUserAsync(userId)));
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+        => Ok(ApiResponse<UserDataScopeOverrideDto?>.Ok(await _service.GetByIdAsync(id)));
+
+    [HttpPost]
+    [Permission("user-data-scope-overrides.manage")]
+    public async Task<IActionResult> Create([FromBody] SetUserDataScopeOverrideRequest request)
+        => Ok(ApiResponse<UserDataScopeOverrideDto>.Ok(await _service.CreateAsync(request)));
+
+    [HttpPut("{id:int}")]
+    [Permission("user-data-scope-overrides.manage")]
+    public async Task<IActionResult> Update(int id, [FromBody] SetUserDataScopeOverrideRequest request)
+        => Ok(ApiResponse<UserDataScopeOverrideDto>.Ok(await _service.UpdateAsync(id, request)));
+
+    [HttpDelete("{id:int}")]
+    [Permission("user-data-scope-overrides.manage")]
+    public async Task<IActionResult> Delete(int id)
+        => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(id)));
 }
 
 [ApiController]
@@ -367,4 +442,26 @@ public class WorkflowPermissionsController : ControllerBase
     [Permission("workflow-permissions.manage")]
     public async Task<IActionResult> Delete(int id)
         => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(id)));
+}
+
+/* ---------------------------------------------------------------------------
+   Navigation Controller – single endpoint for sidebar tree
+   --------------------------------------------------------------------------- */
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class NavigationController : ControllerBase
+{
+    private readonly INavigationService _service;
+    private readonly ICurrentUser _user;
+
+    public NavigationController(INavigationService service, ICurrentUser user)
+    {
+        _service = service;
+        _user = user;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
+        => Ok(ApiResponse<NavigationResponse>.Ok(await _service.GetNavigationAsync(_user.UserId, _user.TenantId, _user.CompanyId)));
 }

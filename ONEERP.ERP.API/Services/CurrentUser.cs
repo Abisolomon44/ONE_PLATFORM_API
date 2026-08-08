@@ -15,6 +15,7 @@ public interface ICurrentUser
     int TenantId { get; }
     string TenantCode { get; }
     int CompanyId { get; }
+    bool IsSuperAdmin { get; }
     bool HasPermission(string permission);
     bool HasAnyPermission(params string[] permissions);
 }
@@ -44,6 +45,8 @@ public class CurrentUser : ICurrentUser
     public string TenantCode => GetClaim(SharedClaimTypes.TenantCode);
 
     public int CompanyId => int.TryParse(GetClaim(SharedClaimTypes.CompanyId), out var id) ? id : throw new UnauthorizedAccess();
+
+    public bool IsSuperAdmin => Principal?.HasClaim(SharedClaimTypes.IsSuperAdmin, "true") ?? false;
 
     public bool HasPermission(string permission) => Principal?.HasClaim(SharedClaimTypes.Permission, permission) ?? false;
 
