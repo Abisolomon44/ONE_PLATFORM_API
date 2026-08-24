@@ -1,4 +1,4 @@
-namespace ONEERP.ERP.API.DTOs;
+    namespace ONEERP.ERP.API.DTOs;
 
 /* ---------------------------------------------------------------------------
    Workspace DTOs

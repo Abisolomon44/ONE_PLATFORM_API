@@ -1,4 +1,6 @@
+using System.Data;
 using Dapper;
+using Microsoft.Data.SqlClient;
 using ONEERP.ERP.API.Data;
 using ONEERP.ERP.API.Security;
 
@@ -40,9 +42,7 @@ public class NavigationService : INavigationService
     private System.Data.Common.DbConnection OpenTenant()
     {
         var connStr = _accessor.ConnectionString ?? throw new InvalidOperationException("No tenant connection.");
-        var factory = System.Data.Common.DbProviderFactories.GetFactory("Microsoft.Data.SqlClient");
-        var conn = factory.CreateConnection()!;
-        conn.ConnectionString = connStr;
+        var conn = new SqlConnection(connStr);
         conn.Open();
         return conn;
     }
@@ -52,7 +52,7 @@ public class NavigationService : INavigationService
         using var conn = OpenTenant();
 
         const string sql = @"
-            SELECT DISTINCT ws.Id, ws.WorkspaceCode AS Code, ws.WorkspaceName AS Name, ws.Icon
+            SELECT DISTINCT ws.Id, ws.SortOrder, ws.WorkspaceCode AS Code, ws.WorkspaceName AS Name, ws.Icon
             FROM dbo.Workspaces ws
             INNER JOIN dbo.Domains d ON d.WorkspaceId = ws.Id
             INNER JOIN dbo.Modules m ON m.DomainId = d.Id
@@ -79,16 +79,16 @@ public class NavigationService : INavigationService
             new NavigationWorkspaceDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationDomainDto>())).ToList();
 
         var domains = (await multi.ReadAsync<DomRow>()).Select(r =>
-            new NavigationDomainDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationModuleDto>(), r.WsId)).ToList();
+            new NavigationDomainDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationModuleDto>(), r.WorkspaceId)).ToList();
 
         var modules = (await multi.ReadAsync<ModRow>()).Select(r =>
-            new NavigationModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationSubModuleDto>(), r.DomId)).ToList();
+            new NavigationModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationSubModuleDto>(), r.DomainId)).ToList();
 
         var subModules = (await multi.ReadAsync<SmRow>()).Select(r =>
-            new NavigationSubModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationScreenDto>(), r.ModId)).ToList();
+            new NavigationSubModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationScreenDto>(), r.ModuleId)).ToList();
 
         var screens = (await multi.ReadAsync<ScRow>()).Select(r =>
-            new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SmId)).ToList();
+            new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SubModuleId)).ToList();
 
         // Build tree
         foreach (var s in screens)
@@ -117,9 +117,9 @@ public class NavigationService : INavigationService
         return new NavigationResponse(accessible, cached?.Version ?? 1);
     }
 
-    private record WsRow(int Id, string Code, string Name, string? Icon);
-    private record DomRow(int Id, string Code, string Name, string? Icon, int WsId);
-    private record ModRow(int Id, string Code, string Name, string? Icon, int DomId);
-    private record SmRow(int Id, string Code, string Name, string? Icon, int ModId);
-    private record ScRow(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SmId);
+    private record WsRow(int Id, int SortOrder, string Code, string Name, string? Icon);
+    private record DomRow(int Id, string Code, string Name, string? Icon, int WorkspaceId);
+    private record ModRow(int Id, string Code, string Name, string? Icon, int DomainId);
+    private record SmRow(int Id, string Code, string Name, string? Icon, int ModuleId);
+    private record ScRow(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SubModuleId);
 }

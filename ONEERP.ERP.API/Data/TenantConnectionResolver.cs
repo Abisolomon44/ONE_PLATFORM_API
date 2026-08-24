@@ -116,9 +116,11 @@ public class TenantConnectionResolver : ITenantConnectionResolver
     {
         using var connection = _factory.CreatePlatformConnection();
         return await _sql.ExecuteScalarAsync<string>(connection, @"
-            SELECT TOP 1 TenantCode
-            FROM dbo.Tenants
-            WHERE AdminUsername = @username AND IsDeleted = 0",
+            SELECT TOP 1 TenantCode FROM (
+                SELECT TenantCode FROM dbo.TenantUserMaps WHERE Username = @username
+                UNION ALL
+                SELECT TenantCode FROM dbo.Tenants WHERE AdminUsername = @username AND IsDeleted = 0
+            ) t",
             new { username });
     }
 

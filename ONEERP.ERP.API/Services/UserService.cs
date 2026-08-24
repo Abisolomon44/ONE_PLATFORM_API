@@ -1,3 +1,4 @@
+using ONEERP.ERP.API.Data;
 using ONEERP.ERP.API.DTOs;
 using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
@@ -13,6 +14,7 @@ public interface IUserService
     Task<UserWithRolesDto> GetByIdAsync(int userId);
     Task<UserDto> CreateAsync(CreateUserRequest request, int companyId, string currentUser);
     Task<UserDto> UpdateAsync(int userId, UpdateUserRequest request, string currentUser);
+    Task ResetPasswordAsync(int userId, string newPassword, string currentUser);
     Task<bool> DeleteAsync(int userId, string currentUser);
 }
 
@@ -22,17 +24,23 @@ public class UserService : IUserService
     private readonly IRoleRepository _roleRepository;
     private readonly TenantAccessor _accessor;
     private readonly IAuditService _auditService;
+    private readonly IPlatformDbConnectionFactory _platformFactory;
+    private readonly ISqlHelper _sql;
 
     public UserService(
         IUserRepository userRepository,
         IRoleRepository roleRepository,
         TenantAccessor accessor,
-        IAuditService auditService)
+        IAuditService auditService,
+        IPlatformDbConnectionFactory platformFactory,
+        ISqlHelper sql)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _accessor = accessor;
         _auditService = auditService;
+        _platformFactory = platformFactory;
+        _sql = sql;
     }
 
     public async Task<PaginatedResult<UserWithRolesDto>> GetPagedAsync(int pageNumber, int pageSize, string search)
@@ -135,8 +143,24 @@ public class UserService : IUserService
             transaction.Commit();
         }
 
+        await RegisterTenantUserMappingAsync(user.Username);
+
         await _auditService.WriteAsync("User", user.UserId.ToString(), "Create", currentUser);
         return ToDto(user, request.RoleIds);
+    }
+
+    private async Task RegisterTenantUserMappingAsync(string username)
+    {
+        var tenantCode = _accessor.TenantCode;
+        if (string.IsNullOrWhiteSpace(tenantCode)) return;
+
+        using var connection = _platformFactory.CreatePlatformConnection();
+        connection.Open();
+        await _sql.ExecuteAsync(connection, @"
+            IF NOT EXISTS (SELECT 1 FROM dbo.TenantUserMaps WHERE Username = @username)
+                INSERT INTO dbo.TenantUserMaps (Username, TenantCode, CreatedDate)
+                VALUES (@username, @tenantCode, SYSUTCDATETIME());",
+            new { username, tenantCode });
     }
 
     public async Task<UserDto> UpdateAsync(int userId, UpdateUserRequest request, string currentUser)
@@ -171,6 +195,22 @@ public class UserService : IUserService
 
         await _auditService.WriteAsync("User", userId.ToString(), "Update", currentUser);
         return ToDto(user, request.RoleIds);
+    }
+
+    public async Task ResetPasswordAsync(int userId, string newPassword, string currentUser)
+    {
+        var passwordErrors = PasswordPolicy.Validate(newPassword);
+        if (passwordErrors.Count > 0)
+            throw new DomainException(passwordErrors[0]);
+
+        var updated = await _userRepository.UpdatePasswordAsync(
+            userId,
+            BCrypt.Net.BCrypt.HashPassword(newPassword));
+
+        if (!updated)
+            throw new NotFoundException($"User '{userId}' was not found.");
+
+        await _auditService.WriteAsync("User", userId.ToString(), "ResetPassword", currentUser);
     }
 
     public async Task<bool> DeleteAsync(int userId, string currentUser)

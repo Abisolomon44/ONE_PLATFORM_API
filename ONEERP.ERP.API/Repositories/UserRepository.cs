@@ -47,14 +47,14 @@ public class UserRepository : TenantRepositoryBase, IUserRepository
     {
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<bool>(connection,
-            "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Users WHERE Username = @username) THEN 1 ELSE 0 END", new { username });
+            "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Users WHERE Username = @username AND IsDeleted = 0) THEN 1 ELSE 0 END", new { username });
     }
 
     public async Task<bool> EmailInUseAsync(string email)
     {
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<bool>(connection,
-            "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Users WHERE Email = @email) THEN 1 ELSE 0 END", new { email });
+            "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Users WHERE Email = @email AND IsDeleted = 0) THEN 1 ELSE 0 END", new { email });
     }
 
     public async Task<User?> GetByIdAsync(int userId)

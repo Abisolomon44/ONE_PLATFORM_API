@@ -16,6 +16,8 @@ public record UpdateUserRequest(
     List<int> RoleIds,
     string Status);
 
+public record ResetUserPasswordRequest(string Password);
+
 public class UserWithRolesDto
 {
     public int UserId { get; set; }

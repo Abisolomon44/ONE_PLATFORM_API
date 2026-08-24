@@ -44,6 +44,15 @@ public class UpdateUserRequestValidator : AbstractValidator<DTOs.UpdateUserReque
     }
 }
 
+public class ResetUserPasswordRequestValidator : AbstractValidator<DTOs.ResetUserPasswordRequest>
+{
+    public ResetUserPasswordRequestValidator()
+    {
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(8)
+            .WithMessage("Password must be at least 8 characters.");
+    }
+}
+
 public class CreateRoleRequestValidator : AbstractValidator<DTOs.CreateRoleRequest>
 {
     public CreateRoleRequestValidator()
@@ -161,17 +170,63 @@ public class CreateBusinessTypeRequestValidator : AbstractValidator<DTOs.CreateB
     }
 }
 
-public class UpdateBusinessTypeRequestValidator : AbstractValidator<DTOs.UpdateBusinessTypeRequest>
-{
-    public UpdateBusinessTypeRequestValidator()
+    public class UpdateBusinessTypeRequestValidator : AbstractValidator<DTOs.UpdateBusinessTypeRequest>
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Description).MaximumLength(250);
-        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+        public UpdateBusinessTypeRequestValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Description).MaximumLength(250);
+            RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+        }
     }
-}
 
-public class CreateIndustryTypeRequestValidator : AbstractValidator<DTOs.CreateIndustryTypeRequest>
+    public class CreateBusinessPartnerRoleRequestValidator : AbstractValidator<DTOs.CreateBusinessPartnerRoleRequest>
+    {
+        public CreateBusinessPartnerRoleRequestValidator()
+        {
+            RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Description).MaximumLength(250);
+        }
+    }
+
+    public class UpdateBusinessPartnerRoleRequestValidator : AbstractValidator<DTOs.UpdateBusinessPartnerRoleRequest>
+    {
+        public UpdateBusinessPartnerRoleRequestValidator()
+        {
+            RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Description).MaximumLength(250);
+        }
+    }
+
+    public class CreateBusinessPartnerRequestValidator : AbstractValidator<DTOs.CreateBusinessPartnerRequest>
+    {
+        public CreateBusinessPartnerRequestValidator()
+        {
+            RuleFor(x => x.PartnerCode).NotEmpty().MaximumLength(30);
+            RuleFor(x => x.PartnerName).NotEmpty().MaximumLength(200);
+            RuleFor(x => x.PatnerRoleIds).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
+            RuleFor(x => x.CreditLimit).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.CreditDays).GreaterThanOrEqualTo(0);
+        }
+    }
+
+    public class UpdateBusinessPartnerRequestValidator : AbstractValidator<DTOs.UpdateBusinessPartnerRequest>
+    {
+        public UpdateBusinessPartnerRequestValidator()
+        {
+            RuleFor(x => x.PartnerCode).NotEmpty().MaximumLength(30);
+            RuleFor(x => x.PartnerName).NotEmpty().MaximumLength(200);
+            RuleFor(x => x.PatnerRoleIds).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
+            RuleFor(x => x.CreditLimit).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.CreditDays).GreaterThanOrEqualTo(0);
+        }
+    }
+
+    public class CreateIndustryTypeRequestValidator : AbstractValidator<DTOs.CreateIndustryTypeRequest>
 {
     public CreateIndustryTypeRequestValidator()
     {

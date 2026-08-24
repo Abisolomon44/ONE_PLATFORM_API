@@ -23,6 +23,12 @@ public static class Permissions
     public const string BusinessTypesView = "business-types.view";
     public const string BusinessTypesManage = "business-types.manage";
 
+    public const string BusinessPartnerRolesView = "business-partner-roles.view";
+    public const string BusinessPartnerRolesManage = "business-partner-roles.manage";
+
+    public const string BusinessPartnersView = "business-partners.view";
+    public const string BusinessPartnersManage = "business-partners.manage";
+
     public const string IndustryTypesView = "industry-types.view";
     public const string IndustryTypesManage = "industry-types.manage";
 
@@ -111,6 +117,8 @@ public const string OrganizationTypesView = "organization-types.view";
         UsersView, UsersCreate, UsersEdit, UsersDelete,
         RolesView, RolesManage,
         BusinessTypesView, BusinessTypesManage,
+        BusinessPartnerRolesView, BusinessPartnerRolesManage,
+        BusinessPartnersView, BusinessPartnersManage,
         IndustryTypesView, IndustryTypesManage,
         CompanyGroupsView, CompanyGroupsManage,
         LocationsView, LocationsCreate, LocationsEdit, LocationsDelete,

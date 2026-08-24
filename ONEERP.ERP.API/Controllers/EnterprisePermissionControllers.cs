@@ -158,17 +158,14 @@ public class ScreensController : ControllerBase
     public async Task<IActionResult> GetById(int id) => Ok(ApiResponse<ScreenDto>.Ok(await _service.GetByIdAsync(id)));
 
     [HttpPost]
-    [Permission("screens.manage")]
     public async Task<IActionResult> Create([FromBody] CreateScreenRequest request)
         => Ok(ApiResponse<ScreenDto>.Ok(await _service.CreateAsync(request)));
 
     [HttpPut("{id:int}")]
-    [Permission("screens.manage")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateScreenRequest request)
         => Ok(ApiResponse<ScreenDto>.Ok(await _service.UpdateAsync(id, request)));
 
     [HttpDelete("{id:int}")]
-    [Permission("screens.manage")]
     public async Task<IActionResult> Delete(int id)
         => Ok(ApiResponse<bool>.Ok(await _service.DeleteAsync(id)));
 }

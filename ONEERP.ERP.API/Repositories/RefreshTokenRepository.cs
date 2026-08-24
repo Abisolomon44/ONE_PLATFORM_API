@@ -76,8 +76,8 @@ public class AuditLogRepository : TenantRepositoryBase, IAuditLogRepository
     {
         using var connection = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.AuditLogs (UserId, ModuleId, ScreenId, [Action], ReferenceId, OldValue, NewValue, IPAddress, Browser)
-            VALUES (@UserId, @ModuleId, @ScreenId, @Action, @ReferenceId, @OldValue, @NewValue, @IPAddress, @Browser);
+            INSERT INTO dbo.AuditLogs (EntityName, EntityId, [Action], PerformedBy, OldValues, NewValues, IpAddress)
+            VALUES (@EntityName, @EntityId, @Action, @PerformedBy, @OldValues, @NewValues, @IpAddress);
             SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         return await Sql.QuerySingleOrDefaultAsync<long>(connection, sql, log);
     }
@@ -87,7 +87,7 @@ public class AuditLogRepository : TenantRepositoryBase, IAuditLogRepository
         using var connection = OpenTenant();
         var offset = (pageNumber - 1) * pageSize;
         return await Sql.QueryAsync<AuditLog>(connection,
-            "SELECT * FROM dbo.AuditLogs ORDER BY CreatedDate DESC OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
+            "SELECT * FROM dbo.AuditLogs ORDER BY PerformedDate DESC OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
             new { offset, pageSize });
     }
 }

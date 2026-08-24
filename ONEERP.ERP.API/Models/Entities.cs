@@ -123,17 +123,15 @@ public class RefreshToken
 
 public class AuditLog
 {
-    public long Id { get; set; }
-    public int? UserId { get; set; }
-    public int? ModuleId { get; set; }
-    public int? ScreenId { get; set; }
+    public long AuditLogId { get; set; }
+    public string EntityName { get; set; } = string.Empty;
+    public string? EntityId { get; set; }
     public string Action { get; set; } = string.Empty;
-    public string? ReferenceId { get; set; }
-    public string? OldValue { get; set; }
-    public string? NewValue { get; set; }
-    public string? IPAddress { get; set; }
-    public string? Browser { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public string? PerformedBy { get; set; }
+    public DateTime PerformedDate { get; set; }
+    public string? OldValues { get; set; }
+    public string? NewValues { get; set; }
+    public string? IpAddress { get; set; }
 }
 
 public class BusinessType
@@ -162,6 +160,44 @@ public class IndustryType
     public string? ModifiedBy { get; set; }
     public DateTime ModifiedDate { get; set; }
     public bool IsDeleted { get; set; }
+}
+
+public class BusinessPartnerRole
+{
+    public int BusinessPartnerRoleId { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsActive { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime ModifiedDate { get; set; }
+    public bool IsDeleted { get; set; }
+}
+
+public class BusinessPartner
+{
+    public long Id { get; set; }
+    public long CompanyId { get; set; }
+    public string PartnerCode { get; set; } = string.Empty;
+    public string PartnerName { get; set; } = string.Empty;
+    public string PatnerRoleIds { get; set; } = string.Empty;
+    public string? ContactPerson { get; set; }
+    public string? MobileNo { get; set; }
+    public string? Email { get; set; }
+    public string? TaxRegistrationNo { get; set; }
+    public decimal CreditLimit { get; set; }
+    public int CreditDays { get; set; }
+    public int? PaymentTermId { get; set; }
+    public int? CurrencyId { get; set; }
+    public int? PriceListId { get; set; }
+    public string? Notes { get; set; }
+    public bool IsActive { get; set; }
+    public long? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 }
 
 public class CompanyGroup

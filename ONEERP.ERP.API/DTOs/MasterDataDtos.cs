@@ -15,6 +15,79 @@ public class BusinessTypeDto
     public bool IsActive { get; set; }
 }
 
+/* ---------------- BusinessPartnerRoles ---------------- */
+
+public record CreateBusinessPartnerRoleRequest(string Code, string Name, string? Description);
+
+public record UpdateBusinessPartnerRoleRequest(string Code, string Name, string? Description, bool IsActive);
+
+public class BusinessPartnerRoleDto
+{
+    public int BusinessPartnerRoleId { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsActive { get; set; }
+}
+
+/* ---------------- BusinessPartners ---------------- */
+
+public record CreateBusinessPartnerRequest(
+    string PartnerCode,
+    string PartnerName,
+    string PatnerRoleIds,
+    string? ContactPerson,
+    string? MobileNo,
+    string? Email,
+    string? TaxRegistrationNo,
+    decimal CreditLimit,
+    int CreditDays,
+    int? PaymentTermId,
+    int? CurrencyId,
+    int? PriceListId,
+    string? Notes,
+    bool IsActive = true);
+
+public record UpdateBusinessPartnerRequest(
+    string PartnerCode,
+    string PartnerName,
+    string PatnerRoleIds,
+    string? ContactPerson,
+    string? MobileNo,
+    string? Email,
+    string? TaxRegistrationNo,
+    decimal CreditLimit,
+    int CreditDays,
+    int? PaymentTermId,
+    int? CurrencyId,
+    int? PriceListId,
+    string? Notes,
+    bool IsActive);
+
+public class BusinessPartnerDto
+{
+    public long Id { get; set; }
+    public long CompanyId { get; set; }
+    public string PartnerCode { get; set; } = string.Empty;
+    public string PartnerName { get; set; } = string.Empty;
+    public string PatnerRoleIds { get; set; } = string.Empty;
+    public string? ContactPerson { get; set; }
+    public string? MobileNo { get; set; }
+    public string? Email { get; set; }
+    public string? TaxRegistrationNo { get; set; }
+    public decimal CreditLimit { get; set; }
+    public int CreditDays { get; set; }
+    public int? PaymentTermId { get; set; }
+    public int? CurrencyId { get; set; }
+    public int? PriceListId { get; set; }
+    public string? Notes { get; set; }
+    public bool IsActive { get; set; }
+    public long? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+}
+
 /* ---------------- IndustryTypes ---------------- */
 
 public record CreateIndustryTypeRequest(string Name, string? Description, int SortOrder = 1);

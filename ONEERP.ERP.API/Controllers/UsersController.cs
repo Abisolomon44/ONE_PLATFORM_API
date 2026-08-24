@@ -16,17 +16,20 @@ public class UsersController : BaseController
     private readonly ICurrentUser _currentUser;
     private readonly IValidator<CreateUserRequest> _createValidator;
     private readonly IValidator<UpdateUserRequest> _updateValidator;
+    private readonly IValidator<ResetUserPasswordRequest> _resetValidator;
 
     public UsersController(
         IUserService userService,
         ICurrentUser currentUser,
         IValidator<CreateUserRequest> createValidator,
-        IValidator<UpdateUserRequest> updateValidator)
+        IValidator<UpdateUserRequest> updateValidator,
+        IValidator<ResetUserPasswordRequest> resetValidator)
     {
         _userService = userService;
         _currentUser = currentUser;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _resetValidator = resetValidator;
     }
 
     [HttpGet]
@@ -79,5 +82,18 @@ public class UsersController : BaseController
     {
         await _userService.DeleteAsync(id, _currentUser.Username);
         return Ok(ApiResponse.Ok("User deleted successfully"));
+    }
+
+    [HttpPut("{id:int}/password")]
+    [Permission(Permissions.UsersEdit)]
+    [ProducesResponseType(typeof(ApiResponse), 200)]
+    public async Task<IActionResult> ResetPassword(int id, [FromBody] ResetUserPasswordRequest request)
+    {
+        var errors = await ValidateAsync(_resetValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse.Fail("Validation failed", errors));
+
+        await _userService.ResetPasswordAsync(id, request.Password, _currentUser.Username);
+        return Ok(ApiResponse.Ok("Password reset successfully"));
     }
 }

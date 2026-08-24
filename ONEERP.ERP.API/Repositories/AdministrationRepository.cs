@@ -15,14 +15,25 @@ public class AdministrationRepository : TenantRepositoryBase, IAdministrationRep
     {
     }
 
-    public async Task<IEnumerable<Currency>> GetAllAsync(bool includeInactive = false)
-    {
-        using var connection = OpenTenant();
-        var sql = includeInactive
-            ? "SELECT * FROM dbo.Currencies ORDER BY SortOrder, CurrencyName"
-            : "SELECT * FROM dbo.Currencies WHERE IsActive = 1 ORDER BY SortOrder, CurrencyName";
-        return await Sql.QueryAsync<Currency>(connection, sql);
-    }
+public async Task<IEnumerable<Currency>> GetAllAsync(bool includeInactive = false)
+{
+    using var connection = OpenTenant();
+    var sql = includeInactive
+        ? @"SELECT Id, CurrencyCode, CurrencyName, Symbol, ISOCode, 
+                    ISNULL(DecimalPlaces, 2) AS DecimalPlaces, 
+                    IsBaseCurrency, SortOrder, IsActive, 
+                    CreatedBy, CreatedDate, ModifiedBy, ModifiedDate 
+            FROM dbo.Currencies 
+            ORDER BY SortOrder, CurrencyName"
+        : @"SELECT Id, CurrencyCode, CurrencyName, Symbol, ISOCode, 
+                    ISNULL(DecimalPlaces, 2) AS DecimalPlaces, 
+                    IsBaseCurrency, SortOrder, IsActive, 
+                    CreatedBy, CreatedDate, ModifiedBy, ModifiedDate 
+            FROM dbo.Currencies 
+            WHERE IsActive = 1 
+            ORDER BY SortOrder, CurrencyName";
+    return await Sql.QueryAsync<Currency>(connection, sql);
+}
 
     public async Task<Currency?> GetByIdAsync(int id)
     {

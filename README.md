@@ -17,8 +17,7 @@ D:\AWS\ERP
 ├── ONEERP.ERP.UI               Angular app — Tenant Workspace   (http://localhost:4300)
 └── sql
     ├── platform_schema.sql     Platform DB schema + seed (run once via sqlcmd)
-    ├── erp_schema.sql          Per-tenant schema (embedded resource, applied on provisioning)
-    └── erp_seed.sql            Per-tenant seed data (embedded resource)
+    └── erp_full.sql            Per-tenant schema + seed, single batch (embedded resource, applied on provisioning)
 ```
 
 ## Architecture

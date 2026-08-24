@@ -23,10 +23,11 @@ public class AuditService : IAuditService
     {
         var log = new AuditLog
         {
+            EntityName = entityName,
+            EntityId = entityId,
             Action = action,
-            ReferenceId = entityId,
-            IPAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString(),
-            Browser = _httpContextAccessor.HttpContext?.Request.Headers.UserAgent.ToString()
+            PerformedBy = performedBy,
+            IpAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString()
         };
         return _repository.InsertAsync(log);
     }

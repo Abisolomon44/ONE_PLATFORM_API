@@ -197,6 +197,208 @@ public class IndustryTypeRepository : TenantRepositoryBase, IIndustryTypeReposit
     }
 }
 
+public interface IBusinessPartnerRoleRepository
+{
+    Task<IEnumerable<BusinessPartnerRole>> GetAllAsync(bool includeInactive = false);
+    Task<BusinessPartnerRole?> GetByIdAsync(int id);
+    Task<BusinessPartnerRole?> GetByCodeAsync(string code);
+    Task<int> InsertAsync(BusinessPartnerRole entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> UpdateAsync(BusinessPartnerRole entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+}
+
+public class BusinessPartnerRoleRepository : TenantRepositoryBase, IBusinessPartnerRoleRepository
+{
+    public BusinessPartnerRoleRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<BusinessPartnerRole>> GetAllAsync(bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.BusinessPartnerRoles WHERE IsDeleted = 0 ORDER BY [Code]"
+            : "SELECT * FROM dbo.BusinessPartnerRoles WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY [Code]";
+        return await Sql.QueryAsync<BusinessPartnerRole>(connection, sql);
+    }
+
+    public async Task<BusinessPartnerRole?> GetByIdAsync(int id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<BusinessPartnerRole>(connection,
+            "SELECT * FROM dbo.BusinessPartnerRoles WHERE BusinessPartnerRoleId = @id AND IsDeleted = 0", new { id });
+    }
+
+    public async Task<BusinessPartnerRole?> GetByCodeAsync(string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<BusinessPartnerRole>(connection,
+            "SELECT * FROM dbo.BusinessPartnerRoles WHERE [Code] = @code AND IsDeleted = 0", new { code });
+    }
+
+    public async Task<int> InsertAsync(BusinessPartnerRole entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                INSERT INTO dbo.BusinessPartnerRoles ([Code], [Name], [Description], IsActive, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@Code, @Name, @Description, @IsActive, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                SELECT CAST(SCOPE_IDENTITY() AS int);";
+            return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity, transaction);
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> UpdateAsync(BusinessPartnerRole entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                UPDATE dbo.BusinessPartnerRoles
+                SET [Code] = @Code,
+                    [Name] = @Name,
+                    [Description] = @Description,
+                    IsActive = @IsActive,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = SYSUTCDATETIME()
+                WHERE BusinessPartnerRoleId = @BusinessPartnerRoleId;";
+            return await Sql.ExecuteAsync(conn, sql, entity, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = "UPDATE dbo.BusinessPartnerRoles SET IsDeleted = 1, IsActive = 0, ModifiedBy = @modifiedBy, ModifiedDate = SYSUTCDATETIME() WHERE BusinessPartnerRoleId = @id;";
+            return await Sql.ExecuteAsync(conn, sql, new { id, modifiedBy }, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+}
+
+public interface IBusinessPartnerRepository
+{
+    Task<IEnumerable<BusinessPartner>> GetAllAsync(long companyId, bool includeInactive = false);
+    Task<BusinessPartner?> GetByIdAsync(long id);
+    Task<BusinessPartner?> GetByCodeAsync(long companyId, string code);
+    Task<long> InsertAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> UpdateAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> DeleteAsync(long id, IDbConnection? connection = null, IDbTransaction? transaction = null);
+}
+
+public class BusinessPartnerRepository : TenantRepositoryBase, IBusinessPartnerRepository
+{
+    public BusinessPartnerRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<BusinessPartner>> GetAllAsync(long companyId, bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = "SELECT * FROM dbo.BusinessPartners WHERE CompanyId = @companyId AND (IsActive = 1 OR @includeInactive = 1) ORDER BY PartnerName";
+        return await Sql.QueryAsync<BusinessPartner>(connection, sql, new { companyId, includeInactive });
+    }
+
+    public async Task<BusinessPartner?> GetByIdAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<BusinessPartner>(connection,
+            "SELECT * FROM dbo.BusinessPartners WHERE Id = @id", new { id });
+    }
+
+    public async Task<BusinessPartner?> GetByCodeAsync(long companyId, string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<BusinessPartner>(connection,
+            "SELECT * FROM dbo.BusinessPartners WHERE CompanyId = @companyId AND PartnerCode = @code", new { companyId, code });
+    }
+
+    public async Task<long> InsertAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                INSERT INTO dbo.BusinessPartners (CompanyId, PartnerCode, PartnerName, PatnerRoleIds, ContactPerson, MobileNo, Email, TaxRegistrationNo, CreditLimit, CreditDays, PaymentTermId, CurrencyId, PriceListId, Notes, IsActive, CreatedBy, CreatedAt, ModifiedBy, ModifiedAt)
+                VALUES (@CompanyId, @PartnerCode, @PartnerName, @PatnerRoleIds, @ContactPerson, @MobileNo, @Email, @TaxRegistrationNo, @CreditLimit, @CreditDays, @PaymentTermId, @CurrencyId, @PriceListId, @Notes, @IsActive, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                SELECT CAST(SCOPE_IDENTITY() AS bigint);";
+            return await Sql.QuerySingleOrDefaultAsync<long>(conn, sql, entity, transaction);
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> UpdateAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                UPDATE dbo.BusinessPartners
+                SET PartnerCode = @PartnerCode,
+                    PartnerName = @PartnerName,
+                    PatnerRoleIds = @PatnerRoleIds,
+                    ContactPerson = @ContactPerson,
+                    MobileNo = @MobileNo,
+                    Email = @Email,
+                    TaxRegistrationNo = @TaxRegistrationNo,
+                    CreditLimit = @CreditLimit,
+                    CreditDays = @CreditDays,
+                    PaymentTermId = @PaymentTermId,
+                    CurrencyId = @CurrencyId,
+                    PriceListId = @PriceListId,
+                    Notes = @Notes,
+                    IsActive = @IsActive,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedAt = SYSUTCDATETIME()
+                WHERE Id = @Id;";
+            return await Sql.ExecuteAsync(conn, sql, entity, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> DeleteAsync(long id, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = "DELETE FROM dbo.BusinessPartners WHERE Id = @id;";
+            return await Sql.ExecuteAsync(conn, sql, new { id }, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+}
+
 public interface ICompanyGroupRepository
 {
     Task<IEnumerable<CompanyGroup>> GetAllAsync(bool includeInactive = false);

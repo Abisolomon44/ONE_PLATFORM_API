@@ -219,6 +219,51 @@ END
 GO
 
 /* ---------------------------------------------------------------------------
+   TenantUserMaps
+   Global username -> tenant lookup so username-only ERP login resolves the
+   correct tenant for EVERY tenant user (not just the tenant admin stored on
+   dbo.Tenants.AdminUsername). Written by UserService on user creation and
+   read by TenantConnectionResolver.ResolveTenantCodeByUsernameAsync.
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TenantUserMaps]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TenantUserMaps (
+        TenantUserId INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_TenantUserMaps PRIMARY KEY,
+        Username     NVARCHAR(100)       NOT NULL,
+        TenantCode   NVARCHAR(50)        NOT NULL,
+        CreatedDate  DATETIME2           NOT NULL CONSTRAINT DF_TenantUserMaps_CreatedDate DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE UNIQUE INDEX UQ_TenantUserMaps_Username ON dbo.TenantUserMaps (Username);
+END
+GO
+
+/* Backfill existing tenant users into the global map (idempotent).
+   Usernames must be globally unique across tenants for username-only login;
+   the first tenant to claim a username wins the mapping. */
+DECLARE @tc2 NVARCHAR(50), @db2 NVARCHAR(128), @sql2 NVARCHAR(MAX);
+DECLARE cur2 CURSOR LOCAL FAST_FORWARD FOR
+    SELECT TenantCode, DatabaseName FROM dbo.Tenants WHERE IsDeleted = 0;
+OPEN cur2;
+FETCH NEXT FROM cur2 INTO @tc2, @db2;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    IF DB_ID(@db2) IS NOT NULL
+    BEGIN
+        SET @sql2 = N'INSERT INTO dbo.TenantUserMaps (Username, TenantCode, CreatedDate)
+                     SELECT u.Username, @tc, SYSUTCDATETIME()
+                     FROM [' + @db2 + N'].dbo.Users u
+                     WHERE u.IsDeleted = 0
+                       AND NOT EXISTS (SELECT 1 FROM dbo.TenantUserMaps m WHERE m.Username = u.Username);';
+        EXEC sp_executesql @sql2, N'@tc NVARCHAR(50)', @tc2;
+    END
+    FETCH NEXT FROM cur2 INTO @tc2, @db2;
+END
+CLOSE cur2;
+DEALLOCATE cur2;
+GO
+
+/* ---------------------------------------------------------------------------
    RefreshTokens (platform sessions)
 --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RefreshTokens]') AND type = N'U')

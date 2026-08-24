@@ -81,6 +81,77 @@ public class BusinessTypesController : BaseController
 }
 
 [Authorize]
+[Route("api/business-partner-roles")]
+public class BusinessPartnerRolesController : BaseController
+{
+    private readonly IBusinessPartnerRoleService _service;
+    private readonly IValidator<CreateBusinessPartnerRoleRequest> _createValidator;
+    private readonly IValidator<UpdateBusinessPartnerRoleRequest> _updateValidator;
+
+    public BusinessPartnerRolesController(
+        IBusinessPartnerRoleService service,
+        IValidator<CreateBusinessPartnerRoleRequest> createValidator,
+        IValidator<UpdateBusinessPartnerRoleRequest> updateValidator)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+    }
+
+    [HttpGet]
+    [Permission(Permissions.BusinessPartnerRolesView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<BusinessPartnerRoleDto>>), 200)]
+    public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
+    {
+        var result = await _service.GetAllAsync(includeInactive);
+        return Ok(ApiResponse<IEnumerable<BusinessPartnerRoleDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:int}")]
+    [Permission(Permissions.BusinessPartnerRolesView)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerRoleDto>), 200)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<BusinessPartnerRoleDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.BusinessPartnerRolesManage)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerRoleDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreateBusinessPartnerRoleRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<BusinessPartnerRoleDto>.Fail("Validation failed", errors));
+
+        var result = await _service.CreateAsync(request);
+        return Ok(ApiResponse<BusinessPartnerRoleDto>.Ok(result, "Business partner role created successfully"));
+    }
+
+    [HttpPut("{id:int}")]
+    [Permission(Permissions.BusinessPartnerRolesManage)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerRoleDto>), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateBusinessPartnerRoleRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<BusinessPartnerRoleDto>.Fail("Validation failed", errors));
+
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(ApiResponse<BusinessPartnerRoleDto>.Ok(result, "Business partner role updated successfully"));
+    }
+
+    [HttpDelete("{id:int}")]
+    [Permission(Permissions.BusinessPartnerRolesManage)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Business partner role deleted successfully"));
+    }
+}
+
+[Authorize]
 [Route("api/industry-types")]
 public class IndustryTypesController : BaseController
 {
@@ -219,5 +290,76 @@ public class CompanyGroupsController : BaseController
     {
         await _service.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Company group deleted successfully"));
+    }
+}
+
+[Authorize]
+[Route("api/business-partners")]
+public class BusinessPartnersController : BaseController
+{
+    private readonly IBusinessPartnerService _service;
+    private readonly IValidator<CreateBusinessPartnerRequest> _createValidator;
+    private readonly IValidator<UpdateBusinessPartnerRequest> _updateValidator;
+
+    public BusinessPartnersController(
+        IBusinessPartnerService service,
+        IValidator<CreateBusinessPartnerRequest> createValidator,
+        IValidator<UpdateBusinessPartnerRequest> updateValidator)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+    }
+
+    [HttpGet]
+    [Permission(Permissions.BusinessPartnersView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<BusinessPartnerDto>>), 200)]
+    public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
+    {
+        var result = await _service.GetAllAsync(includeInactive);
+        return Ok(ApiResponse<IEnumerable<BusinessPartnerDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:long}")]
+    [Permission(Permissions.BusinessPartnersView)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), 200)]
+    public async Task<IActionResult> GetById(long id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<BusinessPartnerDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.BusinessPartnersManage)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreateBusinessPartnerRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<BusinessPartnerDto>.Fail("Validation failed", errors));
+
+        var result = await _service.CreateAsync(request);
+        return Ok(ApiResponse<BusinessPartnerDto>.Ok(result, "Business partner created successfully"));
+    }
+
+    [HttpPut("{id:long}")]
+    [Permission(Permissions.BusinessPartnersManage)]
+    [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), 200)]
+    public async Task<IActionResult> Update(long id, [FromBody] UpdateBusinessPartnerRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<BusinessPartnerDto>.Fail("Validation failed", errors));
+
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(ApiResponse<BusinessPartnerDto>.Ok(result, "Business partner updated successfully"));
+    }
+
+    [HttpDelete("{id:long}")]
+    [Permission(Permissions.BusinessPartnersManage)]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Business partner deleted successfully"));
     }
 }

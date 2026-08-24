@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -25,7 +26,12 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.AddControllers(options => options.Filters.Add<PermissionAuthorizationFilter>());
+builder.Services.AddControllers(options => options.Filters.Add<PermissionAuthorizationFilter>())
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DictionaryKeyPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -76,8 +82,10 @@ builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IApplicationSettingRepository, ApplicationSettingRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-builder.Services.AddScoped<IBusinessTypeRepository, BusinessTypeRepository>();
-builder.Services.AddScoped<IIndustryTypeRepository, IndustryTypeRepository>();
+    builder.Services.AddScoped<IBusinessTypeRepository, BusinessTypeRepository>();
+    builder.Services.AddScoped<IBusinessPartnerRoleRepository, BusinessPartnerRoleRepository>();
+    builder.Services.AddScoped<IBusinessPartnerRepository, BusinessPartnerRepository>();
+    builder.Services.AddScoped<IIndustryTypeRepository, IndustryTypeRepository>();
 builder.Services.AddScoped<ICompanyGroupRepository, CompanyGroupRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
@@ -113,8 +121,10 @@ builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IAuditService, AuditService>();
-builder.Services.AddScoped<IBusinessTypeService, BusinessTypeService>();
-builder.Services.AddScoped<IIndustryTypeService, IndustryTypeService>();
+    builder.Services.AddScoped<IBusinessTypeService, BusinessTypeService>();
+    builder.Services.AddScoped<IBusinessPartnerRoleService, BusinessPartnerRoleService>();
+    builder.Services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
+    builder.Services.AddScoped<IIndustryTypeService, IndustryTypeService>();
 builder.Services.AddScoped<ICompanyGroupService, CompanyGroupService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IStateService, StateService>();
