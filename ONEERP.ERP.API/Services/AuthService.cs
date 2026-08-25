@@ -210,7 +210,7 @@ public class AuthService : IAuthService
                 modNames.TryGetValue(o.ModuleId, out var mc) &&
                 subModNames.TryGetValue(o.SubModuleId, out var smc) &&
                 scrNames.TryGetValue(o.ScreenId, out var sc) &&
-                actNames.TryGetValue(o.ActionId, out var ac))
+                    actNames.TryGetValue(o.ActionId, out var ac))
             {
                 if (o.Allow)
                 {

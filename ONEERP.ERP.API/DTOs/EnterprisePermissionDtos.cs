@@ -87,6 +87,7 @@ public class ScreenDto
     public string? SubModuleName { get; set; }
     public string ScreenCode { get; set; } = string.Empty;
     public string ScreenName { get; set; } = string.Empty;
+    public string? PermissionCode { get; set; }
     public string ScreenType { get; set; } = "MASTER";
     public string? RouteUrl { get; set; }
     public string? ComponentName { get; set; }
@@ -95,8 +96,8 @@ public class ScreenDto
     public DateTime CreatedDate { get; set; }
 }
 
-public record CreateScreenRequest(int SubModuleId, string ScreenCode, string ScreenName, string ScreenType, string? RouteUrl, string? ComponentName, int SortOrder, bool IsActive = true);
-public record UpdateScreenRequest(string ScreenCode, string ScreenName, string ScreenType, string? RouteUrl, string? ComponentName, int SortOrder, bool IsActive);
+public record CreateScreenRequest(int SubModuleId, string ScreenCode, string ScreenName, string? PermissionCode, string ScreenType, string? RouteUrl, string? ComponentName, int SortOrder, bool IsActive = true);
+public record UpdateScreenRequest(string ScreenCode, string ScreenName, string? PermissionCode, string ScreenType, string? RouteUrl, string? ComponentName, int SortOrder, bool IsActive);
 
 /* ---------------------------------------------------------------------------
    Field DTOs

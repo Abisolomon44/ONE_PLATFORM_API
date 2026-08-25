@@ -395,8 +395,8 @@ public class ScreenService : IScreenService
         var e = new Screen
         {
             SubModuleId = r.SubModuleId, ScreenCode = r.ScreenCode, ScreenName = r.ScreenName,
-            ScreenType = r.ScreenType, RouteUrl = r.RouteUrl, ComponentName = r.ComponentName,
-            SortOrder = r.SortOrder, IsActive = r.IsActive, CreatedBy = _user.Username
+            PermissionCode = r.PermissionCode, ScreenType = r.ScreenType, RouteUrl = r.RouteUrl,
+            ComponentName = r.ComponentName, SortOrder = r.SortOrder, IsActive = r.IsActive, CreatedBy = _user.Username
         };
         e.Id = await _repo.InsertAsync(e);
         await _audit.WriteAsync("Screen", e.Id.ToString(), "Create", _user.Username);
@@ -409,6 +409,7 @@ public class ScreenService : IScreenService
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Screen '{id}' not found.");
         e.ScreenCode = r.ScreenCode;
         e.ScreenName = r.ScreenName;
+        e.PermissionCode = r.PermissionCode;
         e.ScreenType = r.ScreenType;
         e.RouteUrl = r.RouteUrl;
         e.ComponentName = r.ComponentName;
@@ -431,7 +432,7 @@ public class ScreenService : IScreenService
     private static ScreenDto Map(Screen e, string? subModName = null) => new()
     {
         Id = e.Id, SubModuleId = e.SubModuleId, SubModuleName = subModName,
-        ScreenCode = e.ScreenCode, ScreenName = e.ScreenName, ScreenType = e.ScreenType,
+        ScreenCode = e.ScreenCode, ScreenName = e.ScreenName, PermissionCode = e.PermissionCode, ScreenType = e.ScreenType,
         RouteUrl = e.RouteUrl, ComponentName = e.ComponentName, SortOrder = e.SortOrder,
         IsActive = e.IsActive, CreatedDate = e.CreatedDate
     };
@@ -689,8 +690,44 @@ public class RolePermissionEntryService : IRolePermissionEntryService
             RoleId = r.RoleId, WorkspaceId = p.WorkspaceId, DomainId = p.DomainId,
             ModuleId = p.ModuleId, SubModuleId = p.SubModuleId, ScreenId = p.ScreenId, ActionId = p.ActionId,
             Allow = p.Allow, IsActive = true, CreatedBy = _user.Username
-        });
-        await _repo.BulkInsertAsync(entities);
+        }).ToList();
+
+        // 1) Persist the hierarchical matrix (atomic delete + insert).
+        await _repo.BulkReplaceAsync(r.RoleId, entities);
+
+        // 2) Bridge to the API authorization model. Derive RolePermissionsLegacy
+        //    codes (e.g. "branches.view") from each screen's PermissionCode plus
+        //    the action's ActionCode. Screens without a PermissionCode are not
+        //    managed by the matrix, so their existing legacy codes are preserved.
+        var screens = (await _scrRepo.GetAllAsync(true)).ToDictionary(s => s.Id, s => s.PermissionCode);
+        var managedPrefixes = screens.Values
+            .Where(pc => !string.IsNullOrWhiteSpace(pc))
+            .Select(pc => pc!)
+            .Distinct()
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var existing = (await _roleRepo.GetPermissionsForRoleAsync(r.RoleId)).ToList();
+        var preserved = existing
+            .Where(c => !managedPrefixes.Any(prefix => c.StartsWith(prefix + ".", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        var actions = (await _actRepo.GetAllAsync(true)).ToDictionary(a => a.Id, a => a.ActionCode);
+        var derived = new List<string>();
+        foreach (var p in r.Permissions)
+        {
+            if (!p.Allow) continue;
+            if (!screens.TryGetValue(p.ScreenId, out var screenCode) || string.IsNullOrWhiteSpace(screenCode)) continue;
+            if (!actions.TryGetValue(p.ActionId, out var actionCode) || string.IsNullOrWhiteSpace(actionCode)) continue;
+            derived.Add($"{screenCode}.{actionCode}");
+        }
+
+        var finalCodes = preserved
+            .Union(derived, StringComparer.OrdinalIgnoreCase)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        await _roleRepo.SetPermissionsAsync(r.RoleId, finalCodes, _user.Username);
+
         await _audit.WriteAsync("RolePermission", r.RoleId.ToString(), "BulkAssign", _user.Username);
         return true;
     }

@@ -539,6 +539,7 @@ public class Screen
     public int SubModuleId { get; set; }
     public string ScreenCode { get; set; } = string.Empty;
     public string ScreenName { get; set; } = string.Empty;
+    public string? PermissionCode { get; set; }
     public string ScreenType { get; set; } = "MASTER";
     public string? RouteUrl { get; set; }
     public string? ComponentName { get; set; }

@@ -343,8 +343,8 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-            VALUES (@SubModuleId, @ScreenCode, @ScreenName, @ScreenType, @RouteUrl, @ComponentName, @SortOrder, @IsActive, @CreatedBy);
+            INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, PermissionCode, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+            VALUES (@SubModuleId, @ScreenCode, @ScreenName, @PermissionCode, @ScreenType, @RouteUrl, @ComponentName, @SortOrder, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -354,7 +354,7 @@ public class ScreenRepository : TenantRepositoryBase, IScreenRepository
         using var conn = OpenTenant();
         const string sql = @"
             UPDATE dbo.Screens
-            SET ScreenCode = @ScreenCode, ScreenName = @ScreenName, ScreenType = @ScreenType,
+            SET ScreenCode = @ScreenCode, ScreenName = @ScreenName, PermissionCode = @PermissionCode, ScreenType = @ScreenType,
                 RouteUrl = @RouteUrl, ComponentName = @ComponentName, SortOrder = @SortOrder, IsActive = @IsActive
             WHERE Id = @Id;";
         return await Sql.ExecuteAsync(conn, sql, entity) > 0;
@@ -521,6 +521,7 @@ public interface IRolePermissionEntryRepository
     Task<RolePermissionEntry?> GetByIdAsync(int id);
     Task<int> InsertAsync(RolePermissionEntry entity);
     Task<bool> BulkInsertAsync(IEnumerable<RolePermissionEntry> entities);
+    Task<bool> BulkReplaceAsync(int roleId, IEnumerable<RolePermissionEntry> entities);
     Task<bool> DeleteAsync(int id);
     Task<bool> DeleteAllForRoleAsync(int roleId);
 }
@@ -549,8 +550,8 @@ public class RolePermissionEntryRepository : TenantRepositoryBase, IRolePermissi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
-            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);
+            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, ActionId, Allow, DisplayOrder, IsActive, CreatedBy)
+            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @ActionId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }
@@ -559,8 +560,8 @@ public class RolePermissionEntryRepository : TenantRepositoryBase, IRolePermissi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, Allow, DisplayOrder, IsActive, CreatedBy)
-            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);";
+            INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, ActionId, Allow, DisplayOrder, IsActive, CreatedBy)
+            VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @ActionId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);";
         foreach (var entity in entities)
             await Sql.ExecuteAsync(conn, sql, entity);
         return true;
@@ -578,6 +579,40 @@ public class RolePermissionEntryRepository : TenantRepositoryBase, IRolePermissi
         using var conn = OpenTenant();
         return await Sql.ExecuteAsync(conn,
             "DELETE FROM dbo.RolePermissions WHERE RoleId = @roleId", new { roleId }) > 0;
+    }
+
+    /// <summary>
+    /// Atomically replaces a role's entire permission set: deletes all existing
+    /// entries for the role, then bulk-inserts the supplied entries within a
+    /// single transaction. Prevents UNIQUE KEY (UQ_RolePermissions_Matrix)
+    /// violations when the matrix is re-saved.
+    /// </summary>
+    public async Task<bool> BulkReplaceAsync(int roleId, IEnumerable<RolePermissionEntry> entities)
+    {
+        var list = entities?.ToList() ?? new List<RolePermissionEntry>();
+        using var conn = OpenTenant();
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+        using var tx = conn.BeginTransaction();
+        try
+        {
+            await Sql.ExecuteAsync(conn,
+                "DELETE FROM dbo.RolePermissions WHERE RoleId = @roleId", new { roleId }, tx);
+
+            const string sql = @"
+                INSERT INTO dbo.RolePermissions (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, ActionId, Allow, DisplayOrder, IsActive, CreatedBy)
+                VALUES (@RoleId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @ActionId, @Allow, @DisplayOrder, @IsActive, @CreatedBy);";
+            foreach (var entity in list)
+                await Sql.ExecuteAsync(conn, sql, entity, tx);
+
+            tx.Commit();
+            return true;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
     }
 }
 
@@ -617,8 +652,8 @@ public class UserPermissionOverrideRepository : TenantRepositoryBase, IUserPermi
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.UserPermissionOverrides (UserId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, PermissionActionEntryId, PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
-            VALUES (@UserId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @PermissionActionEntryId, @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);
+            INSERT INTO dbo.UserPermissionOverrides (UserId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, ActionId, PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
+            VALUES (@UserId, @WorkspaceId, @DomainId, @ModuleId, @SubModuleId, @ScreenId, @ActionId, @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
     }

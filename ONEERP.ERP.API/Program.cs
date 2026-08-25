@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ONEERP.ERP.API.Data;
@@ -216,6 +217,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+// Resolves and injects the user's permission-code claims per request
+// (the API stores authoritative codes in dbo.RolePermissionsLegacy).
+builder.Services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
 
 builder.Services.AddCors(options =>
 {
