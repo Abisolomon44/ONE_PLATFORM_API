@@ -139,6 +139,8 @@ public class TenantAccessor
     {
         var connectionString = ConnectionString
             ?? throw new DomainException("Tenant context was not resolved for this request.");
-        return new SqlConnection(connectionString);
+        var connection = new SqlConnection(connectionString);
+        connection.Open();
+        return connection;
     }
 }

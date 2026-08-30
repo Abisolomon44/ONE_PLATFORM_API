@@ -94,11 +94,26 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
 builder.Services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
 builder.Services.AddScoped<IGstRegistrationTypeRepository, GstRegistrationTypeRepository>();
+builder.Services.AddScoped<ITenantConfigurationRepository, TenantConfigurationRepository>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IPurchaseReturnRepository, PurchaseReturnRepository>();
+builder.Services.AddScoped<IPurchaseReturnService, PurchaseReturnService>();
+builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
+builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAddressTypeRepository, AddressTypeRepository>();
 builder.Services.AddScoped<IContactTypeRepository, ContactTypeRepository>();
 builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
 builder.Services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepository>();
 builder.Services.AddScoped<IAdministrationRepository, AdministrationRepository>();
+builder.Services.AddScoped<IAdministrationService, AdministrationService>();
 builder.Services.AddScoped<IBranchTypeRepository, BranchTypeRepository>();
 builder.Services.AddScoped<IWarehouseTypeRepository, WarehouseTypeRepository>();
 builder.Services.AddScoped<IEmploymentTypeRepository, EmploymentTypeRepository>();
@@ -132,6 +147,7 @@ builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<ITimeZoneService, TimeZoneService>();
+builder.Services.AddScoped<ITenantConfigurationService, TenantConfigurationService>();
 builder.Services.AddScoped<IGstRegistrationTypeService, GstRegistrationTypeService>();
 builder.Services.AddScoped<IAddressTypeService, AddressTypeService>();
 builder.Services.AddScoped<IContactTypeService, ContactTypeService>();
@@ -142,6 +158,28 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDesignationService, DesignationService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+
+// Product / Billing Masters
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductSubCategoryRepository, ProductSubCategoryRepository>();
+builder.Services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
+builder.Services.AddScoped<IProductUnitRepository, ProductUnitRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IProductSubCategoryService, ProductSubCategoryService>();
+builder.Services.AddScoped<IProductBrandService, ProductBrandService>();
+builder.Services.AddScoped<IProductUnitService, ProductUnitService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<ITaxTypeSystemRepository, TaxTypeSystemRepository>();
+builder.Services.AddScoped<ITaxTypeSystemService, TaxTypeSystemService>();
+builder.Services.AddScoped<ITaxRepository, TaxRepository>();
+builder.Services.AddScoped<ITaxService, TaxService>();
+
+// Master Import (generic import engine + common import log)
+builder.Services.AddScoped<IImportLogRepository, ImportLogRepository>();
+builder.Services.AddScoped<IImportLogService, ImportLogService>();
+builder.Services.AddScoped<IMasterImportService, MasterImportService>();
 
 builder.Services.AddScoped<IBranchTypeService, BranchTypeService>();
 builder.Services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();

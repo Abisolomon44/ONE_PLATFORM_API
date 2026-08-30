@@ -56,6 +56,14 @@ public class CompaniesController : BaseController
         return Ok(ApiResponse<CompanyDto>.Ok(result));
     }
 
+    [HttpGet("next-code")]
+    [Permission(Permissions.CompaniesView)]
+    public async Task<IActionResult> GetNextCode()
+    {
+        var code = await _companyService.GetNextCodeAsync();
+        return Ok(ApiResponse<string>.Ok(code));
+    }
+
     [HttpPost]
     [Permission(Permissions.CompaniesCreate)]
     [ProducesResponseType(typeof(ApiResponse<CompanyDto>), 200)]

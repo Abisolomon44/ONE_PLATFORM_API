@@ -10,6 +10,7 @@ public interface ICompanyService
 {
     Task<PaginatedResult<CompanyDto>> GetPagedAsync(int pageNumber, int pageSize, string search);
     Task<CompanyDto> GetByIdAsync(int companyId);
+    Task<string> GetNextCodeAsync();
     Task<CompanyDto> CreateAsync(CreateCompanyRequest request);
     Task<CompanyDto> UpdateAsync(int companyId, UpdateCompanyRequest request);
     Task<bool> DeleteAsync(int companyId);
@@ -52,9 +53,14 @@ public class CompanyService : ICompanyService
         return ToDto(company);
     }
 
+    public async Task<string> GetNextCodeAsync()
+        => await _companyRepository.GetNextCodeAsync();
+
     public async Task<CompanyDto> CreateAsync(CreateCompanyRequest request)
     {
-        var companyCode = request.CompanyCode.Trim();
+        var companyCode = string.IsNullOrWhiteSpace(request.CompanyCode)
+            ? await _companyRepository.GetNextCodeAsync()
+            : request.CompanyCode.Trim();
 
         if (await _companyRepository.CodeInUseAsync(companyCode))
             throw new DomainException($"Company code '{companyCode}' is already in use.");

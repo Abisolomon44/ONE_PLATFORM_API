@@ -8,6 +8,7 @@ public interface ICompanyRepository
     Task<Company?> GetByIdAsync(int companyId);
     Task<Company?> GetByCodeAsync(string companyCode);
     Task<bool> CodeInUseAsync(string companyCode);
+    Task<string> GetNextCodeAsync(string prefix = "COMP");
     Task<IEnumerable<Company>> GetAllAsync();
     Task<IEnumerable<Company>> GetPagedAsync(int pageNumber, int pageSize, string search);
     Task<int> CountAsync(string search);
@@ -42,6 +43,16 @@ public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<bool>(connection,
             "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Companies WHERE CompanyCode = @companyCode) THEN 1 ELSE 0 END", new { companyCode });
+    }
+
+    public async Task<string> GetNextCodeAsync(string prefix = "COMP")
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.ExecuteScalarAsync<int>(connection,
+            "SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(CompanyCode, LEN(@prefix) + 2, 10) AS INT)), 0) + 1 " +
+            "FROM dbo.Companies WHERE CompanyCode LIKE @prefix + '-%'",
+            new { prefix });
+        return $"{prefix}-{next:D3}";
     }
 
     public async Task<IEnumerable<Company>> GetAllAsync()
