@@ -97,6 +97,8 @@ builder.Services.AddScoped<IGstRegistrationTypeRepository, GstRegistrationTypeRe
 builder.Services.AddScoped<ITenantConfigurationRepository, TenantConfigurationRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
+builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IStockService, StockService>();

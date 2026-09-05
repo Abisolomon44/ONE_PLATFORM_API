@@ -460,5 +460,5 @@ public class NavigationController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> Get()
-        => Ok(ApiResponse<NavigationResponse>.Ok(await _service.GetNavigationAsync(_user.UserId, _user.TenantId, _user.CompanyId)));
+        => Ok(ApiResponse<NavigationResponse>.Ok(await _service.GetNavigationAsync(_user.UserId, _user.TenantId, _user.CompanyId, _user.IsSuperAdmin)));
 }

@@ -134,7 +134,6 @@ public class UserService : IUserService
 
         using (var connection = _accessor.OpenTenantConnection())
         {
-            connection.Open();
             using var transaction = connection.BeginTransaction();
 
             user.UserId = await _userRepository.InsertAsync(user, connection, transaction);
@@ -183,7 +182,6 @@ public class UserService : IUserService
 
         using (var connection = _accessor.OpenTenantConnection())
         {
-            connection.Open();
             using var transaction = connection.BeginTransaction();
 
             await _userRepository.UpdateAsync(user, connection, transaction);

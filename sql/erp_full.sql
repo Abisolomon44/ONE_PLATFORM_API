@@ -1464,15 +1464,60 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
-   Default Workspace Structure (SETUP > MASTER > COMPANY)
+   Default Workspace Structure (13 top-level workspaces)
+   Order matches the ERP taxonomy: SETUP, PRODBILL, SALES, PURCHASE, INVENTORY,
+   PAYMENTS, REPORTS, BUSINESS_PARTNERS, SECURITY, ENTERPRISE_PERMISSIONS,
+   SETTINGS, LEGACY.
+   Dapper-compatible: no GO, single batch. Idempotent per workspace code.
 --------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP')
+INSERT INTO dbo.Workspaces (WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
+SELECT k.WorkspaceCode, k.WorkspaceName, k.Icon, k.Route, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('SETUP',                  'Setup & Configuration',    'settings',      '/setup',                 1,  1, 'system'),
+    ('PRODBILL',               'Product & Billing',        'package',       '/product',               2,  1, 'system'),
+    ('SALES',                  'Sales',                    'shopping-cart', '/sales',                 3,  1, 'system'),
+    ('PURCHASE',               'Purchase',                 'shopping-cart', '/purchase',              4,  1, 'system'),
+    ('INVENTORY',              'Inventory',                'box',           '/stock',                 5,  1, 'system'),
+    ('PAYMENTS',               'Payments',                 'credit-card',   '/payment',               6,  1, 'system'),
+    ('REPORTS',                'Reports',                  'file-text',     '/reports',               7,  1, 'system'),
+    ('BUSINESS_PARTNERS',      'Business Partners',        'users',         '/business-partners',     8,  1, 'system'),
+    ('SECURITY',               'Security & Access',        'shield',        '/security',              9,  1, 'system'),
+    ('ENTERPRISE_PERMISSIONS', 'Enterprise Permissions',   'key-square',    '/enterprise-permissions', 10, 1, 'system'),
+    ('SETTINGS',               'Settings',                 'settings',      '/settings',              11, 1, 'system')
+) AS k(WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Workspaces w WHERE w.WorkspaceCode = k.WorkspaceCode
+);
+;
+
+/* Domain: Organization (SETUP) */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-ORG')
 BEGIN
-    INSERT INTO dbo.Workspaces (WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
-    VALUES ('SETUP', 'Setup & Configuration', 'settings', '/setup', 1, 1, 'system');
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-ORG', 'Organization', 'building-2', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP';
 END
 ;
 
+/* Domain: System (SETUP) */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-SYSTEM')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-SYSTEM', 'System', 'server', 2, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP';
+END
+;
+
+/* Domain: Tenant (SETUP) */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-TENANT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-TENANT', 'Tenant', 'building-2', 3, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP';
+END
+;
+
+/* Domain: MASTER (SETUP) - retained for backwards compatibility */
 IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'MASTER')
 BEGIN
     DECLARE @DefaultWorkspaceId INT = (SELECT Id FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP');
@@ -1501,23 +1546,29 @@ END
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST')
 BEGIN
-    DECLARE @DefaultSubModuleId INT = (SELECT Id FROM dbo.SubModules WHERE SubModuleCode = 'DEFAULT');
-    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-    VALUES (@DefaultSubModuleId, 'COMPANY_LIST', 'Company List', 'MASTER', '/companies', 'CompanyListPage', 1, 1, 'system');
+    DECLARE @DefaultSubModuleId INT = (SELECT Id FROM dbo.SubModules WHERE SubModuleCode = 'DEFAULT' AND ModuleId = (SELECT Id FROM dbo.Modules WHERE ModuleCode = 'COMPANY'));
+    IF @DefaultSubModuleId IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+        VALUES (@DefaultSubModuleId, 'COMPANY_LIST', 'Company List', 'MASTER', '/companies', 'CompanyListPage', 1, 1, 'system');
+    END
 END
 ;
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Fields WHERE FieldCode = 'company_code' AND ScreenId = (SELECT Id FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST'))
 BEGIN
     DECLARE @DefaultCompanyListScreenId INT = (SELECT Id FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST');
-    INSERT INTO dbo.Fields (ScreenId, FieldCode, FieldName, DisplayName, DataType, DisplayOrder, IsSystemField, IsRequired, IsActive, CreatedBy)
-    VALUES
-    (@DefaultCompanyListScreenId, 'company_code', 'CompanyCode', 'Company Code', 'text', 1, 1, 1, 1, 'system'),
-    (@DefaultCompanyListScreenId, 'company_name', 'CompanyName', 'Company Name', 'text', 2, 1, 1, 1, 'system'),
-    (@DefaultCompanyListScreenId, 'short_name',   'ShortName',   'Short Name',   'text', 3, 0, 0, 1, 'system'),
-    (@DefaultCompanyListScreenId, 'email',        'Email',       'Email',        'email', 4, 0, 0, 1, 'system'),
-    (@DefaultCompanyListScreenId, 'phone',        'Phone',       'Phone',        'text',  5, 0, 0, 1, 'system'),
-    (@DefaultCompanyListScreenId, 'is_active',    'IsActive',    'Active',       'boolean', 6, 1, 0, 1, 'system');
+    IF @DefaultCompanyListScreenId IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.Fields (ScreenId, FieldCode, FieldName, DisplayName, DataType, DisplayOrder, IsSystemField, IsRequired, IsActive, CreatedBy)
+        VALUES
+        (@DefaultCompanyListScreenId, 'company_code', 'CompanyCode', 'Company Code', 'text', 1, 1, 1, 1, 'system'),
+        (@DefaultCompanyListScreenId, 'company_name', 'CompanyName', 'Company Name', 'text', 2, 1, 1, 1, 'system'),
+        (@DefaultCompanyListScreenId, 'short_name',   'ShortName',   'Short Name',   'text', 3, 0, 0, 1, 'system'),
+        (@DefaultCompanyListScreenId, 'email',        'Email',       'Email',        'email', 4, 0, 0, 1, 'system'),
+        (@DefaultCompanyListScreenId, 'phone',        'Phone',       'Phone',        'text',  5, 0, 0, 1, 'system'),
+        (@DefaultCompanyListScreenId, 'is_active',    'IsActive',    'Active',       'boolean', 6, 1, 0, 1, 'system');
+    END
 END
 ;
 
@@ -2136,3 +2187,1686 @@ FROM (VALUES
 WHERE NOT EXISTS (
     SELECT 1 FROM dbo.MaritalStatuses ms WHERE ms.Code = k.Code
 );
+
+/* =============================================================================
+   Product / Billing Masters (merged from product_masters_init.sql, product_init.sql)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   ProductSubCategories
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductSubCategories]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductSubCategories (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        CategoryId BIGINT NOT NULL,
+        SubCategoryCode VARCHAR(30) NOT NULL,
+        SubCategoryName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        SortOrder INT NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ProductCategories
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductCategories]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductCategories (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        CategoryCode VARCHAR(30) NOT NULL,
+        CategoryName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        ParentCategoryId BIGINT NULL,
+        SortOrder INT NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ProductBrands
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductBrands]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductBrands (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BrandCode VARCHAR(30) NOT NULL,
+        BrandName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Units
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Units]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Units (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        UnitCode VARCHAR(20) NOT NULL,
+        UnitName VARCHAR(50) NOT NULL,
+        Symbol VARCHAR(20) NULL,
+        DecimalPlaces INT NOT NULL DEFAULT 0,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Products
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Products (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Products PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        ProductCode VARCHAR(30) NOT NULL,
+        ProductName VARCHAR(200) NOT NULL,
+        CategoryId BIGINT NULL,
+        SubCategoryId BIGINT NULL,
+        BrandId BIGINT NULL,
+        UOMId BIGINT NOT NULL,
+        SKU VARCHAR(50) NULL,
+        Barcode VARCHAR(100) NULL,
+        MRP DECIMAL(18,2) NULL,
+        PurchasePrice DECIMAL(18,2) NULL,
+        SalesPrice DECIMAL(18,2) NULL,
+        TaxId BIGINT NULL,
+        IsStockItem BIT NOT NULL DEFAULT 1,
+        IsSaleable BIT NOT NULL DEFAULT 1,
+        IsPurchaseable BIT NOT NULL DEFAULT 1,
+        IsActive BIT NOT NULL DEFAULT 1,
+        Description VARCHAR(500) NULL,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* =============================================================================
+   Tax Masters (merged from tax_init.sql, taxes_init.sql)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   TaxTypeSystems
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TaxTypeSystems]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TaxTypeSystems (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_TaxTypeSystems PRIMARY KEY,
+        Code VARCHAR(30) NOT NULL,
+        [Name] VARCHAR(100) NOT NULL,
+        Description VARCHAR(300) NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Taxes
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Taxes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Taxes (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Taxes PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        TaxTypeSystemId BIGINT NOT NULL,
+        TaxCode VARCHAR(30) NOT NULL,
+        TaxName VARCHAR(100) NOT NULL,
+        TaxRate DECIMAL(8,4) NOT NULL,
+        IsInclusive BIT NOT NULL DEFAULT 0,
+        EffectiveFrom DATE NULL,
+        EffectiveTo DATE NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        Description VARCHAR(300) NULL,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL,
+        CONSTRAINT FK_Taxes_TaxTypeSystems FOREIGN KEY (TaxTypeSystemId) REFERENCES dbo.TaxTypeSystems(Id)
+    );
+END
+;
+
+/* =============================================================================
+   Import Logs (merged from import_logs.sql)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ImportLogs]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ImportLogs (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_ImportLogs PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        ImportType VARCHAR(30) NOT NULL DEFAULT 'MASTER',
+        ModuleName VARCHAR(50) NOT NULL,
+        EntityName VARCHAR(100) NOT NULL,
+        FileName VARCHAR(255) NOT NULL,
+        FileType VARCHAR(20) NOT NULL,
+        TotalRows INT NOT NULL DEFAULT 0,
+        SuccessRows INT NOT NULL DEFAULT 0,
+        FailedRows INT NOT NULL DEFAULT 0,
+        Status VARCHAR(30) NOT NULL,
+        ErrorMessage VARCHAR(2000) NULL,
+        ImportedBy BIGINT NOT NULL,
+        ImportedAt DATETIME NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX IX_ImportLogs_Company_ImportedAt ON dbo.ImportLogs (CompanyId, ImportedAt DESC);
+END
+;
+
+PRINT 'ERP full schema complete: product masters, taxes, import logs.';
+
+/* =============================================================================
+   Sales Module (merged from sql/sales_invoice.sql)
+   Unified design: one SalesInvoice table serves POS and normal sales via SourceType.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   SalesInvoice
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoice]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesInvoice (
+        SalesInvoiceId        BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_SalesInvoice PRIMARY KEY,
+        SalesInvoiceNo        NVARCHAR(30)         NOT NULL,
+        InvoiceDate           DATETIME2            NOT NULL,
+        SourceType            NVARCHAR(20)         NOT NULL CONSTRAINT DF_SalesInvoice_SourceType DEFAULT 'SALES',
+
+        CompanyId             BIGINT               NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200)        NULL,
+        BranchId              BIGINT               NOT NULL,
+        WarehouseId           BIGINT               NOT NULL,
+        CustomerId            BIGINT               NOT NULL,
+        CustomerNameSnapshot  NVARCHAR(200)        NULL,
+
+        SalesTypeId           INT                  NULL,
+        PriceListId           BIGINT               NULL,
+
+        ReferenceNo           NVARCHAR(50)         NULL,
+        ReferenceDate         DATE                 NULL,
+
+        TotalGrossAmount      DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Taxable DEFAULT 0,
+        TotalCGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_CGST DEFAULT 0,
+        TotalSGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_SGST DEFAULT 0,
+        TotalIGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_IGST DEFAULT 0,
+        TotalCESSAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Grand DEFAULT 0,
+        PaidAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Paid DEFAULT 0,
+        BalanceAmount         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Balance DEFAULT 0,
+
+        PaymentTypeID         BIGINT               NULL,
+        PaymentMethodID       BIGINT               NULL,
+        StatusID              BIGINT               NOT NULL CONSTRAINT DF_SalesInvoice_Status DEFAULT 1,
+        InvoiceStatus         NVARCHAR(20)         NOT NULL CONSTRAINT DF_SalesInvoice_InvStatus DEFAULT 'POSTED',
+
+        Remarks               NVARCHAR(500)        NULL,
+
+        IsActive              BIT                  NOT NULL CONSTRAINT DF_SalesInvoice_IsActive DEFAULT 1,
+        CreatedByUserID       BIGINT               NOT NULL,
+        CreatedAt             DATETIME2            NOT NULL CONSTRAINT DF_SalesInvoice_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT               NULL,
+        UpdatedAt             DATETIME2            NULL,
+
+        CONSTRAINT UQ_SalesInvoice_No UNIQUE (CompanyId, SalesInvoiceNo)
+    );
+
+    CREATE INDEX IX_SalesInvoice_Company_Date ON dbo.SalesInvoice (CompanyId, InvoiceDate);
+    CREATE INDEX IX_SalesInvoice_CustomerId ON dbo.SalesInvoice (CustomerId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   SalesInvoiceItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoiceItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesInvoiceItem (
+        SalesInvoiceItemId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_SalesInvoiceItem PRIMARY KEY,
+        SalesInvoiceId        BIGINT               NOT NULL,
+
+        ProductId             BIGINT               NOT NULL,
+        ProductCodeSnapshot   NVARCHAR(100)        NULL,
+        ProductNameSnapshot   NVARCHAR(200)        NULL,
+        UnitID                BIGINT               NOT NULL,
+        UnitNameSnapshot      NVARCHAR(100)        NULL,
+        BatchId               BIGINT               NULL,
+        HSNID                 BIGINT               NULL,
+        HSNCodeSnapshot       NVARCHAR(100)        NULL,
+        BarcodeSnapshot       NVARCHAR(100)        NULL,
+
+        Quantity              DECIMAL(18,3)        NOT NULL,
+        FreeQuantity          DECIMAL(18,3)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Free DEFAULT 0,
+        Rate                  DECIMAL(18,4)        NOT NULL,
+        GrossAmount           DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Gross DEFAULT 0,
+
+        DiscountPercentage    DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_DiscPct DEFAULT 0,
+        DiscountAmount        DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Disc DEFAULT 0,
+
+        TaxableAmount         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Taxable DEFAULT 0,
+
+        GSTPercent            DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_GSTPct DEFAULT 0,
+        CGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_CGSTPct DEFAULT 0,
+        SGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_SGSTPct DEFAULT 0,
+        IGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_IGSTPct DEFAULT 0,
+        CESSPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_CESSPct DEFAULT 0,
+
+        CGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_CGSTAmt DEFAULT 0,
+        SGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_SGSTAmt DEFAULT 0,
+        IGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_IGSTAmt DEFAULT 0,
+        CESSAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_CESSAmt DEFAULT 0,
+
+        LineTotal             DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Line DEFAULT 0,
+        Remarks               NVARCHAR(500)        NULL
+    );
+
+    CREATE INDEX IX_SalesInvoiceItem_InvoiceId ON dbo.SalesInvoiceItem (SalesInvoiceId);
+    CREATE INDEX IX_SalesInvoiceItem_ProductId ON dbo.SalesInvoiceItem (ProductId);
+END
+;
+
+PRINT 'ERP full schema complete: sales module added.';
+
+/* =============================================================================
+   Payment Masters (PaymentType, PaymentMethod, Payment, PaymentAllocation)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   PaymentType
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentType]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentType (
+        PaymentTypeId BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentType PRIMARY KEY,
+        Code          VARCHAR(30)  NOT NULL,
+        [Name]        NVARCHAR(100) NOT NULL,
+        IsActive      BIT          NOT NULL CONSTRAINT DF_PaymentType_IsActive DEFAULT 1,
+        DisplayOrder  INT          NOT NULL CONSTRAINT DF_PaymentType_DisplayOrder DEFAULT 0,
+        CreatedAt     DATETIME2    NOT NULL CONSTRAINT DF_PaymentType_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentType_Code ON dbo.PaymentType (Code);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PaymentMethod
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentMethod]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentMethod (
+        PaymentMethodId     BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentMethod PRIMARY KEY,
+        Code                VARCHAR(30)   NOT NULL,
+        [Name]              NVARCHAR(100) NOT NULL,
+        PaymentCategory     VARCHAR(50)   NULL,
+        IsCash              BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsCash DEFAULT 0,
+        IsCredit            BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsCredit DEFAULT 0,
+        RequiresReferenceNo BIT           NOT NULL CONSTRAINT DF_PaymentMethod_ReqRef DEFAULT 0,
+        DisplayOrder        INT           NOT NULL CONSTRAINT DF_PaymentMethod_DisplayOrder DEFAULT 0,
+        IsActive            BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsActive DEFAULT 1,
+        CreatedAt           DATETIME2     NOT NULL CONSTRAINT DF_PaymentMethod_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentMethod_Code ON dbo.PaymentMethod (Code);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Payment
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Payment]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Payment (
+        PaymentId         BIGINT IDENTITY(1,1) CONSTRAINT PK_Payment PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        PaymentNo         NVARCHAR(30)  NOT NULL,
+        PaymentDate       DATETIME2     NOT NULL,
+        PaymentTypeID     BIGINT        NULL,
+        PaymentMethodID   BIGINT        NULL,
+        ReferenceType     NVARCHAR(30)  NOT NULL,
+        ReferenceId       BIGINT        NOT NULL,
+        BusinessPartnerId BIGINT        NULL,
+        Amount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Payment_Amount DEFAULT 0,
+        ReferenceNo       NVARCHAR(50)  NULL,
+        Remarks           NVARCHAR(500) NULL,
+        StatusID          BIGINT        NOT NULL CONSTRAINT DF_Payment_Status DEFAULT 1,
+        CreatedByUserID   BIGINT        NOT NULL,
+        CreatedAt         DATETIME2     NOT NULL CONSTRAINT DF_Payment_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID   BIGINT        NULL,
+        UpdatedAt         DATETIME2     NULL,
+
+        CONSTRAINT UQ_Payment_No UNIQUE (CompanyId, PaymentNo)
+    );
+
+    CREATE INDEX IX_Payment_Company_Date ON dbo.Payment (CompanyId, PaymentDate);
+    CREATE INDEX IX_Payment_Reference ON dbo.Payment (ReferenceType, ReferenceId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PaymentAllocation
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentAllocation]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentAllocation (
+        PaymentAllocationId BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentAllocation PRIMARY KEY,
+        PaymentId           BIGINT        NOT NULL,
+        ReferenceType       NVARCHAR(30)  NOT NULL,
+        ReferenceId         BIGINT        NOT NULL,
+        AllocatedAmount     DECIMAL(18,2) NOT NULL CONSTRAINT DF_PaymentAllocation_Amt DEFAULT 0,
+        CreatedAt           DATETIME2     NOT NULL CONSTRAINT DF_PaymentAllocation_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentAllocation_Ref ON dbo.PaymentAllocation (ReferenceType, ReferenceId);
+    CREATE INDEX IX_PaymentAllocation_Payment ON dbo.PaymentAllocation (PaymentId);
+END
+;
+
+/* =============================================================================
+   Purchase Module (Purchase, PurchaseItem)
+   Snapshot design: PurchaseNumber/CompanyNameSnapshot/BranchNameSnapshot/
+   SupplierNameSnapshot; PurchaseItem uses BrandID/CategoryID snapshots.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Purchase
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Purchase]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Purchase (
+        PurchaseId            BIGINT IDENTITY(1,1) CONSTRAINT PK_Purchase PRIMARY KEY,
+        CompanyId             BIGINT        NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200) NULL,
+        BranchId              BIGINT        NOT NULL,
+        BranchNameSnapshot    NVARCHAR(200) NULL,
+        WarehouseId           BIGINT        NOT NULL,
+        SupplierId            BIGINT        NOT NULL,
+        SupplierNameSnapshot  NVARCHAR(200) NULL,
+        PurchaseNumber        NVARCHAR(30)  NOT NULL,
+        PurchaseDate          DATETIME2     NOT NULL,
+        SupplierInvoiceNumber NVARCHAR(50)  NULL,
+        SupplierInvoiceDate   DATE          NULL,
+        TotalGrossAmount      DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Taxable DEFAULT 0,
+        TotalTaxAmount        DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Tax DEFAULT 0,
+        TotalCessAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Grand DEFAULT 0,
+        PaidAmount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Paid DEFAULT 0,
+        BalanceAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Balance DEFAULT 0,
+        PaymentTypeID         BIGINT        NULL,
+        PaymentMethodID       BIGINT        NULL,
+        StatusID              BIGINT        NOT NULL CONSTRAINT DF_Purchase_Status DEFAULT 1,
+        Remarks               NVARCHAR(500) NULL,
+        IsActive              BIT           NOT NULL CONSTRAINT DF_Purchase_IsActive DEFAULT 1,
+        CreatedByUserID       BIGINT        NOT NULL,
+        CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_Purchase_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT        NULL,
+        UpdatedAt             DATETIME2     NULL,
+
+        CONSTRAINT UQ_Purchase_No UNIQUE (CompanyId, PurchaseNumber)
+    );
+
+    CREATE INDEX IX_Purchase_Company_Date ON dbo.Purchase (CompanyId, PurchaseDate);
+    CREATE INDEX IX_Purchase_Supplier ON dbo.Purchase (SupplierId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PurchaseItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseItem (
+        PurchaseItemId     BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseItem PRIMARY KEY,
+        PurchaseId         BIGINT        NOT NULL,
+        ProductId          BIGINT        NOT NULL,
+        ProductCodeSnapshot NVARCHAR(100) NULL,
+        ProductNameSnapshot NVARCHAR(200) NULL,
+        BrandID            BIGINT        NULL,
+        CategoryID         BIGINT        NULL,
+        SubCategoryID      BIGINT        NULL,
+        UnitID             BIGINT        NOT NULL,
+        UnitNameSnapshot   NVARCHAR(100) NULL,
+        HSNID              BIGINT        NULL,
+        HSNCodeSnapshot    NVARCHAR(100) NULL,
+        BarcodeSnapshot    NVARCHAR(100) NULL,
+        Quantity           DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseItem_Qty DEFAULT 0,
+        FreeQuantity       DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseItem_Free DEFAULT 0,
+        PurchaseRate       DECIMAL(18,4) NOT NULL CONSTRAINT DF_PurchaseItem_Rate DEFAULT 0,
+        MRP                DECIMAL(18,2) NULL,
+        RetailPrice        DECIMAL(18,2) NULL,
+        WholesalePrice     DECIMAL(18,2) NULL,
+        SaleRate           DECIMAL(18,4) NULL,
+        DiscountPercentage DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_DiscPct DEFAULT 0,
+        DiscountAmount     DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Disc DEFAULT 0,
+        IsGSTInclusive     BIT           NOT NULL CONSTRAINT DF_PurchaseItem_GSTInc DEFAULT 0,
+        TaxableValue       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Taxable DEFAULT 0,
+        GSTRate            DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_GST DEFAULT 0,
+        GSTAmount          DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_GSTAmt DEFAULT 0,
+        CGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_CGSTR DEFAULT 0,
+        CGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_CGSTA DEFAULT 0,
+        SGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_SGSTR DEFAULT 0,
+        SGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_SGSTA DEFAULT 0,
+        IGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_IGSTR DEFAULT 0,
+        IGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_IGSTA DEFAULT 0,
+        CESSRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_CESSR DEFAULT 0,
+        CESSAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_CESSA DEFAULT 0,
+        LineTotal          DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Line DEFAULT 0,
+        ManufacturingDate  DATE          NULL,
+        ExpiryDate         DATE          NULL,
+        Remarks            NVARCHAR(500) NULL
+    );
+
+    CREATE INDEX IX_PurchaseItem_PurchaseId ON dbo.PurchaseItem (PurchaseId);
+    CREATE INDEX IX_PurchaseItem_ProductId ON dbo.PurchaseItem (ProductId);
+END
+;
+
+/* =============================================================================
+   Purchase Return Module (PurchaseReturn, PurchaseReturnItem)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   PurchaseReturn
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseReturn]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseReturn (
+        PurchaseReturnId      BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseReturn PRIMARY KEY,
+        PurchaseId            BIGINT        NOT NULL,
+        CompanyId             BIGINT        NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200) NULL,
+        BranchId              BIGINT        NOT NULL,
+        BranchNameSnapshot    NVARCHAR(200) NULL,
+        WarehouseId           BIGINT        NOT NULL,
+        SupplierId            BIGINT        NOT NULL,
+        SupplierNameSnapshot  NVARCHAR(200) NULL,
+        ReturnNumber          NVARCHAR(30)  NOT NULL,
+        ReturnDate            DATETIME2     NOT NULL,
+        TotalGrossAmount      DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Taxable DEFAULT 0,
+        TotalTaxAmount        DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Tax DEFAULT 0,
+        TotalCessAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Grand DEFAULT 0,
+        StatusID              BIGINT        NOT NULL CONSTRAINT DF_PurchaseReturn_Status DEFAULT 1,
+        Reason                NVARCHAR(500) NULL,
+        Remarks               NVARCHAR(500) NULL,
+        CreatedByUserID       BIGINT        NOT NULL,
+        CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_PurchaseReturn_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT        NULL,
+        UpdatedAt             DATETIME2     NULL,
+
+        CONSTRAINT UQ_PurchaseReturn_No UNIQUE (CompanyId, ReturnNumber)
+    );
+
+    CREATE INDEX IX_PurchaseReturn_Company_Date ON dbo.PurchaseReturn (CompanyId, ReturnDate);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PurchaseReturnItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseReturnItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseReturnItem (
+        PurchaseReturnItemId BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseReturnItem PRIMARY KEY,
+        PurchaseReturnId     BIGINT        NOT NULL,
+        PurchaseItemId       BIGINT        NOT NULL,
+        ProductId            BIGINT        NOT NULL,
+        ProductCodeSnapshot  NVARCHAR(100) NULL,
+        ProductNameSnapshot  NVARCHAR(200) NULL,
+        UnitId               BIGINT        NOT NULL,
+        UnitNameSnapshot     NVARCHAR(100) NULL,
+        HSNId                BIGINT        NULL,
+        HSNCodeSnapshot      NVARCHAR(100) NULL,
+        ReturnQuantity       DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Qty DEFAULT 0,
+        PurchaseRate         DECIMAL(18,4) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Rate DEFAULT 0,
+        DiscountAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Disc DEFAULT 0,
+        TaxableValue         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Taxable DEFAULT 0,
+        GSTRate              DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_GST DEFAULT 0,
+        GSTAmount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_GSTAmt DEFAULT 0,
+        CGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_CGSTR DEFAULT 0,
+        CGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_CGSTA DEFAULT 0,
+        SGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_SGSTR DEFAULT 0,
+        SGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_SGSTA DEFAULT 0,
+        IGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_IGSTR DEFAULT 0,
+        IGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_IGSTA DEFAULT 0,
+        CESSRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSR DEFAULT 0,
+        CESSAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSA DEFAULT 0,
+        LineTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Line DEFAULT 0
+    );
+
+    CREATE INDEX IX_PurchaseReturnItem_ReturnId ON dbo.PurchaseReturnItem (PurchaseReturnId);
+    CREATE INDEX IX_PurchaseReturnItem_ProductId ON dbo.PurchaseReturnItem (ProductId);
+END
+;
+
+/* =============================================================================
+   Stock Module (Stock, StockTransaction)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Stock
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Stock]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Stock (
+        StockId           BIGINT IDENTITY(1,1) CONSTRAINT PK_Stock PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        BranchId          BIGINT        NOT NULL,
+        WarehouseId       BIGINT        NOT NULL,
+        ProductId         BIGINT        NOT NULL,
+        UnitId            BIGINT        NOT NULL,
+        Quantity          DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Qty DEFAULT 0,
+        ReservedQuantity  DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Reserved DEFAULT 0,
+        AvailableQuantity DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Available DEFAULT 0,
+        AverageCost       DECIMAL(18,4) NOT NULL CONSTRAINT DF_Stock_AvgCost DEFAULT 0,
+        LastPurchaseRate  DECIMAL(18,4) NOT NULL CONSTRAINT DF_Stock_LastRate DEFAULT 0,
+        UpdatedAt         DATETIME2     NOT NULL CONSTRAINT DF_Stock_UpdatedAt DEFAULT SYSUTCDATETIME(),
+
+        CONSTRAINT UQ_Stock_Key UNIQUE (CompanyId, BranchId, WarehouseId, ProductId, UnitId)
+    );
+
+    CREATE INDEX IX_Stock_Company_Product ON dbo.Stock (CompanyId, ProductId);
+    CREATE INDEX IX_Stock_Warehouse ON dbo.Stock (WarehouseId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   StockTransaction
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockTransaction]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StockTransaction (
+        StockTransactionId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockTransaction PRIMARY KEY,
+        CompanyId          BIGINT        NOT NULL,
+        BranchId           BIGINT        NOT NULL,
+        WarehouseId        BIGINT        NOT NULL,
+        ProductId          BIGINT        NOT NULL,
+        UnitId             BIGINT        NOT NULL,
+        TransactionType    VARCHAR(10)   NOT NULL,
+        ReferenceType      VARCHAR(30)   NOT NULL,
+        ReferenceId        BIGINT        NOT NULL,
+        QuantityIn         DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_QtyIn DEFAULT 0,
+        QuantityOut        DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_QtyOut DEFAULT 0,
+        Rate               DECIMAL(18,4) NOT NULL CONSTRAINT DF_StockTx_Rate DEFAULT 0,
+        BalanceQuantity    DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_Balance DEFAULT 0,
+        TransactionDate    DATETIME2     NOT NULL,
+        Remarks            NVARCHAR(500) NULL,
+        CreatedByUserID    BIGINT        NOT NULL,
+        CreatedAt          DATETIME2     NOT NULL CONSTRAINT DF_StockTx_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_StockTx_Company_Product ON dbo.StockTransaction (CompanyId, ProductId);
+    CREATE INDEX IX_StockTx_Reference ON dbo.StockTransaction (ReferenceType, ReferenceId);
+END
+;
+
+/* =============================================================================
+   TenantConfiguration (dynamic Purchase / Sale / Billing screen config)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TenantConfiguration]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TenantConfiguration (
+        Id              BIGINT IDENTITY(1,1) CONSTRAINT PK_TenantConfiguration PRIMARY KEY,
+        TenantId        BIGINT        NOT NULL,
+        ApplicationType NVARCHAR(50)  NOT NULL,
+        TransactionType NVARCHAR(50)  NULL,
+        FlowType        NVARCHAR(50)  NULL,
+        PageCode        NVARCHAR(50)  NULL,
+        FieldCode       NVARCHAR(50)  NULL,
+        SequenceNo      INT           NULL,
+        IsPageEnabled   BIT           NOT NULL CONSTRAINT DF_TC_IsPageEnabled DEFAULT 1,
+        IsVisible       BIT           NOT NULL CONSTRAINT DF_TC_IsVisible DEFAULT 1,
+        IsRequired      BIT           NOT NULL CONSTRAINT DF_TC_IsRequired DEFAULT 0,
+        IsReadonly      BIT           NOT NULL CONSTRAINT DF_TC_IsReadonly DEFAULT 0,
+        DisplayOrder    INT           NULL,
+        DefaultValue    NVARCHAR(500) NULL,
+        IsActive        BIT           NOT NULL CONSTRAINT DF_TC_IsActive DEFAULT 1,
+        CreatedBy       BIGINT        NOT NULL,
+        CreatedAt       DATETIME2     NOT NULL CONSTRAINT DF_TC_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy       BIGINT        NULL,
+        UpdatedAt       DATETIME2     NULL
+    );
+
+    CREATE INDEX IX_TenantConfiguration_Tenant ON dbo.TenantConfiguration (TenantId, ApplicationType);
+END
+;
+
+/* =============================================================================
+   Status (document lifecycle lookup used by Sales / Purchase / Returns)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Status]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.[Status] (
+        StatusId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Status PRIMARY KEY,
+        Code        NVARCHAR(20)         NOT NULL CONSTRAINT UQ_Status_Code UNIQUE,
+        [Name]      NVARCHAR(100)        NOT NULL,
+        Module      NVARCHAR(50)         NULL,
+        IsActive    BIT                  NOT NULL CONSTRAINT DF_Status_IsActive DEFAULT 1,
+        SortOrder   INT                  NOT NULL CONSTRAINT DF_Status_SortOrder DEFAULT 0,
+        CreatedBy   NVARCHAR(50)         NULL,
+        CreatedAt   DATETIME2            NOT NULL CONSTRAINT DF_Status_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    INSERT INTO dbo.[Status] ([Code], [Name], [Module], IsActive, SortOrder)
+    VALUES
+        ('DRAFT',            'Draft',             NULL,        1, 10),
+        ('POSTED',           'Posted',            NULL,        1, 20),
+        ('RETURNED',         'Returned',          'PURCHASE',  1, 30),
+        ('PARTIALLY_RETURNED','Partially Returned', 'PURCHASE', 1, 40),
+        ('APPROVED',         'Approved',          NULL,        1, 50),
+        ('REJECTED',         'Rejected',          NULL,        1, 60),
+        ('CANCELLED',        'Cancelled',         NULL,        1, 70),
+        ('PARTIALLY_PAID',   'Partially Paid',    'PAYMENT',   1, 80),
+        ('PAID',             'Paid',              'PAYMENT',   1, 90),
+        ('UNPAID',           'Unpaid',            'PAYMENT',   1, 100),
+        ('COMPLETED',        'Completed',         NULL,        1, 110),
+        ('CLOSED',           'Closed',            NULL,        1, 120),
+        ('PENDING',          'Pending',           NULL,        1, 130);
+END
+;
+
+/* =============================================================================
+   Module Configuration Seed Data
+   Merged from: seed_purchase_management.sql, product_masters_init.sql,
+                product_init.sql, tax_init.sql, taxes_init.sql,
+                import_logs.sql, sql/sales_invoice.sql
+   Builds Workspaces > Domains > Modules > SubModules > Screens + Role-2 perms.
+   Dapper-compatible: no GO, parent IDs resolved via subqueries.
+   ============================================================================= */
+
+/* =============================================================================
+   SETUP WORKSPACE (Organization / System / Tenant)
+   ============================================================================= */
+
+/* --- Organization > Business Master --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-BUSINESSMASTER')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-BUSINESSMASTER', 'Business Master', 'briefcase', '/business-master', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-ORG';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ORGSETUP')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-ORGSETUP', 'Organization Setup', 'building-2', '/business-master', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-BUSINESSMASTER';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('BUSINESS_MASTER_HOME', 'Business Master', 'MASTER', '/business-master', 'BusinessMasterPage', 1, 1, 'system'),
+    ('COMPANY_MASTER',       'Company',         'MASTER', '/company',         'CompanyPage',        2, 1, 'system'),
+    ('BRANCH_MASTER',        'Branch',          'MASTER', '/branch',          'BranchPage',         3, 1, 'system'),
+    ('DEPARTMENT_MASTER',    'Department',      'MASTER', '/department',      'Department',         4, 1, 'system'),
+    ('WAREHOUSE_MASTER',     'Warehouse',       'MASTER', '/warehouse',       'Warehouse',          5, 1, 'system'),
+    ('DESIGNATION_MASTER',   'Designation',     'MASTER', '/designation',     'Designation',        6, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-ORGSETUP'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* --- Organization > Financial Setup --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-FINANCE')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-FINANCE', 'Financial Setup', 'landmark', '/finance-year', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-ORG';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-FINANCE')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-FINANCE', 'Finance', 'calculator', '/finance-year', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-FINANCE';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'FINANCE_YEAR')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'FINANCE_YEAR', 'Financial Year', 'MASTER', '/finance-year', 'FinanceYear', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-FINANCE';
+;
+
+/* --- System > System Master --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-SYSMASTER')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-SYSMASTER', 'System Master', 'server', '/system-master', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-SYSTEM';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SYSCONFIG')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-SYSCONFIG', 'System Configuration', 'settings', '/system-master', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-SYSMASTER';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SYSTEM_MASTER_HOME')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SYSTEM_MASTER_HOME', 'System Master', 'MASTER', '/system-master', 'SystemMasterPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SYSCONFIG';
+;
+
+/* --- Tenant > Tenant Configuration --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-TENANTCONFIG')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-TENANTCONFIG', 'Tenant Configuration', 'building-2', '/tenant-configuration', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-TENANT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TENANTCONFIG')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-TENANTCONFIG', 'Configuration', 'sliders-horizontal', '/tenant-configuration', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-TENANTCONFIG';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'TENANT_CONFIGURATION')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'TENANT_CONFIGURATION', 'Tenant Configuration', 'SETTINGS', '/tenant-configuration', 'TenantConfigurationPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TENANTCONFIG';
+;
+
+/* =============================================================================
+   PRODBILL WORKSPACE (Product & Billing = Product Management + Billing/Tax)
+   ============================================================================= */
+
+/* --- Product > Product Management > Product Master --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PRODUCT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PRODUCT', 'Product', 'package', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'PRODBILL';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PRODMASTERS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PRODMASTERS', 'Product Management', 'boxes', '/product', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PRODUCT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PRODSETUP', 'Product Master', 'package', '/product', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PRODMASTERS';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('PRODUCT-CATEGORIES',     'Product Categories',     'MASTER', '/product-categories',     'CategoryPage',     1, 1, 'system'),
+    ('PRODUCT-SUBCATEGORIES',  'Product Sub Categories', 'MASTER', '/product-subcategories',  'SubCategoryPage',  2, 1, 'system'),
+    ('BRANDS',                 'Brands',                 'MASTER', '/brands',                 'BrandPage',        3, 1, 'system'),
+    ('UNITS',                  'Units',                  'MASTER', '/units',                  'UnitPage',         4, 1, 'system'),
+    ('PRODUCTS',               'Products',               'MASTER', '/products',               'ProductPage',      5, 1, 'system'),
+    ('IMPORT-LOGS',            'Import Logs',            'LIST',   '/import-logs',            'MasterImportPage', 6, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PRODSETUP'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* --- Product > Master Data > Import Management --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-MASTERDATA')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-MASTERDATA', 'Master Data', 'database', '/master-import', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PRODUCT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-IMPORTMGMT')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-IMPORTMGMT', 'Import Management', 'upload', '/master-import', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-MASTERDATA';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('MASTER_IMPORT', 'Master Import', 'LIST', '/master-import', 'MasterImportPage', 1, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-IMPORTMGMT'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* --- Billing > Tax Management > Tax Configuration --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-BILLING')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-BILLING', 'Billing', 'receipt', 2, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'PRODBILL';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-TAXMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-TAXMGMT', 'Tax Management', 'percent', '/taxes', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-BILLING';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TAXCONFIG')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-TAXCONFIG', 'Tax Configuration', 'percent', '/taxes', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-TAXMGMT';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('TAXTYPES', 'Tax Type Systems', 'MASTER', '/tax-type-systems', 'TaxTypeSystemPage', 1, 1, 'system'),
+    ('TAXES',    'Taxes',           'MASTER', '/taxes',            'TaxPage',           2, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-TAXCONFIG'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* =============================================================================
+   SALES WORKSPACE (Sales > Sales Management > Transactions + POS)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-SALES')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-SALES', 'Sales', 'shopping-cart', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SALES';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-SALESMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-SALESMGMT', 'Sales Management', 'shopping-cart', '/sales', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-SALES';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SALESTXN')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-SALESTXN', 'Transactions', 'receipt', '/sales', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-SALESMGMT';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('SALES_HOME',   'Sales',       'LIST',   '/sales',       'SalesWorkspace', 1, 1, 'system'),
+    ('SALES_ENTRY',  'Sales Entry', 'ENTRY',  '/sales-entry', 'SalesEntryPage', 2, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-SALESTXN'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+-- Sales POS submodule + screen
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-POS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-POS', 'POS', 'monitor', '/pos', 2, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-SALESMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SALES_POS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES_POS', 'POS', 'ENTRY', '/pos', 'PosPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-POS';
+;
+
+/* =============================================================================
+   PURCHASE WORKSPACE (Purchase > Purchase Management > Transactions)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PURCHASE')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PURCHASE', 'Purchase', 'shopping-cart', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'PURCHASE';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PURCHASEMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PURCHASEMGMT', 'Purchase Management', 'shopping-cart', '/purchase', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PURCHASE';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PURCHASETXN')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PURCHASETXN', 'Transactions', 'receipt', '/purchase', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PURCHASEMGMT';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('PURCHASE_HOME',        'Purchase',         'LIST',        '/purchase',               'PurchaseWorkspace',    1, 1, 'system'),
+    ('PURCHASE_ENTRY',       'Purchase Entry',   'ENTRY',       '/purchase-entry',         'PurchaseEntryPage',    2, 1, 'system'),
+    ('PURCHASE_LIST',        'Purchases',        'LIST',        '/purchase?tab=list',      'PurchaseListPage',     3, 1, 'system'),
+    ('PURCHASE_RETURNS',     'Purchase Returns', 'TRANSACTION', '/purchase?tab=returns',   'PurchaseReturnPage',   4, 1, 'system'),
+    ('PURCHASE_REPORTS',     'Purchase Reports', 'REPORT',      '/reports',                'ReportsWorkspace',     5, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PURCHASETXN'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* =============================================================================
+   INVENTORY WORKSPACE (Inventory > Inventory Management > Stock Management)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-INVENTORY')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-INVENTORY', 'Inventory', 'box', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'INVENTORY';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-INVMTMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-INVMTMGMT', 'Inventory Management', 'boxes', '/stock', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-INVENTORY';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-STOCKMGMT')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-STOCKMGMT', 'Stock Management', 'warehouse', '/stock', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-INVMTMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'STOCK_HOME')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'STOCK_HOME', 'Stock', 'LIST', '/stock', 'StockPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-STOCKMGMT';
+;
+
+/* =============================================================================
+   PAYMENTS WORKSPACE (Payment > Payment Configuration + Payment Management)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PAYMENT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PAYMENT', 'Payment', 'credit-card', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'PAYMENTS';
+END
+;
+
+/* Payment Configuration > Payment Master */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYCONFIG')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PAYCONFIG', 'Payment Configuration', 'settings', '/payment', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PAYMENT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PAYMASTER')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PAYMASTER', 'Payment Master', 'sliders-horizontal', '/payment', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYCONFIG';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('PAYMENT_TYPES',   'Payment Types',   'MASTER', '/payment-type',   'PaymentTypePage',   1, 1, 'system'),
+    ('PAYMENT_METHODS', 'Payment Methods', 'MASTER', '/payment-method', 'PaymentMethodPage', 2, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PAYMASTER'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* Payment Management > Transactions */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PAYMGMT', 'Payment Management', 'credit-card', '/payment', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PAYMENT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PAYTXN')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PAYTXN', 'Transactions', 'receipt', '/payment', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYMGMT';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('PAYMENT_HOME',  'Payment',       'LIST',  '/payment',       'PaymentWorkspace', 1, 1, 'system'),
+    ('PAYMENT_ENTRY', 'Payment Entry', 'ENTRY', '/payment-entry', 'PaymentEntryPage', 2, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PAYTXN'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* =============================================================================
+   REPORTS WORKSPACE (Reporting > Business Reports > Reports)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-REPORTING')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-REPORTING', 'Reporting', 'file-text', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'REPORTS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-BIZREPORTS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-BIZREPORTS', 'Business Reports', 'chart-bar', '/reports', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-REPORTING';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-REPORTS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-REPORTS', 'Reports', 'chart-line', '/reports', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-BIZREPORTS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'REPORTS_HOME')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'REPORTS_HOME', 'Reports', 'REPORT', '/reports', 'ReportsWorkspace', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-REPORTS';
+;
+
+/* =============================================================================
+   BUSINESS_PARTNERS WORKSPACE (Partners > Partner Management)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PARTNERS')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PARTNERS', 'Partners', 'users', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'BUSINESS_PARTNERS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PARTNERMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PARTNERMGMT', 'Partner Management', 'users', '/business-partners', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PARTNERS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERCONFIG')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PARTNERCONFIG', 'Partner Configuration', 'sliders-horizontal', '/business-partner-roles', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PARTNERMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'BUSINESS_PARTNER_ROLES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'BUSINESS_PARTNER_ROLES', 'Business Partner Roles', 'MASTER', '/business-partner-roles', 'BusinessPartnerRolesPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERCONFIG';
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERMASTER')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PARTNERMASTER', 'Partner Master', 'id-card', '/business-partners', 2, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PARTNERMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'BUSINESS_PARTNERS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'BUSINESS_PARTNERS', 'Business Partners', 'MASTER', '/business-partners', 'BusinessPartnersPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERMASTER';
+;
+
+/* =============================================================================
+   SECURITY WORKSPACE (Security > User Management + Role Management)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-SECURITY')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-SECURITY', 'Security', 'shield', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SECURITY';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-USERMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-USERMGMT', 'User Management', 'user', '/users', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-SECURITY';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-USERADMIN')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-USERADMIN', 'User Administration', 'user-cog', '/users', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-USERMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'USERS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'USERS', 'Users', 'MASTER', '/users', 'UsersPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-USERADMIN';
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-ROLEMGMT', 'Role Management', 'shield', '/roles', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-SECURITY';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEADMIN')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-ROLEADMIN', 'Role Administration', 'id-card', '/roles', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'ROLES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'ROLES', 'Roles', 'MASTER', '/roles', 'RolesPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEADMIN';
+;
+
+/* =============================================================================
+   ENTERPRISE_PERMISSIONS WORKSPACE
+   (Permission Structure + Role Security + User Security + Data Security +
+    Workflow Security + Legacy module-level matrix)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PERMCONFIG')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PERMCONFIG', 'Permission Configuration', 'key-square', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+/* Permission Structure > Workspace / Domain / Module / SubModule / Screen / Field / Action management */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PERMSTRUCT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PERMSTRUCT', 'Permission Structure', 'network', '/enterprise-permissions', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMCONFIG';
+END
+;
+
+DECLARE @PermStructModuleId INT = (SELECT Id FROM dbo.Modules WHERE ModuleCode = 'MOD-PERMSTRUCT');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-WSMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-WSMGMT', 'Workspace Management', 'layers', '/workspaces', 1, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-DOMMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-DOMMGMT', 'Domain Management', 'globe', '/domains', 2, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-MODMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-MODMGMT', 'Module Management', 'box', '/modules', 3, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SUBMODMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-SUBMODMGMT', 'SubModule Management', 'box-open', '/submodules', 4, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SCREENMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-SCREENMGMT', 'Screen Management', 'monitor', '/screens', 5, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-FIELDMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-FIELDMGMT', 'Field Management', 'text-cursor-input', '/fields', 6, 1, 'system');
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ACTIONMGMT' AND ModuleId = @PermStructModuleId)
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    VALUES (@PermStructModuleId, 'SUB-ACTIONMGMT', 'Action Management', 'zap', '/permission-actions-list', 7, 1, 'system');
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('WSMGMT',        'WORKS',       'Workspaces',   'SETTINGS', '/workspaces',             'WorkspacesPage',            1, 1, 'system'),
+    ('DOMMGMT',       'DOMAINS',     'Domains',      'SETTINGS', '/domains',                'DomainsPage',               1, 1, 'system'),
+    ('MODMGMT',       'MODULES',     'Modules',      'SETTINGS', '/modules',                'ModulesPage',               1, 1, 'system'),
+    ('SUBMODMGMT',    'SUBMODULES',  'Sub Modules',  'SETTINGS', '/submodules',             'SubModulesPage',            1, 1, 'system'),
+    ('SCREENMGMT',    'SCREENS',     'Screens',      'SETTINGS', '/screens',                'ScreensPage',              1, 1, 'system'),
+    ('FIELDMGMT',     'FIELDS',      'Fields',       'SETTINGS', '/fields',                 'FieldsPage',               1, 1, 'system'),
+    ('ACTIONMGMT',    'ACTIONS',     'Actions',      'SETTINGS', '/permission-actions-list', 'ActionsPage',             1, 1, 'system')
+) AS k(SubModuleCode, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = k.SubModuleCode AND sm.ModuleId = @PermStructModuleId
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* Role Security > Role Permissions */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-ROLESEC', 'Role Security', 'shield', 2, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEPERMS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-ROLEPERMS', 'Role Permissions', 'shield-check', '/role-permissions', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEFIELD')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-ROLEFIELD', 'Role Field Permissions', 'field-has-legend', '/role-field-permissions', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PERMMATRIX')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PERMMATRIX', 'Role Permission Matrix', 'grid-2x2', '/role-permission-matrix', 3, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC';
+END
+;
+
+/* User Security > User Overrides */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-USERSEC')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-USERSEC', 'User Security', 'user-shield', 3, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-USEROVERRIDES')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-USEROVERRIDES', 'User Overrides', 'user-cog', '/user-permission-overrides', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-USERSEC';
+END
+;
+
+/* Data Security > Data Scope */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-DATASEC')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-DATASEC', 'Data Security', 'database', 4, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-DATASCOPE')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-DATASCOPE', 'Data Scope', 'filter', '/data-scopes', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-DATASEC';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-USERSCOPE')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-USERSCOPE', 'User Data Scope Overrides', 'user-lock', '/user-data-scope-overrides', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-DATASEC';
+END
+;
+
+/* Workflow Security > Workflow */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-WORKFLOW')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-WORKFLOW', 'Workflow Security', 'workflow', 5, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-WORKFLOW')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-WORKFLOW', 'Workflow Permissions', 'workflow', '/workflow-permissions', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-WORKFLOW';
+END
+;
+
+/* Permission Management > Enterprise Permission hub */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PERMMGMT', 'Permission Management', 'key', 6, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ENTPERMS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-ENTPERMS', 'Enterprise Permission', 'key-square', '/enterprise-permissions', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYPERMS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-LEGACYPERMS', 'Permission Modules', 'layers', '/permission-modules', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT';
+END
+;
+
+/* Add the permission management submodules + screens (attached to the
+   ENTERPRISE_PERMISSIONS workspace domains/modules created above) */
+
+/* Role Security > Role Permissions > Role Permission Management */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEPERMMGMT')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-ROLEPERMMGMT', 'Role Permission Management', 'shield-check', '/role-permissions', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEPERMS';
+END
+;
+
+/* Role Security > Role Field Permissions > Field Security */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEFIELDSEC')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-ROLEFIELDSEC', 'Field Security', 'field-has-legend', '/role-field-permissions', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEFIELD';
+END
+;
+
+/* Role Security > Role Permission Matrix > Matrix */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PERMMATRIX')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PERMMATRIX', 'Permission Matrix', 'grid-2x2', '/role-permission-matrix', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PERMMATRIX';
+END
+;
+
+/* User Security > User Overrides > Permission Overrides */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PERMOVERRIDES')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PERMOVERRIDES', 'Permission Overrides', 'user-cog', '/user-permission-overrides', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-USEROVERRIDES';
+END
+;
+
+/* Data Security > Data Scope > Scope Management */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SCOPEMGMT')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-SCOPEMGMT', 'Scope Management', 'filter', '/data-scopes', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-DATASCOPE';
+END
+;
+
+/* Data Security > User Data Scope Overrides > User Scope Overrides */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-USERSCOPE')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-USERSCOPE', 'User Scope Overrides', 'user-lock', '/user-data-scope-overrides', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-USERSCOPE';
+END
+;
+
+/* Workflow Security > Workflow > Workflow Permissions */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-WORKFLOWPERMS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-WORKFLOWPERMS', 'Workflow Permissions', 'workflow', '/workflow-permissions', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-WORKFLOW';
+END
+;
+
+/* Permission Management > Enterprise Permission > Matrix */
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ENTPERMS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-ENTPERMS', 'Enterprise Permission Matrix', 'key-square', '/enterprise-permissions', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-ENTPERMS';
+END
+;
+
+/* Permission Management > Legacy Permission Modules */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYACTIONS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-LEGACYACTIONS', 'Permission Actions', 'zap', '/permission-actions', 3, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-LEGACYPERMS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-LEGACYPERMS', 'Permission Modules', 'layers', '/permission-modules', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYPERMS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-LEGACYACTIONS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-LEGACYACTIONS', 'Permission Actions', 'zap', '/permission-actions', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYACTIONS';
+END
+;
+
+/* Attach screens to their ENTERPRISE_PERMISSIONS submodules */
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('SUB-ROLEPERMMGMT',  'ROLE_PERMISSIONS',         'Role Permissions',         'SETTINGS', '/role-permissions',           'RolePermissionsPage',          1, 1, 'system'),
+    ('SUB-ROLEFIELDSEC',  'ROLE_FIELD_PERMISSIONS',   'Role Field Permissions',   'SETTINGS', '/role-field-permissions',     'RoleFieldPermissionsPage',     1, 1, 'system'),
+    ('SUB-PERMMATRIX',    'ROLE_PERMISSION_MATRIX',   'Role Permission Matrix',   'SETTINGS', '/role-permission-matrix',     'RolePermissionMatrixPage',     1, 1, 'system'),
+    ('SUB-PERMOVERRIDES', 'USER_PERMISSION_OVERRIDES','User Permission Overrides','SETTINGS', '/user-permission-overrides',  'UserPermissionOverridesPage',  1, 1, 'system'),
+    ('SUB-SCOPEMGMT',     'DATA_SCOPES',              'Data Scopes',              'SETTINGS', '/data-scopes',                'DataScopesPage',               1, 1, 'system'),
+    ('SUB-USERSCOPE',     'USER_DATA_SCOPE_OVERRIDES','User Data Scope Overrides','SETTINGS', '/user-data-scope-overrides',  'UserDataScopeOverridesPage',   1, 1, 'system'),
+    ('SUB-WORKFLOWPERMS', 'WORKFLOW_PERMISSIONS',     'Workflow Permissions',     'SETTINGS', '/workflow-permissions',       'WorkflowPermissionsPage',      1, 1, 'system'),
+    ('SUB-ENTPERMS',      'ENTERPRISE_PERMISSIONS',   'Enterprise Permissions',   'SETTINGS', '/enterprise-permissions',     'EnterprisePermissionsPage',    1, 1, 'system'),
+    ('SUB-LEGACYPERMS',   'PERMISSION_MODULES',       'Permission Modules',       'SETTINGS', '/permission-modules',         'PermissionModulesPage',        1, 1, 'system'),
+    ('SUB-LEGACYACTIONS', 'PERMISSION_ACTIONS',       'Permission Actions',       'SETTINGS', '/permission-actions',         'PermissionActionsPage',        1, 1, 'system')
+) AS k(SubModuleCode, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = k.SubModuleCode
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* =============================================================================
+   SETTINGS WORKSPACE (System > Settings Management > System Settings)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-SETTINGS')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-SETTINGS', 'System', 'settings', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SETTINGS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-SETTINGSMGMT')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-SETTINGSMGMT', 'Settings Management', 'settings', '/settings', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-SETTINGS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SYSETTINGS')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-SYSETTINGS', 'System Settings', 'sliders-horizontal', '/settings', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-SETTINGSMGMT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SETTINGS_HOME')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SETTINGS_HOME', 'Settings', 'SETTINGS', '/settings', 'SettingsPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SYSETTINGS';
+;
+
+/* ---------------------------------------------------------------------------
+   Legacy role permissions (SuperAdmin role 1 + Administrator role 2)
+   Bounded to the ERP screens seeded above (flat codes bridged to the
+   hierarchical RolePermissions matrix by the backend).
+   --------------------------------------------------------------------------- */
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT r.RoleId, v.code, 'system'
+FROM dbo.Roles r
+CROSS JOIN (VALUES
+    /* SETUP / Organization */
+    ('business-master.view'), ('business-master.manage'),
+    ('company.view'), ('company.create'), ('company.edit'), ('company.delete'),
+    ('branch.view'), ('branch.create'), ('branch.edit'), ('branch.delete'),
+    ('department.view'), ('department.create'), ('department.edit'),
+    ('warehouse.view'), ('warehouse.create'), ('warehouse.edit'),
+    ('designation.view'), ('designation.create'), ('designation.edit'),
+    ('financial-year.view'), ('financial-year.manage'),
+    ('system-master.view'), ('system-master.manage'),
+    ('tenant-configuration.view'), ('tenant-configuration.manage'),
+    /* PRODBILL / Product & Billing */
+    ('product-categories.view'), ('product-categories.create'), ('product-categories.edit'), ('product-categories.delete'),
+    ('product-subcategories.view'), ('product-subcategories.create'), ('product-subcategories.edit'), ('product-subcategories.delete'),
+    ('brands.view'), ('brands.create'), ('brands.edit'), ('brands.delete'),
+    ('units.view'), ('units.create'), ('units.edit'), ('units.delete'),
+    ('products.view'), ('products.create'), ('products.edit'), ('products.delete'),
+    ('tax-type-systems.view'), ('tax-type-systems.create'), ('tax-type-systems.edit'), ('tax-type-systems.delete'),
+    ('taxes.view'), ('taxes.create'), ('taxes.edit'), ('taxes.delete'),
+    ('master-import.view'), ('master-import.manage'), ('import-logs.view'),
+    /* SALES */
+    ('sales.view'), ('sales.manage'), ('sales.create'), ('sales.edit'), ('sales.delete'),
+    ('sales.pos.view'), ('sales.return.view'), ('sales.return.manage'),
+    /* PURCHASE */
+    ('purchase.view'), ('purchase.manage'), ('purchase.create'), ('purchase.edit'), ('purchase.delete'),
+    ('purchase-returns.view'), ('purchase-returns.manage'),
+    /* INVENTORY */
+    ('stock.view'), ('stock.manage'),
+    /* PAYMENTS */
+    ('payment-types.view'), ('payment-types.manage'),
+    ('payment-methods.view'), ('payment-methods.manage'),
+    ('payment.view'), ('payment.create'), ('payment.edit'), ('payment.delete'),
+    /* REPORTS */
+    ('reports.view'),
+    /* BUSINESS_PARTNERS */
+    ('business-partner-roles.view'), ('business-partner-roles.manage'),
+    ('business-partners.view'), ('business-partners.manage'),
+    /* SECURITY */
+    ('users.view'), ('users.create'), ('users.edit'), ('users.delete'),
+    ('roles.view'), ('roles.manage'),
+    /* ENTERPRISE_PERMISSIONS */
+    ('workspaces.view'), ('workspaces.manage'),
+    ('domains.view'), ('domains.manage'),
+    ('modules.view'), ('modules.manage'),
+    ('submodules.view'), ('submodules.manage'),
+    ('screens.view'), ('screens.manage'),
+    ('fields.view'), ('fields.manage'),
+    ('actions.view'), ('actions.manage'),
+    ('role-permissions.view'), ('role-permissions.manage'),
+    ('role-field-permissions.view'), ('role-field-permissions.manage'),
+    ('role-permission-matrix.view'), ('role-permission-matrix.manage'),
+    ('user-permission-overrides.view'), ('user-permission-overrides.manage'),
+    ('data-scopes.view'), ('data-scopes.manage'),
+    ('user-data-scope-overrides.view'), ('user-data-scope-overrides.manage'),
+    ('workflow-permissions.view'), ('workflow-permissions.manage'),
+    ('enterprise-permissions.view'), ('enterprise-permissions.manage'),
+    ('permission-modules.view'), ('permission-modules.manage'),
+    ('permission-actions.view'), ('permission-actions.manage'),
+    /* SETTINGS */
+    ('settings.view'), ('settings.edit')
+) AS v(code)
+WHERE r.Code IN ('SuperAdmin', 'Administrator')
+  AND NOT EXISTS (SELECT 1 FROM dbo.RolePermissionsLegacy rp WHERE rp.RoleId = r.RoleId AND rp.PermissionCode = v.code);
+
+PRINT 'ERP module configuration seed complete.';

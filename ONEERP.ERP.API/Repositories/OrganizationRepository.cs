@@ -210,7 +210,8 @@ public class DepartmentRepository : TenantRepositoryBase, IDepartmentRepository
         var offset = (pageNumber - 1) * pageSize;
         return await Sql.QueryAsync<Department>(connection, @"
             SELECT * FROM dbo.Departments
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR DepartmentName LIKE '%' + @search + '%' OR DepartmentCode LIKE '%' + @search + '%' OR ShortName LIKE '%' + @search + '%')
             ORDER BY Id DESC
             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
@@ -222,7 +223,8 @@ public class DepartmentRepository : TenantRepositoryBase, IDepartmentRepository
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<int>(connection, @"
             SELECT COUNT(1) FROM dbo.Departments
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR DepartmentName LIKE '%' + @search + '%' OR DepartmentCode LIKE '%' + @search + '%' OR ShortName LIKE '%' + @search + '%')",
             new { companyId, branchId, search });
     }
@@ -426,7 +428,8 @@ public class EmployeeRepository : TenantRepositoryBase, IEmployeeRepository
         var offset = (pageNumber - 1) * pageSize;
         return await Sql.QueryAsync<Employee>(connection, @"
             SELECT * FROM dbo.Employees
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR FirstName LIKE '%' + @search + '%' OR LastName LIKE '%' + @search + '%' OR EmployeeCode LIKE '%' + @search + '%' OR DisplayName LIKE '%' + @search + '%')
             ORDER BY Id DESC
             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
@@ -438,7 +441,8 @@ public class EmployeeRepository : TenantRepositoryBase, IEmployeeRepository
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<int>(connection, @"
             SELECT COUNT(1) FROM dbo.Employees
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR FirstName LIKE '%' + @search + '%' OR LastName LIKE '%' + @search + '%' OR EmployeeCode LIKE '%' + @search + '%' OR DisplayName LIKE '%' + @search + '%')",
             new { companyId, branchId, search });
     }
@@ -536,7 +540,8 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         var offset = (pageNumber - 1) * pageSize;
         return await Sql.QueryAsync<Warehouse>(connection, @"
             SELECT * FROM dbo.Warehouses
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR WarehouseName LIKE '%' + @search + '%' OR WarehouseCode LIKE '%' + @search + '%' OR ShortName LIKE '%' + @search + '%')
             ORDER BY Id DESC
             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
@@ -548,7 +553,8 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         using var connection = OpenTenant();
         return await Sql.ExecuteScalarAsync<int>(connection, @"
             SELECT COUNT(1) FROM dbo.Warehouses
-            WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0
+            WHERE CompanyId = @companyId AND IsDeleted = 0
+              AND (@branchId = 0 OR BranchId = @branchId)
               AND (@search = '' OR WarehouseName LIKE '%' + @search + '%' OR WarehouseCode LIKE '%' + @search + '%' OR ShortName LIKE '%' + @search + '%')",
             new { companyId, branchId, search });
     }

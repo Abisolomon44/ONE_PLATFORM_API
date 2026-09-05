@@ -14,14 +14,14 @@ public record NavigationSubModuleDto(int Id, string Code, string Name, string? I
 public record NavigationModuleDto(int Id, string Code, string Name, string? Icon, List<NavigationSubModuleDto> SubModules, int DomainId);
 public record NavigationDomainDto(int Id, string Code, string Name, string? Icon, List<NavigationModuleDto> Modules, int WorkspaceId);
 public record NavigationWorkspaceDto(int Id, string Code, string Name, string? Icon, List<NavigationDomainDto> Domains);
-public record NavigationResponse(List<NavigationWorkspaceDto> Workspaces, int PermissionVersion);
+public record NavigationResponse(List<NavigationWorkspaceDto> Workspaces, int PermissionVersion, bool HasAccess);
 
 /* ---------------------------------------------------------------------------
    Navigation Service
    --------------------------------------------------------------------------- */
 public interface INavigationService
 {
-    Task<NavigationResponse> GetNavigationAsync(int userId, int tenantId, int companyId);
+    Task<NavigationResponse> GetNavigationAsync(int userId, int tenantId, int companyId, bool isSuperAdmin);
 }
 
 public class NavigationService : INavigationService
@@ -47,7 +47,7 @@ public class NavigationService : INavigationService
         return conn;
     }
 
-    public async Task<NavigationResponse> GetNavigationAsync(int userId, int tenantId, int companyId)
+    public async Task<NavigationResponse> GetNavigationAsync(int userId, int tenantId, int companyId, bool isSuperAdmin)
     {
         using var conn = OpenTenant();
 
@@ -87,11 +87,21 @@ public class NavigationService : INavigationService
         var subModules = (await multi.ReadAsync<SmRow>()).Select(r =>
             new NavigationSubModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationScreenDto>(), r.ModuleId)).ToList();
 
-        var screens = (await multi.ReadAsync<ScRow>()).Select(r =>
-            new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SubModuleId)).ToList();
+        var screens = (await multi.ReadAsync<ScRow>())
+            .Select(r => new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SubModuleId))
+            .ToList();
+
+        // Resolve the set of screen-level permissions granted (or denied) to the
+        // user so the navigation tree only surfaces the workspaces/screens the
+        // user is actually entitled to see (screen + action level).
+        var accessibleScreens = isSuperAdmin ? null : await GetAccessibleScreenIdsAsync(conn, userId);
+
+        var visible = isSuperAdmin
+            ? screens
+            : screens.Where(s => accessibleScreens!.Contains(s.Id)).ToList();
 
         // Build tree
-        foreach (var s in screens)
+        foreach (var s in visible)
         {
             var p = subModules.FirstOrDefault(sm => sm.Id == s.SubModuleId);
             p?.Screens.Add(new NavigationScreenDto(s.Id, s.Code, s.Name, s.RouteUrl, s.ComponentName, s.ScreenType, s.SubModuleId));
@@ -112,10 +122,58 @@ public class NavigationService : INavigationService
             p?.Domains.Add(new NavigationDomainDto(d.Id, d.Code, d.Name, d.Icon, d.Modules, d.WorkspaceId));
         }
 
-        var accessible = workspaces.Where(w => w.Domains.Any(d => d.Modules.Any(m => m.SubModules.Any(sm => sm.Screens.Any())))).ToList();
+        var accessible = workspaces
+            .Where(w => w.Domains.Any(d => d.Modules.Any(m => m.SubModules.Any(sm => sm.Screens.Any()))))
+            .ToList();
+        var hasAccess = accessible.Count > 0;
         var cached = await _cache.GetAsync(userId, tenantId, companyId);
-        return new NavigationResponse(accessible, cached?.Version ?? 1);
+        return new NavigationResponse(accessible, cached?.Version ?? 1, hasAccess);
     }
+
+    /// <summary>
+    /// Resolves the set of ScreenIds the user is entitled to access, applying
+    /// role-level grants and then user-level allow/deny overrides. This mirrors
+    /// the hierarchical permission resolution used during login so the sidebar
+    /// navigation stays consistent with the authorization engine.
+    /// </summary>
+    private async Task<HashSet<int>> GetAccessibleScreenIdsAsync(System.Data.Common.DbConnection conn, int userId)
+    {
+        var roleIds = (await _sql.QueryAsync<int>(conn,
+            "SELECT RoleId FROM dbo.UserRoles WHERE UserId = @userId", new { userId })).ToList();
+
+        var allowed = new HashSet<int>();
+        var denied = new HashSet<int>();
+
+        if (roleIds.Count > 0)
+        {
+            var granted = await _sql.QueryAsync<int>(conn, @"
+                SELECT DISTINCT ScreenId
+                FROM dbo.RolePermissions
+                WHERE RoleId IN @roleIds AND IsActive = 1 AND Allow = 1 AND ScreenId IS NOT NULL",
+                new { roleIds });
+            foreach (var s in granted)
+                allowed.Add(s);
+        }
+
+        var overrides = await _sql.QueryAsync<OverrideRow>(conn, @"
+            SELECT ScreenId, Allow
+            FROM dbo.UserPermissionOverrides
+            WHERE UserId = @userId AND IsActive = 1
+              AND EffectiveFrom <= SYSUTCDATETIME()
+              AND (EffectiveTo IS NULL OR EffectiveTo > SYSUTCDATETIME())",
+            new { userId });
+
+        foreach (var o in overrides)
+        {
+            if (o.Allow) allowed.Add(o.ScreenId);
+            else { denied.Add(o.ScreenId); allowed.Remove(o.ScreenId); }
+        }
+
+        allowed.ExceptWith(denied);
+        return allowed;
+    }
+
+    private record OverrideRow(int ScreenId, bool Allow);
 
     private record WsRow(int Id, int SortOrder, string Code, string Name, string? Icon);
     private record DomRow(int Id, string Code, string Name, string? Icon, int WorkspaceId);
