@@ -141,6 +141,11 @@ public const string OrganizationTypesView = "organization-types.view";
              public const string PurchasesManage = "purchases.manage";
              public const string PurchasesReturnView = "purchases.return.view";
              public const string PurchasesReturnManage = "purchases.return.manage";
+             public const string SalesView = "sales.view";
+             public const string SalesManage = "sales.manage";
+             public const string SalesReturnView = "sales.return.view";
+             public const string SalesReturnManage = "sales.return.manage";
+             public const string SalesPOSView = "sales.pos.view";
              public const string StockView = "stock.view";
              public const string StockManage = "stock.manage";
 
@@ -205,6 +210,7 @@ public const string OrganizationTypesView = "organization-types.view";
             MasterImportView, MasterImportManage, ImportLogsView,
              TenantConfigView, TenantConfigManage,
              PurchasesView, PurchasesManage, PurchasesReturnView, PurchasesReturnManage, StockView, StockManage,
+             SalesView, SalesManage, SalesReturnView, SalesReturnManage, SalesPOSView,
              PaymentTypesView, PaymentTypesManage,
              PaymentMethodsView, PaymentMethodsManage,
              PaymentsView, PaymentsManage,

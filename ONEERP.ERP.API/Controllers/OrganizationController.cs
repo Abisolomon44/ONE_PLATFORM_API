@@ -165,9 +165,9 @@ public class OrganizationController : BaseController
     [HttpGet("departments")]
     [Permission(Permissions.DepartmentsView)]
     [ProducesResponseType(typeof(ApiResponse<PaginatedResult<DepartmentDto>>), 200)]
-    public async Task<IActionResult> GetDepartments([FromQuery] int companyId, [FromQuery] int branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
+    public async Task<IActionResult> GetDepartments([FromQuery] int companyId, [FromQuery] int? branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
     {
-        var result = await _departmentService.GetPagedAsync(companyId, branchId, page, size, search);
+        var result = await _departmentService.GetPagedAsync(companyId, branchId ?? 0, page, size, search);
         return Ok(ApiResponse<PaginatedResult<DepartmentDto>>.Ok(result));
     }
 
@@ -273,9 +273,9 @@ public class OrganizationController : BaseController
     [HttpGet("employees")]
     [Permission(Permissions.EmployeesView)]
     [ProducesResponseType(typeof(ApiResponse<PaginatedResult<EmployeeDto>>), 200)]
-    public async Task<IActionResult> GetEmployees([FromQuery] int companyId, [FromQuery] int branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
+    public async Task<IActionResult> GetEmployees([FromQuery] int companyId, [FromQuery] int? branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
     {
-        var result = await _employeeService.GetPagedAsync(companyId, branchId, page, size, search);
+        var result = await _employeeService.GetPagedAsync(companyId, branchId ?? 0, page, size, search);
         return Ok(ApiResponse<PaginatedResult<EmployeeDto>>.Ok(result));
     }
 
@@ -327,9 +327,9 @@ public class OrganizationController : BaseController
     [HttpGet("warehouses")]
     [Permission(Permissions.WarehousesView)]
     [ProducesResponseType(typeof(ApiResponse<PaginatedResult<WarehouseDto>>), 200)]
-    public async Task<IActionResult> GetWarehouses([FromQuery] int companyId, [FromQuery] int branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
+    public async Task<IActionResult> GetWarehouses([FromQuery] int companyId, [FromQuery] int? branchId, [FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
     {
-        var result = await _warehouseService.GetPagedAsync(companyId, branchId, page, size, search);
+        var result = await _warehouseService.GetPagedAsync(companyId, branchId ?? 0, page, size, search);
         return Ok(ApiResponse<PaginatedResult<WarehouseDto>>.Ok(result));
     }
 

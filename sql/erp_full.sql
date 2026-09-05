@@ -2136,3 +2136,935 @@ FROM (VALUES
 WHERE NOT EXISTS (
     SELECT 1 FROM dbo.MaritalStatuses ms WHERE ms.Code = k.Code
 );
+
+/* =============================================================================
+   Product / Billing Masters (merged from product_masters_init.sql, product_init.sql)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   ProductSubCategories
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductSubCategories]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductSubCategories (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        CategoryId BIGINT NOT NULL,
+        SubCategoryCode VARCHAR(30) NOT NULL,
+        SubCategoryName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        SortOrder INT NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ProductCategories
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductCategories]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductCategories (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        CategoryCode VARCHAR(30) NOT NULL,
+        CategoryName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        ParentCategoryId BIGINT NULL,
+        SortOrder INT NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ProductBrands
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ProductBrands]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ProductBrands (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BrandCode VARCHAR(30) NOT NULL,
+        BrandName VARCHAR(100) NOT NULL,
+        Description VARCHAR(500) NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Units
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Units]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Units (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        UnitCode VARCHAR(20) NOT NULL,
+        UnitName VARCHAR(50) NOT NULL,
+        Symbol VARCHAR(20) NULL,
+        DecimalPlaces INT NOT NULL DEFAULT 0,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Products
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Products (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Products PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        ProductCode VARCHAR(30) NOT NULL,
+        ProductName VARCHAR(200) NOT NULL,
+        CategoryId BIGINT NULL,
+        SubCategoryId BIGINT NULL,
+        BrandId BIGINT NULL,
+        UOMId BIGINT NOT NULL,
+        SKU VARCHAR(50) NULL,
+        Barcode VARCHAR(100) NULL,
+        MRP DECIMAL(18,2) NULL,
+        PurchasePrice DECIMAL(18,2) NULL,
+        SalesPrice DECIMAL(18,2) NULL,
+        TaxId BIGINT NULL,
+        IsStockItem BIT NOT NULL DEFAULT 1,
+        IsSaleable BIT NOT NULL DEFAULT 1,
+        IsPurchaseable BIT NOT NULL DEFAULT 1,
+        IsActive BIT NOT NULL DEFAULT 1,
+        Description VARCHAR(500) NULL,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL
+    );
+END
+;
+
+/* =============================================================================
+   Tax Masters (merged from tax_init.sql, taxes_init.sql)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   TaxTypeSystems
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TaxTypeSystems]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TaxTypeSystems (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_TaxTypeSystems PRIMARY KEY,
+        Code VARCHAR(30) NOT NULL,
+        [Name] VARCHAR(100) NOT NULL,
+        Description VARCHAR(300) NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+    );
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Taxes
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Taxes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Taxes (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Taxes PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        TaxTypeSystemId BIGINT NOT NULL,
+        TaxCode VARCHAR(30) NOT NULL,
+        TaxName VARCHAR(100) NOT NULL,
+        TaxRate DECIMAL(8,4) NOT NULL,
+        IsInclusive BIT NOT NULL DEFAULT 0,
+        EffectiveFrom DATE NULL,
+        EffectiveTo DATE NULL,
+        IsActive BIT NOT NULL DEFAULT 1,
+        Description VARCHAR(300) NULL,
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        ModifiedBy BIGINT NULL,
+        ModifiedAt DATETIME NULL,
+        CONSTRAINT FK_Taxes_TaxTypeSystems FOREIGN KEY (TaxTypeSystemId) REFERENCES dbo.TaxTypeSystems(Id)
+    );
+END
+;
+
+/* =============================================================================
+   Import Logs (merged from import_logs.sql)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ImportLogs]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ImportLogs (
+        Id BIGINT IDENTITY(1,1) CONSTRAINT PK_ImportLogs PRIMARY KEY,
+        CompanyId BIGINT NOT NULL,
+        BranchId BIGINT NULL,
+        ImportType VARCHAR(30) NOT NULL DEFAULT 'MASTER',
+        ModuleName VARCHAR(50) NOT NULL,
+        EntityName VARCHAR(100) NOT NULL,
+        FileName VARCHAR(255) NOT NULL,
+        FileType VARCHAR(20) NOT NULL,
+        TotalRows INT NOT NULL DEFAULT 0,
+        SuccessRows INT NOT NULL DEFAULT 0,
+        FailedRows INT NOT NULL DEFAULT 0,
+        Status VARCHAR(30) NOT NULL,
+        ErrorMessage VARCHAR(2000) NULL,
+        ImportedBy BIGINT NOT NULL,
+        ImportedAt DATETIME NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX IX_ImportLogs_Company_ImportedAt ON dbo.ImportLogs (CompanyId, ImportedAt DESC);
+END
+;
+
+PRINT 'ERP full schema complete: product masters, taxes, import logs.';
+
+/* =============================================================================
+   Sales Module (merged from sql/sales_invoice.sql)
+   Unified design: one SalesInvoice table serves POS and normal sales via SourceType.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   SalesInvoice
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoice]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesInvoice (
+        SalesInvoiceId        BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_SalesInvoice PRIMARY KEY,
+        SalesInvoiceNo        NVARCHAR(30)         NOT NULL,
+        InvoiceDate           DATETIME2            NOT NULL,
+        SourceType            NVARCHAR(20)         NOT NULL CONSTRAINT DF_SalesInvoice_SourceType DEFAULT 'SALES',
+
+        CompanyId             BIGINT               NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200)        NULL,
+        BranchId              BIGINT               NOT NULL,
+        WarehouseId           BIGINT               NOT NULL,
+        CustomerId            BIGINT               NOT NULL,
+        CustomerNameSnapshot  NVARCHAR(200)        NULL,
+
+        SalesTypeId           INT                  NULL,
+        PriceListId           BIGINT               NULL,
+
+        ReferenceNo           NVARCHAR(50)         NULL,
+        ReferenceDate         DATE                 NULL,
+
+        TotalGrossAmount      DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Taxable DEFAULT 0,
+        TotalCGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_CGST DEFAULT 0,
+        TotalSGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_SGST DEFAULT 0,
+        TotalIGSTAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_IGST DEFAULT 0,
+        TotalCESSAmount       DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Grand DEFAULT 0,
+        PaidAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Paid DEFAULT 0,
+        BalanceAmount         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoice_Balance DEFAULT 0,
+
+        PaymentTypeID         BIGINT               NULL,
+        PaymentMethodID       BIGINT               NULL,
+        StatusID              BIGINT               NOT NULL CONSTRAINT DF_SalesInvoice_Status DEFAULT 1,
+        InvoiceStatus         NVARCHAR(20)         NOT NULL CONSTRAINT DF_SalesInvoice_InvStatus DEFAULT 'POSTED',
+
+        Remarks               NVARCHAR(500)        NULL,
+
+        IsActive              BIT                  NOT NULL CONSTRAINT DF_SalesInvoice_IsActive DEFAULT 1,
+        CreatedByUserID       BIGINT               NOT NULL,
+        CreatedAt             DATETIME2            NOT NULL CONSTRAINT DF_SalesInvoice_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT               NULL,
+        UpdatedAt             DATETIME2            NULL,
+
+        CONSTRAINT UQ_SalesInvoice_No UNIQUE (CompanyId, SalesInvoiceNo)
+    );
+
+    CREATE INDEX IX_SalesInvoice_Company_Date ON dbo.SalesInvoice (CompanyId, InvoiceDate);
+    CREATE INDEX IX_SalesInvoice_CustomerId ON dbo.SalesInvoice (CustomerId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   SalesInvoiceItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoiceItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesInvoiceItem (
+        SalesInvoiceItemId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_SalesInvoiceItem PRIMARY KEY,
+        SalesInvoiceId        BIGINT               NOT NULL,
+
+        ProductId             BIGINT               NOT NULL,
+        ProductCodeSnapshot   NVARCHAR(100)        NULL,
+        ProductNameSnapshot   NVARCHAR(200)        NULL,
+        UnitID                BIGINT               NOT NULL,
+        UnitNameSnapshot      NVARCHAR(100)        NULL,
+        BatchId               BIGINT               NULL,
+        HSNID                 BIGINT               NULL,
+        HSNCodeSnapshot       NVARCHAR(100)        NULL,
+        BarcodeSnapshot       NVARCHAR(100)        NULL,
+
+        Quantity              DECIMAL(18,3)        NOT NULL,
+        FreeQuantity          DECIMAL(18,3)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Free DEFAULT 0,
+        Rate                  DECIMAL(18,4)        NOT NULL,
+        GrossAmount           DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Gross DEFAULT 0,
+
+        DiscountPercentage    DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_DiscPct DEFAULT 0,
+        DiscountAmount        DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Disc DEFAULT 0,
+
+        TaxableAmount         DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Taxable DEFAULT 0,
+
+        GSTPercent            DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_GSTPct DEFAULT 0,
+        CGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_CGSTPct DEFAULT 0,
+        SGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_SGSTPct DEFAULT 0,
+        IGSTPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_IGSTPct DEFAULT 0,
+        CESSPercent           DECIMAL(8,3)         NOT NULL CONSTRAINT DF_SalesInvoiceItem_CESSPct DEFAULT 0,
+
+        CGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_CGSTAmt DEFAULT 0,
+        SGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_SGSTAmt DEFAULT 0,
+        IGSTAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_IGSTAmt DEFAULT 0,
+        CESSAmount            DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_CESSAmt DEFAULT 0,
+
+        LineTotal             DECIMAL(18,2)        NOT NULL CONSTRAINT DF_SalesInvoiceItem_Line DEFAULT 0,
+        Remarks               NVARCHAR(500)        NULL
+    );
+
+    CREATE INDEX IX_SalesInvoiceItem_InvoiceId ON dbo.SalesInvoiceItem (SalesInvoiceId);
+    CREATE INDEX IX_SalesInvoiceItem_ProductId ON dbo.SalesInvoiceItem (ProductId);
+END
+;
+
+PRINT 'ERP full schema complete: sales module added.';
+
+/* =============================================================================
+   Payment Masters (PaymentType, PaymentMethod, Payment, PaymentAllocation)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   PaymentType
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentType]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentType (
+        PaymentTypeId BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentType PRIMARY KEY,
+        Code          VARCHAR(30)  NOT NULL,
+        [Name]        NVARCHAR(100) NOT NULL,
+        IsActive      BIT          NOT NULL CONSTRAINT DF_PaymentType_IsActive DEFAULT 1,
+        DisplayOrder  INT          NOT NULL CONSTRAINT DF_PaymentType_DisplayOrder DEFAULT 0,
+        CreatedAt     DATETIME2    NOT NULL CONSTRAINT DF_PaymentType_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentType_Code ON dbo.PaymentType (Code);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PaymentMethod
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentMethod]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentMethod (
+        PaymentMethodId     BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentMethod PRIMARY KEY,
+        Code                VARCHAR(30)   NOT NULL,
+        [Name]              NVARCHAR(100) NOT NULL,
+        PaymentCategory     VARCHAR(50)   NULL,
+        IsCash              BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsCash DEFAULT 0,
+        IsCredit            BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsCredit DEFAULT 0,
+        RequiresReferenceNo BIT           NOT NULL CONSTRAINT DF_PaymentMethod_ReqRef DEFAULT 0,
+        DisplayOrder        INT           NOT NULL CONSTRAINT DF_PaymentMethod_DisplayOrder DEFAULT 0,
+        IsActive            BIT           NOT NULL CONSTRAINT DF_PaymentMethod_IsActive DEFAULT 1,
+        CreatedAt           DATETIME2     NOT NULL CONSTRAINT DF_PaymentMethod_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentMethod_Code ON dbo.PaymentMethod (Code);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Payment
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Payment]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Payment (
+        PaymentId         BIGINT IDENTITY(1,1) CONSTRAINT PK_Payment PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        PaymentNo         NVARCHAR(30)  NOT NULL,
+        PaymentDate       DATETIME2     NOT NULL,
+        PaymentTypeID     BIGINT        NULL,
+        PaymentMethodID   BIGINT        NULL,
+        ReferenceType     NVARCHAR(30)  NOT NULL,
+        ReferenceId       BIGINT        NOT NULL,
+        BusinessPartnerId BIGINT        NULL,
+        Amount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Payment_Amount DEFAULT 0,
+        ReferenceNo       NVARCHAR(50)  NULL,
+        Remarks           NVARCHAR(500) NULL,
+        StatusID          BIGINT        NOT NULL CONSTRAINT DF_Payment_Status DEFAULT 1,
+        CreatedByUserID   BIGINT        NOT NULL,
+        CreatedAt         DATETIME2     NOT NULL CONSTRAINT DF_Payment_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID   BIGINT        NULL,
+        UpdatedAt         DATETIME2     NULL,
+
+        CONSTRAINT UQ_Payment_No UNIQUE (CompanyId, PaymentNo)
+    );
+
+    CREATE INDEX IX_Payment_Company_Date ON dbo.Payment (CompanyId, PaymentDate);
+    CREATE INDEX IX_Payment_Reference ON dbo.Payment (ReferenceType, ReferenceId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PaymentAllocation
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentAllocation]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentAllocation (
+        PaymentAllocationId BIGINT IDENTITY(1,1) CONSTRAINT PK_PaymentAllocation PRIMARY KEY,
+        PaymentId           BIGINT        NOT NULL,
+        ReferenceType       NVARCHAR(30)  NOT NULL,
+        ReferenceId         BIGINT        NOT NULL,
+        AllocatedAmount     DECIMAL(18,2) NOT NULL CONSTRAINT DF_PaymentAllocation_Amt DEFAULT 0,
+        CreatedAt           DATETIME2     NOT NULL CONSTRAINT DF_PaymentAllocation_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_PaymentAllocation_Ref ON dbo.PaymentAllocation (ReferenceType, ReferenceId);
+    CREATE INDEX IX_PaymentAllocation_Payment ON dbo.PaymentAllocation (PaymentId);
+END
+;
+
+/* =============================================================================
+   Purchase Module (Purchase, PurchaseItem)
+   Snapshot design: PurchaseNumber/CompanyNameSnapshot/BranchNameSnapshot/
+   SupplierNameSnapshot; PurchaseItem uses BrandID/CategoryID snapshots.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Purchase
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Purchase]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Purchase (
+        PurchaseId            BIGINT IDENTITY(1,1) CONSTRAINT PK_Purchase PRIMARY KEY,
+        CompanyId             BIGINT        NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200) NULL,
+        BranchId              BIGINT        NOT NULL,
+        BranchNameSnapshot    NVARCHAR(200) NULL,
+        WarehouseId           BIGINT        NOT NULL,
+        SupplierId            BIGINT        NOT NULL,
+        SupplierNameSnapshot  NVARCHAR(200) NULL,
+        PurchaseNumber        NVARCHAR(30)  NOT NULL,
+        PurchaseDate          DATETIME2     NOT NULL,
+        SupplierInvoiceNumber NVARCHAR(50)  NULL,
+        SupplierInvoiceDate   DATE          NULL,
+        TotalGrossAmount      DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Taxable DEFAULT 0,
+        TotalTaxAmount        DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Tax DEFAULT 0,
+        TotalCessAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Grand DEFAULT 0,
+        PaidAmount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Paid DEFAULT 0,
+        BalanceAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_Purchase_Balance DEFAULT 0,
+        PaymentTypeID         BIGINT        NULL,
+        PaymentMethodID       BIGINT        NULL,
+        StatusID              BIGINT        NOT NULL CONSTRAINT DF_Purchase_Status DEFAULT 1,
+        Remarks               NVARCHAR(500) NULL,
+        IsActive              BIT           NOT NULL CONSTRAINT DF_Purchase_IsActive DEFAULT 1,
+        CreatedByUserID       BIGINT        NOT NULL,
+        CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_Purchase_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT        NULL,
+        UpdatedAt             DATETIME2     NULL,
+
+        CONSTRAINT UQ_Purchase_No UNIQUE (CompanyId, PurchaseNumber)
+    );
+
+    CREATE INDEX IX_Purchase_Company_Date ON dbo.Purchase (CompanyId, PurchaseDate);
+    CREATE INDEX IX_Purchase_Supplier ON dbo.Purchase (SupplierId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PurchaseItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseItem (
+        PurchaseItemId     BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseItem PRIMARY KEY,
+        PurchaseId         BIGINT        NOT NULL,
+        ProductId          BIGINT        NOT NULL,
+        ProductCodeSnapshot NVARCHAR(100) NULL,
+        ProductNameSnapshot NVARCHAR(200) NULL,
+        BrandID            BIGINT        NULL,
+        CategoryID         BIGINT        NULL,
+        SubCategoryID      BIGINT        NULL,
+        UnitID             BIGINT        NOT NULL,
+        UnitNameSnapshot   NVARCHAR(100) NULL,
+        HSNID              BIGINT        NULL,
+        HSNCodeSnapshot    NVARCHAR(100) NULL,
+        BarcodeSnapshot    NVARCHAR(100) NULL,
+        Quantity           DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseItem_Qty DEFAULT 0,
+        FreeQuantity       DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseItem_Free DEFAULT 0,
+        PurchaseRate       DECIMAL(18,4) NOT NULL CONSTRAINT DF_PurchaseItem_Rate DEFAULT 0,
+        MRP                DECIMAL(18,2) NULL,
+        RetailPrice        DECIMAL(18,2) NULL,
+        WholesalePrice     DECIMAL(18,2) NULL,
+        SaleRate           DECIMAL(18,4) NULL,
+        DiscountPercentage DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_DiscPct DEFAULT 0,
+        DiscountAmount     DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Disc DEFAULT 0,
+        IsGSTInclusive     BIT           NOT NULL CONSTRAINT DF_PurchaseItem_GSTInc DEFAULT 0,
+        TaxableValue       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Taxable DEFAULT 0,
+        GSTRate            DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_GST DEFAULT 0,
+        GSTAmount          DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_GSTAmt DEFAULT 0,
+        CGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_CGSTR DEFAULT 0,
+        CGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_CGSTA DEFAULT 0,
+        SGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_SGSTR DEFAULT 0,
+        SGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_SGSTA DEFAULT 0,
+        IGSTRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_IGSTR DEFAULT 0,
+        IGSTAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_IGSTA DEFAULT 0,
+        CESSRate           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseItem_CESSR DEFAULT 0,
+        CESSAmount         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_CESSA DEFAULT 0,
+        LineTotal          DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Line DEFAULT 0,
+        ManufacturingDate  DATE          NULL,
+        ExpiryDate         DATE          NULL,
+        Remarks            NVARCHAR(500) NULL
+    );
+
+    CREATE INDEX IX_PurchaseItem_PurchaseId ON dbo.PurchaseItem (PurchaseId);
+    CREATE INDEX IX_PurchaseItem_ProductId ON dbo.PurchaseItem (ProductId);
+END
+;
+
+/* =============================================================================
+   Purchase Return Module (PurchaseReturn, PurchaseReturnItem)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   PurchaseReturn
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseReturn]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseReturn (
+        PurchaseReturnId      BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseReturn PRIMARY KEY,
+        PurchaseId            BIGINT        NOT NULL,
+        CompanyId             BIGINT        NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200) NULL,
+        BranchId              BIGINT        NOT NULL,
+        BranchNameSnapshot    NVARCHAR(200) NULL,
+        WarehouseId           BIGINT        NOT NULL,
+        SupplierId            BIGINT        NOT NULL,
+        SupplierNameSnapshot  NVARCHAR(200) NULL,
+        ReturnNumber          NVARCHAR(30)  NOT NULL,
+        ReturnDate            DATETIME2     NOT NULL,
+        TotalGrossAmount      DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Taxable DEFAULT 0,
+        TotalTaxAmount        DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Tax DEFAULT 0,
+        TotalCessAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturn_Grand DEFAULT 0,
+        StatusID              BIGINT        NOT NULL CONSTRAINT DF_PurchaseReturn_Status DEFAULT 1,
+        Reason                NVARCHAR(500) NULL,
+        Remarks               NVARCHAR(500) NULL,
+        CreatedByUserID       BIGINT        NOT NULL,
+        CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_PurchaseReturn_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT        NULL,
+        UpdatedAt             DATETIME2     NULL,
+
+        CONSTRAINT UQ_PurchaseReturn_No UNIQUE (CompanyId, ReturnNumber)
+    );
+
+    CREATE INDEX IX_PurchaseReturn_Company_Date ON dbo.PurchaseReturn (CompanyId, ReturnDate);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PurchaseReturnItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PurchaseReturnItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PurchaseReturnItem (
+        PurchaseReturnItemId BIGINT IDENTITY(1,1) CONSTRAINT PK_PurchaseReturnItem PRIMARY KEY,
+        PurchaseReturnId     BIGINT        NOT NULL,
+        PurchaseItemId       BIGINT        NOT NULL,
+        ProductId            BIGINT        NOT NULL,
+        ProductCodeSnapshot  NVARCHAR(100) NULL,
+        ProductNameSnapshot  NVARCHAR(200) NULL,
+        UnitId               BIGINT        NOT NULL,
+        UnitNameSnapshot     NVARCHAR(100) NULL,
+        HSNId                BIGINT        NULL,
+        HSNCodeSnapshot      NVARCHAR(100) NULL,
+        ReturnQuantity       DECIMAL(18,3) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Qty DEFAULT 0,
+        PurchaseRate         DECIMAL(18,4) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Rate DEFAULT 0,
+        DiscountAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Disc DEFAULT 0,
+        TaxableValue         DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Taxable DEFAULT 0,
+        GSTRate              DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_GST DEFAULT 0,
+        GSTAmount            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_GSTAmt DEFAULT 0,
+        CGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_CGSTR DEFAULT 0,
+        CGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_CGSTA DEFAULT 0,
+        SGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_SGSTR DEFAULT 0,
+        SGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_SGSTA DEFAULT 0,
+        IGSTRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_IGSTR DEFAULT 0,
+        IGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_IGSTA DEFAULT 0,
+        CESSRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSR DEFAULT 0,
+        CESSAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSA DEFAULT 0,
+        LineTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Line DEFAULT 0
+    );
+
+    CREATE INDEX IX_PurchaseReturnItem_ReturnId ON dbo.PurchaseReturnItem (PurchaseReturnId);
+    CREATE INDEX IX_PurchaseReturnItem_ProductId ON dbo.PurchaseReturnItem (ProductId);
+END
+;
+
+/* =============================================================================
+   Stock Module (Stock, StockTransaction)
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Stock
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Stock]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Stock (
+        StockId           BIGINT IDENTITY(1,1) CONSTRAINT PK_Stock PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        BranchId          BIGINT        NOT NULL,
+        WarehouseId       BIGINT        NOT NULL,
+        ProductId         BIGINT        NOT NULL,
+        UnitId            BIGINT        NOT NULL,
+        Quantity          DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Qty DEFAULT 0,
+        ReservedQuantity  DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Reserved DEFAULT 0,
+        AvailableQuantity DECIMAL(18,3) NOT NULL CONSTRAINT DF_Stock_Available DEFAULT 0,
+        AverageCost       DECIMAL(18,4) NOT NULL CONSTRAINT DF_Stock_AvgCost DEFAULT 0,
+        LastPurchaseRate  DECIMAL(18,4) NOT NULL CONSTRAINT DF_Stock_LastRate DEFAULT 0,
+        UpdatedAt         DATETIME2     NOT NULL CONSTRAINT DF_Stock_UpdatedAt DEFAULT SYSUTCDATETIME(),
+
+        CONSTRAINT UQ_Stock_Key UNIQUE (CompanyId, BranchId, WarehouseId, ProductId, UnitId)
+    );
+
+    CREATE INDEX IX_Stock_Company_Product ON dbo.Stock (CompanyId, ProductId);
+    CREATE INDEX IX_Stock_Warehouse ON dbo.Stock (WarehouseId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   StockTransaction
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockTransaction]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StockTransaction (
+        StockTransactionId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockTransaction PRIMARY KEY,
+        CompanyId          BIGINT        NOT NULL,
+        BranchId           BIGINT        NOT NULL,
+        WarehouseId        BIGINT        NOT NULL,
+        ProductId          BIGINT        NOT NULL,
+        UnitId             BIGINT        NOT NULL,
+        TransactionType    VARCHAR(10)   NOT NULL,
+        ReferenceType      VARCHAR(30)   NOT NULL,
+        ReferenceId        BIGINT        NOT NULL,
+        QuantityIn         DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_QtyIn DEFAULT 0,
+        QuantityOut        DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_QtyOut DEFAULT 0,
+        Rate               DECIMAL(18,4) NOT NULL CONSTRAINT DF_StockTx_Rate DEFAULT 0,
+        BalanceQuantity    DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTx_Balance DEFAULT 0,
+        TransactionDate    DATETIME2     NOT NULL,
+        Remarks            NVARCHAR(500) NULL,
+        CreatedByUserID    BIGINT        NOT NULL,
+        CreatedAt          DATETIME2     NOT NULL CONSTRAINT DF_StockTx_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_StockTx_Company_Product ON dbo.StockTransaction (CompanyId, ProductId);
+    CREATE INDEX IX_StockTx_Reference ON dbo.StockTransaction (ReferenceType, ReferenceId);
+END
+;
+
+/* =============================================================================
+   TenantConfiguration (dynamic Purchase / Sale / Billing screen config)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TenantConfiguration]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TenantConfiguration (
+        Id              BIGINT IDENTITY(1,1) CONSTRAINT PK_TenantConfiguration PRIMARY KEY,
+        TenantId        BIGINT        NOT NULL,
+        ApplicationType NVARCHAR(50)  NOT NULL,
+        TransactionType NVARCHAR(50)  NULL,
+        FlowType        NVARCHAR(50)  NULL,
+        PageCode        NVARCHAR(50)  NULL,
+        FieldCode       NVARCHAR(50)  NULL,
+        SequenceNo      INT           NULL,
+        IsPageEnabled   BIT           NOT NULL CONSTRAINT DF_TC_IsPageEnabled DEFAULT 1,
+        IsVisible       BIT           NOT NULL CONSTRAINT DF_TC_IsVisible DEFAULT 1,
+        IsRequired      BIT           NOT NULL CONSTRAINT DF_TC_IsRequired DEFAULT 0,
+        IsReadonly      BIT           NOT NULL CONSTRAINT DF_TC_IsReadonly DEFAULT 0,
+        DisplayOrder    INT           NULL,
+        DefaultValue    NVARCHAR(500) NULL,
+        IsActive        BIT           NOT NULL CONSTRAINT DF_TC_IsActive DEFAULT 1,
+        CreatedBy       BIGINT        NOT NULL,
+        CreatedAt       DATETIME2     NOT NULL CONSTRAINT DF_TC_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy       BIGINT        NULL,
+        UpdatedAt       DATETIME2     NULL
+    );
+
+    CREATE INDEX IX_TenantConfiguration_Tenant ON dbo.TenantConfiguration (TenantId, ApplicationType);
+END
+;
+
+/* =============================================================================
+   Status (document lifecycle lookup used by Sales / Purchase / Returns)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Status]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.[Status] (
+        StatusId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Status PRIMARY KEY,
+        Code        NVARCHAR(20)         NOT NULL CONSTRAINT UQ_Status_Code UNIQUE,
+        [Name]      NVARCHAR(100)        NOT NULL,
+        Module      NVARCHAR(50)         NULL,
+        IsActive    BIT                  NOT NULL CONSTRAINT DF_Status_IsActive DEFAULT 1,
+        SortOrder   INT                  NOT NULL CONSTRAINT DF_Status_SortOrder DEFAULT 0,
+        CreatedBy   NVARCHAR(50)         NULL,
+        CreatedAt   DATETIME2            NOT NULL CONSTRAINT DF_Status_CreatedAt DEFAULT SYSUTCDATETIME()
+    );
+
+    INSERT INTO dbo.[Status] ([Code], [Name], [Module], IsActive, SortOrder)
+    VALUES
+        ('DRAFT',            'Draft',             NULL,        1, 10),
+        ('POSTED',           'Posted',            NULL,        1, 20),
+        ('RETURNED',         'Returned',          'PURCHASE',  1, 30),
+        ('PARTIALLY_RETURNED','Partially Returned', 'PURCHASE', 1, 40),
+        ('APPROVED',         'Approved',          NULL,        1, 50),
+        ('REJECTED',         'Rejected',          NULL,        1, 60),
+        ('CANCELLED',        'Cancelled',         NULL,        1, 70),
+        ('PARTIALLY_PAID',   'Partially Paid',    'PAYMENT',   1, 80),
+        ('PAID',             'Paid',              'PAYMENT',   1, 90),
+        ('UNPAID',           'Unpaid',            'PAYMENT',   1, 100),
+        ('COMPLETED',        'Completed',         NULL,        1, 110),
+        ('CLOSED',           'Closed',            NULL,        1, 120),
+        ('PENDING',          'Pending',           NULL,        1, 130);
+END
+;
+
+/* =============================================================================
+   Module Configuration Seed Data
+   Merged from: seed_purchase_management.sql, product_masters_init.sql,
+                product_init.sql, tax_init.sql, taxes_init.sql,
+                import_logs.sql, sql/sales_invoice.sql
+   Builds Workspaces > Domains > Modules > SubModules > Screens + Role-2 perms.
+   Dapper-compatible: no GO, parent IDs resolved via subqueries.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   SALES workspace + domain + module + submodule + screens
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Workspaces WHERE WorkspaceCode = 'SALES')
+BEGIN
+    INSERT INTO dbo.Workspaces (WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
+    VALUES ('SALES', 'Sales', 'shopping-cart', '/sales', 2, 1, 'system');
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'SALES')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES', 'Sales Management', 'shopping-cart', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SALES';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'SALES')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES', 'Sales', 'shopping-cart', '/sales', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'SALES';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SALES_GENERAL')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES_GENERAL', 'Sales (General)', 'shopping-cart', '/sales', 0, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'SALES';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SALES_ENTRY')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES_ENTRY', 'Sales Entry', 'ENTRY', '/sales-entry', 'SalesEntryPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SALES_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SALES_LIST')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES_LIST', 'Sales Invoices', 'LIST', '/sales?tab=list', 'SalesListPage', 2, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SALES_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'SALES_POS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SALES_POS', 'Point of Sale', 'ENTRY', '/pos', 'PosPage', 3, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SALES_GENERAL';
+
+/* ---------------------------------------------------------------------------
+   PURCHASE domain + module + submodule + screens (under SETUP workspace)
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'PURCHASE')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE', 'Purchase Management', 'shopping-cart', 2, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'PURCHASE')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE', 'Purchase', 'shopping-cart', '/purchase', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'PURCHASE';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_GENERAL', 'Purchase (General)', 'shopping-cart', '/purchase', 0, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'PURCHASE';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PURCHASE_ENTRY')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_ENTRY', 'Purchase Entry', 'ENTRY', '/purchase-entry', 'PurchaseEntryPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PURCHASE_LIST')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_LIST', 'Purchases', 'LIST', '/purchase?tab=list', 'PurchaseListPage', 2, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PURCHASE_STOCK')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_STOCK', 'Stock', 'LIST', '/purchase?tab=stock', 'StockPage', 3, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PURCHASE_RETURNS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_RETURNS', 'Purchase Returns', 'TRANSACTION', '/purchase?tab=returns', 'PurchaseReturnPage', 4, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PURCHASE_REPORTS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PURCHASE_REPORTS', 'Purchase Reports', 'REPORT', '/reports', 'ReportsWorkspace', 5, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'PURCHASE_GENERAL';
+
+/* ---------------------------------------------------------------------------
+   PRODBILL workspace + DOM-PRODUCT domain + modules + submodules + screens
+   (Product Masters -> Product Setup + Tax Masters)
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Workspaces WHERE WorkspaceCode = 'PRODBILL')
+    INSERT INTO dbo.Workspaces (WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
+    VALUES ('PRODBILL', 'Product & Billing', 'package', '/product', 3, 1, 'system');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-PRODUCT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-PRODUCT', 'Product & Billing', 'package', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'PRODBILL';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PRODMASTERS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PRODMASTERS', 'Product Masters', 'boxes', '/product', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-PRODUCT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PRODSETUP', 'Product Setup', 'package', '/product', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PRODMASTERS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TAX')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-TAX', 'Tax Masters', 'percent', '/tax', 2, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PRODMASTERS';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PRODUCT-CATEGORIES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PRODUCT-CATEGORIES', 'Product Categories', 'MASTER', '/product-categories', 'CategoryPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PRODUCT-SUBCATEGORIES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PRODUCT-SUBCATEGORIES', 'Product Sub Categories', 'MASTER', '/product-subcategories', 'SubCategoryPage', 2, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'BRANDS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'BRANDS', 'Brands', 'MASTER', '/brands', 'BrandPage', 3, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'UNITS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'UNITS', 'Units', 'MASTER', '/units', 'UnitPage', 4, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'PRODUCTS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'PRODUCTS', 'Products', 'MASTER', '/products', 'ProductPage', 5, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'TAXTYPES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'TAXTYPES', 'Tax Type Systems', 'MASTER', '/tax-type-systems', 'TaxTypeSystemPage', 1, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TAX';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'TAXES')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'TAXES', 'Taxes', 'MASTER', '/taxes', 'TaxPage', 2, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TAX';
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'IMPORT-LOGS')
+    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'IMPORT-LOGS', 'Import Logs', 'LIST', '/import-logs', 'MasterImportPage', 6, 1, 'system'
+    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRODSETUP';
+
+/* ---------------------------------------------------------------------------
+   Legacy role permissions (SuperAdmin role 1 + Administrator role 2)
+   --------------------------------------------------------------------------- */
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT r.RoleId, v.code, 'system'
+FROM dbo.Roles r
+CROSS JOIN (VALUES
+    ('sales.view'), ('sales.manage'), ('sales.create'), ('sales.edit'), ('sales.delete'),
+    ('sales.pos.view'), ('sales.return.view'), ('sales.return.manage'),
+    ('purchase.view'), ('purchase.manage'), ('purchase.create'), ('purchase.edit'), ('purchase.delete'),
+    ('purchase-returns.view'), ('purchase-returns.manage'),
+    ('product-categories.view'), ('product-categories.create'), ('product-categories.edit'), ('product-categories.delete'),
+    ('product-subcategories.view'), ('product-subcategories.create'), ('product-subcategories.edit'), ('product-subcategories.delete'),
+    ('brands.view'), ('brands.create'), ('brands.edit'), ('brands.delete'),
+    ('units.view'), ('units.create'), ('units.edit'), ('units.delete'),
+    ('products.view'), ('products.create'), ('products.edit'), ('products.delete'),
+    ('tax-type-systems.view'), ('tax-type-systems.create'), ('tax-type-systems.edit'), ('tax-type-systems.delete'),
+    ('taxes.view'), ('taxes.create'), ('taxes.edit'), ('taxes.delete'),
+    ('master-import.view'), ('master-import.manage'), ('import-logs.view')
+) AS v(code)
+WHERE r.Code IN ('SuperAdmin', 'Administrator')
+  AND NOT EXISTS (SELECT 1 FROM dbo.RolePermissionsLegacy rp WHERE rp.RoleId = r.RoleId AND rp.PermissionCode = v.code);
+
+PRINT 'ERP module configuration seed complete.';
