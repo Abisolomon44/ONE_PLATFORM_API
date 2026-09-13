@@ -35,6 +35,15 @@ public class RolesController : BaseController
         return Ok(ApiResponse<IEnumerable<RoleDto>>.Ok(result));
     }
 
+    // No [Permission] gate: any signed-in user may resolve their own roleIds.
+    [HttpGet("my")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<RoleDto>>), 200)]
+    public async Task<IActionResult> GetMyRoles()
+    {
+        var result = await _roleService.GetMyRolesAsync();
+        return Ok(ApiResponse<IEnumerable<RoleDto>>.Ok(result));
+    }
+
     [HttpGet("{id:int}")]
     [Permission(Permissions.RolesView)]
     [ProducesResponseType(typeof(ApiResponse<RoleDto>), 200)]

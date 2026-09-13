@@ -95,6 +95,26 @@ public const string OrganizationTypesView = "organization-types.view";
         public const string WarehousesEdit = "warehouses.edit";
         public const string WarehousesDelete = "warehouses.delete";
 
+        public const string StoresView = "stores.view";
+        public const string StoresCreate = "stores.create";
+        public const string StoresEdit = "stores.edit";
+        public const string StoresDelete = "stores.delete";
+
+        public const string FinancialYearsView = "financial-years.view";
+        public const string FinancialYearsCreate = "financial-years.create";
+        public const string FinancialYearsEdit = "financial-years.edit";
+        public const string FinancialYearsDelete = "financial-years.delete";
+
+        public const string CountersView = "counters.view";
+        public const string CountersCreate = "counters.create";
+        public const string CountersEdit = "counters.edit";
+        public const string CountersDelete = "counters.delete";
+
+        public const string POSSessionView = "pos-sessions.view";
+        public const string POSSessionCreate = "pos-sessions.create";
+        public const string POSSessionEdit = "pos-sessions.edit";
+        public const string POSSessionDelete = "pos-sessions.delete";
+
         public const string ProductCategoriesView = "product-categories.view";
         public const string ProductCategoriesCreate = "product-categories.create";
         public const string ProductCategoriesEdit = "product-categories.edit";
@@ -125,12 +145,72 @@ public const string OrganizationTypesView = "organization-types.view";
          public const string TaxTypeSystemsEdit = "tax-type-systems.edit";
          public const string TaxTypeSystemsDelete = "tax-type-systems.delete";
 
-          public const string TaxesView = "taxes.view";
-          public const string TaxesCreate = "taxes.create";
-          public const string TaxesEdit = "taxes.edit";
-          public const string TaxesDelete = "taxes.delete";
+public const string TaxesView = "taxes.view";
+           public const string TaxesCreate = "taxes.create";
+           public const string TaxesEdit = "taxes.edit";
+           public const string TaxesDelete = "taxes.delete";
 
-           public const string MasterImportView = "master-import.view";
+           public const string PriceTypesView = "price-types.view";
+           public const string PriceTypesCreate = "price-types.create";
+           public const string PriceTypesEdit = "price-types.edit";
+           public const string PriceTypesDelete = "price-types.delete";
+
+           public const string UnitConversionsView = "unit-conversions.view";
+           public const string UnitConversionsCreate = "unit-conversions.create";
+           public const string UnitConversionsEdit = "unit-conversions.edit";
+           public const string UnitConversionsDelete = "unit-conversions.delete";
+
+           public const string BarcodesView = "barcodes.view";
+           public const string BarcodesCreate = "barcodes.create";
+           public const string BarcodesEdit = "barcodes.edit";
+           public const string BarcodesDelete = "barcodes.delete";
+
+           public const string HsnSacsView = "hsn-sacs.view";
+           public const string HsnSacsCreate = "hsn-sacs.create";
+           public const string HsnSacsEdit = "hsn-sacs.edit";
+           public const string HsnSacsDelete = "hsn-sacs.delete";
+
+           public const string ServiceCategoriesView = "service-categories.view";
+           public const string ServiceCategoriesCreate = "service-categories.create";
+           public const string ServiceCategoriesEdit = "service-categories.edit";
+           public const string ServiceCategoriesDelete = "service-categories.delete";
+
+           public const string ServicesView = "services.view";
+           public const string ServicesCreate = "services.create";
+           public const string ServicesEdit = "services.edit";
+           public const string ServicesDelete = "services.delete";
+
+           public const string PriceListsView = "price-lists.view";
+           public const string PriceListsCreate = "price-lists.create";
+           public const string PriceListsEdit = "price-lists.edit";
+           public const string PriceListsDelete = "price-lists.delete";
+
+           public const string PriceListDetailsView = "price-list-details.view";
+           public const string PriceListDetailsCreate = "price-list-details.create";
+           public const string PriceListDetailsEdit = "price-list-details.edit";
+           public const string PriceListDetailsDelete = "price-list-details.delete";
+
+           public const string DiscountRulesView = "discount-rules.view";
+           public const string DiscountRulesCreate = "discount-rules.create";
+           public const string DiscountRulesEdit = "discount-rules.edit";
+           public const string DiscountRulesDelete = "discount-rules.delete";
+
+           public const string OffersView = "offers.view";
+           public const string OffersCreate = "offers.create";
+           public const string OffersEdit = "offers.edit";
+           public const string OffersDelete = "offers.delete";
+
+           public const string OfferDetailsView = "offer-details.view";
+           public const string OfferDetailsCreate = "offer-details.create";
+           public const string OfferDetailsEdit = "offer-details.edit";
+           public const string OfferDetailsDelete = "offer-details.delete";
+
+           public const string CouponsView = "coupons.view";
+           public const string CouponsCreate = "coupons.create";
+           public const string CouponsEdit = "coupons.edit";
+           public const string CouponsDelete = "coupons.delete";
+
+            public const string MasterImportView = "master-import.view";
            public const string MasterImportManage = "master-import.manage";
            public const string ImportLogsView = "import-logs.view";
 
@@ -162,6 +242,20 @@ public const string OrganizationTypesView = "organization-types.view";
 
     public const string SettingsView = "settings.view";
     public const string SettingsEdit = "settings.edit";
+
+    public const string EntitiesView = "entities.view";
+    public const string EntitiesManage = "entities.manage";
+
+    public const string InvoiceTemplatesView = "invoice-templates.view";
+    public const string InvoiceTemplatesCreate = "invoice-templates.create";
+    public const string InvoiceTemplatesEdit = "invoice-templates.edit";
+    public const string InvoiceTemplatesDelete = "invoice-templates.delete";
+    public const string InvoiceTemplatesDuplicate = "invoice-templates.duplicate";
+    public const string InvoiceTemplatesPreview = "invoice-templates.preview";
+    public const string InvoiceTemplatesPublish = "invoice-templates.publish";
+    public const string InvoiceTemplatesAssign = "invoice-templates.assign";
+    public const string InvoiceTemplatesPrint = "invoice-templates.print";
+    public const string InvoiceTemplatesExport = "invoice-templates.export";
 
     public const string AuditView = "audit.view";
     public const string ProfileEdit = "profile.edit";
@@ -199,6 +293,10 @@ public const string OrganizationTypesView = "organization-types.view";
         DesignationsView, DesignationsCreate, DesignationsEdit, DesignationsDelete,
         EmployeesView, EmployeesCreate, EmployeesEdit, EmployeesDelete,
          WarehousesView, WarehousesCreate, WarehousesEdit, WarehousesDelete,
+        StoresView, StoresCreate, StoresEdit, StoresDelete,
+        FinancialYearsView, FinancialYearsCreate, FinancialYearsEdit, FinancialYearsDelete,
+        CountersView, CountersCreate, CountersEdit, CountersDelete,
+        POSSessionView, POSSessionCreate, POSSessionEdit, POSSessionDelete,
          ProductCategoriesView, ProductCategoriesCreate, ProductCategoriesEdit, ProductCategoriesDelete,
          ProductSubCategoriesView, ProductSubCategoriesCreate, ProductSubCategoriesEdit, ProductSubCategoriesDelete,
          BrandsView, BrandsCreate, BrandsEdit, BrandsDelete,
@@ -206,6 +304,18 @@ public const string OrganizationTypesView = "organization-types.view";
           ProductsView, ProductsCreate, ProductsEdit, ProductsDelete,
           TaxTypeSystemsView, TaxTypeSystemsCreate, TaxTypeSystemsEdit, TaxTypeSystemsDelete,
            TaxesView, TaxesCreate, TaxesEdit, TaxesDelete,
+           PriceTypesView, PriceTypesCreate, PriceTypesEdit, PriceTypesDelete,
+           UnitConversionsView, UnitConversionsCreate, UnitConversionsEdit, UnitConversionsDelete,
+           BarcodesView, BarcodesCreate, BarcodesEdit, BarcodesDelete,
+           HsnSacsView, HsnSacsCreate, HsnSacsEdit, HsnSacsDelete,
+           ServiceCategoriesView, ServiceCategoriesCreate, ServiceCategoriesEdit, ServiceCategoriesDelete,
+           ServicesView, ServicesCreate, ServicesEdit, ServicesDelete,
+           PriceListsView, PriceListsCreate, PriceListsEdit, PriceListsDelete,
+           PriceListDetailsView, PriceListDetailsCreate, PriceListDetailsEdit, PriceListDetailsDelete,
+           DiscountRulesView, DiscountRulesCreate, DiscountRulesEdit, DiscountRulesDelete,
+           OffersView, OffersCreate, OffersEdit, OffersDelete,
+           OfferDetailsView, OfferDetailsCreate, OfferDetailsEdit, OfferDetailsDelete,
+           CouponsView, CouponsCreate, CouponsEdit, CouponsDelete,
 
             MasterImportView, MasterImportManage, ImportLogsView,
              TenantConfigView, TenantConfigManage,
@@ -217,6 +327,10 @@ public const string OrganizationTypesView = "organization-types.view";
 
            CurrenciesView, CurrenciesManage,
         SettingsView, SettingsEdit,
+        EntitiesView, EntitiesManage,
+        InvoiceTemplatesView, InvoiceTemplatesCreate, InvoiceTemplatesEdit, InvoiceTemplatesDelete,
+        InvoiceTemplatesDuplicate, InvoiceTemplatesPreview, InvoiceTemplatesPublish,
+        InvoiceTemplatesAssign, InvoiceTemplatesPrint, InvoiceTemplatesExport,
         AuditView, ProfileEdit,
         PermissionModulesView, PermissionModulesManage,
         PermissionActionsView, PermissionActionsManage

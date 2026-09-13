@@ -27,8 +27,8 @@ public class OrganizationTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.OrganizationTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrganizationTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class OrganizationTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.OrganizationTypesView)]
     [ProducesResponseType(typeof(ApiResponse<OrganizationTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

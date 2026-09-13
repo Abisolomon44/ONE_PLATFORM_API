@@ -26,8 +26,8 @@ public class AdministrationController : BaseController
         _validator = validator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet("currencies")]
-    [Permission(Permissions.CurrenciesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CurrencyDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -36,7 +36,6 @@ public class AdministrationController : BaseController
     }
 
     [HttpGet("currency/{id:int}")]
-    [Permission(Permissions.CurrenciesView)]
     [ProducesResponseType(typeof(ApiResponse<CurrencyDto>), 200)]
     public async Task<IActionResult> GetCurrency(int id)
     {

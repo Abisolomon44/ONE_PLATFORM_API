@@ -74,6 +74,7 @@ public class ProductUnit
 public class Product
 {
     public long Id { get; set; }
+    public long? EntityId { get; set; }
     public long CompanyId { get; set; }
     public long? BranchId { get; set; }
 
@@ -93,6 +94,7 @@ public class Product
     public decimal? SalesPrice { get; set; }
 
     public long? TaxId { get; set; }
+    public long? HsnSacId { get; set; }
 
     public bool IsStockItem { get; set; } = true;
     public bool IsSaleable { get; set; } = true;

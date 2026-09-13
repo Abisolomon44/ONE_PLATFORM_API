@@ -9,7 +9,7 @@ namespace ONEERP.ERP.API.Services;
 /* ---------------------------------------------------------------------------
    Navigation DTOs
    --------------------------------------------------------------------------- */
-public record NavigationScreenDto(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SubModuleId);
+public record NavigationScreenDto(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SubModuleId, string? PermissionCode, bool CanView);
 public record NavigationSubModuleDto(int Id, string Code, string Name, string? Icon, List<NavigationScreenDto> Screens, int ModuleId);
 public record NavigationModuleDto(int Id, string Code, string Name, string? Icon, List<NavigationSubModuleDto> SubModules, int DomainId);
 public record NavigationDomainDto(int Id, string Code, string Name, string? Icon, List<NavigationModuleDto> Modules, int WorkspaceId);
@@ -70,7 +70,7 @@ public class NavigationService : INavigationService
             SELECT sm.Id, sm.SubModuleCode AS Code, sm.SubModuleName AS Name, sm.Icon, sm.ModuleId
             FROM dbo.SubModules sm WHERE sm.IsActive = 1 ORDER BY sm.SortOrder, sm.SubModuleCode;
 
-            SELECT sc.Id, sc.ScreenCode AS Code, sc.ScreenName AS Name, sc.RouteUrl, sc.ComponentName, sc.ScreenType, sc.SubModuleId
+            SELECT sc.Id, sc.ScreenCode AS Code, sc.ScreenName AS Name, sc.RouteUrl, sc.ComponentName, sc.ScreenType, sc.SubModuleId, sc.PermissionCode
             FROM dbo.Screens sc WHERE sc.IsActive = 1 ORDER BY sc.SortOrder, sc.ScreenCode;";
 
         using var multi = await conn.QueryMultipleAsync(sql);
@@ -88,7 +88,7 @@ public class NavigationService : INavigationService
             new NavigationSubModuleDto(r.Id, r.Code, r.Name, r.Icon, new List<NavigationScreenDto>(), r.ModuleId)).ToList();
 
         var screens = (await multi.ReadAsync<ScRow>())
-            .Select(r => new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SubModuleId))
+            .Select(r => new NavigationScreenDto(r.Id, r.Code, r.Name, r.RouteUrl, r.ComponentName, r.ScreenType, r.SubModuleId, r.PermissionCode, true))
             .ToList();
 
         // Resolve the set of screen-level permissions granted (or denied) to the
@@ -104,7 +104,7 @@ public class NavigationService : INavigationService
         foreach (var s in visible)
         {
             var p = subModules.FirstOrDefault(sm => sm.Id == s.SubModuleId);
-            p?.Screens.Add(new NavigationScreenDto(s.Id, s.Code, s.Name, s.RouteUrl, s.ComponentName, s.ScreenType, s.SubModuleId));
+            p?.Screens.Add(new NavigationScreenDto(s.Id, s.Code, s.Name, s.RouteUrl, s.ComponentName, s.ScreenType, s.SubModuleId, s.PermissionCode, true));
         }
         foreach (var sm in subModules)
         {
@@ -146,10 +146,15 @@ public class NavigationService : INavigationService
 
         if (roleIds.Count > 0)
         {
+            // A screen is visible in navigation only when at least one role
+            // grants the "view" action on it (CanView). Grants on other actions
+            // (create/print/export...) do NOT surface the screen.
             var granted = await _sql.QueryAsync<int>(conn, @"
-                SELECT DISTINCT ScreenId
-                FROM dbo.RolePermissions
-                WHERE RoleId IN @roleIds AND IsActive = 1 AND Allow = 1 AND ScreenId IS NOT NULL",
+                SELECT DISTINCT rp.ScreenId
+                FROM dbo.RolePermissions rp
+                INNER JOIN dbo.Actions a ON a.Id = rp.ActionId
+                WHERE rp.RoleId IN @roleIds AND rp.IsActive = 1 AND rp.Allow = 1 AND rp.ScreenId IS NOT NULL
+                  AND a.ActionCode = 'view' AND a.IsActive = 1",
                 new { roleIds });
             foreach (var s in granted)
                 allowed.Add(s);
@@ -179,5 +184,5 @@ public class NavigationService : INavigationService
     private record DomRow(int Id, string Code, string Name, string? Icon, int WorkspaceId);
     private record ModRow(int Id, string Code, string Name, string? Icon, int DomainId);
     private record SmRow(int Id, string Code, string Name, string? Icon, int ModuleId);
-    private record ScRow(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SubModuleId);
+    private record ScRow(int Id, string Code, string Name, string? RouteUrl, string? ComponentName, string ScreenType, int SubModuleId, string? PermissionCode);
 }

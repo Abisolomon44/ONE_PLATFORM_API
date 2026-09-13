@@ -30,13 +30,22 @@ public class PlatformDbConnectionFactory : IPlatformDbConnectionFactory
 
     public IDbConnection CreatePlatformConnection() => CreateDatabaseConnection(_platformDatabaseName);
 
-    public IDbConnection CreateDatabaseConnection(string databaseName)
-    {
-        var csb = new SqlConnectionStringBuilder(_masterConnectionString)
+        public IDbConnection CreateDatabaseConnection(string databaseName)
         {
-            InitialCatalog = databaseName,
-            ConnectTimeout = 15
-        };
-        return new SqlConnection(csb.ConnectionString);
-    }
+            var csb = new SqlConnectionStringBuilder(_masterConnectionString)
+            {
+                InitialCatalog = databaseName,
+                // Increase connect timeout to tolerate slower networks or busy servers
+                ConnectTimeout = 60,
+                // Retry a few times for transient connectivity issues (helpful for cloud databases)
+                ConnectRetryCount = 3,
+                ConnectRetryInterval = 10,
+                // Prevent connection pool exhaustion under load
+                MaxPoolSize = 100,
+                MinPoolSize = 5,
+                // Kill stale connections after 5 minutes
+                LoadBalanceTimeout = 300
+            };
+            return new SqlConnection(csb.ConnectionString);
+        }
 }

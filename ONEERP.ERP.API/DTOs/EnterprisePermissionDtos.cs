@@ -251,7 +251,7 @@ public class UserFieldPermissionEntryDto
 public record SetUserFieldPermissionRequest(int UserId, int ScreenId, int FieldId, bool CanView, bool CanEdit, bool IsHidden, bool IsReadOnly, bool IsMandatory, bool IsActive = true);
 
 /* ---------------------------------------------------------------------------
-    DataScope DTOs
+   DataScope DTOs
    --------------------------------------------------------------------------- */
 public class DataScopeDto
 {
@@ -266,13 +266,8 @@ public class DataScopeDto
     public string? CompanyName { get; set; }
     public int? BranchId { get; set; }
     public string? BranchName { get; set; }
-    public int? DepartmentId { get; set; }
-    public string? DepartmentName { get; set; }
     public int? WarehouseId { get; set; }
     public string? WarehouseName { get; set; }
-    public int? BusinessUnitId { get; set; }
-    public int? CostCenterId { get; set; }
-    public int? ProfitCenterId { get; set; }
     public bool CanView { get; set; }
     public bool CanCreate { get; set; }
     public bool CanEdit { get; set; }
@@ -281,7 +276,90 @@ public class DataScopeDto
     public DateTime CreatedDate { get; set; }
 }
 
-public record SetDataScopeRequest(int RoleId, int? ModuleId, int? ScreenId, int? CompanyId, int? BranchId, int? DepartmentId, int? WarehouseId, int? BusinessUnitId, int? CostCenterId, int? ProfitCenterId, bool CanView, bool CanCreate, bool CanEdit, bool CanDelete, bool IsActive = true);
+public record SetDataScopeRequest(int RoleId, int? ModuleId, int? ScreenId, int? CompanyId, int? BranchId, int? WarehouseId, bool CanView, bool CanCreate, bool CanEdit, bool CanDelete, bool IsActive = true);
+
+/// <summary>Role Data Scope selection — one checkbox panel per role (All = null column value).</summary>
+public sealed class RoleDataScopeSelectionDto
+{
+    public bool HasScope { get; set; }
+    public List<int> CompanyIds { get; set; } = new();
+    public bool AllCompanies { get; set; }
+    public List<int> BranchIds { get; set; } = new();
+    public bool AllBranches { get; set; }
+    public List<int> WarehouseIds { get; set; } = new();
+    public bool AllWarehouses { get; set; }
+    public bool CanView { get; set; } = true;
+    public bool CanCreate { get; set; }
+    public bool CanEdit { get; set; }
+    public bool CanDelete { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+public sealed class SetRoleDataScopeSelectionRequest
+{
+    public List<int> CompanyIds { get; set; } = new();
+    public bool AllCompanies { get; set; }
+    public List<int> BranchIds { get; set; } = new();
+    public bool AllBranches { get; set; }
+    public List<int> WarehouseIds { get; set; } = new();
+    public bool AllWarehouses { get; set; }
+    public bool CanView { get; set; } = true;
+    public bool CanCreate { get; set; }
+    public bool CanEdit { get; set; }
+    public bool CanDelete { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+/// <summary>User Data Scope Override selection — one checkbox panel per user (mirrors the Data Scopes screen).</summary>
+public sealed class UserDataScopeOverrideSelectionDto
+{
+    public bool HasScope { get; set; }
+    public List<int> CompanyIds { get; set; } = new();
+    public bool AllCompanies { get; set; }
+    public List<int> BranchIds { get; set; } = new();
+    public bool AllBranches { get; set; }
+    public List<int> WarehouseIds { get; set; } = new();
+    public bool AllWarehouses { get; set; }
+    public string PermissionType { get; set; } = "Grant";
+    public bool Allow { get; set; } = true;
+    public DateTime? EffectiveFrom { get; set; }
+    public DateTime? EffectiveTo { get; set; }
+    public string? Remarks { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+public sealed class SetUserDataScopeOverrideSelectionRequest
+{
+    public List<int> CompanyIds { get; set; } = new();
+    public bool AllCompanies { get; set; }
+    public List<int> BranchIds { get; set; } = new();
+    public bool AllBranches { get; set; }
+    public List<int> WarehouseIds { get; set; } = new();
+    public bool AllWarehouses { get; set; }
+    public string PermissionType { get; set; } = "Grant";
+    public bool Allow { get; set; } = true;
+    public DateTime? EffectiveFrom { get; set; }
+    public DateTime? EffectiveTo { get; set; }
+    public string? Remarks { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+/// <summary>Effective data scope for the current user = role-based scopes + user overrides, with names resolved.</summary>
+public sealed class MyScopeEntryDto
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
+public sealed class MyEffectiveScopeDto
+{
+    public List<MyScopeEntryDto> Companies { get; set; } = new();
+    public List<MyScopeEntryDto> Branches { get; set; } = new();
+    public List<MyScopeEntryDto> Warehouses { get; set; } = new();
+    public bool UnrestrictedCompanies { get; set; }
+    public bool UnrestrictedBranches { get; set; }
+    public bool UnrestrictedWarehouses { get; set; }
+}
 
 /* ---------------------------------------------------------------------------
    UserDataScopeOverride DTOs
@@ -295,9 +373,9 @@ public class UserDataScopeOverrideDto
     public string? ModuleName { get; set; }
     public int? ScreenId { get; set; }
     public string? ScreenName { get; set; }
-    public string ScopeType { get; set; } = string.Empty;
-    public string ScopeValue { get; set; } = string.Empty;
-    public string PermissionType { get; set; } = string.Empty;
+    public string ScopeType { get; set; } = string.Empty;   // Company, Branch, Warehouse
+    public string ScopeValue { get; set; } = string.Empty;   // The ID value as string
+    public string PermissionType { get; set; } = string.Empty; // Grant, Deny
     public bool Allow { get; set; }
     public DateTime EffectiveFrom { get; set; }
     public DateTime? EffectiveTo { get; set; }

@@ -842,6 +842,8 @@ public interface IDataScopeRepository
     Task<int> InsertAsync(DataScope entity);
     Task<bool> UpdateAsync(DataScope entity);
     Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAllByRoleAsync(int roleId);
+    Task<bool> InsertManyAsync(IEnumerable<DataScope> entities);
 }
 
 public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
@@ -867,11 +869,9 @@ public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
     {
         using var conn = OpenTenant();
         const string sql = @"
-            INSERT INTO dbo.RoleDataScopes (RoleId, ModuleId, ScreenId, CompanyId, BranchId, DepartmentId,
-                WarehouseId, BusinessUnitId, CostCenterId, ProfitCenterId, CanView, CanCreate, CanEdit, CanDelete,
+            INSERT INTO dbo.RoleDataScopes (RoleId, ModuleId, ScreenId, CompanyId, BranchId, WarehouseId, CanView, CanCreate, CanEdit, CanDelete,
                 IsActive, CreatedBy)
-            VALUES (@RoleId, @ModuleId, @ScreenId, @CompanyId, @BranchId, @DepartmentId,
-                @WarehouseId, @BusinessUnitId, @CostCenterId, @ProfitCenterId, @CanView, @CanCreate, @CanEdit, @CanDelete,
+            VALUES (@RoleId, @ModuleId, @ScreenId, @CompanyId, @BranchId, @WarehouseId, @CanView, @CanCreate, @CanEdit, @CanDelete,
                 @IsActive, @CreatedBy);
             SELECT CAST(SCOPE_IDENTITY() AS int);";
         return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity);
@@ -883,9 +883,7 @@ public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
         const string sql = @"
             UPDATE dbo.RoleDataScopes
             SET ModuleId = @ModuleId, ScreenId = @ScreenId, CompanyId = @CompanyId, BranchId = @BranchId,
-                DepartmentId = @DepartmentId, WarehouseId = @WarehouseId, BusinessUnitId = @BusinessUnitId,
-                CostCenterId = @CostCenterId, ProfitCenterId = @ProfitCenterId,
-                CanView = @CanView, CanCreate = @CanCreate, CanEdit = @CanEdit, CanDelete = @CanDelete,
+                WarehouseId = @WarehouseId, CanView = @CanView, CanCreate = @CanCreate, CanEdit = @CanEdit, CanDelete = @CanDelete,
                 IsActive = @IsActive, ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()
             WHERE Id = @Id;";
         return await Sql.ExecuteAsync(conn, sql, entity) > 0;
@@ -896,6 +894,26 @@ public class DataScopeRepository : TenantRepositoryBase, IDataScopeRepository
         using var conn = OpenTenant();
         return await Sql.ExecuteAsync(conn,
             "DELETE FROM dbo.RoleDataScopes WHERE Id = @id", new { id }) > 0;
+    }
+
+    public async Task<bool> DeleteAllByRoleAsync(int roleId)
+    {
+        using var conn = OpenTenant();
+        return await Sql.ExecuteAsync(conn,
+            "DELETE FROM dbo.RoleDataScopes WHERE RoleId = @roleId", new { roleId }) >= 0;
+    }
+
+    public async Task<bool> InsertManyAsync(IEnumerable<DataScope> entities)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            INSERT INTO dbo.RoleDataScopes (RoleId, ModuleId, ScreenId, CompanyId, BranchId, WarehouseId, CanView, CanCreate, CanEdit, CanDelete,
+                IsActive, CreatedBy)
+            VALUES (@RoleId, @ModuleId, @ScreenId, @CompanyId, @BranchId, @WarehouseId, @CanView, @CanCreate, @CanEdit, @CanDelete,
+                @IsActive, @CreatedBy);";
+        foreach (var entity in entities)
+            await Sql.ExecuteAsync(conn, sql, entity);
+        return true;
     }
 }
 
@@ -909,6 +927,8 @@ public interface IUserDataScopeOverrideRepository
     Task<int> InsertAsync(UserDataScopeOverride entity);
     Task<bool> UpdateAsync(UserDataScopeOverride entity);
     Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAllByUserAsync(int userId);
+    Task<bool> InsertManyAsync(IEnumerable<UserDataScopeOverride> entities);
 }
 
 public class UserDataScopeOverrideRepository : TenantRepositoryBase, IUserDataScopeOverrideRepository
@@ -959,6 +979,26 @@ public class UserDataScopeOverrideRepository : TenantRepositoryBase, IUserDataSc
         using var conn = OpenTenant();
         return await Sql.ExecuteAsync(conn,
             "DELETE FROM dbo.UserDataScopeOverrides WHERE Id = @id", new { id }) > 0;
+    }
+
+    public async Task<bool> DeleteAllByUserAsync(int userId)
+    {
+        using var conn = OpenTenant();
+        return await Sql.ExecuteAsync(conn,
+            "DELETE FROM dbo.UserDataScopeOverrides WHERE UserId = @userId", new { userId }) >= 0;
+    }
+
+    public async Task<bool> InsertManyAsync(IEnumerable<UserDataScopeOverride> entities)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            INSERT INTO dbo.UserDataScopeOverrides (UserId, ModuleId, ScreenId, ScopeType, ScopeValue,
+                PermissionType, Allow, EffectiveFrom, EffectiveTo, Remarks, IsActive, CreatedBy)
+            VALUES (@UserId, @ModuleId, @ScreenId, @ScopeType, @ScopeValue,
+                @PermissionType, @Allow, @EffectiveFrom, @EffectiveTo, @Remarks, @IsActive, @CreatedBy);";
+        foreach (var entity in entities)
+            await Sql.ExecuteAsync(conn, sql, entity);
+        return true;
     }
 }
 

@@ -27,8 +27,8 @@ public class LanguagesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.LanguagesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<LanguageDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class LanguagesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.LanguagesView)]
     [ProducesResponseType(typeof(ApiResponse<LanguageDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

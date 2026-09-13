@@ -125,6 +125,11 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDesignationRepository, DesignationRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+builder.Services.AddScoped<ICounterRepository, CounterRepository>();
+builder.Services.AddScoped<IPOSSessionRepository, POSSessionRepository>();
+builder.Services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+builder.Services.AddScoped<IEntityRepository, EntityRepository>();
 
 
 
@@ -138,6 +143,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IDataScopeResolver, DataScopeResolver>();
 builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<IBusinessTypeService, BusinessTypeService>();
     builder.Services.AddScoped<IBusinessPartnerRoleService, BusinessPartnerRoleService>();
@@ -160,6 +166,11 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDesignationService, DesignationService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ICounterService, CounterService>();
+builder.Services.AddScoped<IPOSSessionService, POSSessionService>();
+builder.Services.AddScoped<IFinancialYearService, FinancialYearService>();
+builder.Services.AddScoped<IEntityService, EntityService>();
 
 // Product / Billing Masters
 builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
@@ -177,6 +188,32 @@ builder.Services.AddScoped<ITaxTypeSystemRepository, TaxTypeSystemRepository>();
 builder.Services.AddScoped<ITaxTypeSystemService, TaxTypeSystemService>();
 builder.Services.AddScoped<ITaxRepository, TaxRepository>();
 builder.Services.AddScoped<ITaxService, TaxService>();
+
+// Billing Masters Repositories + Services
+builder.Services.AddScoped<IPriceTypeRepository, PriceTypeRepository>();
+builder.Services.AddScoped<IPriceTypeService, PriceTypeService>();
+builder.Services.AddScoped<IUnitConversionRepository, UnitConversionRepository>();
+builder.Services.AddScoped<IUnitConversionService, UnitConversionService>();
+builder.Services.AddScoped<IBarcodeRepository, BarcodeRepository>();
+builder.Services.AddScoped<IBarcodeService, BarcodeService>();
+builder.Services.AddScoped<IHsnSacRepository, HsnSacRepository>();
+builder.Services.AddScoped<IHsnSacService, HsnSacService>();
+builder.Services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
+builder.Services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IPriceListRepository, PriceListRepository>();
+builder.Services.AddScoped<IPriceListService, PriceListService>();
+builder.Services.AddScoped<IPriceListDetailRepository, PriceListDetailRepository>();
+builder.Services.AddScoped<IPriceListDetailService, PriceListDetailService>();
+builder.Services.AddScoped<IDiscountRuleRepository, DiscountRuleRepository>();
+builder.Services.AddScoped<IDiscountRuleService, DiscountRuleService>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<IOfferDetailRepository, OfferDetailRepository>();
+builder.Services.AddScoped<IOfferDetailService, OfferDetailService>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 // Master Import (generic import engine + common import log)
 builder.Services.AddScoped<IImportLogRepository, ImportLogRepository>();

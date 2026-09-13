@@ -113,6 +113,7 @@ public class CreateCompanyRequestValidator : AbstractValidator<DTOs.CreateCompan
         RuleFor(x => x.CompanyCode).NotEmpty().MaximumLength(20)
             .Matches("^[A-Za-z0-9_-]+$").WithMessage("Company code may only contain letters, digits, hyphens and underscores.");
         RuleFor(x => x.CompanyName).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.EntityId).GreaterThan(0).When(x => x.EntityId.HasValue);
         RuleFor(x => x.ShortName).MaximumLength(100);
         RuleFor(x => x.Abbreviation).MaximumLength(20);
         RuleFor(x => x.BusinessTypeId).GreaterThan(0);

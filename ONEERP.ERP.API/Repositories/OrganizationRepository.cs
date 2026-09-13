@@ -10,6 +10,7 @@ public interface IBranchRepository
     Task<bool> CodeInUseAsync(int companyId, string branchCode);
     Task<IEnumerable<Branch>> GetPagedAsync(int companyId, int pageNumber, int pageSize, string search);
     Task<int> CountAsync(int companyId, string search);
+    Task<IEnumerable<Branch>> GetAllForCompanyAsync(int companyId);
     Task<int> InsertAsync(Branch branch, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Branch branch, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
@@ -58,6 +59,7 @@ public interface IWarehouseRepository
     Task<bool> CodeInUseAsync(int companyId, int branchId, string warehouseCode);
     Task<IEnumerable<Warehouse>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search);
     Task<int> CountAsync(int companyId, int branchId, string search);
+    Task<IEnumerable<Warehouse>> GetAllForCompanyAsync(int companyId);
     Task<int> InsertAsync(Warehouse warehouse, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Warehouse warehouse, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
@@ -117,6 +119,14 @@ public class BranchRepository : TenantRepositoryBase, IBranchRepository
             new { companyId, search });
     }
 
+    public async Task<IEnumerable<Branch>> GetAllForCompanyAsync(int companyId)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QueryAsync<Branch>(connection,
+            "SELECT * FROM dbo.Branches WHERE CompanyId = @companyId AND IsDeleted = 0",
+            new { companyId });
+    }
+
     public async Task<int> InsertAsync(Branch branch, IDbConnection? connection = null, IDbTransaction? transaction = null)
     {
         var conn = connection ?? OpenTenant();
@@ -124,8 +134,8 @@ public class BranchRepository : TenantRepositoryBase, IBranchRepository
         try
         {
             const string sql = @"
-                INSERT INTO dbo.Branches (CompanyId, BranchCode, BranchName, ShortName, BranchTypeId, ParentBranchId, ManagerEmployeeId, DefaultWarehouseId, GSTNumber, RegistrationNumber, IsHeadOffice, IsSalesBranch, IsPurchaseBranch, IsServiceBranch, SortOrder, IsActive, IsBlocked, IsDeleted, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
-                VALUES (@CompanyId, @BranchCode, @BranchName, @ShortName, @BranchTypeId, @ParentBranchId, @ManagerEmployeeId, @DefaultWarehouseId, @GSTNumber, @RegistrationNumber, @IsHeadOffice, @IsSalesBranch, @IsPurchaseBranch, @IsServiceBranch, @SortOrder, @IsActive, @IsBlocked, @IsDeleted, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                INSERT INTO dbo.Branches (CompanyId, EntityId, BranchCode, BranchName, ShortName, BranchTypeId, ParentBranchId, ManagerEmployeeId, DefaultWarehouseId, GSTNumber, RegistrationNumber, IsHeadOffice, IsSalesBranch, IsPurchaseBranch, IsServiceBranch, SortOrder, IsActive, IsBlocked, IsDeleted, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@CompanyId, @EntityId, @BranchCode, @BranchName, @ShortName, @BranchTypeId, @ParentBranchId, @ManagerEmployeeId, @DefaultWarehouseId, @GSTNumber, @RegistrationNumber, @IsHeadOffice, @IsSalesBranch, @IsPurchaseBranch, @IsServiceBranch, @SortOrder, @IsActive, @IsBlocked, @IsDeleted, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS int);";
             return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, branch, transaction);
         }
@@ -143,7 +153,7 @@ public class BranchRepository : TenantRepositoryBase, IBranchRepository
         {
             const string sql = @"
                 UPDATE dbo.Branches
-                SET BranchCode = @BranchCode, BranchName = @BranchName, ShortName = @ShortName, BranchTypeId = @BranchTypeId,
+                SET EntityId = @EntityId, BranchCode = @BranchCode, BranchName = @BranchName, ShortName = @ShortName, BranchTypeId = @BranchTypeId,
                     ParentBranchId = @ParentBranchId, ManagerEmployeeId = @ManagerEmployeeId, DefaultWarehouseId = @DefaultWarehouseId,
                     GSTNumber = @GSTNumber, RegistrationNumber = @RegistrationNumber, IsHeadOffice = @IsHeadOffice,
                     IsSalesBranch = @IsSalesBranch, IsPurchaseBranch = @IsPurchaseBranch, IsServiceBranch = @IsServiceBranch,
@@ -454,8 +464,8 @@ public class EmployeeRepository : TenantRepositoryBase, IEmployeeRepository
         try
         {
             const string sql = @"
-                INSERT INTO dbo.Employees (CompanyId, BranchId, DepartmentId, DesignationId, EmployeeCode, EmployeeNumber, FirstName, MiddleName, LastName, DisplayName, GenderId, MaritalStatusId, DateOfBirth, DateOfJoining, DateOfLeaving, OfficialEmail, PersonalEmail, MobileNo, AlternateMobileNo, ReportingManagerId, EmploymentTypeId, IsActive, IsBlocked, IsDeleted, Remarks, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
-                VALUES (@CompanyId, @BranchId, @DepartmentId, @DesignationId, @EmployeeCode, @EmployeeNumber, @FirstName, @MiddleName, @LastName, @DisplayName, @GenderId, @MaritalStatusId, @DateOfBirth, @DateOfJoining, @DateOfLeaving, @OfficialEmail, @PersonalEmail, @MobileNo, @AlternateMobileNo, @ReportingManagerId, @EmploymentTypeId, @IsActive, @IsBlocked, @IsDeleted, @Remarks, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                INSERT INTO dbo.Employees (CompanyId, BranchId, DepartmentId, DesignationId, EmployeeCode, EmployeeNumber, FirstName, MiddleName, LastName, DisplayName, GenderId, MaritalStatusId, DateOfBirth, DateOfJoining, DateOfLeaving, OfficialEmail, PersonalEmail, MobileNo, AlternateMobileNo, ReportingManagerId, EmploymentTypeId, IsActive, IsBlocked, IsDeleted, Remarks, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, EntityId)
+                VALUES (@CompanyId, @BranchId, @DepartmentId, @DesignationId, @EmployeeCode, @EmployeeNumber, @FirstName, @MiddleName, @LastName, @DisplayName, @GenderId, @MaritalStatusId, @DateOfBirth, @DateOfJoining, @DateOfLeaving, @OfficialEmail, @PersonalEmail, @MobileNo, @AlternateMobileNo, @ReportingManagerId, @EmploymentTypeId, @IsActive, @IsBlocked, @IsDeleted, @Remarks, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME(), @EntityId);
                 SELECT CAST(SCOPE_IDENTITY() AS int);";
             return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, employee, transaction);
         }
@@ -477,7 +487,7 @@ public class EmployeeRepository : TenantRepositoryBase, IEmployeeRepository
                     DisplayName = @DisplayName, GenderId = @GenderId, MaritalStatusId = @MaritalStatusId, DateOfBirth = @DateOfBirth,
                     DateOfJoining = @DateOfJoining, DateOfLeaving = @DateOfLeaving, OfficialEmail = @OfficialEmail, PersonalEmail = @PersonalEmail,
                     MobileNo = @MobileNo, AlternateMobileNo = @AlternateMobileNo, ReportingManagerId = @ReportingManagerId, EmploymentTypeId = @EmploymentTypeId,
-                    IsActive = @IsActive, IsBlocked = @IsBlocked, Remarks = @Remarks,
+                    IsActive = @IsActive, IsBlocked = @IsBlocked, Remarks = @Remarks, EntityId = @EntityId,
                     ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()
                 WHERE Id = @Id;";
             return await Sql.ExecuteAsync(conn, sql, employee, transaction) > 0;
@@ -559,6 +569,14 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
             new { companyId, branchId, search });
     }
 
+    public async Task<IEnumerable<Warehouse>> GetAllForCompanyAsync(int companyId)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QueryAsync<Warehouse>(connection,
+            "SELECT * FROM dbo.Warehouses WHERE CompanyId = @companyId AND IsDeleted = 0",
+            new { companyId });
+    }
+
     public async Task<int> InsertAsync(Warehouse warehouse, IDbConnection? connection = null, IDbTransaction? transaction = null)
     {
         var conn = connection ?? OpenTenant();
@@ -566,8 +584,8 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         try
         {
             const string sql = @"
-                INSERT INTO dbo.Warehouses (CompanyId, BranchId, WarehouseCode, WarehouseName, ShortName, WarehouseTypeId, ParentWarehouseId, ManagerEmployeeId, AllowNegativeStock, IsDefault, SortOrder, Remarks, IsActive, IsBlocked, IsDeleted, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
-                VALUES (@CompanyId, @BranchId, @WarehouseCode, @WarehouseName, @ShortName, @WarehouseTypeId, @ParentWarehouseId, @ManagerEmployeeId, @AllowNegativeStock, @IsDefault, @SortOrder, @Remarks, @IsActive, @IsBlocked, @IsDeleted, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                INSERT INTO dbo.Warehouses (CompanyId, BranchId, EntityId, WarehouseCode, WarehouseName, ShortName, WarehouseTypeId, ParentWarehouseId, ManagerEmployeeId, AllowNegativeStock, IsDefault, SortOrder, Remarks, IsActive, IsBlocked, IsDeleted, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@CompanyId, @BranchId, @EntityId, @WarehouseCode, @WarehouseName, @ShortName, @WarehouseTypeId, @ParentWarehouseId, @ManagerEmployeeId, @AllowNegativeStock, @IsDefault, @SortOrder, @Remarks, @IsActive, @IsBlocked, @IsDeleted, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS int);";
             return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, warehouse, transaction);
         }
@@ -585,7 +603,7 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
         {
             const string sql = @"
                 UPDATE dbo.Warehouses
-                SET WarehouseCode = @WarehouseCode, WarehouseName = @WarehouseName, ShortName = @ShortName, WarehouseTypeId = @WarehouseTypeId,
+                SET EntityId = @EntityId, WarehouseCode = @WarehouseCode, WarehouseName = @WarehouseName, ShortName = @ShortName, WarehouseTypeId = @WarehouseTypeId,
                     ParentWarehouseId = @ParentWarehouseId, ManagerEmployeeId = @ManagerEmployeeId, AllowNegativeStock = @AllowNegativeStock,
                     IsDefault = @IsDefault, SortOrder = @SortOrder, IsActive = @IsActive, IsBlocked = @IsBlocked, Remarks = @Remarks,
                     ModifiedBy = @ModifiedBy, ModifiedDate = SYSUTCDATETIME()

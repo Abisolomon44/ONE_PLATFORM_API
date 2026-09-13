@@ -3,6 +3,7 @@ namespace ONEERP.ERP.API.Models;
 public class Company
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public string CompanyCode { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string? ShortName { get; set; }
@@ -271,6 +272,7 @@ public class City
 public class Branch
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public string BranchCode { get; set; } = string.Empty;
     public string BranchName { get; set; } = string.Empty;
@@ -341,6 +343,7 @@ public class Designation
 public class Employee
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public int? BranchId { get; set; }
     public int? DepartmentId { get; set; }
@@ -375,6 +378,7 @@ public class Employee
 public class Warehouse
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public int? BranchId { get; set; }
     public string WarehouseCode { get; set; } = string.Empty;
@@ -394,6 +398,82 @@ public class Warehouse
     public DateTime CreatedDate { get; set; }
     public int? ModifiedBy { get; set; }
     public DateTime? ModifiedDate { get; set; }
+}
+
+public class Store
+{
+    public int StoreId { get; set; }
+    public long? EntityId { get; set; }
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public string StoreCode { get; set; } = string.Empty;
+    public string StoreName { get; set; } = string.Empty;
+    public string? StoreType { get; set; }
+    public string? Address { get; set; }
+    public string? Phone { get; set; }
+    public string? Email { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public class FinancialYear
+{
+    public long FinancialYearId { get; set; }
+    public int CompanyId { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public bool IsCurrent { get; set; }
+    public bool IsClosed { get; set; }
+    public bool IsActive { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+}
+
+public class Counter
+{
+    public int CounterId { get; set; }
+    public int StoreId { get; set; }
+    public string CounterCode { get; set; } = string.Empty;
+    public string CounterName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public class POSSession
+{
+    public long POSSessionId { get; set; }
+    public int CompanyId { get; set; }
+    public string? CompanyName { get; set; }
+    public int? BranchId { get; set; }
+    public string? BranchName { get; set; }
+    public int? StoreId { get; set; }
+    public string? StoreName { get; set; }
+    public int? CounterId { get; set; }
+    public string? CounterName { get; set; }
+    public int? CashierUserId { get; set; }
+    public string? CashierUserName { get; set; }
+    public string SessionNumber { get; set; } = string.Empty;
+    public decimal OpeningCash { get; set; }
+    public decimal? ClosingCash { get; set; }
+    public DateTime OpenedAt { get; set; }
+    public DateTime? ClosedAt { get; set; }
+    public byte Status { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 /* ---------------------------------------------------------------------------

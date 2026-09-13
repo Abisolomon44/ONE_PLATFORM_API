@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using ONEERP.ERP.API.DTOs;
 using ONEERP.ERP.API.Security;
 using ONEERP.ERP.API.Services;
-using ONEERP.Shared.Constants;
 using ONEERP.Shared.Models;
 
 namespace ONEERP.ERP.API.Controllers;
@@ -19,7 +18,6 @@ public class DashboardController : BaseController
     }
 
     [HttpGet]
-    [Permission(Permissions.DashboardView)]
     [ProducesResponseType(typeof(ApiResponse<DashboardDto>), 200)]
     public async Task<IActionResult> Get()
     {

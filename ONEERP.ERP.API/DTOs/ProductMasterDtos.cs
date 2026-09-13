@@ -126,10 +126,12 @@ public record CreateProductRequest(
     decimal? PurchasePrice = null,
     decimal? SalesPrice = null,
     long? TaxId = null,
+    long? HsnSacId = null,
     bool IsStockItem = true,
     bool IsSaleable = true,
     bool IsPurchaseable = true,
-    string? Description = null);
+    string? Description = null,
+    long? EntityId = null);
 
 public record UpdateProductRequest(
     string ProductCode,
@@ -146,15 +148,18 @@ public record UpdateProductRequest(
     decimal? PurchasePrice,
     decimal? SalesPrice,
     long? TaxId,
+    long? HsnSacId,
     bool IsStockItem,
     bool IsSaleable,
     bool IsPurchaseable,
     string? Description,
-    bool IsActive);
+    bool IsActive,
+    long? EntityId = null);
 
 public class ProductDto
 {
     public long Id { get; set; }
+    public long? EntityId { get; set; }
     public long CompanyId { get; set; }
     public long? BranchId { get; set; }
 
@@ -174,6 +179,7 @@ public class ProductDto
     public decimal? SalesPrice { get; set; }
 
     public long? TaxId { get; set; }
+    public long? HsnSacId { get; set; }
 
     public bool IsStockItem { get; set; }
     public bool IsSaleable { get; set; }
@@ -187,6 +193,7 @@ public class ProductDto
     public string? BrandName { get; set; }
     public string? UOMName { get; set; }
     public string? BranchName { get; set; }
+    public string? HsnSacCode { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime? ModifiedAt { get; set; }

@@ -35,6 +35,7 @@ public class AuthService : IAuthService
     private readonly IUserPermissionOverrideRepository _userPermOverrideRepo;
     private readonly IDataScopeRepository _dataScopeRepo;
     private readonly IUserDataScopeOverrideRepository _userDataScopeOverrideRepo;
+    private readonly IPermissionCache _permissionCache;
 
     public AuthService(
         ITenantConnectionResolver resolver,
@@ -55,7 +56,8 @@ public class AuthService : IAuthService
         IActionRepository actRepo,
         IUserPermissionOverrideRepository userPermOverrideRepo,
         IDataScopeRepository dataScopeRepo,
-        IUserDataScopeOverrideRepository userDataScopeOverrideRepo)
+        IUserDataScopeOverrideRepository userDataScopeOverrideRepo,
+        IPermissionCache permissionCache)
     {
         _resolver = resolver;
         _accessor = accessor;
@@ -76,6 +78,7 @@ public class AuthService : IAuthService
         _userPermOverrideRepo = userPermOverrideRepo;
         _dataScopeRepo = dataScopeRepo;
         _userDataScopeOverrideRepo = userDataScopeOverrideRepo;
+        _permissionCache = permissionCache;
     }
 
     public async Task<LoginResponse> LoginAsync(string username, string password)
@@ -101,6 +104,60 @@ public class AuthService : IAuthService
         var permissions = await ResolveAllPermissionsAsync(user.UserId);
         var company = await _companyRepository.GetByIdAsync(user.CompanyId)
             ?? throw new DomainException("Company not found for this user.");
+
+        // Resolve effective data scope and populate cache
+        var effectiveScope = await ResolveEffectiveDataScopeAsync(user.UserId);
+        var roleIds = await _roleRepository.GetRoleIdsForUserAsync(user.UserId);
+        var allDataScopes = new List<RoleDataScopeEntry>();
+        
+        foreach (var roleId in roleIds)
+        {
+            var scopes = await _dataScopeRepo.GetByRoleAsync(roleId);
+            allDataScopes.AddRange(scopes.Select(s => new RoleDataScopeEntry
+            {
+                RoleId = s.RoleId,
+                ModuleId = s.ModuleId,
+                ScreenId = s.ScreenId,
+                CompanyId = s.CompanyId,
+                BranchId = s.BranchId,
+                WarehouseId = s.WarehouseId,
+                CanView = s.CanView,
+                CanCreate = s.CanCreate,
+                CanEdit = s.CanEdit,
+                CanDelete = s.CanDelete
+            }));
+        }
+        
+        var userOverrides = await _userDataScopeOverrideRepo.GetByUserAsync(user.UserId);
+        var activeOverrides = userOverrides
+            .Where(o => o.IsActive 
+                && o.EffectiveFrom <= DateTime.UtcNow 
+                && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+            .Select(o => new UserDataScopeOverrideEntry
+            {
+                UserId = o.UserId,
+                ModuleId = o.ModuleId,
+                ScreenId = o.ScreenId,
+                ScopeType = o.ScopeType,
+                ScopeValue = o.ScopeValue,
+                PermissionType = o.PermissionType,
+                Allow = o.Allow,
+                EffectiveFrom = o.EffectiveFrom,
+                EffectiveTo = o.EffectiveTo
+            }).ToList();
+
+        var resolvedPermissions = new ResolvedPermissions
+        {
+            UserId = user.UserId,
+            TenantId = tenant.TenantId,
+            CompanyId = user.CompanyId,
+            PermissionCodes = new HashSet<string>(permissions, StringComparer.OrdinalIgnoreCase),
+            DataScopes = allDataScopes,
+            UserOverrides = activeOverrides,
+            EffectiveScope = effectiveScope,
+            Version = 1
+        };
+        await _permissionCache.SetAsync(resolvedPermissions);
 
         await _userRepository.UpdateLastLoginAsync(user.UserId);
         await _auditService.WriteAsync("User", user.UserId.ToString(), "Login", user.Username);
@@ -134,6 +191,60 @@ public class AuthService : IAuthService
         var permissions = await ResolveAllPermissionsAsync(user.UserId);
         var company = await _companyRepository.GetByIdAsync(user.CompanyId)
             ?? throw new DomainException("Company not found for this user.");
+
+        // Resolve effective data scope and populate cache
+        var effectiveScope = await ResolveEffectiveDataScopeAsync(user.UserId);
+        var roleIds = await _roleRepository.GetRoleIdsForUserAsync(user.UserId);
+        var allDataScopes = new List<RoleDataScopeEntry>();
+        
+        foreach (var roleId in roleIds)
+        {
+            var scopes = await _dataScopeRepo.GetByRoleAsync(roleId);
+            allDataScopes.AddRange(scopes.Select(s => new RoleDataScopeEntry
+            {
+                RoleId = s.RoleId,
+                ModuleId = s.ModuleId,
+                ScreenId = s.ScreenId,
+                CompanyId = s.CompanyId,
+                BranchId = s.BranchId,
+                WarehouseId = s.WarehouseId,
+                CanView = s.CanView,
+                CanCreate = s.CanCreate,
+                CanEdit = s.CanEdit,
+                CanDelete = s.CanDelete
+            }));
+        }
+        
+        var userOverrides = await _userDataScopeOverrideRepo.GetByUserAsync(user.UserId);
+        var activeOverrides = userOverrides
+            .Where(o => o.IsActive 
+                && o.EffectiveFrom <= DateTime.UtcNow 
+                && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+            .Select(o => new UserDataScopeOverrideEntry
+            {
+                UserId = o.UserId,
+                ModuleId = o.ModuleId,
+                ScreenId = o.ScreenId,
+                ScopeType = o.ScopeType,
+                ScopeValue = o.ScopeValue,
+                PermissionType = o.PermissionType,
+                Allow = o.Allow,
+                EffectiveFrom = o.EffectiveFrom,
+                EffectiveTo = o.EffectiveTo
+            }).ToList();
+
+        var resolvedPermissions = new ResolvedPermissions
+        {
+            UserId = user.UserId,
+            TenantId = tenant.TenantId,
+            CompanyId = user.CompanyId,
+            PermissionCodes = new HashSet<string>(permissions, StringComparer.OrdinalIgnoreCase),
+            DataScopes = allDataScopes,
+            UserOverrides = activeOverrides,
+            EffectiveScope = effectiveScope,
+            Version = 1
+        };
+        await _permissionCache.SetAsync(resolvedPermissions);
 
         var accessToken = _tokenService.GenerateAccessToken(user, tenant, roles.ToList(), permissions.ToList());
 
@@ -197,7 +308,6 @@ public class AuthService : IAuthService
                     actNames.TryGetValue(rp.ActionId, out var ac))
                 {
                     permCodes.Add($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
-                    permCodes.Add($"{mc}.{smc}.{ac}");
                 }
             }
         }
@@ -215,12 +325,10 @@ public class AuthService : IAuthService
                 if (o.Allow)
                 {
                     permCodes.Add($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
-                    permCodes.Add($"{mc}.{smc}.{ac}");
                 }
                 else
                 {
                     permCodes.Remove($"{wc}.{dc}.{mc}.{smc}.{sc}.{ac}");
-                    permCodes.Remove($"{mc}.{smc}.{ac}");
                 }
             }
         }
@@ -229,24 +337,24 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Resolves data scopes for all roles assigned to a user.
-    /// Returns combined RoleDataScopeEntry list with user overrides applied.
+    /// Resolves effective data scope for a user by combining role-level data scopes with user-level overrides.
+    /// Returns the effective data scope (Company/Branch/Warehouse).
     /// </summary>
-    public async Task<(List<RoleDataScopeEntry> DataScopes, List<UserDataScopeOverrideEntry> UserOverrides)> ResolveDataScopesAsync(int userId)
+    public async Task<EffectiveDataScope?> ResolveEffectiveDataScopeAsync(int userId)
     {
         var roleIds = await _roleRepository.GetRoleIdsForUserAsync(userId);
-        var allDataScopes = new List<RoleDataScopeEntry>();
+        var allRoleScopes = new List<RoleDataScopeEntry>();
 
         foreach (var roleId in roleIds)
         {
             var scopes = await _dataScopeRepo.GetByRoleAsync(roleId);
-            allDataScopes.AddRange(scopes.Select(s => new RoleDataScopeEntry
+            allRoleScopes.AddRange(scopes.Select(s => new RoleDataScopeEntry
             {
                 RoleId = s.RoleId,
                 ModuleId = s.ModuleId,
                 ScreenId = s.ScreenId,
+                CompanyId = s.CompanyId,
                 BranchId = s.BranchId,
-                DepartmentId = s.DepartmentId,
                 WarehouseId = s.WarehouseId,
                 CanView = s.CanView,
                 CanCreate = s.CanCreate,
@@ -255,24 +363,71 @@ public class AuthService : IAuthService
             }));
         }
 
+        // Get active user overrides with effective date filtering
         var userOverrides = await _userDataScopeOverrideRepo.GetByUserAsync(userId);
-        var userOverrideEntries = userOverrides
-            .Where(o => o.IsActive && o.EffectiveFrom <= DateTime.UtcNow && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
-            .Select(o => new UserDataScopeOverrideEntry
-            {
-                UserId = o.UserId,
-                ModuleId = o.ModuleId,
-                ScreenId = o.ScreenId,
-                ScopeType = o.ScopeType,
-                ScopeValue = o.ScopeValue,
-                PermissionType = o.PermissionType,
-                Allow = o.Allow,
-                EffectiveFrom = o.EffectiveFrom,
-                EffectiveTo = o.EffectiveTo
-            }).ToList();
+        var activeOverrides = userOverrides
+            .Where(o => o.IsActive 
+                && o.EffectiveFrom <= DateTime.UtcNow 
+                && (o.EffectiveTo is null || o.EffectiveTo > DateTime.UtcNow))
+            .ToList();
 
-        return (allDataScopes, userOverrideEntries);
+        // Compute effective scope: User override takes precedence over role scope
+        return ComputeEffectiveDataScope(allRoleScopes, activeOverrides);
     }
+
+    /// <summary>
+    /// Computes effective data scope by applying user overrides on top of role scopes.
+    /// Priority: User override > Role scope (first active role with scope)
+    /// </summary>
+    private static EffectiveDataScope? ComputeEffectiveDataScope(
+        List<RoleDataScopeEntry> roleScopes, 
+        List<UserDataScopeOverride> userOverrides)
+    {
+        // First, check for user-level override (highest priority)
+        var userOverride = userOverrides
+            .Where(o => ValidScopeTypes.Contains(o.ScopeType, StringComparer.OrdinalIgnoreCase))
+            .OrderByDescending(o => o.EffectiveFrom) // Most recent override first
+            .FirstOrDefault();
+
+        if (userOverride != null && int.TryParse(userOverride.ScopeValue, out var overrideId))
+        {
+            return new EffectiveDataScope
+            {
+                Level = userOverride.ScopeType,
+                Id = overrideId
+            };
+        }
+
+        // Fall back to role-level scope
+        // Use the first role scope that has a company/branch/warehouse defined
+        var roleScope = roleScopes
+            .Where(s => s.CompanyId.HasValue || s.BranchId.HasValue || s.WarehouseId.HasValue)
+            .OrderBy(s => s.RoleId) // Deterministic ordering
+            .FirstOrDefault();
+
+        if (roleScope != null)
+        {
+            if (roleScope.WarehouseId.HasValue)
+            {
+                return new EffectiveDataScope { Level = "Warehouse", Id = roleScope.WarehouseId.Value };
+            }
+            if (roleScope.BranchId.HasValue)
+            {
+                return new EffectiveDataScope { Level = "Branch", Id = roleScope.BranchId.Value };
+            }
+            if (roleScope.CompanyId.HasValue)
+            {
+                return new EffectiveDataScope { Level = "Company", Id = roleScope.CompanyId.Value };
+            }
+        }
+
+        return null;
+    }
+
+    private static readonly HashSet<string> ValidScopeTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Company", "Branch", "Warehouse"
+    };
 
     private async Task<LoginResponse> BuildLoginResponseAsync(
         TenantSession tenant,

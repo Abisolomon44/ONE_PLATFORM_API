@@ -15,6 +15,7 @@ public interface IRoleService
     Task<bool> DeleteAsync(int roleId);
     Task<RoleDto> SetPermissionsAsync(int roleId, SetRolePermissionsRequest request);
     Task<IEnumerable<PermissionDto>> GetAllPermissionsAsync();
+    Task<IEnumerable<RoleDto>> GetMyRolesAsync();
 }
 
 public class RoleService : IRoleService
@@ -104,6 +105,23 @@ public class RoleService : IRoleService
             IsSystem = r.IsSystem,
             IsActive = r.IsActive,
             Permissions = permissionByRole.TryGetValue(r.RoleId, out var perms) ? perms : new List<string>()
+        });
+    }
+
+    // Self-service: lets any signed-in user resolve their own roleIds without
+    // requiring RolesView, so role-scoped dropdowns (data scopes, etc.) still work.
+    public async Task<IEnumerable<RoleDto>> GetMyRolesAsync()
+    {
+        var roles = await _roleRepository.GetRolesForUserAsync(_currentUser.UserId);
+        return roles.Select(r => new RoleDto
+        {
+            RoleId = r.RoleId,
+            Name = r.Name,
+            Code = r.Code,
+            Description = r.Description,
+            IsSystem = r.IsSystem,
+            IsActive = r.IsActive,
+            Permissions = new List<string>()
         });
     }
 

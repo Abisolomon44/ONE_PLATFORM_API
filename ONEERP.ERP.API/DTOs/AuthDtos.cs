@@ -9,6 +9,7 @@ public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 public class CompanyDto
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public string CompanyCode { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string? ShortName { get; set; }

@@ -27,8 +27,8 @@ public class BusinessTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.BusinessTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<BusinessTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class BusinessTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.BusinessTypesView)]
     [ProducesResponseType(typeof(ApiResponse<BusinessTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {
@@ -169,8 +168,8 @@ public class IndustryTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.IndustryTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<IndustryTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -179,7 +178,6 @@ public class IndustryTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.IndustryTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IndustryTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {
@@ -240,8 +238,8 @@ public class CompanyGroupsController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.CompanyGroupsView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CompanyGroupDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -250,7 +248,6 @@ public class CompanyGroupsController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.CompanyGroupsView)]
     [ProducesResponseType(typeof(ApiResponse<CompanyGroupDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

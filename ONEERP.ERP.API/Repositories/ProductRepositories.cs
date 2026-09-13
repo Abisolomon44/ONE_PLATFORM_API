@@ -688,14 +688,14 @@ public class ProductRepository : TenantRepositoryBase, IProductRepository
             const string sql = @"
                 INSERT INTO dbo.Products (
                     CompanyId, BranchId, ProductCode, ProductName, CategoryId, SubCategoryId, BrandId, UOMId,
-                    SKU, Barcode, MRP, PurchasePrice, SalesPrice, TaxId,
+                    SKU, Barcode, MRP, PurchasePrice, SalesPrice, TaxId, HsnSacId,
                     IsStockItem, IsSaleable, IsPurchaseable, IsActive, Description,
-                    CreatedBy, CreatedAt, ModifiedBy, ModifiedAt)
+                    CreatedBy, CreatedAt, ModifiedBy, ModifiedAt, EntityId)
                 VALUES (
                     @CompanyId, @BranchId, @ProductCode, @ProductName, @CategoryId, @SubCategoryId, @BrandId, @UOMId,
-                    @SKU, @Barcode, @MRP, @PurchasePrice, @SalesPrice, @TaxId,
+                    @SKU, @Barcode, @MRP, @PurchasePrice, @SalesPrice, @TaxId, @HsnSacId,
                     @IsStockItem, @IsSaleable, @IsPurchaseable, @IsActive, @Description,
-                    @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                    @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME(), @EntityId);
                 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
             return await Sql.QuerySingleOrDefaultAsync<long>(conn, sql, entity, transaction);
         }
@@ -726,11 +726,13 @@ public class ProductRepository : TenantRepositoryBase, IProductRepository
                     PurchasePrice = @PurchasePrice,
                     SalesPrice = @SalesPrice,
                     TaxId = @TaxId,
+                    HsnSacId = @HsnSacId,
                     IsStockItem = @IsStockItem,
                     IsSaleable = @IsSaleable,
                     IsPurchaseable = @IsPurchaseable,
                     IsActive = @IsActive,
                     Description = @Description,
+                    EntityId = @EntityId,
                     ModifiedBy = @ModifiedBy,
                     ModifiedAt = SYSUTCDATETIME()
                 WHERE Id = @Id AND CompanyId = @CompanyId;";

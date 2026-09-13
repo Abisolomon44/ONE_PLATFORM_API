@@ -91,14 +91,14 @@ public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
         try
         {
             const string sql = @"
-                INSERT INTO dbo.Companies (CompanyCode, CompanyName, ShortName, Abbreviation, BusinessTypeId, IndustryTypeId,
+                INSERT INTO dbo.Companies (EntityId, CompanyCode, CompanyName, ShortName, Abbreviation, BusinessTypeId, IndustryTypeId,
                     GSTRegistrationTypeId, GSTNumber, PANNumber, TANNumber, CINNumber, RegistrationNumber,
                     CurrencyId, LanguageId, TimeZoneId, IsActive, IsBlocked, IsDeleted, LastLoginDate,
                     CompanyGroupId, BusinessUnitId, Website, Email, Phone, Mobile, LogoUrl, DefaultFinancialYearId,
                     MultiBranchEnabled, MultiWarehouseEnabled, MultiCurrencyEnabled, DateFormat, TimeFormat, NumberFormat,
                     DefaultWarehouseId, Theme, PrimaryColor, SecondaryColor, Remarks,
                     CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
-                VALUES (@CompanyCode, @CompanyName, @ShortName, @Abbreviation, @BusinessTypeId, @IndustryTypeId,
+                VALUES (@EntityId, @CompanyCode, @CompanyName, @ShortName, @Abbreviation, @BusinessTypeId, @IndustryTypeId,
                     @GSTRegistrationTypeId, @GSTNumber, @PANNumber, @TANNumber, @CINNumber, @RegistrationNumber,
                     @CurrencyId, @LanguageId, @TimeZoneId, @IsActive, @IsBlocked, @IsDeleted, @LastLoginDate,
                     @CompanyGroupId, @BusinessUnitId, @Website, @Email, @Phone, @Mobile, @LogoUrl, @DefaultFinancialYearId,

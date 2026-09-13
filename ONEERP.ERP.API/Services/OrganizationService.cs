@@ -72,24 +72,52 @@ public class BranchService : IBranchService
     private readonly IBranchRepository _repository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public BranchService(IBranchRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public BranchService(IBranchRepository repository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _repository = repository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<BranchDto>> GetPagedAsync(int companyId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
-        var branches = await _repository.GetPagedAsync(companyId, normalizedPage, normalizedSize, search);
-        var total = await _repository.CountAsync(companyId, search);
+
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId))
+            return new PaginatedResult<BranchDto> { Items = new List<BranchDto>(), TotalCount = 0, PageNumber = normalizedPage, PageSize = normalizedSize };
+
+        var allowedBranchIds = await _dataScopeResolver.GetAllowedBranchIdsAsync();
+        if (allowedBranchIds is null)
+        {
+            var branches = await _repository.GetPagedAsync(companyId, normalizedPage, normalizedSize, search);
+            var total = await _repository.CountAsync(companyId, search);
+            return new PaginatedResult<BranchDto>
+            {
+                Items = branches.Select(ToDto).ToList(),
+                TotalCount = total,
+                PageNumber = normalizedPage,
+                PageSize = normalizedSize
+            };
+        }
+
+        var scoped = (await _repository.GetAllForCompanyAsync(companyId)).Where(b => allowedBranchIds.Contains(b.Id));
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            scoped = scoped.Where(b =>
+                (b.BranchName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (b.BranchCode?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (b.ShortName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+        var scopedList = scoped.OrderByDescending(b => b.Id).ToList();
+
         return new PaginatedResult<BranchDto>
         {
-            Items = branches.Select(ToDto).ToList(),
-            TotalCount = total,
+            Items = scopedList.Skip((normalizedPage - 1) * normalizedSize).Take(normalizedSize).Select(ToDto).ToList(),
+            TotalCount = scopedList.Count,
             PageNumber = normalizedPage,
             PageSize = normalizedSize
         };
@@ -97,6 +125,8 @@ public class BranchService : IBranchService
 
     public async Task<BranchDto> GetByIdAsync(int id)
     {
+        if (!await _dataScopeResolver.CanAccessBranchAsync(id))
+            throw new NotFoundException($"Branch '{id}' was not found.");
         var branch = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Branch '{id}' was not found.");
         return ToDto(branch);
@@ -104,6 +134,9 @@ public class BranchService : IBranchService
 
     public async Task<BranchDto> CreateAsync(CreateBranchRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(request.CompanyId))
+            throw new UnauthorizedAccess("You do not have access to the selected company.");
+
         var branchCode = request.BranchCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, branchCode))
             throw new DomainException($"Branch code '{branchCode}' is already in use.");
@@ -111,6 +144,7 @@ public class BranchService : IBranchService
         var branch = new Branch
         {
             CompanyId = request.CompanyId,
+            EntityId = request.EntityId,
             BranchCode = branchCode,
             BranchName = request.BranchName.Trim(),
             ShortName = request.ShortName?.Trim(),
@@ -139,9 +173,12 @@ public class BranchService : IBranchService
 
     public async Task<BranchDto> UpdateAsync(int id, UpdateBranchRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessBranchAsync(id))
+            throw new NotFoundException($"Branch '{id}' was not found.");
         var branch = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Branch '{id}' was not found.");
 
+        branch.EntityId = request.EntityId;
         branch.BranchCode = request.BranchCode.Trim();
         branch.BranchName = request.BranchName.Trim();
         branch.ShortName = request.ShortName?.Trim();
@@ -167,6 +204,8 @@ public class BranchService : IBranchService
 
     public async Task<bool> DeleteAsync(int id)
     {
+        if (!await _dataScopeResolver.CanAccessBranchAsync(id))
+            throw new NotFoundException($"Branch '{id}' was not found.");
         var branch = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Branch '{id}' was not found.");
 
@@ -177,7 +216,7 @@ public class BranchService : IBranchService
 
     private static BranchDto ToDto(Branch b) => new()
     {
-        Id = b.Id, CompanyId = b.CompanyId, BranchCode = b.BranchCode, BranchName = b.BranchName,
+        Id = b.Id, CompanyId = b.CompanyId, EntityId = b.EntityId, BranchCode = b.BranchCode, BranchName = b.BranchName,
         ShortName = b.ShortName, BranchTypeId = b.BranchTypeId, ParentBranchId = b.ParentBranchId,
         ManagerEmployeeId = b.ManagerEmployeeId, DefaultWarehouseId = b.DefaultWarehouseId,
         GSTNumber = b.GSTNumber, RegistrationNumber = b.RegistrationNumber,
@@ -194,18 +233,25 @@ public class DepartmentService : IDepartmentService
     private readonly IDepartmentRepository _repository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public DepartmentService(IDepartmentRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public DepartmentService(IDepartmentRepository repository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _repository = repository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<DepartmentDto>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
+
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId)
+            || (branchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(branchId)))
+            return new PaginatedResult<DepartmentDto> { Items = new List<DepartmentDto>(), TotalCount = 0, PageNumber = normalizedPage, PageSize = normalizedSize };
+
         var departments = await _repository.GetPagedAsync(companyId, branchId, normalizedPage, normalizedSize, search);
         var total = await _repository.CountAsync(companyId, branchId, search);
         return new PaginatedResult<DepartmentDto>
@@ -221,11 +267,17 @@ public class DepartmentService : IDepartmentService
     {
         var department = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Department '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(department.CompanyId))
+            throw new NotFoundException($"Department '{id}' was not found.");
         return ToDto(department);
     }
 
     public async Task<DepartmentDto> CreateAsync(CreateDepartmentRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(request.CompanyId)
+            || (request.BranchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(request.BranchId)))
+            throw new UnauthorizedAccess("You do not have access to the selected company or branch.");
+
         var departmentCode = request.DepartmentCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, request.BranchId, departmentCode))
             throw new DomainException($"Department code '{departmentCode}' is already in use.");
@@ -257,6 +309,8 @@ public class DepartmentService : IDepartmentService
     {
         var department = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Department '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(department.CompanyId))
+            throw new NotFoundException($"Department '{id}' was not found.");
 
         department.DepartmentCode = request.DepartmentCode.Trim();
         department.DepartmentName = request.DepartmentName.Trim();
@@ -278,6 +332,8 @@ public class DepartmentService : IDepartmentService
     {
         var department = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Department '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(department.CompanyId))
+            throw new NotFoundException($"Department '{id}' was not found.");
 
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("Department", id.ToString(), "Delete", _currentUser.Username);
@@ -299,18 +355,24 @@ public class DesignationService : IDesignationService
     private readonly IDesignationRepository _repository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public DesignationService(IDesignationRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public DesignationService(IDesignationRepository repository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _repository = repository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<DesignationDto>> GetPagedAsync(int companyId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
+
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId))
+            return new PaginatedResult<DesignationDto> { Items = new List<DesignationDto>(), TotalCount = 0, PageNumber = normalizedPage, PageSize = normalizedSize };
+
         var designations = await _repository.GetPagedAsync(companyId, normalizedPage, normalizedSize, search);
         var total = await _repository.CountAsync(companyId, search);
         return new PaginatedResult<DesignationDto>
@@ -326,11 +388,16 @@ public class DesignationService : IDesignationService
     {
         var designation = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Designation '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(designation.CompanyId))
+            throw new NotFoundException($"Designation '{id}' was not found.");
         return ToDto(designation);
     }
 
     public async Task<DesignationDto> CreateAsync(CreateDesignationRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(request.CompanyId))
+            throw new UnauthorizedAccess("You do not have access to the selected company.");
+
         var designationCode = request.DesignationCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, designationCode))
             throw new DomainException($"Designation code '{designationCode}' is already in use.");
@@ -363,6 +430,8 @@ public class DesignationService : IDesignationService
     {
         var designation = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Designation '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(designation.CompanyId))
+            throw new NotFoundException($"Designation '{id}' was not found.");
 
         designation.DesignationCode = request.DesignationCode.Trim();
         designation.DesignationName = request.DesignationName.Trim();
@@ -385,6 +454,8 @@ public class DesignationService : IDesignationService
     {
         var designation = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Designation '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(designation.CompanyId))
+            throw new NotFoundException($"Designation '{id}' was not found.");
 
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("Designation", id.ToString(), "Delete", _currentUser.Username);
@@ -407,18 +478,25 @@ public class EmployeeService : IEmployeeService
     private readonly IEmployeeRepository _repository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public EmployeeService(IEmployeeRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public EmployeeService(IEmployeeRepository repository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _repository = repository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<EmployeeDto>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
+
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId)
+            || (branchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(branchId)))
+            return new PaginatedResult<EmployeeDto> { Items = new List<EmployeeDto>(), TotalCount = 0, PageNumber = normalizedPage, PageSize = normalizedSize };
+
         var employees = await _repository.GetPagedAsync(companyId, branchId, normalizedPage, normalizedSize, search);
         var total = await _repository.CountAsync(companyId, branchId, search);
         return new PaginatedResult<EmployeeDto>
@@ -434,11 +512,17 @@ public class EmployeeService : IEmployeeService
     {
         var employee = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Employee '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(employee.CompanyId))
+            throw new NotFoundException($"Employee '{id}' was not found.");
         return ToDto(employee);
     }
 
     public async Task<EmployeeDto> CreateAsync(CreateEmployeeRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(request.CompanyId)
+            || (request.BranchId is > 0 && !await _dataScopeResolver.CanAccessBranchAsync(request.BranchId.Value)))
+            throw new UnauthorizedAccess("You do not have access to the selected company or branch.");
+
         var employeeCode = request.EmployeeCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, employeeCode))
             throw new DomainException($"Employee code '{employeeCode}' is already in use.");
@@ -470,6 +554,7 @@ public class EmployeeService : IEmployeeService
             IsBlocked = false,
             IsDeleted = false,
             Remarks = request.Remarks?.Trim(),
+            EntityId = request.EntityId,
             CreatedBy = _currentUser.UserId,
             ModifiedBy = _currentUser.UserId
         };
@@ -483,6 +568,8 @@ public class EmployeeService : IEmployeeService
     {
         var employee = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Employee '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(employee.CompanyId))
+            throw new NotFoundException($"Employee '{id}' was not found.");
 
         employee.EmployeeCode = request.EmployeeCode.Trim();
         employee.EmployeeNumber = request.EmployeeNumber?.Trim();
@@ -504,6 +591,7 @@ public class EmployeeService : IEmployeeService
         employee.IsActive = request.IsActive;
         employee.IsBlocked = request.IsBlocked;
         employee.Remarks = request.Remarks?.Trim();
+        employee.EntityId = request.EntityId;
         employee.ModifiedBy = _currentUser.UserId;
 
         await _repository.UpdateAsync(employee);
@@ -515,6 +603,8 @@ public class EmployeeService : IEmployeeService
     {
         var employee = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Employee '{id}' was not found.");
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(employee.CompanyId))
+            throw new NotFoundException($"Employee '{id}' was not found.");
 
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("Employee", id.ToString(), "Delete", _currentUser.Username);
@@ -523,7 +613,7 @@ public class EmployeeService : IEmployeeService
 
     private static EmployeeDto ToDto(Employee e) => new()
     {
-        Id = e.Id, CompanyId = e.CompanyId, BranchId = e.BranchId, DepartmentId = e.DepartmentId,
+        Id = e.Id, EntityId = e.EntityId, CompanyId = e.CompanyId, BranchId = e.BranchId, DepartmentId = e.DepartmentId,
         DesignationId = e.DesignationId, EmployeeCode = e.EmployeeCode, EmployeeNumber = e.EmployeeNumber,
         FirstName = e.FirstName, MiddleName = e.MiddleName, LastName = e.LastName,
         DisplayName = e.DisplayName, GenderId = e.GenderId, MaritalStatusId = e.MaritalStatusId,
@@ -541,24 +631,55 @@ public class WarehouseService : IWarehouseService
     private readonly IWarehouseRepository _repository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public WarehouseService(IWarehouseRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public WarehouseService(IWarehouseRepository repository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _repository = repository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<WarehouseDto>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
-        var warehouses = await _repository.GetPagedAsync(companyId, branchId, normalizedPage, normalizedSize, search);
-        var total = await _repository.CountAsync(companyId, branchId, search);
+
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId)
+            || (branchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(branchId)))
+            return new PaginatedResult<WarehouseDto> { Items = new List<WarehouseDto>(), TotalCount = 0, PageNumber = normalizedPage, PageSize = normalizedSize };
+
+        var allowedWarehouseIds = await _dataScopeResolver.GetAllowedWarehouseIdsAsync();
+        if (allowedWarehouseIds is null)
+        {
+            var warehouses = await _repository.GetPagedAsync(companyId, branchId, normalizedPage, normalizedSize, search);
+            var total = await _repository.CountAsync(companyId, branchId, search);
+            return new PaginatedResult<WarehouseDto>
+            {
+                Items = warehouses.Select(ToDto).ToList(),
+                TotalCount = total,
+                PageNumber = normalizedPage,
+                PageSize = normalizedSize
+            };
+        }
+
+        var scoped = (await _repository.GetAllForCompanyAsync(companyId)).Where(w => allowedWarehouseIds.Contains(w.Id));
+        if (branchId > 0)
+            scoped = scoped.Where(w => w.BranchId == branchId);
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            scoped = scoped.Where(w =>
+                (w.WarehouseName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (w.WarehouseCode?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (w.ShortName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+        var scopedList = scoped.OrderByDescending(w => w.Id).ToList();
+
         return new PaginatedResult<WarehouseDto>
         {
-            Items = warehouses.Select(ToDto).ToList(),
-            TotalCount = total,
+            Items = scopedList.Skip((normalizedPage - 1) * normalizedSize).Take(normalizedSize).Select(ToDto).ToList(),
+            TotalCount = scopedList.Count,
             PageNumber = normalizedPage,
             PageSize = normalizedSize
         };
@@ -566,6 +687,8 @@ public class WarehouseService : IWarehouseService
 
     public async Task<WarehouseDto> GetByIdAsync(int id)
     {
+        if (!await _dataScopeResolver.CanAccessWarehouseAsync(id))
+            throw new NotFoundException($"Warehouse '{id}' was not found.");
         var warehouse = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Warehouse '{id}' was not found.");
         return ToDto(warehouse);
@@ -574,11 +697,24 @@ public class WarehouseService : IWarehouseService
     public async Task<IEnumerable<WarehouseDto>> GetAllAsync(bool includeInactive)
     {
         var warehouses = await _repository.GetAllAsync(includeInactive);
+
+        var allowedWarehouseIds = await _dataScopeResolver.GetAllowedWarehouseIdsAsync();
+        if (allowedWarehouseIds is not null)
+            warehouses = warehouses.Where(w => allowedWarehouseIds.Contains(w.Id));
+
+        var allowedCompanyIds = await _dataScopeResolver.GetAllowedCompanyIdsAsync();
+        if (allowedCompanyIds is not null)
+            warehouses = warehouses.Where(w => allowedCompanyIds.Contains(w.CompanyId));
+
         return warehouses.Select(ToDto);
     }
 
     public async Task<WarehouseDto> CreateAsync(CreateWarehouseRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(request.CompanyId)
+            || (request.BranchId.HasValue && request.BranchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(request.BranchId.Value)))
+            throw new UnauthorizedAccess("You do not have access to the selected company or branch.");
+
         var warehouseCode = request.WarehouseCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, request.BranchId ?? 0, warehouseCode))
             throw new DomainException($"Warehouse code '{warehouseCode}' is already in use.");
@@ -587,6 +723,7 @@ public class WarehouseService : IWarehouseService
         {
             CompanyId = request.CompanyId,
             BranchId = request.BranchId,
+            EntityId = request.EntityId,
             WarehouseCode = warehouseCode,
             WarehouseName = request.WarehouseName.Trim(),
             ShortName = request.ShortName?.Trim(),
@@ -611,9 +748,12 @@ public class WarehouseService : IWarehouseService
 
     public async Task<WarehouseDto> UpdateAsync(int id, UpdateWarehouseRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessWarehouseAsync(id))
+            throw new NotFoundException($"Warehouse '{id}' was not found.");
         var warehouse = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Warehouse '{id}' was not found.");
 
+        warehouse.EntityId = request.EntityId;
         warehouse.WarehouseCode = request.WarehouseCode.Trim();
         warehouse.WarehouseName = request.WarehouseName.Trim();
         warehouse.ShortName = request.ShortName?.Trim();
@@ -635,6 +775,8 @@ public class WarehouseService : IWarehouseService
 
     public async Task<bool> DeleteAsync(int id)
     {
+        if (!await _dataScopeResolver.CanAccessWarehouseAsync(id))
+            throw new NotFoundException($"Warehouse '{id}' was not found.");
         var warehouse = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Warehouse '{id}' was not found.");
 
@@ -645,7 +787,7 @@ public class WarehouseService : IWarehouseService
 
     private static WarehouseDto ToDto(Warehouse w) => new()
     {
-        Id = w.Id, CompanyId = w.CompanyId, BranchId = w.BranchId, WarehouseCode = w.WarehouseCode,
+        Id = w.Id, CompanyId = w.CompanyId, BranchId = w.BranchId, EntityId = w.EntityId, WarehouseCode = w.WarehouseCode,
         WarehouseName = w.WarehouseName, ShortName = w.ShortName, WarehouseTypeId = w.WarehouseTypeId,
         ParentWarehouseId = w.ParentWarehouseId, ManagerEmployeeId = w.ManagerEmployeeId,
         AllowNegativeStock = w.AllowNegativeStock, IsDefault = w.IsDefault, SortOrder = w.SortOrder,

@@ -945,7 +945,7 @@ public class UserFieldPermissionEntryService : IUserFieldPermissionEntryService
 }
 
 /* ---------------------------------------------------------------------------
-   DataScope Service (multi-row per role, CRUD)
+   DataScope Service (multi-row per role, CRUD - Company/Branch/Warehouse only)
    --------------------------------------------------------------------------- */
 public interface IDataScopeService
 {
@@ -954,6 +954,9 @@ public interface IDataScopeService
     Task<DataScopeDto> CreateAsync(SetDataScopeRequest request);
     Task<DataScopeDto> UpdateAsync(int id, SetDataScopeRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<RoleDataScopeSelectionDto> GetSelectionByRoleAsync(int roleId);
+    Task<bool> ReplaceForRoleAsync(int roleId, SetRoleDataScopeSelectionRequest request);
+    Task<MyEffectiveScopeDto> GetMyEffectiveScopeAsync();
 }
 
 public class DataScopeService : IDataScopeService
@@ -961,20 +964,35 @@ public class DataScopeService : IDataScopeService
     private readonly IDataScopeRepository _repo;
     private readonly IAuditService _audit;
     private readonly ICurrentUser _user;
+    private readonly IRoleRepository _roleRepo;
+    private readonly ICompanyRepository _companyRepo;
+    private readonly IBranchRepository _branchRepo;
+    private readonly IWarehouseRepository _warehouseRepo;
+    private readonly IUserDataScopeOverrideRepository _userOverrideRepo;
 
-    public DataScopeService(IDataScopeRepository repo, IAuditService audit, ICurrentUser user)
-    { _repo = repo; _audit = audit; _user = user; }
+    public DataScopeService(
+        IDataScopeRepository repo, IAuditService audit, ICurrentUser user,
+        IRoleRepository roleRepo, ICompanyRepository companyRepo,
+        IBranchRepository branchRepo, IWarehouseRepository warehouseRepo,
+        IUserDataScopeOverrideRepository userOverrideRepo)
+    {
+        _repo = repo; _audit = audit; _user = user;
+        _roleRepo = roleRepo; _companyRepo = companyRepo;
+        _branchRepo = branchRepo; _warehouseRepo = warehouseRepo;
+        _userOverrideRepo = userOverrideRepo;
+    }
 
     public async Task<IEnumerable<DataScopeDto>> GetByRoleAsync(int roleId)
     {
-        var items = await _repo.GetByRoleAsync(roleId);
-        return items.Select(Map).ToList();
+        var items = (await _repo.GetByRoleAsync(roleId)).ToList();
+        return await MapWithNamesAsync(items);
     }
 
     public async Task<DataScopeDto?> GetByIdAsync(int id)
     {
         var e = await _repo.GetByIdAsync(id);
-        return e is null ? null : Map(e);
+        if (e is null) return null;
+        return (await MapWithNamesAsync(new[] { e })).First();
     }
 
     public async Task<DataScopeDto> CreateAsync(SetDataScopeRequest r)
@@ -982,15 +1000,13 @@ public class DataScopeService : IDataScopeService
         var e = new DataScope
         {
             RoleId = r.RoleId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
-            CompanyId = r.CompanyId, BranchId = r.BranchId, DepartmentId = r.DepartmentId,
-            WarehouseId = r.WarehouseId, BusinessUnitId = r.BusinessUnitId,
-            CostCenterId = r.CostCenterId, ProfitCenterId = r.ProfitCenterId,
+            CompanyId = r.CompanyId, BranchId = r.BranchId, WarehouseId = r.WarehouseId,
             CanView = r.CanView, CanCreate = r.CanCreate, CanEdit = r.CanEdit, CanDelete = r.CanDelete,
             IsActive = r.IsActive, CreatedBy = _user.Username
         };
         e.Id = await _repo.InsertAsync(e);
         await _audit.WriteAsync("DataScope", e.Id.ToString(), "Create", _user.Username);
-        return Map(e);
+        return (await MapWithNamesAsync(new[] { e })).First();
     }
 
     public async Task<DataScopeDto> UpdateAsync(int id, SetDataScopeRequest r)
@@ -1001,11 +1017,7 @@ public class DataScopeService : IDataScopeService
         existing.ScreenId = r.ScreenId;
         existing.CompanyId = r.CompanyId;
         existing.BranchId = r.BranchId;
-        existing.DepartmentId = r.DepartmentId;
         existing.WarehouseId = r.WarehouseId;
-        existing.BusinessUnitId = r.BusinessUnitId;
-        existing.CostCenterId = r.CostCenterId;
-        existing.ProfitCenterId = r.ProfitCenterId;
         existing.CanView = r.CanView;
         existing.CanCreate = r.CanCreate;
         existing.CanEdit = r.CanEdit;
@@ -1014,7 +1026,7 @@ public class DataScopeService : IDataScopeService
         existing.ModifiedBy = _user.Username;
         await _repo.UpdateAsync(existing);
         await _audit.WriteAsync("DataScope", id.ToString(), "Update", _user.Username);
-        return Map(existing);
+        return (await MapWithNamesAsync(new[] { existing })).First();
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -1024,16 +1036,190 @@ public class DataScopeService : IDataScopeService
         return r;
     }
 
-    private static DataScopeDto Map(DataScope e) => new()
+    /// <summary>Flattens a role's scope rows into a single selection (lists + All flags).</summary>
+    public async Task<RoleDataScopeSelectionDto> GetSelectionByRoleAsync(int roleId)
     {
-        Id = e.Id, RoleId = e.RoleId, ModuleId = e.ModuleId, ScreenId = e.ScreenId,
-        CompanyId = e.CompanyId, BranchId = e.BranchId, DepartmentId = e.DepartmentId,
-        WarehouseId = e.WarehouseId, BusinessUnitId = e.BusinessUnitId,
-        CostCenterId = e.CostCenterId, ProfitCenterId = e.ProfitCenterId,
-        CanView = e.CanView, CanCreate = e.CanCreate, CanEdit = e.CanEdit, CanDelete = e.CanDelete,
-        IsActive = e.IsActive, CreatedDate = e.CreatedDate
-    };
+        var items = (await _repo.GetByRoleAsync(roleId)).ToList();
+        var dto = new RoleDataScopeSelectionDto();
+        if (items.Count == 0) return dto;
+
+        dto.HasScope = true;
+        dto.AllCompanies = items.Any(e => !e.CompanyId.HasValue);
+        dto.CompanyIds = items.Where(e => e.CompanyId.HasValue).Select(e => e.CompanyId!.Value).Distinct().ToList();
+        dto.AllBranches = items.Any(e => !e.BranchId.HasValue);
+        dto.BranchIds = items.Where(e => e.BranchId.HasValue).Select(e => e.BranchId!.Value).Distinct().ToList();
+        dto.AllWarehouses = items.Any(e => !e.WarehouseId.HasValue);
+        dto.WarehouseIds = items.Where(e => e.WarehouseId.HasValue).Select(e => e.WarehouseId!.Value).Distinct().ToList();
+
+        var first = items.First();
+        dto.CanView = first.CanView;
+        dto.CanCreate = first.CanCreate;
+        dto.CanEdit = first.CanEdit;
+        dto.CanDelete = first.CanDelete;
+        dto.IsActive = first.IsActive;
+        return dto;
+    }
+
+    /// <summary>Deletes all scope rows for a role and rebuilds them from the checkbox selection
+    /// (All at a level = NULL column value). Runs in the same connection-loop style as the
+    /// workflow bulk insert.</summary>
+    public async Task<bool> ReplaceForRoleAsync(int roleId, SetRoleDataScopeSelectionRequest r)
+    {
+        var companies = r.AllCompanies
+            ? new int?[] { null }
+            : r.CompanyIds.Select(c => (int?)c).Distinct().ToArray();
+        var branches = r.AllBranches
+            ? new int?[] { null }
+            : r.BranchIds.Select(b => (int?)b).Distinct().ToArray();
+        var warehouses = r.AllWarehouses
+            ? new int?[] { null }
+            : r.WarehouseIds.Select(w => (int?)w).Distinct().ToArray();
+
+        var rows = new List<DataScope>();
+        foreach (var companyId in companies)
+        foreach (var branchId in branches)
+        foreach (var warehouseId in warehouses)
+        {
+            rows.Add(new DataScope
+            {
+                RoleId = roleId,
+                ModuleId = null,
+                ScreenId = null,
+                CompanyId = companyId,
+                BranchId = branchId,
+                WarehouseId = warehouseId,
+                CanView = r.CanView,
+                CanCreate = r.CanCreate,
+                CanEdit = r.CanEdit,
+                CanDelete = r.CanDelete,
+                IsActive = r.IsActive,
+                CreatedBy = _user.Username
+            });
+        }
+
+        await _repo.DeleteAllByRoleAsync(roleId);
+        if (rows.Count > 0)
+            await _repo.InsertManyAsync(rows);
+        await _audit.WriteAsync("DataScope", $"role={roleId}", "Replace", _user.Username);
+        return true;
+    }
+
+    /// <summary>Effective data scope for the current user = union of role-based scopes (active + canView)
+    /// and active user overrides (Grant + within validity window), with lookup names resolved.</summary>
+    public async Task<MyEffectiveScopeDto> GetMyEffectiveScopeAsync()
+    {
+        var companyIds = new HashSet<int>();
+        var branchIds = new HashSet<int>();
+        var warehouseIds = new HashSet<int>();
+
+        var roleIds = await _roleRepo.GetRoleIdsForUserAsync(_user.UserId);
+        foreach (var roleId in roleIds)
+        {
+            var scopes = await _repo.GetByRoleAsync(roleId);
+            foreach (var s in scopes)
+            {
+                if (!s.IsActive || !s.CanView) continue;
+                if (s.CompanyId.HasValue) companyIds.Add(s.CompanyId.Value);
+                if (s.BranchId.HasValue) branchIds.Add(s.BranchId.Value);
+                if (s.WarehouseId.HasValue) warehouseIds.Add(s.WarehouseId.Value);
+            }
+        }
+
+        var now = DateTime.UtcNow;
+        var overrides = await _userOverrideRepo.GetByUserAsync(_user.UserId);
+        foreach (var o in overrides)
+        {
+            if (!o.IsActive || !o.Allow) continue;
+            if (o.EffectiveFrom > now) continue;
+            if (o.EffectiveTo.HasValue && o.EffectiveTo <= now) continue;
+            if (!int.TryParse(o.ScopeValue, out var id) || id <= 0) continue;
+            if (string.Equals(o.ScopeType, "Company", StringComparison.OrdinalIgnoreCase)) companyIds.Add(id);
+            else if (string.Equals(o.ScopeType, "Branch", StringComparison.OrdinalIgnoreCase)) branchIds.Add(id);
+            else if (string.Equals(o.ScopeType, "Warehouse", StringComparison.OrdinalIgnoreCase)) warehouseIds.Add(id);
+        }
+
+        var companyNames = new Dictionary<int, string>();
+        foreach (var id in companyIds)
+        {
+            var c = await _companyRepo.GetByIdAsync(id);
+            if (c is not null) companyNames[id] = c.CompanyName;
+        }
+        var branchNames = new Dictionary<int, string>();
+        foreach (var id in branchIds)
+        {
+            var b = await _branchRepo.GetByIdAsync(id);
+            if (b is not null) branchNames[id] = b.BranchName;
+        }
+        var warehouseNames = new Dictionary<int, string>();
+        foreach (var id in warehouseIds)
+        {
+            var w = await _warehouseRepo.GetByIdAsync(id);
+            if (w is not null) warehouseNames[id] = w.WarehouseName;
+        }
+
+        return new MyEffectiveScopeDto
+        {
+            Companies = companyIds.OrderBy(x => x)
+                .Select(id => new MyScopeEntryDto { Id = id, Name = companyNames.GetValueOrDefault(id) }).ToList(),
+            Branches = branchIds.OrderBy(x => x)
+                .Select(id => new MyScopeEntryDto { Id = id, Name = branchNames.GetValueOrDefault(id) }).ToList(),
+            Warehouses = warehouseIds.OrderBy(x => x)
+                .Select(id => new MyScopeEntryDto { Id = id, Name = warehouseNames.GetValueOrDefault(id) }).ToList(),
+            UnrestrictedCompanies = _user.IsSuperAdmin,
+            UnrestrictedBranches = _user.IsSuperAdmin,
+            UnrestrictedWarehouses = _user.IsSuperAdmin,
+        };
+    }
+
+    // Resolves RoleName/CompanyName/BranchName/WarehouseName, which the entity alone doesn't carry.
+    private async Task<List<DataScopeDto>> MapWithNamesAsync(IReadOnlyCollection<DataScope> entities)
+    {
+        var roleNames = await _roleRepo.GetAllNamesAsync();
+
+        var companyNames = new Dictionary<int, string>();
+        foreach (var companyId in entities.Where(e => e.CompanyId.HasValue).Select(e => e.CompanyId!.Value).Distinct())
+        {
+            var company = await _companyRepo.GetByIdAsync(companyId);
+            if (company is not null) companyNames[companyId] = company.CompanyName;
+        }
+
+        var branchNames = new Dictionary<int, string>();
+        foreach (var branchId in entities.Where(e => e.BranchId.HasValue).Select(e => e.BranchId!.Value).Distinct())
+        {
+            var branch = await _branchRepo.GetByIdAsync(branchId);
+            if (branch is not null) branchNames[branchId] = branch.BranchName;
+        }
+
+        var warehouseNames = new Dictionary<int, string>();
+        foreach (var warehouseId in entities.Where(e => e.WarehouseId.HasValue).Select(e => e.WarehouseId!.Value).Distinct())
+        {
+            var warehouse = await _warehouseRepo.GetByIdAsync(warehouseId);
+            if (warehouse is not null) warehouseNames[warehouseId] = warehouse.WarehouseName;
+        }
+
+        return entities.Select(e => new DataScopeDto
+        {
+            Id = e.Id,
+            RoleId = e.RoleId,
+            RoleName = roleNames.TryGetValue(e.RoleId, out var rn) ? rn : null,
+            ModuleId = e.ModuleId,
+            ScreenId = e.ScreenId,
+            CompanyId = e.CompanyId,
+            CompanyName = e.CompanyId.HasValue && companyNames.TryGetValue(e.CompanyId.Value, out var cn) ? cn : null,
+            BranchId = e.BranchId,
+            BranchName = e.BranchId.HasValue && branchNames.TryGetValue(e.BranchId.Value, out var bn) ? bn : null,
+            WarehouseId = e.WarehouseId,
+            WarehouseName = e.WarehouseId.HasValue && warehouseNames.TryGetValue(e.WarehouseId.Value, out var wn) ? wn : null,
+            CanView = e.CanView,
+            CanCreate = e.CanCreate,
+            CanEdit = e.CanEdit,
+            CanDelete = e.CanDelete,
+            IsActive = e.IsActive,
+            CreatedDate = e.CreatedDate
+        }).ToList();
+    }
 }
+
 
 /* ---------------------------------------------------------------------------
    UserDataScopeOverride Service
@@ -1045,6 +1231,8 @@ public interface IUserDataScopeOverrideService
     Task<UserDataScopeOverrideDto> CreateAsync(SetUserDataScopeOverrideRequest request);
     Task<UserDataScopeOverrideDto> UpdateAsync(int id, SetUserDataScopeOverrideRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<UserDataScopeOverrideSelectionDto> GetSelectionByUserAsync(int userId);
+    Task<bool> ReplaceForUserAsync(int userId, SetUserDataScopeOverrideSelectionRequest request);
 }
 
 public class UserDataScopeOverrideService : IUserDataScopeOverrideService
@@ -1052,6 +1240,11 @@ public class UserDataScopeOverrideService : IUserDataScopeOverrideService
     private readonly IUserDataScopeOverrideRepository _repo;
     private readonly IAuditService _audit;
     private readonly ICurrentUser _user;
+    
+    private static readonly HashSet<string> ValidScopeTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Company", "Branch", "Warehouse"
+    };
 
     public UserDataScopeOverrideService(IUserDataScopeOverrideRepository repo, IAuditService audit, ICurrentUser user)
     { _repo = repo; _audit = audit; _user = user; }
@@ -1070,6 +1263,8 @@ public class UserDataScopeOverrideService : IUserDataScopeOverrideService
 
     public async Task<UserDataScopeOverrideDto> CreateAsync(SetUserDataScopeOverrideRequest r)
     {
+        ValidateScopeType(r.ScopeType);
+        
         var e = new UserDataScopeOverride
         {
             UserId = r.UserId, ModuleId = r.ModuleId, ScreenId = r.ScreenId,
@@ -1086,6 +1281,8 @@ public class UserDataScopeOverrideService : IUserDataScopeOverrideService
 
     public async Task<UserDataScopeOverrideDto> UpdateAsync(int id, SetUserDataScopeOverrideRequest r)
     {
+        ValidateScopeType(r.ScopeType);
+        
         var existing = await _repo.GetByIdAsync(id)
             ?? throw new InvalidOperationException("User data scope override not found");
         existing.ScopeType = r.ScopeType;
@@ -1107,6 +1304,101 @@ public class UserDataScopeOverrideService : IUserDataScopeOverrideService
         var r = await _repo.DeleteAsync(id);
         if (r) await _audit.WriteAsync("UserDataScopeOverride", id.ToString(), "Delete", _user.Username);
         return r;
+    }
+
+    /// <summary>Flattens a user's override rows into a single checkbox selection (mirrors Data Scopes).</summary>
+    public async Task<UserDataScopeOverrideSelectionDto> GetSelectionByUserAsync(int userId)
+    {
+        var items = (await _repo.GetByUserAsync(userId)).ToList();
+        var dto = new UserDataScopeOverrideSelectionDto();
+        if (items.Count == 0) return dto;
+
+        dto.HasScope = true;
+        var first = items[0];
+        dto.PermissionType = first.PermissionType;
+        dto.Allow = first.Allow;
+        dto.IsActive = first.IsActive;
+
+        var froms = items.Select(o => (DateTime?)o.EffectiveFrom).Where(v => v.HasValue).Select(v => v!.Value).ToList();
+        var tos = items.Select(o => (DateTime?)o.EffectiveTo).Where(v => v.HasValue).Select(v => v!.Value).ToList();
+        dto.EffectiveFrom = froms.Count > 0 ? froms.Min() : null;
+        dto.EffectiveTo = tos.Count > 0 ? tos.Max() : null;
+        dto.Remarks = items.FirstOrDefault(o => !string.IsNullOrWhiteSpace(o.Remarks))?.Remarks;
+
+        var grants = items.Where(o => o.Allow).ToList();
+        dto.CompanyIds = grants.Where(o => o.ScopeType == "Company" && int.TryParse(o.ScopeValue, out _))
+            .Select(o => int.Parse(o.ScopeValue)).Distinct().ToList();
+        dto.BranchIds = grants.Where(o => o.ScopeType == "Branch" && int.TryParse(o.ScopeValue, out _))
+            .Select(o => int.Parse(o.ScopeValue)).Distinct().ToList();
+        dto.WarehouseIds = grants.Where(o => o.ScopeType == "Warehouse" && int.TryParse(o.ScopeValue, out _))
+            .Select(o => int.Parse(o.ScopeValue)).Distinct().ToList();
+
+        // Nothing specific granted at a level -> that level is left to the role scope (All).
+        dto.AllCompanies = dto.CompanyIds.Count == 0;
+        dto.AllBranches = dto.BranchIds.Count == 0;
+        dto.AllWarehouses = dto.WarehouseIds.Count == 0;
+        return dto;
+    }
+
+    /// <summary>Deletes all override rows for a user and rebuilds them from the checkbox selection.
+    /// "All" at a level means no specific override rows (role scope governs); specifics are stored
+    /// one row per selected company/branch/warehouse.</summary>
+    public async Task<bool> ReplaceForUserAsync(int userId, SetUserDataScopeOverrideSelectionRequest r)
+    {
+        var allow = r.Allow;
+        var companyIds = r.AllCompanies ? Array.Empty<int>() : r.CompanyIds.Distinct().ToArray();
+        var branchIds = r.AllBranches ? Array.Empty<int>() : r.BranchIds.Distinct().ToArray();
+        var warehouseIds = r.AllWarehouses ? Array.Empty<int>() : r.WarehouseIds.Distinct().ToArray();
+        if (companyIds.Length == 0 && branchIds.Length == 0 && warehouseIds.Length == 0)
+            return await ClearForUserAsync(userId);
+
+        var rows = new List<UserDataScopeOverride>();
+        foreach (var id in companyIds)
+            rows.Add(NewOverride(userId, "Company", id, r));
+        foreach (var id in branchIds)
+            rows.Add(NewOverride(userId, "Branch", id, r));
+        foreach (var id in warehouseIds)
+            rows.Add(NewOverride(userId, "Warehouse", id, r));
+
+        await _repo.DeleteAllByUserAsync(userId);
+        await _repo.InsertManyAsync(rows);
+        await _audit.WriteAsync("UserDataScopeOverride", $"user={userId}", "Replace", _user.Username);
+        return true;
+    }
+
+    private async Task<bool> ClearForUserAsync(int userId)
+    {
+        await _repo.DeleteAllByUserAsync(userId);
+        await _audit.WriteAsync("UserDataScopeOverride", $"user={userId}", "Replace(clear)", _user.Username);
+        return true;
+    }
+
+    private UserDataScopeOverride NewOverride(int userId, int? moduleId, int? screenId, int id, string scopeType, string permissionType, bool allow, DateTime? effectiveFrom, DateTime? effectiveTo, string? remarks, bool isActive)
+        => new()
+        {
+            UserId = userId,
+            ModuleId = moduleId,
+            ScreenId = screenId,
+            ScopeType = scopeType,
+            ScopeValue = id.ToString(),
+            PermissionType = permissionType,
+            Allow = allow,
+            EffectiveFrom = effectiveFrom ?? DateTime.UtcNow,
+            EffectiveTo = effectiveTo,
+            Remarks = remarks,
+            IsActive = isActive,
+            CreatedBy = _user.Username
+        };
+
+    private UserDataScopeOverride NewOverride(int userId, string scopeType, int id, SetUserDataScopeOverrideSelectionRequest r)
+        => NewOverride(userId, null, null, id, scopeType, r.PermissionType, r.Allow, r.EffectiveFrom, r.EffectiveTo, r.Remarks, r.IsActive);
+
+    private static void ValidateScopeType(string scopeType)
+    {
+        if (!ValidScopeTypes.Contains(scopeType))
+        {
+            throw new InvalidOperationException($"Invalid ScopeType '{scopeType}'. Valid values: Company, Branch, Warehouse");
+        }
     }
 
     private static UserDataScopeOverrideDto Map(UserDataScopeOverride e) => new()

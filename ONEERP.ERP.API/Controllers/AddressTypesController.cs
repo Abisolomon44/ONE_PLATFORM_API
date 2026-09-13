@@ -27,8 +27,8 @@ public class AddressTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.AddressTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<AddressTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class AddressTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.AddressTypesView)]
     [ProducesResponseType(typeof(ApiResponse<AddressTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

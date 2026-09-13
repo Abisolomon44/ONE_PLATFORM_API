@@ -4,15 +4,15 @@ using ONEERP.Shared.Constants;
 namespace ONEERP.ERP.API.Security;
 
 /// <summary>
-/// Data scope restriction for a role (branch, department, warehouse, etc.)
+/// Data scope restriction for a role (Company, Branch, Warehouse only)
 /// </summary>
 public sealed class RoleDataScopeEntry
 {
     public int RoleId { get; init; }
     public int? ModuleId { get; init; }
     public int? ScreenId { get; init; }
+    public int? CompanyId { get; init; }
     public int? BranchId { get; init; }
-    public int? DepartmentId { get; init; }
     public int? WarehouseId { get; init; }
     public bool CanView { get; init; }
     public bool CanCreate { get; init; }
@@ -28,12 +28,22 @@ public sealed class UserDataScopeOverrideEntry
     public int UserId { get; init; }
     public int? ModuleId { get; init; }
     public int? ScreenId { get; init; }
-    public string ScopeType { get; init; } = string.Empty;
+    public string ScopeType { get; init; } = string.Empty;  // Company, Branch, Warehouse
     public string ScopeValue { get; init; } = string.Empty;
     public string PermissionType { get; init; } = string.Empty;
     public bool Allow { get; init; }
     public DateTime EffectiveFrom { get; init; }
     public DateTime? EffectiveTo { get; init; }
+}
+
+/// <summary>
+/// Effective data scope for a user.
+/// </summary>
+public sealed class EffectiveDataScope
+{
+    public string Level { get; init; } = string.Empty;  // Company, Branch, Warehouse
+    public int Id { get; init; }
+    public string? Name { get; init; }
 }
 
 /// <summary>
@@ -47,6 +57,7 @@ public sealed class ResolvedPermissions
     public HashSet<string> PermissionCodes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
     public List<RoleDataScopeEntry> DataScopes { get; init; } = new();
     public List<UserDataScopeOverrideEntry> UserOverrides { get; init; } = new();
+    public EffectiveDataScope? EffectiveScope { get; init; }
     public int Version { get; init; }
     public DateTimeOffset Expiry { get; set; }
 }

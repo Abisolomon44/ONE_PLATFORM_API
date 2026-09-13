@@ -21,12 +21,14 @@ public class CompanyService : ICompanyService
     private readonly ICompanyRepository _companyRepository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
-    public CompanyService(ICompanyRepository companyRepository, IAuditService auditService, ICurrentUser currentUser)
+    public CompanyService(ICompanyRepository companyRepository, IAuditService auditService, ICurrentUser currentUser, IDataScopeResolver dataScopeResolver)
     {
         _companyRepository = companyRepository;
         _auditService = auditService;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     public async Task<PaginatedResult<CompanyDto>> GetPagedAsync(int pageNumber, int pageSize, string search)
@@ -34,13 +36,36 @@ public class CompanyService : ICompanyService
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
         var normalizedSize = pageSize < 1 ? 10 : pageSize;
 
-        var companies = await _companyRepository.GetPagedAsync(normalizedPage, normalizedSize, search);
-        var total = await _companyRepository.CountAsync(search);
+        var allowedCompanyIds = await _dataScopeResolver.GetAllowedCompanyIdsAsync();
+        if (allowedCompanyIds is null)
+        {
+            var companies = await _companyRepository.GetPagedAsync(normalizedPage, normalizedSize, search);
+            var total = await _companyRepository.CountAsync(search);
+            return new PaginatedResult<CompanyDto>
+            {
+                Items = companies.Select(ToDto).ToList(),
+                TotalCount = total,
+                PageNumber = normalizedPage,
+                PageSize = normalizedSize
+            };
+        }
+
+        var scoped = (await _companyRepository.GetAllAsync())
+            .Where(c => allowedCompanyIds.Contains(c.Id));
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            scoped = scoped.Where(c =>
+                (c.CompanyName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (c.CompanyCode?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (c.ShortName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (c.Abbreviation?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+        var scopedList = scoped.OrderByDescending(c => c.Id).ToList();
 
         return new PaginatedResult<CompanyDto>
         {
-            Items = companies.Select(ToDto).ToList(),
-            TotalCount = total,
+            Items = scopedList.Skip((normalizedPage - 1) * normalizedSize).Take(normalizedSize).Select(ToDto).ToList(),
+            TotalCount = scopedList.Count,
             PageNumber = normalizedPage,
             PageSize = normalizedSize
         };
@@ -48,6 +73,8 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDto> GetByIdAsync(int companyId)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId))
+            throw new NotFoundException($"Company '{companyId}' was not found.");
         var company = await _companyRepository.GetByIdAsync(companyId)
             ?? throw new NotFoundException($"Company '{companyId}' was not found.");
         return ToDto(company);
@@ -67,6 +94,7 @@ public class CompanyService : ICompanyService
 
         var company = new Company
         {
+            EntityId = request.EntityId,
             CompanyCode = companyCode,
             CompanyName = request.CompanyName.Trim(),
             ShortName = request.ShortName?.Trim(),
@@ -115,6 +143,8 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDto> UpdateAsync(int companyId, UpdateCompanyRequest request)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId))
+            throw new NotFoundException($"Company '{companyId}' was not found.");
         var company = await _companyRepository.GetByIdAsync(companyId)
             ?? throw new NotFoundException($"Company '{companyId}' was not found.");
 
@@ -163,6 +193,8 @@ public class CompanyService : ICompanyService
 
     public async Task<bool> DeleteAsync(int companyId)
     {
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(companyId))
+            throw new NotFoundException($"Company '{companyId}' was not found.");
         var company = await _companyRepository.GetByIdAsync(companyId)
             ?? throw new NotFoundException($"Company '{companyId}' was not found.");
 
@@ -174,6 +206,7 @@ public class CompanyService : ICompanyService
     private static CompanyDto ToDto(Company c) => new()
     {
         Id = c.Id,
+        EntityId = c.EntityId,
         CompanyCode = c.CompanyCode,
         CompanyName = c.CompanyName,
         ShortName = c.ShortName,

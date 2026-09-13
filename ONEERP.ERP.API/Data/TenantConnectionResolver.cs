@@ -112,17 +112,20 @@ public class TenantConnectionResolver : ITenantConnectionResolver
     /// Finds the tenant code that owns the given (globally unique) tenant admin
     /// username. Used to support username-only ERP login across tenant databases.
     /// </summary>
-    public async Task<string?> ResolveTenantCodeByUsernameAsync(string username)
-    {
-        using var connection = _factory.CreatePlatformConnection();
-        return await _sql.ExecuteScalarAsync<string>(connection, @"
+        public async Task<string?> ResolveTenantCodeByUsernameAsync(string username)
+        {
+            using var connection = _factory.CreatePlatformConnection();
+            // Use a slightly longer command timeout for this lookup in case the platform
+            // database is under load. Connection-level timeouts are controlled by the
+            // connection string (see PlatformDbConnectionFactory).
+            return await _sql.ExecuteScalarAsync<string>(connection, @"
             SELECT TOP 1 TenantCode FROM (
                 SELECT TenantCode FROM dbo.TenantUserMaps WHERE Username = @username
                 UNION ALL
                 SELECT TenantCode FROM dbo.Tenants WHERE AdminUsername = @username AND IsDeleted = 0
             ) t",
-            new { username });
-    }
+            new { username }, null, 60);
+        }
 
     private static string CacheKey(string tenantCode) => $"tenant-conn:{tenantCode.ToLowerInvariant()}";
 }

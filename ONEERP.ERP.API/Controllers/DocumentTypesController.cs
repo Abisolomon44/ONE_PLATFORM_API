@@ -27,8 +27,8 @@ public class DocumentTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.DocumentTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<DocumentTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class DocumentTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.DocumentTypesView)]
     [ProducesResponseType(typeof(ApiResponse<DocumentTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

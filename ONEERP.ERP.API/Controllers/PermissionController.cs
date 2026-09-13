@@ -245,7 +245,7 @@ public class FieldPermissionsController : BaseController
     }
 }
 
-[Route("api/permission/[controller]")]
+[Route("api/permission")]
 public class UserPermissionsController : BaseController
 {
     private readonly IModulePermissionService _service;

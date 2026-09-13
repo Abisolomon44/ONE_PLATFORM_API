@@ -40,7 +40,8 @@ public record CreateCompanyRequest(
     string? Theme,
     string? PrimaryColor,
     string? SecondaryColor,
-    string? Remarks);
+    string? Remarks,
+    long? EntityId = null);
 
 public record UpdateCompanyRequest(
     string CompanyName,
@@ -91,6 +92,7 @@ public class PermissionDto
 public class BranchDto
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public string BranchCode { get; set; } = string.Empty;
     public string BranchName { get; set; } = string.Empty;
@@ -131,7 +133,8 @@ public record CreateBranchRequest(
     bool IsPurchaseBranch,
     bool IsServiceBranch,
     int SortOrder,
-    bool IsActive);
+    bool IsActive,
+    long? EntityId);
 
 public record UpdateBranchRequest(
     string BranchCode,
@@ -149,7 +152,8 @@ public record UpdateBranchRequest(
     bool IsServiceBranch,
     int SortOrder,
     bool IsActive,
-    bool IsBlocked);
+    bool IsBlocked,
+    long? EntityId);
 
 public class DepartmentDto
 {
@@ -245,6 +249,7 @@ public record UpdateDesignationRequest(
 public class EmployeeDto
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public int? BranchId { get; set; }
     public int? DepartmentId { get; set; }
@@ -299,7 +304,8 @@ public record CreateEmployeeRequest(
     int? ReportingManagerId,
     int? EmploymentTypeId,
     bool IsActive,
-    string? Remarks);
+    string? Remarks,
+    long? EntityId = null);
 
 public record UpdateEmployeeRequest(
     string EmployeeCode,
@@ -321,11 +327,13 @@ public record UpdateEmployeeRequest(
     int? EmploymentTypeId,
     bool IsActive,
     bool IsBlocked,
-    string? Remarks);
+    string? Remarks,
+    long? EntityId = null);
 
 public class WarehouseDto
 {
     public int Id { get; set; }
+    public long? EntityId { get; set; }
     public int CompanyId { get; set; }
     public int? BranchId { get; set; }
     public string WarehouseCode { get; set; } = string.Empty;
@@ -360,7 +368,8 @@ public record CreateWarehouseRequest(
     bool IsDefault,
     int SortOrder,
     string? Remarks,
-    bool IsActive);
+    bool IsActive,
+    long? EntityId);
 
 public record UpdateWarehouseRequest(
     string WarehouseCode,
@@ -374,4 +383,5 @@ public record UpdateWarehouseRequest(
     int SortOrder,
     string? Remarks,
     bool IsActive,
-    bool IsBlocked);
+    bool IsBlocked,
+    long? EntityId);

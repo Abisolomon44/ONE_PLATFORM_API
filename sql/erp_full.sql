@@ -1,4 +1,4 @@
-/* =============================================================================
+﻿/* =============================================================================
    ONE ERP - ERP Combined Schema + Seed (single batch)
    Combines erp_schema.sql + erp_seed.sql into one provision file.
    Executed automatically by ONEERP.Platform.API when provisioning a new
@@ -1022,6 +1022,154 @@ BEGIN
 END
 ;
 
+/* ---------------------------------------------------------------------------
+   Stores (retail/POS: physical point-of-sale locations)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Stores]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Stores (
+        StoreId         INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Stores PRIMARY KEY,
+        CompanyId       INT NOT NULL,
+        BranchId        INT NULL,
+        StoreCode       NVARCHAR(20) NOT NULL,
+        StoreName       NVARCHAR(200) NOT NULL,
+        StoreType       NVARCHAR(50) NULL,
+        Address         NVARCHAR(500) NULL,
+        Phone           NVARCHAR(30) NULL,
+        Email           NVARCHAR(100) NULL,
+        IsActive        BIT NOT NULL CONSTRAINT DF_Stores_IsActive DEFAULT 1,
+        IsDeleted       BIT NOT NULL CONSTRAINT DF_Stores_IsDeleted DEFAULT 0,
+        CreatedBy       INT NULL,
+        CreatedAt       DATETIME2 NOT NULL CONSTRAINT DF_Stores_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy       INT NULL,
+        UpdatedAt       DATETIME2 NULL,
+        CONSTRAINT UQ_Stores UNIQUE (CompanyId, BranchId, StoreCode),
+        CONSTRAINT FK_Stores_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_Stores_Branch FOREIGN KEY (BranchId) REFERENCES Branches(Id)
+    );
+
+    CREATE INDEX IX_Stores_Company ON dbo.Stores (CompanyId);
+    CREATE INDEX IX_Stores_Branch ON dbo.Stores (BranchId);
+    CREATE INDEX IX_Stores_Code ON dbo.Stores (StoreCode);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Counters (POS: physical counters/workstations within a store)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Counters]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Counters (
+        CounterId       INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Counters PRIMARY KEY,
+        StoreId         INT NOT NULL,
+        CounterCode     NVARCHAR(20) NOT NULL,
+        CounterName     NVARCHAR(200) NOT NULL,
+        IsActive        BIT NOT NULL CONSTRAINT DF_Counters_IsActive DEFAULT 1,
+        IsDeleted       BIT NOT NULL CONSTRAINT DF_Counters_IsDeleted DEFAULT 0,
+        CreatedBy       INT NULL,
+        CreatedAt       DATETIME2 NOT NULL CONSTRAINT DF_Counters_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy       INT NULL,
+        UpdatedAt       DATETIME2 NULL,
+        CONSTRAINT UQ_Counters UNIQUE (StoreId, CounterCode),
+        CONSTRAINT FK_Counters_Store FOREIGN KEY (StoreId) REFERENCES Stores(StoreId)
+    );
+
+    CREATE INDEX IX_Counters_Store ON dbo.Counters (StoreId);
+    CREATE INDEX IX_Counters_Code ON dbo.Counters (CounterCode);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   POS Sessions (cashier session at a store/counter with opening/closing cash)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[POSSessions]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.POSSessions (
+        POSSessionId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_POSSessions PRIMARY KEY,
+        CompanyId       INT NOT NULL,
+        CompanyName     NVARCHAR(200) NULL,
+        BranchId        INT NULL,
+        BranchName      NVARCHAR(200) NULL,
+        StoreId         INT NULL,
+        StoreName       NVARCHAR(200) NULL,
+        CounterId       INT NULL,
+        CounterName     NVARCHAR(200) NULL,
+        CashierUserId   INT NULL,
+        CashierUserName NVARCHAR(200) NULL,
+        SessionNumber   NVARCHAR(50) NOT NULL,
+        OpeningCash     DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_OpeningCash DEFAULT 0,
+        ClosingCash     DECIMAL(18,2) NULL,
+        OpenedAt        DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_OpenedAt DEFAULT SYSUTCDATETIME(),
+        ClosedAt        DATETIME2 NULL,
+        Status          TINYINT NOT NULL CONSTRAINT DF_POSSessions_Status DEFAULT 1,
+        CreatedBy       INT NULL,
+        CreatedAt       DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy       INT NULL,
+        UpdatedAt       DATETIME2 NULL,
+        CONSTRAINT FK_POSSessions_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
+        CONSTRAINT FK_POSSessions_Store FOREIGN KEY (StoreId) REFERENCES Stores(StoreId),
+        CONSTRAINT FK_POSSessions_Counter FOREIGN KEY (CounterId) REFERENCES Counters(CounterId)
+    );
+
+    CREATE INDEX IX_POSSessions_Company ON dbo.POSSessions (CompanyId);
+    CREATE INDEX IX_POSSessions_Branch ON dbo.POSSessions (BranchId);
+    CREATE INDEX IX_POSSessions_Store ON dbo.POSSessions (StoreId);
+    CREATE INDEX IX_POSSessions_Counter ON dbo.POSSessions (CounterId);
+    CREATE INDEX IX_POSSessions_Status ON dbo.POSSessions (Status);
+    CREATE INDEX IX_POSSessions_SessionNumber ON dbo.POSSessions (SessionNumber);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Financial Year (company fiscal periods; referenced by Companies.DefaultFinancialYearId)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[FinancialYear]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.FinancialYear
+    (
+        FinancialYearId BIGINT IDENTITY(1,1)
+            CONSTRAINT PK_FinancialYear PRIMARY KEY,
+
+        CompanyId INT NOT NULL,
+
+        Code VARCHAR(30) NOT NULL,
+
+        [Name] VARCHAR(100) NOT NULL,
+
+        StartDate DATE NOT NULL,
+
+        EndDate DATE NOT NULL,
+
+        IsCurrent BIT NOT NULL CONSTRAINT DF_FinancialYear_IsCurrent DEFAULT 0,
+
+        IsClosed BIT NOT NULL CONSTRAINT DF_FinancialYear_IsClosed DEFAULT 0,
+
+        IsActive BIT NOT NULL CONSTRAINT DF_FinancialYear_IsActive DEFAULT 1,
+
+        CreatedBy INT NULL,
+
+        CreatedAt DATETIME NOT NULL CONSTRAINT DF_FinancialYear_CreatedAt DEFAULT GETDATE(),
+
+        ModifiedBy INT NULL,
+
+        ModifiedAt DATETIME NULL,
+
+        CONSTRAINT UQ_FinancialYear_Company_Code
+            UNIQUE (CompanyId, Code),
+
+        CONSTRAINT CK_FinancialYear_Date
+            CHECK (StartDate < EndDate),
+
+        CONSTRAINT FK_FinancialYear_Company
+            FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (Id)
+    );
+
+    CREATE INDEX IX_FinancialYear_Company ON dbo.FinancialYear (CompanyId);
+    CREATE INDEX IX_FinancialYear_IsCurrent ON dbo.FinancialYear (IsCurrent);
+    CREATE INDEX IX_FinancialYear_IsActive ON dbo.FinancialYear (IsActive);
+END
+;
+
 /* =============================================================================
    ENTERPRISE PERMISSION ENGINE (Workspace > Domain > Module > SubModule > Screen)
    Merged from migrations 002 / 006 / 007 / 008 into the fresh-provision schema.
@@ -1131,6 +1279,7 @@ BEGIN
         SubModuleId     INT                 NOT NULL,
         ScreenCode      NVARCHAR(50)        NOT NULL,
         ScreenName      NVARCHAR(200)       NOT NULL,
+        PermissionCode  NVARCHAR(100)       NULL,
         ScreenType      NVARCHAR(20)        NOT NULL CONSTRAINT DF_Screens_ScreenType DEFAULT 'MASTER',
         RouteUrl        NVARCHAR(200)       NULL,
         ComponentName   NVARCHAR(200)       NULL,
@@ -1144,6 +1293,14 @@ BEGIN
     );
     CREATE INDEX IX_Screens_SubModuleId ON dbo.Screens (SubModuleId);
     CREATE INDEX IX_Screens_IsActive ON dbo.Screens (IsActive);
+END
+;
+
+/* Screens.PermissionCode was added later; retrofit existing databases. */
+IF OBJECT_ID(N'[dbo].[Screens]', N'U') IS NOT NULL
+   AND COL_LENGTH('dbo.Screens', 'PermissionCode') IS NULL
+BEGIN
+    ALTER TABLE dbo.Screens ADD PermissionCode NVARCHAR(100) NULL;
 END
 ;
 
@@ -1517,61 +1674,6 @@ BEGIN
 END
 ;
 
-/* Domain: MASTER (SETUP) - retained for backwards compatibility */
-IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'MASTER')
-BEGIN
-    DECLARE @DefaultWorkspaceId INT = (SELECT Id FROM dbo.Workspaces WHERE WorkspaceCode = 'SETUP');
-    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
-    VALUES (@DefaultWorkspaceId, 'MASTER', 'Master Data', 'database', 1, 1, 'system');
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'COMPANY')
-BEGIN
-    DECLARE @DefaultDomainId INT = (SELECT Id FROM dbo.Domains WHERE DomainCode = 'MASTER');
-    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    VALUES (@DefaultDomainId, 'COMPANY', 'Company', 'home', '/companies', 1, 1, 'system');
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'DEFAULT')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT m.Id, 'DEFAULT', m.ModuleName + ' (General)', m.Icon, m.RouteUrl, 0, 1, 'system'
-    FROM dbo.Modules m
-    WHERE m.IsActive = 1
-      AND NOT EXISTS (SELECT 1 FROM dbo.SubModules sm WHERE sm.ModuleId = m.Id);
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST')
-BEGIN
-    DECLARE @DefaultSubModuleId INT = (SELECT Id FROM dbo.SubModules WHERE SubModuleCode = 'DEFAULT' AND ModuleId = (SELECT Id FROM dbo.Modules WHERE ModuleCode = 'COMPANY'));
-    IF @DefaultSubModuleId IS NOT NULL
-    BEGIN
-        INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-        VALUES (@DefaultSubModuleId, 'COMPANY_LIST', 'Company List', 'MASTER', '/companies', 'CompanyListPage', 1, 1, 'system');
-    END
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.Fields WHERE FieldCode = 'company_code' AND ScreenId = (SELECT Id FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST'))
-BEGIN
-    DECLARE @DefaultCompanyListScreenId INT = (SELECT Id FROM dbo.Screens WHERE ScreenCode = 'COMPANY_LIST');
-    IF @DefaultCompanyListScreenId IS NOT NULL
-    BEGIN
-        INSERT INTO dbo.Fields (ScreenId, FieldCode, FieldName, DisplayName, DataType, DisplayOrder, IsSystemField, IsRequired, IsActive, CreatedBy)
-        VALUES
-        (@DefaultCompanyListScreenId, 'company_code', 'CompanyCode', 'Company Code', 'text', 1, 1, 1, 1, 'system'),
-        (@DefaultCompanyListScreenId, 'company_name', 'CompanyName', 'Company Name', 'text', 2, 1, 1, 1, 'system'),
-        (@DefaultCompanyListScreenId, 'short_name',   'ShortName',   'Short Name',   'text', 3, 0, 0, 1, 'system'),
-        (@DefaultCompanyListScreenId, 'email',        'Email',       'Email',        'email', 4, 0, 0, 1, 'system'),
-        (@DefaultCompanyListScreenId, 'phone',        'Phone',       'Phone',        'text',  5, 0, 0, 1, 'system'),
-        (@DefaultCompanyListScreenId, 'is_active',    'IsActive',    'Active',       'boolean', 6, 1, 0, 1, 'system');
-    END
-END
-;
-
 /* ---------------------------------------------------------------------------
     Seed Data: Permission Actions (standard CRUD actions)
     --------------------------------------------------------------------------- */
@@ -1636,6 +1738,7 @@ END
 DECLARE @CompanyId INT;
 DECLARE @SuperAdminRoleId INT;
 DECLARE @AdministratorRoleId INT;
+DECLARE @SalesAdminRoleId INT;
 DECLARE @AdminUserId INT;
 DECLARE @CurrencyId INT;
 DECLARE @LanguageId INT;
@@ -1701,42 +1804,42 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Currencies)
 BEGIN
     INSERT INTO dbo.Currencies (CurrencyCode, CurrencyName, Symbol, ISOCode, DecimalPlaces, IsBaseCurrency, SortOrder)
     VALUES
-    ('INR', 'Indian Rupee',         'â‚¹',  '356', 2, 1, 1),
+    ('INR', 'Indian Rupee',         'Ã¢â€šÂ¹',  '356', 2, 1, 1),
     ('USD', 'US Dollar',            '$',  '840', 2, 0, 2),
-    ('EUR', 'Euro',                 'â‚¬',  '978', 2, 0, 3),
-    ('GBP', 'Pound Sterling',        'Â£',  '826', 2, 0, 4),
-    ('JPY', 'Japanese Yen',         'Â¥',  '392', 0, 0, 5),
-    ('CNY', 'Yuan Renminbi',        'Â¥',  '156', 2, 0, 6),
+    ('EUR', 'Euro',                 'Ã¢â€šÂ¬',  '978', 2, 0, 3),
+    ('GBP', 'Pound Sterling',        'Ã‚Â£',  '826', 2, 0, 4),
+    ('JPY', 'Japanese Yen',         'Ã‚Â¥',  '392', 0, 0, 5),
+    ('CNY', 'Yuan Renminbi',        'Ã‚Â¥',  '156', 2, 0, 6),
     ('CHF', 'Swiss Franc',          'CHF', '756', 2, 0, 7),
     ('AUD', 'Australian Dollar',    'A$', '036', 2, 0, 8),
     ('CAD', 'Canadian Dollar',      'C$', '124', 2, 0, 9),
     ('NZD', 'New Zealand Dollar',   'NZ$', '554', 2, 0, 10),
-    ('KRW', 'South Korean Won',    'â‚©',  '410', 0, 0, 11),
+    ('KRW', 'South Korean Won',    'Ã¢â€šÂ©',  '410', 0, 0, 11),
     ('SGD', 'Singapore Dollar',    'S$', '702', 2, 0, 12),
     ('MYR', 'Malaysian Ringgit',  'RM', '458', 2, 0, 13),
-    ('THB', 'Thai Baht',           'à¸¿',  '764', 2, 0, 14),
+    ('THB', 'Thai Baht',           'Ã Â¸Â¿',  '764', 2, 0, 14),
     ('IDR', 'Indonesian Rupiah',  'Rp', '360', 2, 0, 15),
-    ('PHP', 'Philippine Peso',    'â‚±',  '608', 2, 0, 16),
-    ('VND', 'Vietnamese Dong',    'â‚«',  '704', 2, 0, 17),
+    ('PHP', 'Philippine Peso',    'Ã¢â€šÂ±',  '608', 2, 0, 16),
+    ('VND', 'Vietnamese Dong',    'Ã¢â€šÂ«',  '704', 2, 0, 17),
     ('MXN', 'Mexican Peso',       '$',  '484', 2, 0, 18),
-    ('AED', 'UAE Dirham',         'Ø¯.Ø¥', '784', 2, 0, 19),
-    ('SAR', 'Saudi Riyal',        'ï·¼',  '682', 2, 0, 20),
-    ('QAR', 'Qatari Riyal',       'ï·¼',  '634', 2, 0, 21),
-    ('KWD', 'Kuwaiti Dinar',      'Ø¯.Ùƒ', '414', 3, 0, 22),
-    ('BHD', 'Bahraini Dinar',     '.Ø¯.Ø¨', '048', 3, 0, 23),
-    ('OMR', 'Omani Rial',         'ï·¼',  '512', 3, 0, 24),
-    ('EGP', 'Egyptian Pound',     'Â£',  '818', 2, 0, 25),
+    ('AED', 'UAE Dirham',         'Ã˜Â¯.Ã˜Â¥', '784', 2, 0, 19),
+    ('SAR', 'Saudi Riyal',        'Ã¯Â·Â¼',  '682', 2, 0, 20),
+    ('QAR', 'Qatari Riyal',       'Ã¯Â·Â¼',  '634', 2, 0, 21),
+    ('KWD', 'Kuwaiti Dinar',      'Ã˜Â¯.Ã™Æ’', '414', 3, 0, 22),
+    ('BHD', 'Bahraini Dinar',     '.Ã˜Â¯.Ã˜Â¨', '048', 3, 0, 23),
+    ('OMR', 'Omani Rial',         'Ã¯Â·Â¼',  '512', 3, 0, 24),
+    ('EGP', 'Egyptian Pound',     'Ã‚Â£',  '818', 2, 0, 25),
     ('ZAR', 'South African Rand', 'R',  '710', 2, 0, 26),
-    ('NGN', 'Nigerian Naira',    'â‚¦',  '566', 2, 0, 27),
+    ('NGN', 'Nigerian Naira',    'Ã¢â€šÂ¦',  '566', 2, 0, 27),
     ('KES', 'Kenyan Shilling',   'KSh', '400', 2, 0, 28),
-    ('TRY', 'Turkish Lira',      'â‚º',  '949', 2, 0, 29),
-    ('RUB', 'Russian Ruble',     'â‚½',  '643', 2, 0, 30),
+    ('TRY', 'Turkish Lira',      'Ã¢â€šÂº',  '949', 2, 0, 29),
+    ('RUB', 'Russian Ruble',     'Ã¢â€šÂ½',  '643', 2, 0, 30),
     ('BRL', 'Brazilian Real',    'R$', '986', 2, 0, 31),
     ('ARS', 'Argentine Peso',    '$',  '032', 2, 0, 32),
-    ('BDT', 'Bangladeshi Taka', 'à§³',  '050', 2, 0, 33),
+    ('BDT', 'Bangladeshi Taka', 'Ã Â§Â³',  '050', 2, 0, 33),
     ('LKR', 'Sri Lankan Rupee', 'Rs',  '144', 2, 0, 34),
-    ('NPR', 'Nepalese Rupee',   'â‚¨',  '524', 2, 0, 35),
-    ('PKR', 'Pakistani Rupee',  'â‚¨',  '586', 2, 0, 36);
+    ('NPR', 'Nepalese Rupee',   'Ã¢â€šÂ¨',  '524', 2, 0, 35),
+    ('PKR', 'Pakistani Rupee',  'Ã¢â€šÂ¨',  '586', 2, 0, 36);
 END
 
 /* ---------------------------------------------------------------------------
@@ -1991,6 +2094,81 @@ SELECT @SuperAdminRoleId = RoleId FROM dbo.Roles WHERE Code = 'SuperAdmin';
 SELECT @AdministratorRoleId = RoleId FROM dbo.Roles WHERE Code = 'Administrator';
 
 /* ---------------------------------------------------------------------------
+   Sales Admin role
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Roles WHERE Code = 'SalesAdmin')
+BEGIN
+    INSERT INTO dbo.Roles ([Name], Code, [Description], IsSystem, IsActive, CreatedBy)
+    VALUES ('Sales Admin', 'SalesAdmin', 'Sales management access', 0, 1, 'system');
+END
+
+SELECT @SalesAdminRoleId = RoleId FROM dbo.Roles WHERE Code = 'SalesAdmin';
+
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT @SalesAdminRoleId, p.PermissionCode, 'system'
+FROM (VALUES
+    ('dashboard.view'),
+    /* SALES */
+    ('sales.view'), ('sales.create'), ('sales.edit'), ('sales.delete'), ('sales.manage'),
+    ('sales.pos.view'), ('sales.return.view'), ('sales.return.manage'),
+    /* PRODBILL - product catalog lookup needed in sales */
+    ('products.view'), ('product-categories.view'), ('product-subcategories.view'), ('brands.view'), ('units.view'),
+    /* BUSINESS_PARTNERS - customers */
+    ('business-partners.view'), ('business-partners.manage'),
+    /* INVENTORY */
+    ('stock.view'),
+    /* PAYMENTS - collect/refund payments on sales */
+    ('payment.view'), ('payment.create'), ('payment.edit'),
+    /* REPORTS */
+    ('reports.view'),
+    /* PROFILE */
+    ('profile.edit')
+) AS p(PermissionCode)
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.RolePermissionsLegacy rp WHERE rp.RoleId = @SalesAdminRoleId AND rp.PermissionCode = p.PermissionCode
+);
+
+/* ---------------------------------------------------------------------------
+   Business roles for the RolePermission Matrix (real role-based access).
+   Each role's screen/action grants live in dbo.RolePermissions (seeded in the
+   matrix block near the end of this file); the matrix->legacy bridge derives
+   the flat API permission codes automatically. Here we only declare the roles
+   and grant the shared dashboard access.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Roles WHERE Code = 'FinanceYearOfficer')
+BEGIN
+    INSERT INTO dbo.Roles ([Name], Code, [Description], IsSystem, IsActive, CreatedBy)
+    VALUES ('Financial Year Officer', 'FinanceYearOfficer', 'Manages financial years and reporting', 0, 1, 'system');
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Roles WHERE Code = 'StoreManager')
+BEGIN
+    INSERT INTO dbo.Roles ([Name], Code, [Description], IsSystem, IsActive, CreatedBy)
+    VALUES ('Store Manager', 'StoreManager', 'Manages stores, counters, POS sessions and stock', 0, 1, 'system');
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Roles WHERE Code = 'POSCashier')
+BEGIN
+    INSERT INTO dbo.Roles ([Name], Code, [Description], IsSystem, IsActive, CreatedBy)
+    VALUES ('POS Cashier', 'POSCashier', 'Operates POS sales and payments', 0, 1, 'system');
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Roles WHERE Code = 'PurchaseAdmin')
+BEGIN
+    INSERT INTO dbo.Roles ([Name], Code, [Description], IsSystem, IsActive, CreatedBy)
+    VALUES ('Purchase Admin', 'PurchaseAdmin', 'Manages purchase transactions and returns', 0, 1, 'system');
+END
+
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT r.RoleId, 'dashboard.view', 'system'
+FROM dbo.Roles r
+WHERE r.Code IN ('FinanceYearOfficer', 'StoreManager', 'POSCashier', 'PurchaseAdmin')
+  AND NOT EXISTS (
+      SELECT 1 FROM dbo.RolePermissionsLegacy l
+      WHERE l.RoleId = r.RoleId AND l.PermissionCode = 'dashboard.view'
+  );
+
+/* ---------------------------------------------------------------------------
    Company (master data must exist for FK references)
    --------------------------------------------------------------------------- */
 SELECT TOP 1 @CurrencyId = Id FROM dbo.Currencies WHERE CurrencyCode = @CurrencyCode;
@@ -2024,13 +2202,13 @@ FROM (VALUES
     ('roles.view'), ('roles.manage'),
     ('locations.view'), ('locations.create'), ('locations.edit'), ('locations.delete'),
     ('business-types.view'), ('business-types.manage'),
-    ('business-partner-roles.view'), ('business-partner-roles.manage'),
     ('business-partners.view'), ('business-partners.manage'),
     ('industry-types.view'), ('industry-types.manage'),
     ('company-groups.view'), ('company-groups.manage'),
     ('settings.view'), ('settings.edit'),
     ('audit.view'),
     ('currencies.view'), ('currencies.manage'),
+    ('financial-years.view'), ('financial-years.create'), ('financial-years.edit'), ('financial-years.delete'),
     ('profile.edit')
 ) AS p(PermissionCode)
 WHERE NOT EXISTS (
@@ -2046,12 +2224,12 @@ FROM (VALUES
     ('roles.view'),
     ('locations.view'), ('locations.create'), ('locations.edit'), ('locations.delete'),
     ('business-types.view'), ('business-types.manage'),
-    ('business-partner-roles.view'), ('business-partner-roles.manage'),
     ('business-partners.view'), ('business-partners.manage'),
     ('industry-types.view'), ('industry-types.manage'),
     ('company-groups.view'), ('company-groups.manage'),
     ('settings.view'), ('settings.edit'),
     ('currencies.view'), ('currencies.manage'),
+    ('financial-years.view'), ('financial-years.create'), ('financial-years.edit'), ('financial-years.delete'),
     ('profile.edit')
 ) AS p(PermissionCode)
 WHERE NOT EXISTS (
@@ -2101,7 +2279,6 @@ FROM (VALUES
     ('contact-types.view'), ('contact-types.manage'),
     ('document-types.view'), ('document-types.manage'),
     ('organization-types.view'), ('organization-types.manage'),
-    ('business-partner-roles.view'), ('business-partner-roles.manage'),
     ('business-partners.view'), ('business-partners.manage'),
     ('currencies.view'), ('currencies.manage')
 ) AS p(PermissionCode)
@@ -2298,6 +2475,7 @@ BEGIN
         PurchasePrice DECIMAL(18,2) NULL,
         SalesPrice DECIMAL(18,2) NULL,
         TaxId BIGINT NULL,
+        HsnSacId BIGINT NULL,
         IsStockItem BIT NOT NULL DEFAULT 1,
         IsSaleable BIT NOT NULL DEFAULT 1,
         IsPurchaseable BIT NOT NULL DEFAULT 1,
@@ -2308,6 +2486,12 @@ BEGIN
         ModifiedBy BIGINT NULL,
         ModifiedAt DATETIME NULL
     );
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'HsnSacId')
+BEGIN
+    ALTER TABLE dbo.Products ADD HsnSacId BIGINT NULL;
 END
 ;
 
@@ -2330,6 +2514,19 @@ BEGIN
         CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
     );
 END
+;
+
+INSERT INTO dbo.TaxTypeSystems (Code, [Name], Description, IsActive)
+SELECT k.Code, k.[Name], k.Description, k.IsActive
+FROM (VALUES
+    ('TAXTYPE-001', 'GST',          'Goods and Services Tax', 1),
+    ('TAXTYPE-002', 'VAT',          'Value Added Tax',        1),
+    ('TAXTYPE-003', 'Sales Tax',    'Sales Tax',              1),
+    ('TAXTYPE-004', 'Service Tax',  'Service Tax',            1),
+    ('TAXTYPE-005', 'Excise Tax',   'Excise Tax',             1),
+    ('TAXTYPE-006', 'Customs Duty', 'Customs Duty',           1)
+) AS k(Code, [Name], Description, IsActive)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.TaxTypeSystems t WHERE t.Code = k.Code);
 ;
 
 /* ---------------------------------------------------------------------------
@@ -2356,6 +2553,415 @@ BEGIN
         ModifiedAt DATETIME NULL,
         CONSTRAINT FK_Taxes_TaxTypeSystems FOREIGN KEY (TaxTypeSystemId) REFERENCES dbo.TaxTypeSystems(Id)
     );
+END
+;
+
+/* =============================================================================
+   Billing Masters (Unit Conversion, Barcode, HSN/SAC, Services, Price Lists)
+   Adapted to the ERP's plural table + Id PK conventions.
+   Company-scoped tables store a bare CompanyId (BIGINT) like Products/Units/Taxes
+   (no FK to dbo.Companies). System masters (PriceTypes) carry no CompanyId.
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   PriceTypes (system master: pricing types for PriceLists). No CompanyId.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PriceTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PriceTypes (
+        PriceTypeId BIGINT IDENTITY(1,1) CONSTRAINT PK_PriceTypes PRIMARY KEY,
+        Code        VARCHAR(30)  NOT NULL,
+        [Name]      NVARCHAR(100) NOT NULL,
+        Description NVARCHAR(300) NULL,
+        IsActive    BIT          NOT NULL CONSTRAINT DF_PriceTypes_IsActive DEFAULT 1,
+        DisplayOrder INT         NOT NULL CONSTRAINT DF_PriceTypes_DisplayOrder DEFAULT 0,
+        CreatedBy   BIGINT       NULL,
+        CreatedAt   DATETIME     NOT NULL CONSTRAINT DF_PriceTypes_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy  BIGINT       NULL,
+        ModifiedAt  DATETIME     NULL,
+        CONSTRAINT UQ_PriceTypes_Code UNIQUE (Code)
+    );
+
+    CREATE INDEX IX_PriceTypes_IsActive ON dbo.PriceTypes (IsActive);
+END
+;
+
+INSERT INTO dbo.PriceTypes (Code, [Name], Description, IsActive, DisplayOrder)
+SELECT k.Code, k.[Name], k.Description, k.IsActive, k.DisplayOrder
+FROM (VALUES
+    ('PRICETYPE-001', 'Sales Price',    'Default selling price',        1, 1),
+    ('PRICETYPE-002', 'Purchase Price', 'Default purchase price',       1, 2),
+    ('PRICETYPE-003', 'Wholesale Price','Wholesale quantity price',     1, 3),
+    ('PRICETYPE-004', 'Retail Price',   'Retail shelf price',           1, 4),
+    ('PRICETYPE-005', 'Distributor Price','Distributor pricing',        1, 5),
+    ('PRICETYPE-006', 'Special Price',  'Promotional/special pricing',  1, 6)
+) AS k(Code, [Name], Description, IsActive, DisplayOrder)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.PriceTypes p WHERE p.Code = k.Code);
+;
+
+/* ---------------------------------------------------------------------------
+   UnitConversions (company-scoped). ProductId nullable (common or per-product).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UnitConversions]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.UnitConversions (
+        UnitConversionId BIGINT IDENTITY(1,1) CONSTRAINT PK_UnitConversions PRIMARY KEY,
+        CompanyId        BIGINT        NOT NULL,
+        ProductId        BIGINT        NULL,
+        FromUnitId       BIGINT        NOT NULL,
+        ToUnitId         BIGINT        NOT NULL,
+        ConversionFactor DECIMAL(18,6) NOT NULL,
+        IsDefault        BIT           NOT NULL CONSTRAINT DF_UnitConversions_IsDefault DEFAULT 0,
+        IsActive         BIT           NOT NULL CONSTRAINT DF_UnitConversions_IsActive DEFAULT 1,
+        CreatedBy        BIGINT        NULL,
+        CreatedAt        DATETIME      NOT NULL CONSTRAINT DF_UnitConversions_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy       BIGINT        NULL,
+        ModifiedAt       DATETIME      NULL,
+        CONSTRAINT CK_UnitConversions_Factor CHECK (ConversionFactor > 0),
+        CONSTRAINT CK_UnitConversions_DifferentUnits CHECK (FromUnitId <> ToUnitId),
+        CONSTRAINT FK_UnitConversions_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
+        CONSTRAINT FK_UnitConversions_FromUnit FOREIGN KEY (FromUnitId) REFERENCES dbo.Units (Id),
+        CONSTRAINT FK_UnitConversions_ToUnit FOREIGN KEY (ToUnitId) REFERENCES dbo.Units (Id)
+    );
+
+    CREATE INDEX IX_UnitConversions_Company ON dbo.UnitConversions (CompanyId);
+    CREATE INDEX IX_UnitConversions_Product ON dbo.UnitConversions (ProductId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Barcodes (company-scoped).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Barcodes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Barcodes (
+        BarcodeId   BIGINT IDENTITY(1,1) CONSTRAINT PK_Barcodes PRIMARY KEY,
+        CompanyId   BIGINT       NOT NULL,
+        ProductId   BIGINT       NOT NULL,
+        UnitId      BIGINT       NULL,
+        Barcode     VARCHAR(100) NOT NULL,
+        BarcodeType VARCHAR(30)  NULL,
+        IsPrimary   BIT          NOT NULL CONSTRAINT DF_Barcodes_IsPrimary DEFAULT 0,
+        IsActive    BIT          NOT NULL CONSTRAINT DF_Barcodes_IsActive DEFAULT 1,
+        CreatedBy   BIGINT       NULL,
+        CreatedAt   DATETIME     NOT NULL CONSTRAINT DF_Barcodes_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy  BIGINT       NULL,
+        ModifiedAt  DATETIME     NULL,
+        CONSTRAINT UQ_Barcodes_Company_Barcode UNIQUE (CompanyId, Barcode),
+        CONSTRAINT FK_Barcodes_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
+        CONSTRAINT FK_Barcodes_Unit FOREIGN KEY (UnitId) REFERENCES dbo.Units (Id)
+    );
+
+    CREATE INDEX IX_Barcodes_Company ON dbo.Barcodes (CompanyId);
+    CREATE INDEX IX_Barcodes_Product ON dbo.Barcodes (ProductId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   HsnSacs (company-scoped GST/SAC codes).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.HsnSacs (
+        HsnSacId    BIGINT IDENTITY(1,1) CONSTRAINT PK_HsnSacs PRIMARY KEY,
+        CompanyId   BIGINT       NOT NULL,
+        Code        VARCHAR(20)  NOT NULL,
+        [Name]      VARCHAR(200) NOT NULL,
+        HsnSacType  VARCHAR(10)  NOT NULL,
+        Description VARCHAR(500) NULL,
+        TaxId       BIGINT       NULL,
+        IsActive    BIT          NOT NULL CONSTRAINT DF_HsnSacs_IsActive DEFAULT 1,
+        CreatedBy   BIGINT       NULL,
+        CreatedAt   DATETIME     NOT NULL CONSTRAINT DF_HsnSacs_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy  BIGINT       NULL,
+        ModifiedAt  DATETIME     NULL,
+        CONSTRAINT UQ_HsnSacs_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_HsnSacs_Type CHECK (HsnSacType IN ('HSN', 'SAC')),
+        CONSTRAINT FK_HsnSacs_Tax FOREIGN KEY (TaxId) REFERENCES dbo.Taxes (Id)
+    );
+
+    CREATE INDEX IX_HsnSacs_Company ON dbo.HsnSacs (CompanyId);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND name = 'TaxId')
+BEGIN
+    ALTER TABLE dbo.HsnSacs ADD TaxId BIGINT NULL;
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND name = 'TaxId')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_HsnSacs_Tax')
+        ALTER TABLE dbo.HsnSacs ADD CONSTRAINT FK_HsnSacs_Tax FOREIGN KEY (TaxId) REFERENCES dbo.Taxes (Id);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Products_HsnSac')
+BEGIN
+    ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_HsnSac FOREIGN KEY (HsnSacId) REFERENCES dbo.HsnSacs (HsnSacId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ServiceCategories (company-scoped).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ServiceCategories]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ServiceCategories (
+        ServiceCategoryId BIGINT IDENTITY(1,1) CONSTRAINT PK_ServiceCategories PRIMARY KEY,
+        CompanyId         BIGINT       NOT NULL,
+        Code              VARCHAR(30)  NOT NULL,
+        [Name]            VARCHAR(100) NOT NULL,
+        Description       VARCHAR(300) NULL,
+        DisplayOrder      INT          NOT NULL CONSTRAINT DF_ServiceCategories_DisplayOrder DEFAULT 0,
+        IsActive          BIT          NOT NULL CONSTRAINT DF_ServiceCategories_IsActive DEFAULT 1,
+        CreatedBy         BIGINT       NULL,
+        CreatedAt         DATETIME     NOT NULL CONSTRAINT DF_ServiceCategories_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT       NULL,
+        ModifiedAt        DATETIME     NULL,
+        CONSTRAINT UQ_ServiceCategories_Company_Code UNIQUE (CompanyId, Code)
+    );
+
+    CREATE INDEX IX_ServiceCategories_Company ON dbo.ServiceCategories (CompanyId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Services (company-scoped).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Services]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Services (
+        ServiceId         BIGINT IDENTITY(1,1) CONSTRAINT PK_Services PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        Code              VARCHAR(30)   NOT NULL,
+        [Name]            VARCHAR(200)  NOT NULL,
+        ServiceCategoryId BIGINT        NULL,
+        UnitId            BIGINT        NULL,
+        HsnSacId          BIGINT        NULL,
+        DefaultTaxId      BIGINT        NULL,
+        StandardRate      DECIMAL(18,2) NOT NULL CONSTRAINT DF_Services_StandardRate DEFAULT 0,
+        IsTaxInclusive    BIT           NOT NULL CONSTRAINT DF_Services_IsTaxInclusive DEFAULT 0,
+        Description       VARCHAR(500)  NULL,
+        IsActive          BIT           NOT NULL CONSTRAINT DF_Services_IsActive DEFAULT 1,
+        CreatedBy         BIGINT        NULL,
+        CreatedAt         DATETIME      NOT NULL CONSTRAINT DF_Services_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT        NULL,
+        ModifiedAt        DATETIME      NULL,
+        CONSTRAINT UQ_Services_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_Services_StandardRate CHECK (StandardRate >= 0),
+        CONSTRAINT FK_Services_Category FOREIGN KEY (ServiceCategoryId) REFERENCES dbo.ServiceCategories (ServiceCategoryId),
+        CONSTRAINT FK_Services_Unit FOREIGN KEY (UnitId) REFERENCES dbo.Units (Id),
+        CONSTRAINT FK_Services_HsnSac FOREIGN KEY (HsnSacId) REFERENCES dbo.HsnSacs (HsnSacId),
+        CONSTRAINT FK_Services_Tax FOREIGN KEY (DefaultTaxId) REFERENCES dbo.Taxes (Id)
+    );
+
+    CREATE INDEX IX_Services_Company ON dbo.Services (CompanyId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PriceLists (company-scoped).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PriceLists]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PriceLists (
+        PriceListId   BIGINT IDENTITY(1,1) CONSTRAINT PK_PriceLists PRIMARY KEY,
+        CompanyId     BIGINT       NOT NULL,
+        PriceTypeId   BIGINT       NOT NULL,
+        CurrencyId    INT          NOT NULL,
+        Code          VARCHAR(30)  NOT NULL,
+        [Name]        VARCHAR(100) NOT NULL,
+        Description   VARCHAR(300) NULL,
+        EffectiveFrom DATE         NULL,
+        EffectiveTo   DATE         NULL,
+        IsDefault     BIT          NOT NULL CONSTRAINT DF_PriceLists_IsDefault DEFAULT 0,
+        IsActive      BIT          NOT NULL CONSTRAINT DF_PriceLists_IsActive DEFAULT 1,
+        CreatedBy     BIGINT       NULL,
+        CreatedAt     DATETIME     NOT NULL CONSTRAINT DF_PriceLists_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy    BIGINT       NULL,
+        ModifiedAt    DATETIME     NULL,
+        CONSTRAINT UQ_PriceLists_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_PriceLists_Dates CHECK (EffectiveTo IS NULL OR EffectiveFrom IS NULL OR EffectiveFrom <= EffectiveTo),
+        CONSTRAINT FK_PriceLists_PriceType FOREIGN KEY (PriceTypeId) REFERENCES dbo.PriceTypes (PriceTypeId),
+        CONSTRAINT FK_PriceLists_Currency FOREIGN KEY (CurrencyId) REFERENCES dbo.Currencies (Id)
+    );
+
+    CREATE INDEX IX_PriceLists_Company ON dbo.PriceLists (CompanyId);
+    CREATE INDEX IX_PriceLists_PriceType ON dbo.PriceLists (PriceTypeId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PriceListDetails (child of PriceList).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PriceListDetails]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PriceListDetails (
+        PriceListDetailId BIGINT IDENTITY(1,1) CONSTRAINT PK_PriceListDetails PRIMARY KEY,
+        PriceListId       BIGINT        NOT NULL,
+        ProductId         BIGINT        NOT NULL,
+        UnitId            BIGINT        NULL,
+        Price             DECIMAL(18,4) NOT NULL,
+        MinimumQuantity   DECIMAL(18,4) NOT NULL CONSTRAINT DF_PriceListDetails_MinQty DEFAULT 1,
+        MaximumQuantity   DECIMAL(18,4) NULL,
+        IsActive          BIT           NOT NULL CONSTRAINT DF_PriceListDetails_IsActive DEFAULT 1,
+        CreatedBy         BIGINT        NULL,
+        CreatedAt         DATETIME      NOT NULL CONSTRAINT DF_PriceListDetails_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT        NULL,
+        ModifiedAt        DATETIME      NULL,
+        CONSTRAINT UQ_PriceListDetails_Product UNIQUE (PriceListId, ProductId, UnitId),
+        CONSTRAINT CK_PriceListDetails_Price CHECK (Price >= 0),
+        CONSTRAINT CK_PriceListDetails_MinQty CHECK (MinimumQuantity > 0),
+        CONSTRAINT CK_PriceListDetails_MaxQty CHECK (MaximumQuantity IS NULL OR MaximumQuantity >= MinimumQuantity),
+        CONSTRAINT FK_PriceListDetails_PriceList FOREIGN KEY (PriceListId) REFERENCES dbo.PriceLists (PriceListId),
+        CONSTRAINT FK_PriceListDetails_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
+        CONSTRAINT FK_PriceListDetails_Unit FOREIGN KEY (UnitId) REFERENCES dbo.Units (Id)
+    );
+
+    CREATE INDEX IX_PriceListDetails_PriceList ON dbo.PriceListDetails (PriceListId);
+    CREATE INDEX IX_PriceListDetails_Product ON dbo.PriceListDetails (ProductId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   DiscountRules (company-scoped pricing rules: percentage or fixed amount).
+   target a product, service, and/or a product category (all optional).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DiscountRules]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.DiscountRules (
+        DiscountRuleId     BIGINT IDENTITY(1,1) CONSTRAINT PK_DiscountRules PRIMARY KEY,
+        CompanyId          BIGINT       NOT NULL,
+        Code               VARCHAR(30)  NOT NULL,
+        [Name]             VARCHAR(150) NOT NULL,
+        ProductId          BIGINT       NULL,
+        ServiceId          BIGINT       NULL,
+        ProductCategoryId  BIGINT       NULL,
+        PriceListId        BIGINT       NULL,
+        DiscountType       VARCHAR(20)  NOT NULL,
+        DiscountValue      DECIMAL(18,4) NOT NULL,
+        MinimumQuantity    DECIMAL(18,4) NULL,
+        MinimumAmount      DECIMAL(18,2) NULL,
+        MaximumDiscount    DECIMAL(18,2) NULL,
+        EffectiveFrom      DATE         NULL,
+        EffectiveTo        DATE         NULL,
+        IsActive           BIT          NOT NULL CONSTRAINT DF_DiscountRules_IsActive DEFAULT 1,
+        CreatedBy          BIGINT       NULL,
+        CreatedAt          DATETIME     NOT NULL CONSTRAINT DF_DiscountRules_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy         BIGINT       NULL,
+        ModifiedAt         DATETIME     NULL,
+        CONSTRAINT UQ_DiscountRules_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_DiscountRules_Type CHECK (DiscountType IN ('PERCENTAGE', 'AMOUNT')),
+        CONSTRAINT CK_DiscountRules_Value CHECK (DiscountValue >= 0),
+        CONSTRAINT FK_DiscountRules_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
+        CONSTRAINT FK_DiscountRules_Service FOREIGN KEY (ServiceId) REFERENCES dbo.Services (ServiceId),
+        CONSTRAINT FK_DiscountRules_Category FOREIGN KEY (ProductCategoryId) REFERENCES dbo.ProductCategories (Id),
+        CONSTRAINT FK_DiscountRules_PriceList FOREIGN KEY (PriceListId) REFERENCES dbo.PriceLists (PriceListId)
+    );
+
+    CREATE INDEX IX_DiscountRules_Company ON dbo.DiscountRules (CompanyId);
+    CREATE INDEX IX_DiscountRules_Product ON dbo.DiscountRules (ProductId);
+    CREATE INDEX IX_DiscountRules_PriceList ON dbo.DiscountRules (PriceListId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Offers (company-scoped promotions).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Offers]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Offers (
+        OfferId          BIGINT IDENTITY(1,1) CONSTRAINT PK_Offers PRIMARY KEY,
+        CompanyId        BIGINT       NOT NULL,
+        Code             VARCHAR(30)  NOT NULL,
+        [Name]           VARCHAR(150) NOT NULL,
+        OfferType        VARCHAR(30)  NOT NULL,
+        DiscountType     VARCHAR(20)  NULL,
+        DiscountValue    DECIMAL(18,4) NULL,
+        MinimumQuantity  DECIMAL(18,4) NULL,
+        MinimumAmount    DECIMAL(18,2) NULL,
+        MaximumDiscount  DECIMAL(18,2) NULL,
+        StartDate        DATE         NOT NULL,
+        EndDate          DATE         NULL,
+        IsActive         BIT          NOT NULL CONSTRAINT DF_Offers_IsActive DEFAULT 1,
+        Description      VARCHAR(500) NULL,
+        CreatedBy        BIGINT       NULL,
+        CreatedAt        DATETIME     NOT NULL CONSTRAINT DF_Offers_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy       BIGINT       NULL,
+        ModifiedAt       DATETIME     NULL,
+        CONSTRAINT UQ_Offers_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_Offers_Dates CHECK (EndDate IS NULL OR EndDate >= StartDate),
+        CONSTRAINT CK_Offers_DiscountType CHECK (DiscountType IS NULL OR DiscountType IN ('PERCENTAGE', 'AMOUNT'))
+    );
+
+    CREATE INDEX IX_Offers_Company ON dbo.Offers (CompanyId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   OfferDetails (child of Offer). Targets a product, service, or product category.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OfferDetails]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.OfferDetails (
+        OfferDetailId     BIGINT IDENTITY(1,1) CONSTRAINT PK_OfferDetails PRIMARY KEY,
+        OfferId           BIGINT        NOT NULL,
+        ProductId         BIGINT        NULL,
+        ServiceId         BIGINT        NULL,
+        ProductCategoryId BIGINT        NULL,
+        MinimumQuantity   DECIMAL(18,4) NULL,
+        FreeQuantity      DECIMAL(18,4) NULL,
+        IsActive          BIT           NOT NULL CONSTRAINT DF_OfferDetails_IsActive DEFAULT 1,
+        CreatedBy         BIGINT        NULL,
+        CreatedAt         DATETIME      NOT NULL CONSTRAINT DF_OfferDetails_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT        NULL,
+        ModifiedAt        DATETIME      NULL,
+        CONSTRAINT CK_OfferDetails_Item CHECK (
+            ProductId IS NOT NULL OR ServiceId IS NOT NULL OR ProductCategoryId IS NOT NULL),
+        CONSTRAINT FK_OfferDetails_Offer FOREIGN KEY (OfferId) REFERENCES dbo.Offers (OfferId),
+        CONSTRAINT FK_OfferDetails_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
+        CONSTRAINT FK_OfferDetails_Service FOREIGN KEY (ServiceId) REFERENCES dbo.Services (ServiceId),
+        CONSTRAINT FK_OfferDetails_Category FOREIGN KEY (ProductCategoryId) REFERENCES dbo.ProductCategories (Id)
+    );
+
+    CREATE INDEX IX_OfferDetails_Offer ON dbo.OfferDetails (OfferId);
+    CREATE INDEX IX_OfferDetails_Product ON dbo.OfferDetails (ProductId);
+    CREATE INDEX IX_OfferDetails_Service ON dbo.OfferDetails (ServiceId);
+    CREATE INDEX IX_OfferDetails_Category ON dbo.OfferDetails (ProductCategoryId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Coupons (company-scoped, linked to an offer).
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Coupons]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Coupons (
+        CouponId          BIGINT IDENTITY(1,1) CONSTRAINT PK_Coupons PRIMARY KEY,
+        CompanyId         BIGINT       NOT NULL,
+        OfferId           BIGINT       NOT NULL,
+        Code              VARCHAR(50)  NOT NULL,
+        [Name]            VARCHAR(150) NULL,
+        UsageLimit        INT          NULL,
+        UsagePerCustomer  INT          NULL,
+        UsedCount         INT          NOT NULL CONSTRAINT DF_Coupons_UsedCount DEFAULT 0,
+        StartDate         DATE         NOT NULL,
+        EndDate           DATE         NULL,
+        IsActive          BIT          NOT NULL CONSTRAINT DF_Coupons_IsActive DEFAULT 1,
+        CreatedBy         BIGINT       NULL,
+        CreatedAt         DATETIME     NOT NULL CONSTRAINT DF_Coupons_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT       NULL,
+        ModifiedAt        DATETIME     NULL,
+        CONSTRAINT UQ_Coupons_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT CK_Coupons_Dates CHECK (EndDate IS NULL OR EndDate >= StartDate),
+        CONSTRAINT CK_Coupons_Usage CHECK (UsageLimit IS NULL OR UsageLimit >= 0),
+        CONSTRAINT FK_Coupons_Offer FOREIGN KEY (OfferId) REFERENCES dbo.Offers (OfferId)
+    );
+
+    CREATE INDEX IX_Coupons_Company ON dbo.Coupons (CompanyId);
+    CREATE INDEX IX_Coupons_Offer ON dbo.Coupons (OfferId);
 END
 ;
 
@@ -2523,6 +3129,18 @@ BEGIN
 END
 ;
 
+INSERT INTO dbo.PaymentType (Code, [Name], IsActive, DisplayOrder)
+SELECT k.Code, k.[Name], k.IsActive, k.DisplayOrder
+FROM (VALUES
+    ('PAYTYPE-001', 'Cash',        1, 1),
+    ('PAYTYPE-002', 'Credit',      1, 2),
+    ('PAYTYPE-003', 'Advance',     1, 3),
+    ('PAYTYPE-004', 'Refund',      1, 4),
+    ('PAYTYPE-005', 'Settlement',  1, 5)
+) AS k(Code, [Name], IsActive, DisplayOrder)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.PaymentType p WHERE p.Code = k.Code);
+;
+
 /* ---------------------------------------------------------------------------
    PaymentMethod
    --------------------------------------------------------------------------- */
@@ -2543,6 +3161,23 @@ BEGIN
 
     CREATE INDEX IX_PaymentMethod_Code ON dbo.PaymentMethod (Code);
 END
+;
+
+INSERT INTO dbo.PaymentMethod
+    (Code, [Name], PaymentCategory, IsCash, IsCredit, RequiresReferenceNo, DisplayOrder, IsActive)
+SELECT k.Code, k.[Name], k.PaymentCategory, k.IsCash, k.IsCredit, k.RequiresReferenceNo, k.DisplayOrder, k.IsActive
+FROM (VALUES
+    ('PAYMETHOD-001', 'Cash',           'CASH',    1, 0, 0, 1,  1),
+    ('PAYMETHOD-002', 'UPI',            'DIGITAL', 0, 0, 1, 2,  1),
+    ('PAYMETHOD-003', 'Credit Card',    'CARD',    0, 0, 1, 3,  1),
+    ('PAYMETHOD-004', 'Debit Card',     'CARD',    0, 0, 1, 4,  1),
+    ('PAYMETHOD-005', 'Bank Transfer',  'BANK',    0, 0, 1, 5,  1),
+    ('PAYMETHOD-006', 'Cheque',         'BANK',    0, 0, 1, 6,  1),
+    ('PAYMETHOD-007', 'Credit Account', 'CREDIT',  0, 1, 0, 7,  1),
+    ('PAYMETHOD-008', 'Wallet',         'DIGITAL', 0, 0, 1, 8,  1),
+    ('PAYMETHOD-009', 'Other',          'OTHER',   0, 0, 0, 99, 1)
+) AS k(Code, [Name], PaymentCategory, IsCash, IsCredit, RequiresReferenceNo, DisplayOrder, IsActive)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.PaymentMethod p WHERE p.Code = k.Code);
 ;
 
 /* ---------------------------------------------------------------------------
@@ -2938,12 +3573,14 @@ END
 INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
 FROM (VALUES
-    ('BUSINESS_MASTER_HOME', 'Business Master', 'MASTER', '/business-master', 'BusinessMasterPage', 1, 1, 'system'),
     ('COMPANY_MASTER',       'Company',         'MASTER', '/company',         'CompanyPage',        2, 1, 'system'),
     ('BRANCH_MASTER',        'Branch',          'MASTER', '/branch',          'BranchPage',         3, 1, 'system'),
     ('DEPARTMENT_MASTER',    'Department',      'MASTER', '/department',      'Department',         4, 1, 'system'),
     ('WAREHOUSE_MASTER',     'Warehouse',       'MASTER', '/warehouse',       'Warehouse',          5, 1, 'system'),
-    ('DESIGNATION_MASTER',   'Designation',     'MASTER', '/designation',     'Designation',        6, 1, 'system')
+    ('DESIGNATION_MASTER',   'Designation',     'MASTER', '/designation',     'Designation',        6, 1, 'system'),
+    ('STORE_MASTER',         'Stores',          'MASTER', '/stores',          'StoresPage',         7, 1, 'system'),
+    ('COUNTER_MASTER',       'Counters',        'MASTER', '/counters',        'CountersPage',       8, 1, 'system'),
+    ('POS_SESSION_MASTER',   'POS Sessions',    'MASTER', '/pos-sessions',    'PosSessionsPage',    9, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-ORGSETUP'
 WHERE NOT EXISTS (
@@ -3130,6 +3767,43 @@ WHERE NOT EXISTS (
 );
 ;
 
+/* --- Billing > Billing Masters > Billing Setup --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-BILLMASTERS')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-BILLMASTERS', 'Billing Masters', 'book-open', '/billing-masters', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-BILLING';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-BILLSETUP')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-BILLSETUP', 'Billing Setup', 'settings', '/billing-masters', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-BILLMASTERS';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('PRICE-TYPES',         'Price Types',          'MASTER', '/price-types',         'PriceTypesPage',        1, 1, 'system'),
+    ('UNIT-CONVERSIONS',    'Unit Conversions',     'MASTER', '/unit-conversions',    'UnitConversionPage',    2, 1, 'system'),
+    ('BARCODES',            'Barcodes',             'MASTER', '/barcodes',            'BarcodePage',           3, 1, 'system'),
+    ('HSN-SACS',            'HSN / SAC',            'MASTER', '/hsn-sacs',            'HsnSacPage',            4, 1, 'system'),
+    ('SERVICE-CATEGORIES',  'Service Categories',   'MASTER', '/service-categories',  'ServiceCategoryPage',   5, 1, 'system'),
+    ('SERVICES',            'Services',             'MASTER', '/services',            'ServicePage',           6, 1, 'system'),
+    ('PRICE-LISTS',         'Price Lists',          'MASTER', '/price-lists',         'PriceListPage',         7, 1, 'system'),
+    ('DISCOUNT-RULES',      'Discount Rules',       'MASTER', '/discount-rules',      'DiscountRulePage',      8, 1, 'system'),
+    ('OFFERS',              'Offers',               'MASTER', '/offers',              'OfferPage',             9, 1, 'system'),
+    ('COUPONS',             'Coupons',              'MASTER', '/coupons',             'CouponPage',           10, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-BILLSETUP'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
 /* =============================================================================
    SALES WORKSPACE (Sales > Sales Management > Transactions + POS)
    ============================================================================= */
@@ -3160,8 +3834,7 @@ END
 INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
 FROM (VALUES
-    ('SALES_HOME',   'Sales',       'LIST',   '/sales',       'SalesWorkspace', 1, 1, 'system'),
-    ('SALES_ENTRY',  'Sales Entry', 'ENTRY',  '/sales-entry', 'SalesEntryPage', 2, 1, 'system')
+    ('SALES_ENTRY',  'Sales Entry', 'ENTRY',  '/sales-entry', 'SalesEntryPage', 1, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-SALESTXN'
 WHERE NOT EXISTS (
@@ -3214,9 +3887,9 @@ END
 INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
 FROM (VALUES
-    ('PURCHASE_HOME',        'Purchase',         'LIST',        '/purchase',               'PurchaseWorkspace',    1, 1, 'system'),
-    ('PURCHASE_ENTRY',       'Purchase Entry',   'ENTRY',       '/purchase-entry',         'PurchaseEntryPage',    2, 1, 'system'),
-    ('PURCHASE_LIST',        'Purchases',        'LIST',        '/purchase?tab=list',      'PurchaseListPage',     3, 1, 'system'),
+    ('PURCHASE_ENTRY',       'Purchase Entry',   'ENTRY',       '/purchase-entry',         'PurchaseEntryPage',    1, 1, 'system'),
+    ('PURCHASE_LIST',        'Purchases',        'LIST',        '/purchase?tab=list',      'PurchaseListPage',     2, 1, 'system'),
+    ('PURCHASE_STOCK',       'Stock',            'LIST',        '/purchase?tab=stock',     'StockPage',            3, 1, 'system'),
     ('PURCHASE_RETURNS',     'Purchase Returns', 'TRANSACTION', '/purchase?tab=returns',   'PurchaseReturnPage',   4, 1, 'system'),
     ('PURCHASE_REPORTS',     'Purchase Reports', 'REPORT',      '/reports',                'ReportsWorkspace',     5, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
@@ -3268,35 +3941,6 @@ BEGIN
     SELECT Id, 'DOM-PAYMENT', 'Payment', 'credit-card', 1, 1, 'system'
     FROM dbo.Workspaces WHERE WorkspaceCode = 'PAYMENTS';
 END
-;
-
-/* Payment Configuration > Payment Master */
-IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYCONFIG')
-BEGIN
-    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-PAYCONFIG', 'Payment Configuration', 'settings', '/payment', 1, 1, 'system'
-    FROM dbo.Domains WHERE DomainCode = 'DOM-PAYMENT';
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PAYMASTER')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-PAYMASTER', 'Payment Master', 'sliders-horizontal', '/payment', 1, 1, 'system'
-    FROM dbo.Modules WHERE ModuleCode = 'MOD-PAYCONFIG';
-END
-;
-
-INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
-FROM (VALUES
-    ('PAYMENT_TYPES',   'Payment Types',   'MASTER', '/payment-type',   'PaymentTypePage',   1, 1, 'system'),
-    ('PAYMENT_METHODS', 'Payment Methods', 'MASTER', '/payment-method', 'PaymentMethodPage', 2, 1, 'system')
-) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PAYMASTER'
-WHERE NOT EXISTS (
-    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
-);
 ;
 
 /* Payment Management > Transactions */
@@ -3378,20 +4022,6 @@ BEGIN
     SELECT Id, 'MOD-PARTNERMGMT', 'Partner Management', 'users', '/business-partners', 1, 1, 'system'
     FROM dbo.Domains WHERE DomainCode = 'DOM-PARTNERS';
 END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERCONFIG')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-PARTNERCONFIG', 'Partner Configuration', 'sliders-horizontal', '/business-partner-roles', 1, 1, 'system'
-    FROM dbo.Modules WHERE ModuleCode = 'MOD-PARTNERMGMT';
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'BUSINESS_PARTNER_ROLES')
-    INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'BUSINESS_PARTNER_ROLES', 'Business Partner Roles', 'MASTER', '/business-partner-roles', 'BusinessPartnerRolesPage', 1, 1, 'system'
-    FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERCONFIG';
 ;
 
 IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PARTNERMASTER')
@@ -3535,18 +4165,10 @@ BEGIN
 END
 ;
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEPERMS')
-BEGIN
-    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-ROLEPERMS', 'Role Permissions', 'shield-check', '/role-permissions', 1, 1, 'system'
-    FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC';
-END
-;
-
 IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEFIELD')
 BEGIN
     INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-ROLEFIELD', 'Role Field Permissions', 'field-has-legend', '/role-field-permissions', 2, 1, 'system'
+    SELECT Id, 'MOD-ROLEFIELD', 'Role Field Permissions', 'columns-3', '/role-field-permissions', 2, 1, 'system'
     FROM dbo.Domains WHERE DomainCode = 'DOM-ROLESEC';
 END
 ;
@@ -3563,7 +4185,7 @@ END
 IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-USERSEC')
 BEGIN
     INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'DOM-USERSEC', 'User Security', 'user-shield', 3, 1, 'system'
+    SELECT Id, 'DOM-USERSEC', 'User Security', 'shield-user', 3, 1, 'system'
     FROM dbo.Workspaces WHERE WorkspaceCode = 'ENTERPRISE_PERMISSIONS';
 END
 ;
@@ -3588,7 +4210,7 @@ END
 IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-DATASCOPE')
 BEGIN
     INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-DATASCOPE', 'Data Scope', 'filter', '/data-scopes', 1, 1, 'system'
+    SELECT Id, 'MOD-DATASCOPE', 'Data Scope', 'funnel', '/data-scopes', 1, 1, 'system'
     FROM dbo.Domains WHERE DomainCode = 'DOM-DATASEC';
 END
 ;
@@ -3635,31 +4257,14 @@ BEGIN
 END
 ;
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYPERMS')
-BEGIN
-    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-LEGACYPERMS', 'Permission Modules', 'layers', '/permission-modules', 2, 1, 'system'
-    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT';
-END
-;
-
 /* Add the permission management submodules + screens (attached to the
    ENTERPRISE_PERMISSIONS workspace domains/modules created above) */
-
-/* Role Security > Role Permissions > Role Permission Management */
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEPERMMGMT')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-ROLEPERMMGMT', 'Role Permission Management', 'shield-check', '/role-permissions', 1, 1, 'system'
-    FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEPERMS';
-END
-;
 
 /* Role Security > Role Field Permissions > Field Security */
 IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-ROLEFIELDSEC')
 BEGIN
     INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-ROLEFIELDSEC', 'Field Security', 'field-has-legend', '/role-field-permissions', 1, 1, 'system'
+    SELECT Id, 'SUB-ROLEFIELDSEC', 'Field Security', 'columns-3', '/role-field-permissions', 1, 1, 'system'
     FROM dbo.Modules WHERE ModuleCode = 'MOD-ROLEFIELD';
 END
 ;
@@ -3686,7 +4291,7 @@ END
 IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-SCOPEMGMT')
 BEGIN
     INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-SCOPEMGMT', 'Scope Management', 'filter', '/data-scopes', 1, 1, 'system'
+    SELECT Id, 'SUB-SCOPEMGMT', 'Scope Management', 'funnel', '/data-scopes', 1, 1, 'system'
     FROM dbo.Modules WHERE ModuleCode = 'MOD-DATASCOPE';
 END
 ;
@@ -3718,45 +4323,17 @@ BEGIN
 END
 ;
 
-/* Permission Management > Legacy Permission Modules */
-IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYACTIONS')
-BEGIN
-    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'MOD-LEGACYACTIONS', 'Permission Actions', 'zap', '/permission-actions', 3, 1, 'system'
-    FROM dbo.Domains WHERE DomainCode = 'DOM-PERMMGMT';
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-LEGACYPERMS')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-LEGACYPERMS', 'Permission Modules', 'layers', '/permission-modules', 1, 1, 'system'
-    FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYPERMS';
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-LEGACYACTIONS')
-BEGIN
-    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
-    SELECT Id, 'SUB-LEGACYACTIONS', 'Permission Actions', 'zap', '/permission-actions', 1, 1, 'system'
-    FROM dbo.Modules WHERE ModuleCode = 'MOD-LEGACYACTIONS';
-END
-;
-
 /* Attach screens to their ENTERPRISE_PERMISSIONS submodules */
 INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
 FROM (VALUES
-    ('SUB-ROLEPERMMGMT',  'ROLE_PERMISSIONS',         'Role Permissions',         'SETTINGS', '/role-permissions',           'RolePermissionsPage',          1, 1, 'system'),
     ('SUB-ROLEFIELDSEC',  'ROLE_FIELD_PERMISSIONS',   'Role Field Permissions',   'SETTINGS', '/role-field-permissions',     'RoleFieldPermissionsPage',     1, 1, 'system'),
     ('SUB-PERMMATRIX',    'ROLE_PERMISSION_MATRIX',   'Role Permission Matrix',   'SETTINGS', '/role-permission-matrix',     'RolePermissionMatrixPage',     1, 1, 'system'),
     ('SUB-PERMOVERRIDES', 'USER_PERMISSION_OVERRIDES','User Permission Overrides','SETTINGS', '/user-permission-overrides',  'UserPermissionOverridesPage',  1, 1, 'system'),
     ('SUB-SCOPEMGMT',     'DATA_SCOPES',              'Data Scopes',              'SETTINGS', '/data-scopes',                'DataScopesPage',               1, 1, 'system'),
     ('SUB-USERSCOPE',     'USER_DATA_SCOPE_OVERRIDES','User Data Scope Overrides','SETTINGS', '/user-data-scope-overrides',  'UserDataScopeOverridesPage',   1, 1, 'system'),
     ('SUB-WORKFLOWPERMS', 'WORKFLOW_PERMISSIONS',     'Workflow Permissions',     'SETTINGS', '/workflow-permissions',       'WorkflowPermissionsPage',      1, 1, 'system'),
-    ('SUB-ENTPERMS',      'ENTERPRISE_PERMISSIONS',   'Enterprise Permissions',   'SETTINGS', '/enterprise-permissions',     'EnterprisePermissionsPage',    1, 1, 'system'),
-    ('SUB-LEGACYPERMS',   'PERMISSION_MODULES',       'Permission Modules',       'SETTINGS', '/permission-modules',         'PermissionModulesPage',        1, 1, 'system'),
-    ('SUB-LEGACYACTIONS', 'PERMISSION_ACTIONS',       'Permission Actions',       'SETTINGS', '/permission-actions',         'PermissionActionsPage',        1, 1, 'system')
+    ('SUB-ENTPERMS',      'ENTERPRISE_PERMISSIONS',   'Enterprise Permissions',   'SETTINGS', '/enterprise-permissions',     'EnterprisePermissionsPage',    1, 1, 'system')
 ) AS k(SubModuleCode, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = k.SubModuleCode
 WHERE NOT EXISTS (
@@ -3807,15 +4384,39 @@ SELECT r.RoleId, v.code, 'system'
 FROM dbo.Roles r
 CROSS JOIN (VALUES
     /* SETUP / Organization */
-    ('business-master.view'), ('business-master.manage'),
-    ('company.view'), ('company.create'), ('company.edit'), ('company.delete'),
-    ('branch.view'), ('branch.create'), ('branch.edit'), ('branch.delete'),
-    ('department.view'), ('department.create'), ('department.edit'),
-    ('warehouse.view'), ('warehouse.create'), ('warehouse.edit'),
-    ('designation.view'), ('designation.create'), ('designation.edit'),
-    ('financial-year.view'), ('financial-year.manage'),
+    ('companies.view'), ('companies.create'), ('companies.edit'), ('companies.delete'),
+    ('branches.view'), ('branches.create'), ('branches.edit'), ('branches.delete'),
+    ('departments.view'), ('departments.create'), ('departments.edit'), ('departments.delete'),
+    ('warehouses.view'), ('warehouses.create'), ('warehouses.edit'), ('warehouses.delete'),
+    ('stores.view'), ('stores.create'), ('stores.edit'), ('stores.delete'),
+    ('counters.view'), ('counters.create'), ('counters.edit'), ('counters.delete'),
+    ('pos-sessions.view'), ('pos-sessions.create'), ('pos-sessions.edit'), ('pos-sessions.delete'),
+    ('designations.view'), ('designations.create'), ('designations.edit'), ('designations.delete'),
+    ('financial-years.view'), ('financial-years.create'), ('financial-years.edit'), ('financial-years.delete'),
     ('system-master.view'), ('system-master.manage'),
-    ('tenant-configuration.view'), ('tenant-configuration.manage'),
+    ('tenant-config.view'), ('tenant-config.manage'),
+    /* LOOKUP / DROPDOWN MASTERS (no screen rows in the matrix; seed for admin) */
+    ('business-types.view'), ('business-types.manage'),
+    ('industry-types.view'), ('industry-types.manage'),
+    ('company-groups.view'), ('company-groups.manage'),
+    ('locations.view'), ('locations.create'), ('locations.edit'), ('locations.delete'),
+    ('languages.view'), ('languages.manage'),
+    ('timezones.view'), ('timezones.manage'),
+    ('gst-registration-types.view'), ('gst-registration-types.manage'),
+    ('address-types.view'), ('address-types.manage'),
+    ('contact-types.view'), ('contact-types.manage'),
+    ('document-types.view'), ('document-types.manage'),
+    ('organization-types.view'), ('organization-types.manage'),
+    ('branch-types.view'), ('branch-types.manage'),
+    ('warehouse-types.view'), ('warehouse-types.manage'),
+    ('employment-types.view'), ('employment-types.manage'),
+    ('employees.view'), ('employees.create'), ('employees.edit'), ('employees.delete'),
+    ('currencies.view'), ('currencies.manage'),
+    ('payment-types.view'), ('payment-types.manage'),
+    ('payment-methods.view'), ('payment-methods.manage'),
+    ('permission-modules.view'), ('permission-modules.manage'),
+    ('permission-actions.view'), ('permission-actions.manage'),
+    ('audit.view'), ('profile.edit'),
     /* PRODBILL / Product & Billing */
     ('product-categories.view'), ('product-categories.create'), ('product-categories.edit'), ('product-categories.delete'),
     ('product-subcategories.view'), ('product-subcategories.create'), ('product-subcategories.edit'), ('product-subcategories.delete'),
@@ -3829,18 +4430,15 @@ CROSS JOIN (VALUES
     ('sales.view'), ('sales.manage'), ('sales.create'), ('sales.edit'), ('sales.delete'),
     ('sales.pos.view'), ('sales.return.view'), ('sales.return.manage'),
     /* PURCHASE */
-    ('purchase.view'), ('purchase.manage'), ('purchase.create'), ('purchase.edit'), ('purchase.delete'),
-    ('purchase-returns.view'), ('purchase-returns.manage'),
+    ('purchases.view'), ('purchases.manage'),
+    ('purchases.return.view'), ('purchases.return.manage'),
     /* INVENTORY */
     ('stock.view'), ('stock.manage'),
     /* PAYMENTS */
-    ('payment-types.view'), ('payment-types.manage'),
-    ('payment-methods.view'), ('payment-methods.manage'),
-    ('payment.view'), ('payment.create'), ('payment.edit'), ('payment.delete'),
+    ('payments.view'), ('payments.manage'),
     /* REPORTS */
     ('reports.view'),
     /* BUSINESS_PARTNERS */
-    ('business-partner-roles.view'), ('business-partner-roles.manage'),
     ('business-partners.view'), ('business-partners.manage'),
     /* SECURITY */
     ('users.view'), ('users.create'), ('users.edit'), ('users.delete'),
@@ -3853,7 +4451,6 @@ CROSS JOIN (VALUES
     ('screens.view'), ('screens.manage'),
     ('fields.view'), ('fields.manage'),
     ('actions.view'), ('actions.manage'),
-    ('role-permissions.view'), ('role-permissions.manage'),
     ('role-field-permissions.view'), ('role-field-permissions.manage'),
     ('role-permission-matrix.view'), ('role-permission-matrix.manage'),
     ('user-permission-overrides.view'), ('user-permission-overrides.manage'),
@@ -3861,12 +4458,1244 @@ CROSS JOIN (VALUES
     ('user-data-scope-overrides.view'), ('user-data-scope-overrides.manage'),
     ('workflow-permissions.view'), ('workflow-permissions.manage'),
     ('enterprise-permissions.view'), ('enterprise-permissions.manage'),
-    ('permission-modules.view'), ('permission-modules.manage'),
-    ('permission-actions.view'), ('permission-actions.manage'),
     /* SETTINGS */
     ('settings.view'), ('settings.edit')
 ) AS v(code)
 WHERE r.Code IN ('SuperAdmin', 'Administrator')
   AND NOT EXISTS (SELECT 1 FROM dbo.RolePermissionsLegacy rp WHERE rp.RoleId = r.RoleId AND rp.PermissionCode = v.code);
 
+/* ---------------------------------------------------------------------------
+   Hierarchical RolePermissions matrix (real role-based permission data).
+   Grants each role only the Actions it needs per Screen (view/create/edit/
+   delete), instead of a blanket allow-everything. The matrix is declarative:
+   each row = (RoleCode, ScreenCode, ActionCode). NULL ScreenCode = every
+   screen; NULL ActionCode = every action on the given screen. It is joined
+   to the seeded Workspace->Domain->Module->SubModule->Screen and Action
+   hierarchy, so it stays in sync with screens/actions above and drives both
+   the permission-matrix UI and the derived flat API permission codes (bridge
+   below). SuperAdmin retains full access; the business roles are restricted
+   to the screens relevant to their function.
+   --------------------------------------------------------------------------- */
+INSERT INTO dbo.RolePermissions
+    (RoleId, WorkspaceId, DomainId, ModuleId, SubModuleId, ScreenId, ActionId,
+     Allow, DisplayOrder, IsActive, CreatedBy, CreatedDate)
+SELECT r.RoleId,
+       w.Id                 AS WorkspaceId,
+       d.Id                 AS DomainId,
+       m.Id                 AS ModuleId,
+       sm.Id                AS SubModuleId,
+       s.Id                 AS ScreenId,
+       a.Id                 AS ActionId,
+       1                    AS Allow,
+       a.DisplayOrder AS DisplayOrder,
+       1                    AS IsActive,
+       'system'             AS CreatedBy,
+       SYSUTCDATETIME()
+FROM dbo.Roles r
+INNER JOIN (VALUES
+    /* ------------- SuperAdmin: every screen, every action ------------- */
+    ('SuperAdmin',     NULL,                    NULL),
+
+    /* ------------- Administrator: every screen EXCEPT security config -------------
+       View + CRUD on masters/operational for all screens, but the 7
+       permission/security configuration screens are SuperAdmin-only (they are
+       excluded in the WHERE clause below via AdministrativeOnlyScreens). */
+    ('Administrator',  NULL,                    NULL),
+
+    /* ------------- Financial Year Officer ------------- */
+    ('FinanceYearOfficer', 'FINANCE_YEAR',    NULL),
+    ('FinanceYearOfficer', 'COMPANY_MASTER',  'view'),
+    ('FinanceYearOfficer', 'COMPANY_MASTER',  'edit'),
+    ('FinanceYearOfficer', 'REPORTS_HOME',    'view'),
+    ('FinanceYearOfficer', 'SETTINGS_HOME',   'view'),
+    ('FinanceYearOfficer', 'SYSTEM_MASTER_HOME', 'view'),
+
+    /* ------------- Store Manager ------------- */
+    ('StoreManager',   'STORE_MASTER',        NULL),
+    ('StoreManager',   'COUNTER_MASTER',      NULL),
+    ('StoreManager',   'POS_SESSION_MASTER',  NULL),
+    ('StoreManager',   'PRODUCT-CATEGORIES',  NULL),
+    ('StoreManager',   'PRODUCT-SUBCATEGORIES', NULL),
+    ('StoreManager',   'BRANDS',              NULL),
+    ('StoreManager',   'UNITS',               NULL),
+    ('StoreManager',   'PRODUCTS',            NULL),
+    ('StoreManager',   'STOCK_HOME',          NULL),
+    ('StoreManager',   'BUSINESS_PARTNERS',   NULL),
+    ('StoreManager',   'SALES_ENTRY',         'view'),
+    ('StoreManager',   'SALES_ENTRY',         'create'),
+    ('StoreManager',   'SALES_ENTRY',         'edit'),
+    ('StoreManager',   'PURCHASE_ENTRY',      'view'),
+    ('StoreManager',   'PURCHASE_LIST',       'view'),
+    ('StoreManager',   'PURCHASE_STOCK',      'view'),
+    ('StoreManager',   'PURCHASE_RETURNS',    'view'),
+    ('StoreManager',   'REPORTS_HOME',        'view'),
+    ('StoreManager',   'MASTER_IMPORT',       'view'),
+    ('StoreManager',   'IMPORT-LOGS',         'view'),
+
+    /* ------------- POS Cashier ------------- */
+    ('POSCashier',     'SALES_POS',           NULL),
+    ('POSCashier',     'SALES_ENTRY',         'view'),
+    ('POSCashier',     'SALES_ENTRY',         'create'),
+    ('POSCashier',     'PAYMENT_ENTRY',       'view'),
+    ('POSCashier',     'PAYMENT_ENTRY',       'create'),
+    ('POSCashier',     'PAYMENT_HOME',        'view'),
+    ('POSCashier',     'COUNTER_MASTER',      'view'),
+    ('POSCashier',     'USERS',               'view'),
+
+    /* ------------- Purchase Admin ------------- */
+    ('PurchaseAdmin',  'PURCHASE_ENTRY',      NULL),
+    ('PurchaseAdmin',  'PURCHASE_LIST',       NULL),
+    ('PurchaseAdmin',  'PURCHASE_STOCK',      'view'),
+    ('PurchaseAdmin',  'PURCHASE_RETURNS',    NULL),
+    ('PurchaseAdmin',  'PURCHASE_REPORTS',    NULL),
+    ('PurchaseAdmin',  'PRODUCTS',            'view'),
+    ('PurchaseAdmin',  'PRODUCT-CATEGORIES',  'view'),
+    ('PurchaseAdmin',  'STOCK_HOME',          'view'),
+    ('PurchaseAdmin',  'BUSINESS_PARTNERS',   'view'),
+    ('PurchaseAdmin',  'REPORTS_HOME',        'view'),
+
+    /* ------------- Sales Admin ------------- */
+    ('SalesAdmin',     'SALES_ENTRY',         NULL),
+    ('SalesAdmin',     'SALES_POS',           'view'),
+    ('SalesAdmin',     'SALES_POS',           'create'),
+    ('SalesAdmin',     'PRODUCTS',            'view'),
+    ('SalesAdmin',     'PRODUCT-CATEGORIES',  'view'),
+    ('SalesAdmin',     'PRODUCT-SUBCATEGORIES', 'view'),
+    ('SalesAdmin',     'BRANDS',              'view'),
+    ('SalesAdmin',     'UNITS',               'view'),
+    ('SalesAdmin',     'BUSINESS_PARTNERS',   NULL),
+    ('SalesAdmin',     'STOCK_HOME',          'view'),
+    ('SalesAdmin',     'PAYMENT_ENTRY',       'view'),
+    ('SalesAdmin',     'PAYMENT_ENTRY',       'create'),
+    ('SalesAdmin',     'PAYMENT_ENTRY',       'edit'),
+    ('SalesAdmin',     'REPORTS_HOME',        'view')
+) v(RoleCode, ScreenCode, ActionCode)
+INNER JOIN dbo.Screens s ON (v.ScreenCode IS NULL OR s.ScreenCode = v.ScreenCode)
+    AND s.IsActive = 1
+INNER JOIN dbo.SubModules sm ON sm.Id = s.SubModuleId
+INNER JOIN dbo.Modules m ON m.Id = sm.ModuleId
+INNER JOIN dbo.Domains d ON d.Id = m.DomainId
+INNER JOIN dbo.Workspaces w ON w.Id = d.WorkspaceId
+CROSS JOIN dbo.Actions a
+    ON (v.ActionCode IS NULL OR a.ActionCode = v.ActionCode)
+    AND a.IsActive = 1
+WHERE r.Code = v.RoleCode
+  AND NOT (r.Code = 'Administrator' AND v.ScreenCode IS NULL
+           AND s.ScreenCode IN (
+               'ROLE_FIELD_PERMISSIONS',
+               'ROLE_PERMISSION_MATRIX',
+               'USER_PERMISSION_OVERRIDES',
+               'DATA_SCOPES',
+               'USER_DATA_SCOPE_OVERRIDES',
+               'WORKFLOW_PERMISSIONS',
+               'ENTERPRISE_PERMISSIONS'))
+  AND NOT EXISTS (
+      SELECT 1 FROM dbo.RolePermissions rp
+      WHERE rp.RoleId = r.RoleId
+        AND rp.WorkspaceId = w.Id
+        AND rp.DomainId = d.Id
+        AND rp.ModuleId = m.Id
+        AND rp.SubModuleId = sm.Id
+        AND rp.ScreenId = s.Id
+        AND rp.ActionId = a.Id
+  );
+
+/* ---------------------------------------------------------------------------
+   Screens.PermissionCode mapping (flat API codes used by [Permission] checks).
+   Kept in sync with ONEERP.Shared/Constants/Permissions.cs.
+   --------------------------------------------------------------------------- */
+UPDATE s
+SET s.PermissionCode = v.PermissionCode
+FROM dbo.Screens s
+INNER JOIN (VALUES
+    ('COMPANY_MASTER',          'companies'),
+    ('BRANCH_MASTER',           'branches'),
+    ('DEPARTMENT_MASTER',       'departments'),
+    ('WAREHOUSE_MASTER',        'warehouses'),
+    ('DESIGNATION_MASTER',      'designations'),
+    ('STORE_MASTER',            'stores'),
+    ('COUNTER_MASTER',          'counters'),
+    ('POS_SESSION_MASTER',      'pos-sessions'),
+    ('FINANCE_YEAR',            'financial-years'),
+    ('SYSTEM_MASTER_HOME',      'system-master'),
+    ('TENANT_CONFIGURATION',    'tenant-config'),
+    ('PRODUCT-CATEGORIES',      'product-categories'),
+    ('PRODUCT-SUBCATEGORIES',   'product-subcategories'),
+    ('BRANDS',                  'brands'),
+    ('UNITS',                   'units'),
+    ('PRODUCTS',                'products'),
+    ('IMPORT-LOGS',             'import-logs'),
+    ('MASTER_IMPORT',           'master-import'),
+    ('TAXTYPES',                'tax-type-systems'),
+    ('TAXES',                   'taxes'),
+    ('PRICE-TYPES',             'price-types'),
+    ('UNIT-CONVERSIONS',        'unit-conversions'),
+    ('BARCODES',                'barcodes'),
+    ('HSN-SACS',                'hsn-sacs'),
+    ('SERVICE-CATEGORIES',      'service-categories'),
+    ('SERVICES',                'services'),
+    ('PRICE-LISTS',             'price-lists'),
+    ('DISCOUNT-RULES',          'discount-rules'),
+    ('OFFERS',                  'offers'),
+    ('COUPONS',                 'coupons'),
+    ('SALES_ENTRY',             'sales'),
+    ('SALES_POS',               'sales.pos'),
+    ('PURCHASE_ENTRY',          'purchases'),
+    ('PURCHASE_LIST',           'purchases'),
+    ('PURCHASE_STOCK',          'purchases'),
+    ('PURCHASE_RETURNS',        'purchases.return'),
+    ('PURCHASE_REPORTS',        'reports'),
+    ('STOCK_HOME',              'stock'),
+    ('PAYMENT_HOME',            'payments'),
+    ('PAYMENT_ENTRY',           'payments'),
+    ('REPORTS_HOME',            'reports'),
+    ('BUSINESS_PARTNERS',       'business-partners'),
+    ('USERS',                   'users'),
+    ('ROLES',                   'roles'),
+    ('WORKS',                   'workspaces'),
+    ('DOMAINS',                 'domains'),
+    ('MODULES',                 'modules'),
+    ('SUBMODULES',              'submodules'),
+    ('SCREENS',                 'screens'),
+    ('FIELDS',                  'fields'),
+    ('ACTIONS',                 'actions'),
+    ('ROLE_FIELD_PERMISSIONS',  'role-field-permissions'),
+    ('ROLE_PERMISSION_MATRIX',  'role-permission-matrix'),
+    ('USER_PERMISSION_OVERRIDES','user-permission-overrides'),
+    ('DATA_SCOPES',             'data-scopes'),
+    ('USER_DATA_SCOPE_OVERRIDES','user-data-scope-overrides'),
+    ('WORKFLOW_PERMISSIONS',    'workflow-permissions'),
+    ('ENTERPRISE_PERMISSIONS',  'enterprise-permissions'),
+    ('SETTINGS_HOME',           'settings')
+) v(ScreenCode, PermissionCode)
+    ON s.ScreenCode = v.ScreenCode
+WHERE s.PermissionCode IS NULL OR s.PermissionCode <> v.PermissionCode;
+
+/* ---------------------------------------------------------------------------
+   Matrix -> Legacy bridge. Derive RolePermissionsLegacy flat codes for every
+   matrix-managed role from the hierarchical RolePermissions grants (mirrors
+   EnterprisePermissionServices.BulkAssignAsync) so roles granted ONLY through
+   the Role Permission Matrix (e.g. a custom "Purchase Admin") get real API
+   authorization. Roles without matrix rows (e.g. SalesAdmin) keep their
+   manually seeded legacy codes untouched. The clean-up DELETE below only
+   removes codes that the matrix CAN re-derive ({screen.PermissionCode}.
+   {action.ActionCode} where the action exists in dbo.Actions, e.g.
+   "stores.view"), preserving service/platform codes that do NOT exist as
+   matrix actions (e.g. "roles.manage", "sales.manage").
+   --------------------------------------------------------------------------- */
+DELETE rp
+FROM dbo.RolePermissionsLegacy rp
+WHERE EXISTS (
+    SELECT 1
+    FROM dbo.Screens s
+    INNER JOIN dbo.Actions a ON a.IsActive = 1
+    WHERE s.PermissionCode IS NOT NULL AND s.PermissionCode <> ''
+      AND rp.PermissionCode = CONCAT(s.PermissionCode, '.', a.ActionCode)
+      AND EXISTS (
+          SELECT 1 FROM dbo.RolePermissions r WHERE r.RoleId = rp.RoleId)
+);
+
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT DISTINCT rp.RoleId,
+                CONCAT(s.PermissionCode, '.', a.ActionCode),
+                'system'
+FROM dbo.RolePermissions rp
+INNER JOIN dbo.Screens s ON s.Id = rp.ScreenId
+    AND s.PermissionCode IS NOT NULL AND s.PermissionCode <> ''
+INNER JOIN dbo.Actions a ON a.Id = rp.ActionId
+WHERE rp.Allow = 1 AND rp.IsActive = 1
+  AND NOT EXISTS (
+      SELECT 1 FROM dbo.RolePermissionsLegacy l
+      WHERE l.RoleId = rp.RoleId
+        AND l.PermissionCode = CONCAT(s.PermissionCode, '.', a.ActionCode)
+  );
+
 PRINT 'ERP module configuration seed complete.';
+
+/* =============================================================================
+   ONE ERP - Universal Entity layer (Address / Contact / File / Note / Tag)
+   Purpose  : Adds the polymorphic Entity layer used by every master (Company,
+              Branch, Warehouse, Store, Product, Service, Employee, Customer/
+              Supplier via BusinessPartners). One Entity has many Addresses,
+              Contacts, Files, Notes and Tags, connected through junction tables.
+              Business masters reference the common Entity through an EntityId
+              column. AddressTypeId / ContactTypeId reuse the existing
+              AddressTypes / ContactTypes system masters.
+   Safe     : Re-runnable (IF NOT EXISTS guards on every object / column / FK).
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Entity - common identity (COMPANY, BRANCH, WAREHOUSE, STORE, PRODUCT,
+            SERVICE, EMPLOYEE, CUSTOMER, SUPPLIER ...)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Entity]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Entity (
+        EntityId   BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Entity PRIMARY KEY,
+        EntityType VARCHAR(30)            NOT NULL,
+        EntityCode VARCHAR(50)            NOT NULL,
+        EntityName VARCHAR(200)           NOT NULL,
+        IsActive   BIT                    NOT NULL CONSTRAINT DF_Entity_IsActive DEFAULT 1,
+        CreatedBy  BIGINT                 NULL,
+        CreatedAt  DATETIME               NOT NULL CONSTRAINT DF_Entity_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy BIGINT                 NULL,
+        ModifiedAt DATETIME               NULL,
+        CONSTRAINT UQ_Entity_Type_Code UNIQUE (EntityType, EntityCode)
+    );
+
+    CREATE INDEX IX_Entity_EntityType ON dbo.Entity (EntityType);
+    CREATE INDEX IX_Entity_IsActive ON dbo.Entity (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Address - reusable postal address.
+   AddressTypeId reuses dbo.AddressTypes; CityId/StateId/CountryId reuse the
+   location masters.
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Address]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Address (
+        AddressId    BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Address PRIMARY KEY,
+        AddressTypeId BIGINT                NULL,
+        AddressLine1 VARCHAR(200)           NULL,
+        AddressLine2 VARCHAR(200)           NULL,
+        AddressLine3 VARCHAR(200)           NULL,
+        AddressLine4 VARCHAR(200)           NULL,
+        AddressLine5 VARCHAR(200)           NULL,
+        Landmark     VARCHAR(200)           NULL,
+        CityId       BIGINT                 NULL,
+        StateId      BIGINT                 NULL,
+        CountryId    BIGINT                 NULL,
+        PostalCode   VARCHAR(20)            NULL,
+        IsActive     BIT                    NOT NULL CONSTRAINT DF_Address_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                 NULL,
+        CreatedAt    DATETIME               NOT NULL CONSTRAINT DF_Address_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy   BIGINT                 NULL,
+        ModifiedAt   DATETIME               NULL
+    );
+
+    CREATE INDEX IX_Address_CityId ON dbo.Address (CityId);
+    CREATE INDEX IX_Address_StateId ON dbo.Address (StateId);
+    CREATE INDEX IX_Address_CountryId ON dbo.Address (CountryId);
+    CREATE INDEX IX_Address_IsActive ON dbo.Address (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EntityAddress - junction: entity <-> address
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EntityAddress]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EntityAddress (
+        EntityAddressId BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_EntityAddress PRIMARY KEY,
+        EntityId        BIGINT                 NOT NULL,
+        AddressId       BIGINT                 NOT NULL,
+        IsPrimary       BIT                    NOT NULL CONSTRAINT DF_EntityAddress_IsPrimary DEFAULT 0,
+        IsActive        BIT                    NOT NULL CONSTRAINT DF_EntityAddress_IsActive DEFAULT 1,
+        CreatedBy       BIGINT                 NULL,
+        CreatedAt       DATETIME               NOT NULL CONSTRAINT DF_EntityAddress_CreatedAt DEFAULT GETDATE(),
+        CONSTRAINT FK_EntityAddress_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId),
+        CONSTRAINT FK_EntityAddress_Address FOREIGN KEY (AddressId) REFERENCES dbo.Address (AddressId),
+        CONSTRAINT UQ_EntityAddress UNIQUE (EntityId, AddressId)
+    );
+
+    CREATE INDEX IX_EntityAddress_EntityId ON dbo.EntityAddress (EntityId);
+    CREATE INDEX IX_EntityAddress_AddressId ON dbo.EntityAddress (AddressId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Contact - reusable person/contact row.
+   ContactTypeId reuses dbo.ContactTypes.
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Contact]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Contact (
+        ContactId    BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Contact PRIMARY KEY,
+        ContactTypeId BIGINT                NULL,
+        ContactName  VARCHAR(200)           NOT NULL,
+        Designation  VARCHAR(100)           NULL,
+        Email        VARCHAR(200)           NULL,
+        Mobile       VARCHAR(30)            NULL,
+        Phone        VARCHAR(30)            NULL,
+        Website      VARCHAR(300)           NULL,
+        IsActive     BIT                    NOT NULL CONSTRAINT DF_Contact_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                 NULL,
+        CreatedAt    DATETIME               NOT NULL CONSTRAINT DF_Contact_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy   BIGINT                 NULL,
+        ModifiedAt   DATETIME               NULL
+    );
+
+    CREATE INDEX IX_Contact_ContactTypeId ON dbo.Contact (ContactTypeId);
+    CREATE INDEX IX_Contact_IsActive ON dbo.Contact (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EntityContact - junction: entity <-> contact
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EntityContact]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EntityContact (
+        EntityContactId BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_EntityContact PRIMARY KEY,
+        EntityId        BIGINT                 NOT NULL,
+        ContactId       BIGINT                 NOT NULL,
+        IsPrimary       BIT                    NOT NULL CONSTRAINT DF_EntityContact_IsPrimary DEFAULT 0,
+        IsActive        BIT                    NOT NULL CONSTRAINT DF_EntityContact_IsActive DEFAULT 1,
+        CreatedBy       BIGINT                 NULL,
+        CreatedAt       DATETIME               NOT NULL CONSTRAINT DF_EntityContact_CreatedAt DEFAULT GETDATE(),
+        CONSTRAINT FK_EntityContact_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId),
+        CONSTRAINT FK_EntityContact_Contact FOREIGN KEY (ContactId) REFERENCES dbo.Contact (ContactId),
+        CONSTRAINT UQ_EntityContact UNIQUE (EntityId, ContactId)
+    );
+
+    CREATE INDEX IX_EntityContact_EntityId ON dbo.EntityContact (EntityId);
+    CREATE INDEX IX_EntityContact_ContactId ON dbo.EntityContact (ContactId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Files - MinIO / S3 stored-object metadata only
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Files]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.[Files] (
+        FileId           BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Files PRIMARY KEY,
+        FileName         VARCHAR(255)           NOT NULL,
+        OriginalFileName VARCHAR(255)           NOT NULL,
+        BucketName       VARCHAR(100)           NOT NULL,
+        ObjectKey        VARCHAR(1000)          NOT NULL,
+        ContentType      VARCHAR(150)           NULL,
+        Extension        VARCHAR(20)            NULL,
+        FileSize         BIGINT                 NOT NULL,
+        StorageProvider  VARCHAR(30)            NOT NULL CONSTRAINT DF_Files_StorageProvider DEFAULT 'MINIO',
+        IsActive         BIT                    NOT NULL CONSTRAINT DF_Files_IsActive DEFAULT 1,
+        CreatedBy        BIGINT                 NULL,
+        CreatedAt        DATETIME               NOT NULL CONSTRAINT DF_Files_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy       BIGINT                 NULL,
+        ModifiedAt       DATETIME               NULL
+    );
+
+    CREATE INDEX IX_Files_BucketName ON dbo.[Files] (BucketName);
+    CREATE INDEX IX_Files_IsActive ON dbo.[Files] (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EntityFile - junction: entity <-> file (FileType: LOGO / DOCUMENT / IMAGE / ATTACHMENT)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EntityFile]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EntityFile (
+        EntityFileId BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_EntityFile PRIMARY KEY,
+        EntityId     BIGINT                 NOT NULL,
+        FileId       BIGINT                 NOT NULL,
+        FileType     VARCHAR(30)            NOT NULL,
+        IsPrimary    BIT                    NOT NULL CONSTRAINT DF_EntityFile_IsPrimary DEFAULT 0,
+        IsActive     BIT                    NOT NULL CONSTRAINT DF_EntityFile_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                 NULL,
+        CreatedAt    DATETIME               NOT NULL CONSTRAINT DF_EntityFile_CreatedAt DEFAULT GETDATE(),
+        CONSTRAINT FK_EntityFile_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId),
+        CONSTRAINT FK_EntityFile_File FOREIGN KEY (FileId) REFERENCES dbo.[Files] (FileId)
+    );
+
+    CREATE INDEX IX_EntityFile_EntityId ON dbo.EntityFile (EntityId);
+    CREATE INDEX IX_EntityFile_FileId ON dbo.EntityFile (FileId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Note - common note row
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Note]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Note (
+        NoteId     BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Note PRIMARY KEY,
+        NoteText   VARCHAR(2000)          NOT NULL,
+        NoteType   VARCHAR(30)            NULL,
+        IsActive   BIT                    NOT NULL CONSTRAINT DF_Note_IsActive DEFAULT 1,
+        CreatedBy  BIGINT                 NULL,
+        CreatedAt  DATETIME               NOT NULL CONSTRAINT DF_Note_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy BIGINT                 NULL,
+        ModifiedAt DATETIME               NULL
+    );
+
+    CREATE INDEX IX_Note_IsActive ON dbo.Note (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EntityNote - junction: entity <-> note
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EntityNote]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EntityNote (
+        EntityNoteId BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_EntityNote PRIMARY KEY,
+        EntityId     BIGINT                 NOT NULL,
+        NoteId       BIGINT                 NOT NULL,
+        IsActive     BIT                    NOT NULL CONSTRAINT DF_EntityNote_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                 NULL,
+        CreatedAt    DATETIME               NOT NULL CONSTRAINT DF_EntityNote_CreatedAt DEFAULT GETDATE(),
+        CONSTRAINT FK_EntityNote_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId),
+        CONSTRAINT FK_EntityNote_Note FOREIGN KEY (NoteId) REFERENCES dbo.Note (NoteId),
+        CONSTRAINT UQ_EntityNote UNIQUE (EntityId, NoteId)
+    );
+
+    CREATE INDEX IX_EntityNote_EntityId ON dbo.EntityNote (EntityId);
+    CREATE INDEX IX_EntityNote_NoteId ON dbo.EntityNote (NoteId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Tag - common tag row
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Tag]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Tag (
+        TagId      BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Tag PRIMARY KEY,
+        TagName    VARCHAR(100)           NOT NULL,
+        Color      VARCHAR(20)            NULL,
+        IsActive   BIT                    NOT NULL CONSTRAINT DF_Tag_IsActive DEFAULT 1,
+        CreatedBy  BIGINT                 NULL,
+        CreatedAt  DATETIME               NOT NULL CONSTRAINT DF_Tag_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy BIGINT                 NULL,
+        ModifiedAt DATETIME               NULL,
+        CONSTRAINT UQ_Tag_Name UNIQUE (TagName)
+    );
+
+    CREATE INDEX IX_Tag_IsActive ON dbo.Tag (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   EntityTag - junction: entity <-> tag
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EntityTag]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.EntityTag (
+        EntityTagId BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_EntityTag PRIMARY KEY,
+        EntityId    BIGINT                 NOT NULL,
+        TagId       BIGINT                 NOT NULL,
+        IsActive    BIT                    NOT NULL CONSTRAINT DF_EntityTag_IsActive DEFAULT 1,
+        CreatedBy   BIGINT                 NULL,
+        CreatedAt   DATETIME               NOT NULL CONSTRAINT DF_EntityTag_CreatedAt DEFAULT GETDATE(),
+        CONSTRAINT FK_EntityTag_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId),
+        CONSTRAINT FK_EntityTag_Tag FOREIGN KEY (TagId) REFERENCES dbo.Tag (TagId),
+        CONSTRAINT UQ_EntityTag UNIQUE (EntityId, TagId)
+    );
+
+    CREATE INDEX IX_EntityTag_EntityId ON dbo.EntityTag (EntityId);
+    CREATE INDEX IX_EntityTag_TagId ON dbo.EntityTag (TagId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Business Masters -> EntityId
+   Adds a nullable FK column on each business master so the master keeps its
+   own columns and simply points to the common Entity row that owns its
+   Addresses / Contacts / Files / Notes / Tags.
+--------------------------------------------------------------------------- */
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Companies]') AND name = N'EntityId')
+    ALTER TABLE dbo.Companies ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Companies_Entity')
+    ALTER TABLE dbo.Companies ADD CONSTRAINT FK_Companies_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Branches]') AND name = N'EntityId')
+    ALTER TABLE dbo.Branches ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Branches_Entity')
+    ALTER TABLE dbo.Branches ADD CONSTRAINT FK_Branches_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Warehouses]') AND name = N'EntityId')
+    ALTER TABLE dbo.Warehouses ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Warehouses_Entity')
+    ALTER TABLE dbo.Warehouses ADD CONSTRAINT FK_Warehouses_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Stores]') AND name = N'EntityId')
+    ALTER TABLE dbo.Stores ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Stores_Entity')
+    ALTER TABLE dbo.Stores ADD CONSTRAINT FK_Stores_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = N'EntityId')
+    ALTER TABLE dbo.Products ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Products_Entity')
+    ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Services]') AND name = N'EntityId')
+    ALTER TABLE dbo.Services ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Services_Entity')
+    ALTER TABLE dbo.Services ADD CONSTRAINT FK_Services_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Employees]') AND name = N'EntityId')
+    ALTER TABLE dbo.Employees ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Employees_Entity')
+    ALTER TABLE dbo.Employees ADD CONSTRAINT FK_Employees_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[BusinessPartners]') AND name = N'EntityId')
+    ALTER TABLE dbo.BusinessPartners ADD EntityId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_BusinessPartners_Entity')
+    ALTER TABLE dbo.BusinessPartners ADD CONSTRAINT FK_BusinessPartners_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
+
+PRINT 'Universal Entity layer added.';
+
+/* =============================================================================
+   Invoice Template Design (merged from sql/erp_migration_002_invoice_templates.sql)
+   Purpose  : Adds the Invoice Template Design module - a single common designer
+              used for Retail, POS, Service, Wholesale, GST, Export and Purchase
+              documents. One InvoiceType (what document), one PaperSize (physical
+              size), one PrinterType (technology), one Template (how it looks),
+              Assignment (which template), Version (lifecycle), Component
+              (drag/drop block), Variable (data binding) and a Renderer that
+              emits PDF / thermal print output from the published TemplateJson.
+   Safe     : Re-runnable (IF NOT EXISTS guards on every object / column / FK;
+              seeds insert row-by-row with existence checks).
+   Notes    : CompanyId / IndustryTypeId are INT to match the existing
+              dbo.Companies.Id (INT) and dbo.IndustryTypes.IndustryTypeId (INT)
+              so FK constraints can be declared; every new table PK is BIGINT.
+   ============================================================================= */
+
+/* =============================================================================
+   01. InvoiceType - WHAT document is being printed
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceType]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceType (
+        InvoiceTypeId BIGINT IDENTITY(1,1)  NOT NULL CONSTRAINT PK_InvoiceType PRIMARY KEY,
+        Code          VARCHAR(30)            NOT NULL CONSTRAINT UQ_InvoiceType_Code UNIQUE,
+        Name          VARCHAR(100)           NOT NULL,
+        Description   VARCHAR(300)           NULL,
+        DisplayOrder  INT                    NOT NULL CONSTRAINT DF_InvoiceType_DisplayOrder DEFAULT 0,
+        IsActive      BIT                    NOT NULL CONSTRAINT DF_InvoiceType_IsActive DEFAULT 1,
+        CreatedBy     BIGINT                 NULL,
+        CreatedAt     DATETIME               NOT NULL CONSTRAINT DF_InvoiceType_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy    BIGINT                 NULL,
+        ModifiedAt    DATETIME               NULL
+    );
+
+    CREATE INDEX IX_InvoiceType_IsActive ON dbo.InvoiceType (IsActive);
+    CREATE INDEX IX_InvoiceType_DisplayOrder ON dbo.InvoiceType (DisplayOrder);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoiceType WHERE Code = 'SALES')
+BEGIN
+    INSERT INTO dbo.InvoiceType (Code, Name, Description, DisplayOrder) VALUES
+        ('SALES',          'Sales Invoice',        'Standard sales invoice',                        1),
+        ('POS',            'POS Receipt',          'Cash counter / walk-in receipts (thermal)',      2),
+        ('SERVICE',        'Service Invoice',      'Service delivery / job-work invoice',            3),
+        ('HYBRID',         'Hybrid Invoice',       'Goods + services combined invoice',              4),
+        ('WHOLESALE',      'Wholesale Invoice',    'Bulk / distribution invoice',                    5),
+        ('EXPORT',         'Export Invoice',       'Export / cross-border invoice',                  6),
+        ('PROFORMA',       'Proforma Invoice',     'Quotation-style advance invoice',                7),
+        ('CREDIT_NOTE',    'Credit Note',          'Customer credit / returns adjustment',           8),
+        ('DEBIT_NOTE',     'Debit Note',           'Debit / additional-charge note',                 9),
+        ('SALES_RETURN',   'Sales Return',         'Sales return document',                          10),
+        ('PURCHASE',       'Purchase Invoice',     'Vendor / supplier purchase invoice',             11),
+        ('PURCHASE_RETURN','Purchase Return',      'Vendor return document',                         12);
+END
+;
+
+/* =============================================================================
+   02. InvoicePaperSize - physical page / roll size
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoicePaperSize]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoicePaperSize (
+        PaperSizeId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoicePaperSize PRIMARY KEY,
+        Code        VARCHAR(30)           NOT NULL CONSTRAINT UQ_InvoicePaperSize_Code UNIQUE,
+        Name        VARCHAR(100)          NOT NULL,
+        Width       DECIMAL(10,2)         NOT NULL,
+        Height      DECIMAL(10,2)         NULL,
+        Unit        VARCHAR(10)           NOT NULL CONSTRAINT DF_InvoicePaperSize_Unit DEFAULT 'MM',
+        IsThermal   BIT                   NOT NULL CONSTRAINT DF_InvoicePaperSize_IsThermal DEFAULT 0,
+        IsCustom    BIT                   NOT NULL CONSTRAINT DF_InvoicePaperSize_IsCustom DEFAULT 0,
+        IsActive    BIT                   NOT NULL CONSTRAINT DF_InvoicePaperSize_IsActive DEFAULT 1,
+        CreatedBy   BIGINT                NULL,
+        CreatedAt   DATETIME              NOT NULL CONSTRAINT DF_InvoicePaperSize_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy  BIGINT                NULL,
+        ModifiedAt  DATETIME              NULL
+    );
+
+    CREATE INDEX IX_InvoicePaperSize_IsActive ON dbo.InvoicePaperSize (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoicePaperSize WHERE Code = 'A4')
+BEGIN
+    INSERT INTO dbo.InvoicePaperSize (Code, Name, Width, Height, Unit, IsThermal, IsCustom) VALUES
+        ('A4',      'A4',                210.00, 297.00, 'MM',  0, 0),
+        ('A5',      'A5',                148.00, 210.00, 'MM',  0, 0),
+        ('A6',      'A6',                105.00, 148.00, 'MM',  0, 0),
+        ('58MM',    '58mm Thermal',       58.00,  NULL,   'MM',  1, 0),
+        ('80MM',    '80mm Thermal',       80.00,  NULL,   'MM',  1, 0),
+        ('LETTER',  'Letter',            215.90, 279.40, 'MM',  0, 0),
+        ('LEGAL',   'Legal',             215.90, 355.60, 'MM',  0, 0),
+        ('CUSTOM',  'Custom',              0.00,   0.00, 'MM',  0, 1);
+END
+;
+-- Safety UPDATE so the rows created above always carry correct physics on re-runs.
+UPDATE dbo.InvoicePaperSize SET Width = 210.00, Height = 297.00, Unit = 'MM', IsThermal = 0 WHERE Code = 'A4'    AND IsCustom = 0;
+UPDATE dbo.InvoicePaperSize SET Width = 148.00, Height = 210.00, Unit = 'MM', IsThermal = 0 WHERE Code = 'A5'    AND IsCustom = 0;
+UPDATE dbo.InvoicePaperSize SET Width = 58.00,  Height = NULL,   Unit = 'MM', IsThermal = 1 WHERE Code = '58MM'  AND IsCustom = 0;
+UPDATE dbo.InvoicePaperSize SET Width = 80.00,  Height = NULL,   Unit = 'MM', IsThermal = 1 WHERE Code = '80MM'  AND IsCustom = 0;
+
+/* =============================================================================
+   03. PrinterType - printing technology
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PrinterType]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PrinterType (
+        PrinterTypeId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PrinterType PRIMARY KEY,
+        Code          VARCHAR(30)           NOT NULL CONSTRAINT UQ_PrinterType_Code UNIQUE,
+        Name          VARCHAR(100)          NOT NULL,
+        Description   VARCHAR(300)          NULL,
+        IsActive      BIT                   NOT NULL CONSTRAINT DF_PrinterType_IsActive DEFAULT 1,
+        CreatedBy     BIGINT                NULL,
+        CreatedAt     DATETIME              NOT NULL CONSTRAINT DF_PrinterType_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy    BIGINT                NULL,
+        ModifiedAt    DATETIME              NULL
+    );
+
+    CREATE INDEX IX_PrinterType_IsActive ON dbo.PrinterType (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.PrinterType WHERE Code = 'THERMAL')
+BEGIN
+    INSERT INTO dbo.PrinterType (Code, Name, Description) VALUES
+        ('THERMAL',    'Thermal',     'Heat-based direct thermal printing (receipt printers)'),
+        ('LASER',      'Laser',       'Laser / LED page printing'),
+        ('INKJET',     'Inkjet',      'Inkjet page printing'),
+        ('DOT_MATRIX', 'Dot Matrix',  'Impact / dot matrix printing'),
+        ('PDF',        'PDF',         'Render to PDF file (no physical printer)');
+END
+;
+
+/* =============================================================================
+   04. PrinterModel - optional physical printer models
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PrinterModel]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PrinterModel (
+        PrinterModelId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PrinterModel PRIMARY KEY,
+        PrinterTypeId  BIGINT               NOT NULL,
+        Code           VARCHAR(50)           NOT NULL CONSTRAINT UQ_PrinterModel_Code UNIQUE,
+        Name           VARCHAR(150)          NOT NULL,
+        Manufacturer   VARCHAR(100)          NULL,
+        IsActive       BIT                   NOT NULL CONSTRAINT DF_PrinterModel_IsActive DEFAULT 1,
+        CreatedBy      BIGINT                NULL,
+        CreatedAt      DATETIME              NOT NULL CONSTRAINT DF_PrinterModel_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy     BIGINT                NULL,
+        ModifiedAt     DATETIME              NULL,
+        CONSTRAINT FK_PrinterModel_PrinterType FOREIGN KEY (PrinterTypeId) REFERENCES dbo.PrinterType (PrinterTypeId)
+    );
+
+    CREATE INDEX IX_PrinterModel_PrinterTypeId ON dbo.PrinterModel (PrinterTypeId);
+    CREATE INDEX IX_PrinterModel_IsActive ON dbo.PrinterModel (IsActive);
+END
+;
+
+/* =============================================================================
+   05. InvoiceTemplateCategory - classification of the template itself
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateCategory]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateCategory (
+        TemplateCategoryId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateCategory PRIMARY KEY,
+        Code               VARCHAR(30)           NOT NULL CONSTRAINT UQ_InvoiceTemplateCategory_Code UNIQUE,
+        Name               VARCHAR(100)          NOT NULL,
+        Description        VARCHAR(300)          NULL,
+        DisplayOrder       INT                   NOT NULL CONSTRAINT DF_InvoiceTemplateCategory_DisplayOrder DEFAULT 0,
+        IsActive           BIT                   NOT NULL CONSTRAINT DF_InvoiceTemplateCategory_IsActive DEFAULT 1,
+        CreatedBy          BIGINT                NULL,
+        CreatedAt          DATETIME              NOT NULL CONSTRAINT DF_InvoiceTemplateCategory_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy         BIGINT                NULL,
+        ModifiedAt         DATETIME              NULL
+    );
+
+    CREATE INDEX IX_InvoiceTemplateCategory_IsActive ON dbo.InvoiceTemplateCategory (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateCategory WHERE Code = 'GENERAL')
+BEGIN
+    INSERT INTO dbo.InvoiceTemplateCategory (Code, Name, Description, DisplayOrder) VALUES
+        ('GENERAL',  'General',  'Generic layout usable across document types', 1),
+        ('RETAIL',   'Retail',   'Retail store layout',                         2),
+        ('WHOLESALE','Wholesale','Wholesale / distribution layout',             3),
+        ('SERVICE',  'Service',  'Service delivery layout',                     4),
+        ('POS',      'POS',      'Point-of-sale thermal layout',                5),
+        ('EXPORT',   'Export',   'Export documentation layout',                 6),
+        ('GST',      'GST',      'GST / statutory compliance layout',           7);
+END
+;
+
+/* =============================================================================
+   06. InvoiceTemplateComponent - drag/drop building blocks
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateComponent]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateComponent (
+        ComponentId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateComponent PRIMARY KEY,
+        Code           VARCHAR(50)           NOT NULL CONSTRAINT UQ_InvoiceTemplateComponent_Code UNIQUE,
+        Name           VARCHAR(100)          NOT NULL,
+        ComponentType  VARCHAR(50)           NOT NULL,
+        Description    VARCHAR(300)          NULL,
+        DisplayOrder   INT                   NOT NULL CONSTRAINT DF_InvoiceTemplateComponent_DisplayOrder DEFAULT 0,
+        IsActive       BIT                   NOT NULL CONSTRAINT DF_InvoiceTemplateComponent_IsActive DEFAULT 1,
+        CreatedBy      BIGINT                NULL,
+        CreatedAt      DATETIME              NOT NULL CONSTRAINT DF_InvoiceTemplateComponent_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy     BIGINT                NULL,
+        ModifiedAt     DATETIME              NULL
+    );
+
+    CREATE INDEX IX_InvoiceTemplateComponent_ComponentType ON dbo.InvoiceTemplateComponent (ComponentType);
+    CREATE INDEX IX_InvoiceTemplateComponent_IsActive ON dbo.InvoiceTemplateComponent (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateComponent WHERE Code = 'LOGO')
+BEGIN
+    INSERT INTO dbo.InvoiceTemplateComponent (Code, Name, ComponentType, Description, DisplayOrder) VALUES
+        ('LOGO',            'Logo',            'IMAGE',     'Company logo image',                  1),
+        ('COMPANY_HEADER',  'Company Header',  'TEXT',      'Company letter-head header',          2),
+        ('COMPANY_NAME',    'Company Name',    'TEXT',      'Company name line',                   3),
+        ('COMPANY_ADDRESS', 'Company Address', 'TEXT',      'Company address block',               4),
+        ('COMPANY_CONTACT', 'Company Contact', 'TEXT',      'Phone / email line',                  5),
+        ('GSTIN',           'GSTIN',           'TEXT',      'Company GSTIN / PAN line',            6),
+        ('INVOICE_INFO',    'Invoice Info',    'TEXT',      'Invoice number / date / due date',    7),
+        ('CUSTOMER',        'Customer',        'TEXT',      'Customer info block',                 8),
+        ('CUSTOMER_ADDRESS','Customer Address','TEXT',      'Customer address block',              9),
+        ('BILLING_ADDRESS', 'Billing Address', 'TEXT',      'Billing address block',               10),
+        ('SHIPPING_ADDRESS','Shipping Address','TEXT',      'Shipping address block',              11),
+        ('ITEM_TABLE',      'Item Table',      'TABLE',     'Line-item detail table',              12),
+        ('DISCOUNT',        'Discount',        'TEXT',      'Discount line(s)',                    13),
+        ('TAX',             'Tax',             'TEXT',      'Tax details',                         14),
+        ('TAX_SUMMARY',     'Tax Summary',     'TABLE',     'Tax rate-wise summary table',         15),
+        ('SUBTOTAL',        'Subtotal',        'TEXT',      'Subtotal line',                       16),
+        ('TOTAL',           'Total',           'TEXT',      'Grand total line',                    17),
+        ('PAYMENT',         'Payment',         'TEXT',      'Payment details',                     18),
+        ('BANK_DETAILS',    'Bank Details',    'TEXT',      'Company bank account details',        19),
+        ('QR_CODE',         'QR Code',         'QRCODE',    'QR code image block',                 20),
+        ('BARCODE',         'Barcode',         'BARCODE',   'Barcode image block',                 21),
+        ('TERMS',           'Terms',           'TEXT',      'Terms & conditions text',             22),
+        ('NOTES',           'Notes',           'TEXT',      'Free-form notes',                     23),
+        ('SIGNATURE',       'Signature',       'IMAGE',     'Signature image / line',              24),
+        ('FOOTER',          'Footer',          'TEXT',      'Page footer text',                    25),
+        ('CUSTOM_TEXT',     'Custom Text',     'TEXT',      'Custom static text',                  26),
+        ('CUSTOM_IMAGE',    'Custom Image',    'IMAGE',     'Custom image block',                  27),
+        ('DIVIDER',         'Divider',         'DIVIDER',   'Horizontal rule',                     28);
+END
+;
+
+/* =============================================================================
+   07. InvoiceTemplateVariable - data binding path dictionary
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateVariable]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateVariable (
+        VariableId   BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateVariable PRIMARY KEY,
+        Code         VARCHAR(100)          NOT NULL CONSTRAINT UQ_InvoiceTemplateVariable_Code UNIQUE,
+        Name         VARCHAR(150)          NOT NULL,
+        BindingPath  VARCHAR(300)          NOT NULL,
+        DataType     VARCHAR(30)           NOT NULL,
+        Category     VARCHAR(50)           NULL,
+        Description  VARCHAR(300)          NULL,
+        IsCollection BIT                   NOT NULL CONSTRAINT DF_InvoiceTemplateVariable_IsCollection DEFAULT 0,
+        IsActive     BIT                   NOT NULL CONSTRAINT DF_InvoiceTemplateVariable_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                NULL,
+        CreatedAt    DATETIME              NOT NULL CONSTRAINT DF_InvoiceTemplateVariable_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy   BIGINT                NULL,
+        ModifiedAt   DATETIME              NULL
+    );
+
+    CREATE INDEX IX_InvoiceTemplateVariable_Category ON dbo.InvoiceTemplateVariable (Category);
+    CREATE INDEX IX_InvoiceTemplateVariable_IsActive ON dbo.InvoiceTemplateVariable (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Company.Name')
+BEGIN
+    INSERT INTO dbo.InvoiceTemplateVariable (Code, Name, BindingPath, DataType, Category, Description, IsCollection) VALUES
+        ('Company.Name',            'Company Name',            'Company.Name',            'STRING', 'Company', 'Legal display name of the company',               0),
+        ('Company.LegalName',       'Company Legal Name',      'Company.LegalName',       'STRING', 'Company', 'Registered legal name',                                 0),
+        ('Company.Address',         'Company Address',         'Company.Address',         'STRING', 'Company', 'Registered address line',                               0),
+        ('Company.GSTIN',           'Company GSTIN',           'Company.GSTIN',           'STRING', 'Company', 'GST identification number',                            0),
+        ('Company.PAN',             'Company PAN',             'Company.PAN',             'STRING', 'Company', 'Permanent account number',                              0),
+        ('Invoice.Number',          'Invoice Number',          'Invoice.Number',          'STRING', 'Invoice', 'Document number',                                      0),
+        ('Invoice.Date',            'Invoice Date',            'Invoice.Date',            'DATETIME','Invoice', 'Document date',                                         0),
+        ('Invoice.DueDate',         'Due Date',                'Invoice.DueDate',         'DATETIME','Invoice', 'Payment due date',                                      0),
+        ('Invoice.Type',            'Invoice Type',            'Invoice.Type',            'STRING', 'Invoice', 'Document type label',                                   0),
+        ('Invoice.SubTotal',        'Subtotal',                'Invoice.SubTotal',        'DECIMAL', 'Invoice', 'Subtotal amount',                                       0),
+        ('Invoice.Discount',        'Discount',                'Invoice.Discount',        'DECIMAL', 'Invoice', 'Total discount amount',                                 0),
+        ('Invoice.Tax',             'Tax',                     'Invoice.Tax',             'DECIMAL', 'Invoice', 'Total tax amount',                                      0),
+        ('Invoice.GrandTotal',      'Grand Total',             'Invoice.GrandTotal',      'DECIMAL', 'Invoice', 'Grand total (amount due)',                              0),
+        ('Customer.Name',           'Customer Name',           'Customer.Name',           'STRING', 'Customer', 'Bill-to customer name',                                 0),
+        ('Customer.Address',        'Customer Address',        'Customer.Address',        'STRING', 'Customer', 'Bill-to address',                                       0),
+        ('Customer.GSTIN',          'Customer GSTIN',          'Customer.GSTIN',          'STRING', 'Customer', 'Customer GST identification number',                   0),
+        ('Payment.Method',          'Payment Method',          'Payment.Method',          'STRING', 'Payment',  'Payment method label',                                    0),
+        ('Payment.Amount',          'Payment Amount',          'Payment.Amount',          'DECIMAL', 'Payment',  'Amount paid',                                           0),
+        ('Item.ProductName',        'Product Name',            'Item.ProductName',        'STRING', 'Item',     'Product / service description',                          0),
+        ('Item.SKU',                'SKU',                     'Item.SKU',                'STRING', 'Item',     'Stock keeping unit code',                                0),
+        ('Item.HSNSAC',             'HSN / SAC',               'Item.HSNSAC',             'STRING', 'Item',     'HSN / SAC code',                                        0),
+        ('Item.Unit',               'Unit',                    'Item.Unit',               'STRING', 'Item',     'Unit of measure',                                       0),
+        ('Item.Quantity',           'Quantity',                'Item.Quantity',           'DECIMAL', 'Item',     'Quantity',                                              0),
+        ('Item.Rate',               'Rate',                    'Item.Rate',               'DECIMAL', 'Item',     'Unit rate',                                             0),
+        ('Item.Discount',           'Item Discount',           'Item.Discount',           'DECIMAL', 'Item',     'Line discount amount',                                  0),
+        ('Item.Tax',                'Item Tax',                'Item.Tax',                'DECIMAL', 'Item',     'Line tax amount',                                       0),
+        ('Item.Amount',             'Item Amount',             'Item.Amount',             'DECIMAL', 'Item',     'Line amount',                                           0);
+END
+;
+
+/* =============================================================================
+   08. InvoiceFont - seeded font choices (FontFileId reserved for font files)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceFont]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceFont (
+        FontId       BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceFont PRIMARY KEY,
+        Code         VARCHAR(50)           NOT NULL CONSTRAINT UQ_InvoiceFont_Code UNIQUE,
+        Name         VARCHAR(100)          NOT NULL,
+        FontFamily   VARCHAR(100)          NOT NULL,
+        FontFileId   BIGINT                NULL,
+        IsActive     BIT                   NOT NULL CONSTRAINT DF_InvoiceFont_IsActive DEFAULT 1,
+        CreatedBy    BIGINT                NULL,
+        CreatedAt    DATETIME              NOT NULL CONSTRAINT DF_InvoiceFont_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy   BIGINT                NULL,
+        ModifiedAt   DATETIME              NULL
+    );
+
+    CREATE INDEX IX_InvoiceFont_IsActive ON dbo.InvoiceFont (IsActive);
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.InvoiceFont WHERE Code = 'ARIAL')
+BEGIN
+    INSERT INTO dbo.InvoiceFont (Code, Name, FontFamily) VALUES
+        ('ARIAL',       'Arial',       'Arial'),
+        ('ROBOTO',      'Roboto',      'Roboto'),
+        ('INTER',       'Inter',       'Inter'),
+        ('TAHOMA',      'Tahoma',      'Tahoma'),
+        ('COURIER_NEW', 'Courier New', 'Courier New');
+END
+;
+
+/* =============================================================================
+   09. PrintOrientation
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PrintOrientation]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PrintOrientation (
+        OrientationId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PrintOrientation PRIMARY KEY,
+        Code          VARCHAR(20)           NOT NULL CONSTRAINT UQ_PrintOrientation_Code UNIQUE,
+        Name          VARCHAR(50)           NOT NULL,
+        IsActive      BIT                   NOT NULL CONSTRAINT DF_PrintOrientation_IsActive DEFAULT 1
+    );
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.PrintOrientation WHERE Code = 'PORTRAIT')
+BEGIN
+    INSERT INTO dbo.PrintOrientation (Code, Name) VALUES
+        ('PORTRAIT', 'Portrait'),
+        ('LANDSCAPE','Landscape');
+END
+;
+
+/* =============================================================================
+   10. PrintUnit
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PrintUnit]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PrintUnit (
+        UnitId   BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PrintUnit PRIMARY KEY,
+        Code     VARCHAR(20)           NOT NULL CONSTRAINT UQ_PrintUnit_Code UNIQUE,
+        Name     VARCHAR(50)           NOT NULL,
+        IsActive BIT                   NOT NULL CONSTRAINT DF_PrintUnit_IsActive DEFAULT 1
+    );
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.PrintUnit WHERE Code = 'MM')
+BEGIN
+    INSERT INTO dbo.PrintUnit (Code, Name) VALUES
+        ('MM',   'Millimeter'),
+        ('PX',   'Pixel'),
+        ('INCH', 'Inch');
+END
+;
+
+/* =============================================================================
+   11. InvoiceTemplate - the template header
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplate]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplate (
+        InvoiceTemplateId   BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplate PRIMARY KEY,
+        CompanyId           INT                  NULL,
+        TemplateCategoryId  BIGINT               NULL,
+        InvoiceTypeId       BIGINT               NOT NULL,
+        PaperSizeId         BIGINT               NOT NULL,
+        OrientationId       BIGINT               NOT NULL,
+        Code                VARCHAR(50)          NOT NULL,
+        Name                VARCHAR(150)         NOT NULL,
+        Description         VARCHAR(500)         NULL,
+        Width               DECIMAL(10,2)        NULL,
+        Height              DECIMAL(10,2)        NULL,
+        IsDefault           BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplate_IsDefault DEFAULT 0,
+        IsActive            BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplate_IsActive DEFAULT 1,
+        CreatedBy           BIGINT               NULL,
+        CreatedAt           DATETIME             NOT NULL CONSTRAINT DF_InvoiceTemplate_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy          BIGINT               NULL,
+        ModifiedAt          DATETIME             NULL,
+        CONSTRAINT FK_InvoiceTemplate_InvoiceType FOREIGN KEY (InvoiceTypeId) REFERENCES dbo.InvoiceType (InvoiceTypeId),
+        CONSTRAINT FK_InvoiceTemplate_PaperSize FOREIGN KEY (PaperSizeId) REFERENCES dbo.InvoicePaperSize (PaperSizeId),
+        CONSTRAINT FK_InvoiceTemplate_Orientation FOREIGN KEY (OrientationId) REFERENCES dbo.PrintOrientation (OrientationId),
+        CONSTRAINT FK_InvoiceTemplate_Category FOREIGN KEY (TemplateCategoryId) REFERENCES dbo.InvoiceTemplateCategory (TemplateCategoryId),
+        CONSTRAINT UQ_InvoiceTemplate_Company_Code UNIQUE (CompanyId, Code)
+    );
+
+    CREATE INDEX IX_InvoiceTemplate_CompanyId ON dbo.InvoiceTemplate (CompanyId);
+    CREATE INDEX IX_InvoiceTemplate_InvoiceTypeId ON dbo.InvoiceTemplate (InvoiceTypeId);
+    CREATE INDEX IX_InvoiceTemplate_PaperSizeId ON dbo.InvoiceTemplate (PaperSizeId);
+    CREATE INDEX IX_InvoiceTemplate_IsActive ON dbo.InvoiceTemplate (IsActive);
+END
+;
+
+/* =============================================================================
+   12. InvoiceTemplateAssignment - decides which template is used at runtime
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateAssignment]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateAssignment (
+        AssignmentId       BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateAssignment PRIMARY KEY,
+        InvoiceTemplateId  BIGINT               NOT NULL,
+        CompanyId          INT                  NULL,
+        IndustryTypeId     INT                  NULL,
+        InvoiceTypeId      BIGINT               NULL,
+        PaperSizeId        BIGINT               NULL,
+        IsDefault          BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateAssignment_IsDefault DEFAULT 0,
+        IsActive           BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateAssignment_IsActive DEFAULT 1,
+        CreatedBy          BIGINT               NULL,
+        CreatedAt          DATETIME             NOT NULL CONSTRAINT DF_InvoiceTemplateAssignment_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy         BIGINT               NULL,
+        ModifiedAt         DATETIME             NULL,
+        CONSTRAINT FK_InvoiceTemplateAssignment_Template FOREIGN KEY (InvoiceTemplateId) REFERENCES dbo.InvoiceTemplate (InvoiceTemplateId),
+        CONSTRAINT FK_InvoiceTemplateAssignment_Company FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (Id),
+        CONSTRAINT FK_InvoiceTemplateAssignment_IndustryType FOREIGN KEY (IndustryTypeId) REFERENCES dbo.IndustryTypes (IndustryTypeId),
+        CONSTRAINT FK_InvoiceTemplateAssignment_InvoiceType FOREIGN KEY (InvoiceTypeId) REFERENCES dbo.InvoiceType (InvoiceTypeId),
+        CONSTRAINT FK_InvoiceTemplateAssignment_PaperSize FOREIGN KEY (PaperSizeId) REFERENCES dbo.InvoicePaperSize (PaperSizeId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateAssignment_TemplateId ON dbo.InvoiceTemplateAssignment (InvoiceTemplateId);
+    CREATE INDEX IX_InvoiceTemplateAssignment_Lookup ON dbo.InvoiceTemplateAssignment (CompanyId, IndustryTypeId, InvoiceTypeId, PaperSizeId);
+END
+;
+
+/* =============================================================================
+   13. InvoiceTemplateVersion - template lifecycle (DRAFT -> PUBLISHED -> ARCHIVED)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateVersion]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateVersion (
+        TemplateVersionId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateVersion PRIMARY KEY,
+        InvoiceTemplateId BIGINT               NOT NULL,
+        VersionNumber     INT                  NOT NULL,
+        TemplateJson      NVARCHAR(MAX)        NOT NULL,
+        Status            VARCHAR(20)          NOT NULL CONSTRAINT DF_InvoiceTemplateVersion_Status DEFAULT 'DRAFT',
+        IsPublished       BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateVersion_IsPublished DEFAULT 0,
+        CreatedBy         BIGINT               NULL,
+        CreatedAt         DATETIME             NOT NULL CONSTRAINT DF_InvoiceTemplateVersion_CreatedAt DEFAULT GETDATE(),
+        PublishedBy       BIGINT               NULL,
+        PublishedAt       DATETIME             NULL,
+        CONSTRAINT FK_InvoiceTemplateVersion_Template FOREIGN KEY (InvoiceTemplateId) REFERENCES dbo.InvoiceTemplate (InvoiceTemplateId),
+        CONSTRAINT UQ_InvoiceTemplateVersion_Template_Number UNIQUE (InvoiceTemplateId, VersionNumber)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateVersion_TemplateId ON dbo.InvoiceTemplateVersion (InvoiceTemplateId);
+    CREATE INDEX IX_InvoiceTemplateVersion_IsPublished ON dbo.InvoiceTemplateVersion (IsPublished);
+END
+;
+
+/* =============================================================================
+   14. InvoiceTemplateSection - region of the canvas inside a version
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateSection]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateSection (
+        SectionId          BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateSection PRIMARY KEY,
+        TemplateVersionId  BIGINT               NOT NULL,
+        SectionCode        VARCHAR(50)          NOT NULL,
+        SectionName        VARCHAR(100)         NOT NULL,
+        DisplayOrder       INT                  NOT NULL CONSTRAINT DF_InvoiceTemplateSection_DisplayOrder DEFAULT 0,
+        X                  DECIMAL(10,2)        NULL,
+        Y                  DECIMAL(10,2)        NULL,
+        Width              DECIMAL(10,2)        NULL,
+        Height             DECIMAL(10,2)        NULL,
+        IsVisible          BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateSection_IsVisible DEFAULT 1,
+        CONSTRAINT FK_InvoiceTemplateSection_Version FOREIGN KEY (TemplateVersionId) REFERENCES dbo.InvoiceTemplateVersion (TemplateVersionId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateSection_VersionId ON dbo.InvoiceTemplateSection (TemplateVersionId);
+END
+;
+
+/* =============================================================================
+   15. InvoiceTemplateElement - one drag/dropped component instance
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateElement]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateElement (
+        ElementId      BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateElement PRIMARY KEY,
+        SectionId      BIGINT               NOT NULL,
+        ComponentId    BIGINT               NOT NULL,
+        ElementType    VARCHAR(50)          NOT NULL,
+        ElementName    VARCHAR(100)         NULL,
+        X              DECIMAL(10,2)        NULL,
+        Y              DECIMAL(10,2)        NULL,
+        Width          DECIMAL(10,2)        NULL,
+        Height         DECIMAL(10,2)        NULL,
+        DisplayOrder   INT                  NOT NULL CONSTRAINT DF_InvoiceTemplateElement_DisplayOrder DEFAULT 0,
+        IsVisible      BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateElement_IsVisible DEFAULT 1,
+        CONSTRAINT FK_InvoiceTemplateElement_Section FOREIGN KEY (SectionId) REFERENCES dbo.InvoiceTemplateSection (SectionId),
+        CONSTRAINT FK_InvoiceTemplateElement_Component FOREIGN KEY (ComponentId) REFERENCES dbo.InvoiceTemplateComponent (ComponentId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateElement_SectionId ON dbo.InvoiceTemplateElement (SectionId);
+    CREATE INDEX IX_InvoiceTemplateElement_ComponentId ON dbo.InvoiceTemplateElement (ComponentId);
+END
+;
+
+/* =============================================================================
+   16. InvoiceTemplateField - data binding (element -> variable)
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateField]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateField (
+        TemplateFieldId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateField PRIMARY KEY,
+        ElementId       BIGINT               NOT NULL,
+        VariableId      BIGINT               NOT NULL,
+        FieldName       VARCHAR(100)         NOT NULL,
+        BindingPath     VARCHAR(300)         NOT NULL,
+        Label           VARCHAR(100)         NULL,
+        IsVisible       BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateField_IsVisible DEFAULT 1,
+        CONSTRAINT FK_InvoiceTemplateField_Element FOREIGN KEY (ElementId) REFERENCES dbo.InvoiceTemplateElement (ElementId),
+        CONSTRAINT FK_InvoiceTemplateField_Variable FOREIGN KEY (VariableId) REFERENCES dbo.InvoiceTemplateVariable (VariableId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateField_ElementId ON dbo.InvoiceTemplateField (ElementId);
+    CREATE INDEX IX_InvoiceTemplateField_VariableId ON dbo.InvoiceTemplateField (VariableId);
+END
+;
+
+/* =============================================================================
+   17. InvoiceTemplateItemColumn - item table column definitions
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateItemColumn]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateItemColumn (
+        ItemColumnId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateItemColumn PRIMARY KEY,
+        ElementId    BIGINT               NOT NULL,
+        FieldName    VARCHAR(100)         NOT NULL,
+        HeaderText   VARCHAR(100)         NOT NULL,
+        DisplayOrder INT                  NOT NULL,
+        Width        DECIMAL(10,2)        NULL,
+        Alignment    VARCHAR(20)          NOT NULL CONSTRAINT DF_InvoiceTemplateItemColumn_Alignment DEFAULT 'LEFT',
+        IsVisible    BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateItemColumn_IsVisible DEFAULT 1,
+        CONSTRAINT FK_InvoiceTemplateItemColumn_Element FOREIGN KEY (ElementId) REFERENCES dbo.InvoiceTemplateElement (ElementId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateItemColumn_ElementId ON dbo.InvoiceTemplateItemColumn (ElementId);
+END
+;
+
+/* =============================================================================
+   18. InvoiceTemplateStyle - visual style for one element
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplateStyle]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplateStyle (
+        StyleId        BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplateStyle PRIMARY KEY,
+        ElementId      BIGINT               NOT NULL,
+        FontId         BIGINT               NULL,
+        FontSize       DECIMAL(6,2)         NULL,
+        FontWeight     VARCHAR(20)          NULL,
+        TextAlign      VARCHAR(20)          NULL,
+        VerticalAlign  VARCHAR(20)          NULL,
+        PaddingTop     DECIMAL(8,2)         NULL,
+        PaddingRight   DECIMAL(8,2)         NULL,
+        PaddingBottom  DECIMAL(8,2)         NULL,
+        PaddingLeft    DECIMAL(8,2)         NULL,
+        BorderTop      BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateStyle_BorderTop DEFAULT 0,
+        BorderRight    BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateStyle_BorderRight DEFAULT 0,
+        BorderBottom   BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateStyle_BorderBottom DEFAULT 0,
+        BorderLeft     BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplateStyle_BorderLeft DEFAULT 0,
+        CONSTRAINT FK_InvoiceTemplateStyle_Element FOREIGN KEY (ElementId) REFERENCES dbo.InvoiceTemplateElement (ElementId),
+        CONSTRAINT FK_InvoiceTemplateStyle_Font FOREIGN KEY (FontId) REFERENCES dbo.InvoiceFont (FontId),
+        CONSTRAINT UQ_InvoiceTemplateStyle_Element UNIQUE (ElementId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplateStyle_FontId ON dbo.InvoiceTemplateStyle (FontId);
+END
+;
+
+/* =============================================================================
+   19. InvoiceTemplatePrinter - printer binding for a template
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplatePrinter]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplatePrinter (
+        TemplatePrinterId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplatePrinter PRIMARY KEY,
+        InvoiceTemplateId BIGINT               NOT NULL,
+        PaperSizeId       BIGINT               NOT NULL,
+        PrinterTypeId     BIGINT               NOT NULL,
+        PrinterModelId    BIGINT               NULL,
+        PrinterName       VARCHAR(200)         NULL,
+        IsDefault         BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrinter_IsDefault DEFAULT 0,
+        IsActive          BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrinter_IsActive DEFAULT 1,
+        CreatedBy         BIGINT               NULL,
+        CreatedAt         DATETIME             NOT NULL CONSTRAINT DF_InvoiceTemplatePrinter_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy        BIGINT               NULL,
+        ModifiedAt        DATETIME             NULL,
+        CONSTRAINT FK_InvoiceTemplatePrinter_Template FOREIGN KEY (InvoiceTemplateId) REFERENCES dbo.InvoiceTemplate (InvoiceTemplateId),
+        CONSTRAINT FK_InvoiceTemplatePrinter_PaperSize FOREIGN KEY (PaperSizeId) REFERENCES dbo.InvoicePaperSize (PaperSizeId),
+        CONSTRAINT FK_InvoiceTemplatePrinter_PrinterType FOREIGN KEY (PrinterTypeId) REFERENCES dbo.PrinterType (PrinterTypeId),
+        CONSTRAINT FK_InvoiceTemplatePrinter_PrinterModel FOREIGN KEY (PrinterModelId) REFERENCES dbo.PrinterModel (PrinterModelId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplatePrinter_TemplateId ON dbo.InvoiceTemplatePrinter (InvoiceTemplateId);
+    CREATE INDEX IX_InvoiceTemplatePrinter_PaperSizeId ON dbo.InvoiceTemplatePrinter (PaperSizeId);
+END
+;
+
+/* =============================================================================
+   20. InvoiceTemplatePrintSetting - per-printer print defaults
+   ============================================================================= */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTemplatePrintSetting]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.InvoiceTemplatePrintSetting (
+        PrintSettingId   BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_InvoiceTemplatePrintSetting PRIMARY KEY,
+        TemplatePrinterId BIGINT              NOT NULL,
+        MarginTop        DECIMAL(10,2)        NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_MarginTop DEFAULT 0,
+        MarginRight      DECIMAL(10,2)        NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_MarginRight DEFAULT 0,
+        MarginBottom     DECIMAL(10,2)        NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_MarginBottom DEFAULT 0,
+        MarginLeft       DECIMAL(10,2)        NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_MarginLeft DEFAULT 0,
+        Scale            DECIMAL(6,2)         NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_Scale DEFAULT 100,
+        Copies           INT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_Copies DEFAULT 1,
+        AutoFit          BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_AutoFit DEFAULT 1,
+        CutPaper         BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_CutPaper DEFAULT 0,
+        PrintHeader      BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_PrintHeader DEFAULT 1,
+        PrintFooter      BIT                  NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_PrintFooter DEFAULT 1,
+        CreatedBy        BIGINT               NULL,
+        CreatedAt        DATETIME             NOT NULL CONSTRAINT DF_InvoiceTemplatePrintSetting_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy       BIGINT               NULL,
+        ModifiedAt       DATETIME             NULL,
+        CONSTRAINT FK_InvoiceTemplatePrintSetting_Printer FOREIGN KEY (TemplatePrinterId) REFERENCES dbo.InvoiceTemplatePrinter (TemplatePrinterId)
+    );
+
+    CREATE INDEX IX_InvoiceTemplatePrintSetting_TemplatePrinterId ON dbo.InvoiceTemplatePrintSetting (TemplatePrinterId);
+END
+;
+
+PRINT 'Invoice Template Design module added.';

@@ -16,14 +16,13 @@ public class PaymentTypesController : BaseController
 
     public PaymentTypesController(IPaymentTypeService service) => _service = service;
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.PaymentTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<PaymentTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
         => Ok(ApiResponse<IEnumerable<PaymentTypeDto>>.Ok(await _service.GetAllAsync(includeInactive)));
 
     [HttpGet("{id:long}")]
-    [Permission(Permissions.PaymentTypesView)]
     [ProducesResponseType(typeof(ApiResponse<PaymentTypeDto>), 200)]
     public async Task<IActionResult> GetById(long id)
     {
@@ -60,14 +59,13 @@ public class PaymentMethodsController : BaseController
 
     public PaymentMethodsController(IPaymentMethodService service) => _service = service;
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.PaymentMethodsView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<PaymentMethodDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
         => Ok(ApiResponse<IEnumerable<PaymentMethodDto>>.Ok(await _service.GetAllAsync(includeInactive)));
 
     [HttpGet("{id:long}")]
-    [Permission(Permissions.PaymentMethodsView)]
     [ProducesResponseType(typeof(ApiResponse<PaymentMethodDto>), 200)]
     public async Task<IActionResult> GetById(long id)
     {

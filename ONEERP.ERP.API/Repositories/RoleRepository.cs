@@ -149,13 +149,88 @@ public class RoleRepository : TenantRepositoryBase, IRoleRepository
     public async Task<IEnumerable<string>> GetPermissionsForUserAsync(int userId)
     {
         using var connection = OpenTenant();
-        return await Sql.QueryAsync<string>(connection, @"
+
+        const int timeout = 120;
+
+        // Legacy flat codes (manually seeded + matrix->legacy bridge rows).
+        var legacy = await Sql.QueryAsync<string>(connection, @"
             SELECT DISTINCT rp.PermissionCode
             FROM dbo.RolePermissionsLegacy rp
             INNER JOIN dbo.UserRoles ur ON ur.RoleId = rp.RoleId
             WHERE ur.UserId = @userId
             ORDER BY rp.PermissionCode",
-            new { userId });
+            new { userId }, commandTimeout: timeout);
+
+        // Action-level flat codes derived directly from the hierarchical Role
+        // Permission Matrix ({Screens.PermissionCode}.{Actions.ActionCode}).
+        // This keeps [Permission] authorization in sync with what the matrix
+        // ADMIN grants, even if the legacy rows are stale or missing.
+        var matrix = await Sql.QueryAsync<string>(connection, @"
+            SELECT DISTINCT CONCAT(s.PermissionCode, '.', a.ActionCode) AS PermissionCode
+            FROM dbo.RolePermissions rp
+            INNER JOIN dbo.Roles r ON r.RoleId = rp.RoleId
+                AND r.IsActive = 1 AND r.IsDeleted = 0
+            INNER JOIN dbo.UserRoles ur ON ur.RoleId = rp.RoleId AND ur.UserId = @userId
+            INNER JOIN dbo.Screens s ON s.Id = rp.ScreenId
+                AND s.PermissionCode IS NOT NULL AND s.PermissionCode <> ''
+            INNER JOIN dbo.Actions a ON a.Id = rp.ActionId AND a.IsActive = 1
+            WHERE rp.Allow = 1 AND rp.IsActive = 1
+            ORDER BY PermissionCode",
+            new { userId }, commandTimeout: timeout);
+
+        // Per-user screen overrides: Allow = add every action for the screen,
+        // Deny = remove every code that derives from the screen.
+        var overrides = await Sql.QueryAsync<PermissionOverrideRow>(connection, @"
+            SELECT o.ScreenId, o.Allow, s.PermissionCode
+            FROM dbo.UserPermissionOverrides o
+            INNER JOIN dbo.Screens s ON s.Id = o.ScreenId
+            WHERE o.UserId = @userId AND o.IsActive = 1
+              AND (o.EffectiveFrom IS NULL OR o.EffectiveFrom <= GETUTCDATE())
+              AND (o.EffectiveTo IS NULL OR o.EffectiveTo >= GETUTCDATE())",
+            new { userId }, commandTimeout: timeout);
+
+        var actionCodes = (await Sql.QueryAsync<string>(connection,
+            "SELECT ActionCode FROM dbo.Actions WHERE IsActive = 1",
+            commandTimeout: timeout)).ToList();
+
+        var modulePerms = await Sql.QueryAsync<string>(connection, @"
+            SELECT DISTINCT CONCAT(pm.Code, '.', pa.Code) AS PermissionCode
+            FROM dbo.ModulePermissions mp
+            INNER JOIN dbo.UserRoles ur ON ur.RoleId = mp.RoleId AND ur.UserId = @userId
+            INNER JOIN dbo.PermissionModules pm ON pm.Id = mp.PermissionModuleId
+            INNER JOIN dbo.PermissionActions pa ON pa.Id = mp.PermissionActionId
+            WHERE mp.IsRevoked = 0
+            ORDER BY PermissionCode",
+            new { userId }, commandTimeout: timeout);
+
+        var result = new HashSet<string>(
+            legacy.Concat(matrix).Concat(modulePerms), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var o in overrides)
+        {
+            if (string.IsNullOrWhiteSpace(o.PermissionCode))
+                continue;
+
+            if (o.Allow)
+            {
+                foreach (var action in actionCodes)
+                    result.Add($"{o.PermissionCode}.{action}");
+            }
+            else
+            {
+                result.RemoveWhere(p =>
+                    p.StartsWith(o.PermissionCode + ".", StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        return result.OrderBy(p => p, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private sealed class PermissionOverrideRow
+    {
+        public int ScreenId { get; set; }
+        public bool Allow { get; set; }
+        public string? PermissionCode { get; set; }
     }
 
     public async Task<IEnumerable<RolePermission>> GetAllPermissionsAsync()

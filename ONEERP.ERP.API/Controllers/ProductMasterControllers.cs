@@ -341,25 +341,45 @@ public class ProductsController : BaseController
     private readonly IValidator<CreateProductRequest> _createValidator;
     private readonly IValidator<UpdateProductRequest> _updateValidator;
     private readonly ICurrentUser _currentUser;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
     public ProductsController(
         IProductService service,
         IValidator<CreateProductRequest> createValidator,
         IValidator<UpdateProductRequest> updateValidator,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        IDataScopeResolver dataScopeResolver)
     {
         _service = service;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
         _currentUser = currentUser;
+        _dataScopeResolver = dataScopeResolver;
+    }
+
+    private async Task<long> ResolveCompanyIdAsync(long requestedCompanyId)
+    {
+        var companyIdResolved = requestedCompanyId > 0 ? requestedCompanyId : _currentUser.CompanyId;
+        if (!await _dataScopeResolver.CanAccessCompanyAsync((int)companyIdResolved))
+            throw new ONEERP.Shared.Exceptions.UnauthorizedAccess("You do not have access to the selected company.");
+        return companyIdResolved;
     }
 
     [HttpGet]
     [Permission(Permissions.ProductsView)]
     [ProducesResponseType(typeof(ApiResponse<PaginatedResult<ProductDto>>), 200)]
-    public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "")
+    public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string search = "", [FromQuery] long? companyId = null)
     {
-        var result = await _service.GetPagedAsync(_currentUser.CompanyId, page, size, search);
+        var resolvedCompanyId = (companyId.HasValue && companyId.Value > 0) ? companyId.Value : _currentUser.CompanyId;
+        if (!await _dataScopeResolver.CanAccessCompanyAsync((int)resolvedCompanyId))
+            return Ok(ApiResponse<PaginatedResult<ProductDto>>.Ok(new PaginatedResult<ProductDto>
+            {
+                Items = new List<ProductDto>(),
+                TotalCount = 0,
+                PageNumber = page < 1 ? 1 : page,
+                PageSize = size < 1 ? 10 : size
+            }));
+        var result = await _service.GetPagedAsync(resolvedCompanyId, page, size, search);
         return Ok(ApiResponse<PaginatedResult<ProductDto>>.Ok(result));
     }
 
@@ -388,7 +408,7 @@ public class ProductsController : BaseController
         var errors = await ValidateAsync(_createValidator, request);
         if (errors.Count > 0)
             return BadRequest(ApiResponse<ProductDto>.Fail("Validation failed", errors));
-        var companyIdResolved = request.CompanyId > 0 ? request.CompanyId : _currentUser.CompanyId;
+        var companyIdResolved = await ResolveCompanyIdAsync(request.CompanyId);
         var result = await _service.CreateAsync(companyIdResolved, request);
         return Ok(ApiResponse<ProductDto>.Ok(result, "Product created successfully"));
     }
@@ -401,7 +421,7 @@ public class ProductsController : BaseController
         var errors = await ValidateAsync(_updateValidator, request);
         if (errors.Count > 0)
             return BadRequest(ApiResponse<ProductDto>.Fail("Validation failed", errors));
-        var companyIdResolved = request.CompanyId > 0 ? request.CompanyId : _currentUser.CompanyId;
+        var companyIdResolved = await ResolveCompanyIdAsync(request.CompanyId);
         var result = await _service.UpdateAsync(id, companyIdResolved, request);
         return Ok(ApiResponse<ProductDto>.Ok(result, "Product updated successfully"));
     }

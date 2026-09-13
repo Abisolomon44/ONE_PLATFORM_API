@@ -27,8 +27,8 @@ public class ContactTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.ContactTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<ContactTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class ContactTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.ContactTypesView)]
     [ProducesResponseType(typeof(ApiResponse<ContactTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

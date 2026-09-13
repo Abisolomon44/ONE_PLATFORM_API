@@ -27,8 +27,8 @@ public class TimeZonesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.TimeZonesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<TimeZoneDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class TimeZonesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.TimeZonesView)]
     [ProducesResponseType(typeof(ApiResponse<TimeZoneDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

@@ -552,6 +552,7 @@ public class ProductService : IProductService
     private readonly IProductSubCategoryRepository _subCategoryRepository;
     private readonly IProductBrandRepository _brandRepository;
     private readonly IProductUnitRepository _unitRepository;
+    private readonly IHsnSacRepository _hsnSacRepository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
 
@@ -561,6 +562,7 @@ public class ProductService : IProductService
         IProductSubCategoryRepository subCategoryRepository,
         IProductBrandRepository brandRepository,
         IProductUnitRepository unitRepository,
+        IHsnSacRepository hsnSacRepository,
         IAuditService auditService,
         ICurrentUser currentUser)
     {
@@ -569,6 +571,7 @@ public class ProductService : IProductService
         _subCategoryRepository = subCategoryRepository;
         _brandRepository = brandRepository;
         _unitRepository = unitRepository;
+        _hsnSacRepository = hsnSacRepository;
         _auditService = auditService;
         _currentUser = currentUser;
     }
@@ -626,11 +629,13 @@ public class ProductService : IProductService
             PurchasePrice = request.PurchasePrice,
             SalesPrice = request.SalesPrice,
             TaxId = request.TaxId,
+            HsnSacId = request.HsnSacId,
             IsStockItem = request.IsStockItem,
             IsSaleable = request.IsSaleable,
             IsPurchaseable = request.IsPurchaseable,
             IsActive = true,
             Description = request.Description?.Trim(),
+            EntityId = request.EntityId,
             CreatedBy = _currentUser.UserId,
             ModifiedBy = _currentUser.UserId
         };
@@ -666,11 +671,13 @@ public class ProductService : IProductService
         entity.PurchasePrice = request.PurchasePrice;
         entity.SalesPrice = request.SalesPrice;
         entity.TaxId = request.TaxId;
+        entity.HsnSacId = request.HsnSacId;
         entity.IsStockItem = request.IsStockItem;
         entity.IsSaleable = request.IsSaleable;
         entity.IsPurchaseable = request.IsPurchaseable;
         entity.IsActive = request.IsActive;
         entity.Description = request.Description?.Trim();
+        entity.EntityId = request.EntityId;
         entity.ModifiedBy = _currentUser.UserId;
 
         await _repository.UpdateAsync(entity);
@@ -692,6 +699,7 @@ public class ProductService : IProductService
     private static ProductDto ToDto(Product e) => new()
     {
         Id = e.Id,
+        EntityId = e.EntityId,
         CompanyId = e.CompanyId,
         BranchId = e.BranchId,
         ProductCode = e.ProductCode,
@@ -706,6 +714,7 @@ public class ProductService : IProductService
         PurchasePrice = e.PurchasePrice,
         SalesPrice = e.SalesPrice,
         TaxId = e.TaxId,
+        HsnSacId = e.HsnSacId,
         IsStockItem = e.IsStockItem,
         IsSaleable = e.IsSaleable,
         IsPurchaseable = e.IsPurchaseable,
@@ -721,11 +730,13 @@ public class ProductService : IProductService
         var subIds = dtos.Where(d => d.SubCategoryId.HasValue).Select(d => d.SubCategoryId!.Value).Distinct().ToList();
         var brandIds = dtos.Where(d => d.BrandId.HasValue).Select(d => d.BrandId!.Value).Distinct().ToList();
         var uomIds = dtos.Where(d => d.UOMId > 0).Select(d => d.UOMId).Distinct().ToList();
+        var hsnIds = dtos.Where(d => d.HsnSacId.HasValue).Select(d => d.HsnSacId!.Value).Distinct().ToList();
 
         var catNames = catIds.Count > 0 ? await _categoryRepository.GetNamesAsync(companyId, catIds) : new Dictionary<long, string>();
         var subNames = subIds.Count > 0 ? await _subCategoryRepository.GetNamesAsync(companyId, subIds) : new Dictionary<long, string>();
         var brandNames = brandIds.Count > 0 ? await _brandRepository.GetNamesAsync(companyId, brandIds) : new Dictionary<long, string>();
         var uomNames = uomIds.Count > 0 ? await _unitRepository.GetNamesAsync(companyId, uomIds) : new Dictionary<long, string>();
+        var hsnNames = hsnIds.Count > 0 ? await _hsnSacRepository.GetNamesAsync(companyId, hsnIds) : new Dictionary<long, string>();
 
         foreach (var d in dtos)
         {
@@ -733,6 +744,7 @@ public class ProductService : IProductService
             if (d.SubCategoryId.HasValue && subNames.TryGetValue(d.SubCategoryId.Value, out var sn)) d.SubCategoryName = sn;
             if (d.BrandId.HasValue && brandNames.TryGetValue(d.BrandId.Value, out var bn)) d.BrandName = bn;
             if (uomNames.TryGetValue(d.UOMId, out var un)) d.UOMName = un;
+            if (d.HsnSacId.HasValue && hsnNames.TryGetValue(d.HsnSacId.Value, out var hn)) d.HsnSacCode = hn;
         }
     }
 }

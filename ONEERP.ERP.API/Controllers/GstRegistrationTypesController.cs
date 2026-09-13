@@ -27,8 +27,8 @@ public class GstRegistrationTypesController : BaseController
         _updateValidator = updateValidator;
     }
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet]
-    [Permission(Permissions.GstRegistrationTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<GstRegistrationTypeDto>>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
     {
@@ -37,7 +37,6 @@ public class GstRegistrationTypesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    [Permission(Permissions.GstRegistrationTypesView)]
     [ProducesResponseType(typeof(ApiResponse<GstRegistrationTypeDto>), 200)]
     public async Task<IActionResult> GetById(int id)
     {

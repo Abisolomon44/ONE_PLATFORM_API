@@ -366,6 +366,19 @@ public class DataScopesController : ControllerBase
     public async Task<IActionResult> GetByRole(int roleId)
         => Ok(ApiResponse<IEnumerable<DataScopeDto>>.Ok(await _service.GetByRoleAsync(roleId)));
 
+    [HttpGet("role/{roleId:int}/selection")]
+    public async Task<IActionResult> GetSelection(int roleId)
+        => Ok(ApiResponse<RoleDataScopeSelectionDto>.Ok(await _service.GetSelectionByRoleAsync(roleId)));
+
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMy()
+        => Ok(ApiResponse<MyEffectiveScopeDto>.Ok(await _service.GetMyEffectiveScopeAsync()));
+
+    [HttpPost("role/{roleId:int}/replace")]
+    [Permission("data-scopes.manage")]
+    public async Task<IActionResult> Replace(int roleId, [FromBody] SetRoleDataScopeSelectionRequest request)
+        => Ok(ApiResponse<bool>.Ok(await _service.ReplaceForRoleAsync(roleId, request)));
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
         => Ok(ApiResponse<DataScopeDto?>.Ok(await _service.GetByIdAsync(id)));
@@ -397,6 +410,15 @@ public class UserDataScopeOverridesController : ControllerBase
     [HttpGet("user/{userId:int}")]
     public async Task<IActionResult> GetByUser(int userId)
         => Ok(ApiResponse<IEnumerable<UserDataScopeOverrideDto>>.Ok(await _service.GetByUserAsync(userId)));
+
+    [HttpGet("user/{userId:int}/selection")]
+    public async Task<IActionResult> GetSelection(int userId)
+        => Ok(ApiResponse<UserDataScopeOverrideSelectionDto>.Ok(await _service.GetSelectionByUserAsync(userId)));
+
+    [HttpPost("user/{userId:int}/replace")]
+    [Permission("user-data-scope-overrides.manage")]
+    public async Task<IActionResult> Replace(int userId, [FromBody] SetUserDataScopeOverrideSelectionRequest request)
+        => Ok(ApiResponse<bool>.Ok(await _service.ReplaceForUserAsync(userId, request)));
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)

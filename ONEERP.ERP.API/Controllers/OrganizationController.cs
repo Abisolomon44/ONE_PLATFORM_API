@@ -73,8 +73,8 @@ public class OrganizationController : BaseController
     }
 
     /* ==================== Branch Types ==================== */
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet("branch-types")]
-    [Permission(Permissions.BranchTypesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<BranchTypeDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -86,8 +86,8 @@ public class OrganizationController : BaseController
     }
     /* ==================== Warehouse Types ==================== */
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet("warehouse-types")]
-    [Permission(Permissions.WarehousesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<WarehouseTypeDto>>), 200)]
     public async Task<IActionResult> GetWarehouseTypes([FromQuery] bool includeInactive = false)
     {
@@ -97,8 +97,8 @@ public class OrganizationController : BaseController
 
     /* ==================== Employment Types ==================== */
 
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
     [HttpGet("employment-types")]
-    [Permission(Permissions.EmployeesView)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<EmploymentTypeDto>>), 200)]
     public async Task<IActionResult> GetEmploymentTypes([FromQuery] bool includeInactive = false)
     {
