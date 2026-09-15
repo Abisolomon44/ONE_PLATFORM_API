@@ -1,4 +1,5 @@
 using System.Globalization;
+using ClosedXML.Excel;
 using ONEERP.ERP.API.DTOs;
 using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
@@ -11,14 +12,16 @@ namespace ONEERP.ERP.API.Services;
 public interface IMasterImportService
 {
     List<MasterImportMetaDto> GetMasters();
-    Task<ImportPreviewResponse> PreviewAsync(string entityName, List<Dictionary<string, object?>> rows, long companyId);
+    Task<ImportPreviewResponse> PreviewAsync(string entityName, List<Dictionary<string, string>> rows, long companyId);
     Task<ImportConfirmResponse> ConfirmAsync(ImportConfirmRequest request, ICurrentUser user);
+    Task<byte[]> GenerateTemplateAsync(string entityName, long companyId);
 }
 
 public class MasterImportService : IMasterImportService
 {
     private readonly ICurrentUser _currentUser;
     private readonly IImportLogService _importLogService;
+    private readonly IMasterReferenceCatalog _referenceCatalog;
 
     private readonly IProductService _productService;
     private readonly IProductCategoryService _productCategoryService;
@@ -28,19 +31,13 @@ public class MasterImportService : IMasterImportService
     private readonly ITaxService _taxService;
     private readonly ITaxTypeSystemService _taxTypeSystemService;
     private readonly ICompanyService _companyService;
-    private readonly IBranchService _branchService;
-    private readonly IBusinessTypeService _businessTypeService;
-    private readonly IIndustryTypeService _industryTypeService;
-    private readonly IGstRegistrationTypeService _gstRegistrationTypeService;
-    private readonly IAdministrationService _administrationService;
-    private readonly ILanguageService _languageService;
-    private readonly ITimeZoneService _timeZoneService;
 
     private readonly Dictionary<string, MasterImportMetaDto> _definitions;
 
     public MasterImportService(
         ICurrentUser currentUser,
         IImportLogService importLogService,
+        IMasterReferenceCatalog referenceCatalog,
         IProductService productService,
         IProductCategoryService productCategoryService,
         IProductSubCategoryService productSubCategoryService,
@@ -48,17 +45,11 @@ public class MasterImportService : IMasterImportService
         IProductUnitService productUnitService,
         ITaxService taxService,
         ITaxTypeSystemService taxTypeSystemService,
-        ICompanyService companyService,
-        IBranchService branchService,
-        IBusinessTypeService businessTypeService,
-        IIndustryTypeService industryTypeService,
-        IGstRegistrationTypeService gstRegistrationTypeService,
-        IAdministrationService administrationService,
-        ILanguageService languageService,
-        ITimeZoneService timeZoneService)
+        ICompanyService companyService)
     {
         _currentUser = currentUser;
         _importLogService = importLogService;
+        _referenceCatalog = referenceCatalog;
         _productService = productService;
         _productCategoryService = productCategoryService;
         _productSubCategoryService = productSubCategoryService;
@@ -67,13 +58,6 @@ public class MasterImportService : IMasterImportService
         _taxService = taxService;
         _taxTypeSystemService = taxTypeSystemService;
         _companyService = companyService;
-        _branchService = branchService;
-        _businessTypeService = businessTypeService;
-        _industryTypeService = industryTypeService;
-        _gstRegistrationTypeService = gstRegistrationTypeService;
-        _administrationService = administrationService;
-        _languageService = languageService;
-        _timeZoneService = timeZoneService;
 
         _definitions = BuildDefinitions();
     }
@@ -249,12 +233,12 @@ public class MasterImportService : IMasterImportService
 
     /* ---------------- Preview ---------------- */
 
-    public async Task<ImportPreviewResponse> PreviewAsync(string entityName, List<Dictionary<string, object?>> rows, long companyId)
+    public async Task<ImportPreviewResponse> PreviewAsync(string entityName, List<Dictionary<string, string>> rows, long companyId)
     {
         if (!_definitions.TryGetValue(entityName, out var def))
             throw new NotFoundException($"Import definition '{entityName}' was not found.");
 
-        var referenceMaps = await LoadReferenceMaps(def, companyId);
+        var referenceMaps = await _referenceCatalog.LoadReferenceMapsAsync(def, companyId);
         var seenUnique = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var results = new List<ImportRowResultDto>();
 
@@ -275,8 +259,8 @@ public class MasterImportService : IMasterImportService
 
     private (Dictionary<string, object?> Resolved, List<string> Errors) ValidateRow(
         List<ImportColumnMetaDto> columns,
-        Dictionary<string, object?> row,
-        Dictionary<string, Dictionary<string, long>> referenceMaps,
+        Dictionary<string, string> row,
+        Dictionary<string, RefLookup> referenceMaps,
         Dictionary<string, string> seenUnique)
     {
         var errors = new List<string>();
@@ -284,8 +268,10 @@ public class MasterImportService : IMasterImportService
 
         foreach (var col in columns)
         {
-            var raw = row.TryGetValue(col.Key, out var v) ? v : null;
-            var isEmpty = raw is null || (raw is string s && string.IsNullOrWhiteSpace(s));
+            var raw = ReadValue(row, col);
+            var isEmpty = string.IsNullOrWhiteSpace(raw)
+                || IsNullishToken(raw)
+                || (col.ReferenceEntity is not null && raw == "0");
 
             if (isEmpty)
             {
@@ -298,9 +284,9 @@ public class MasterImportService : IMasterImportService
 
             if (col.ReferenceEntity is not null)
             {
-                var map = referenceMaps.GetValueOrDefault(col.ReferenceEntity, new Dictionary<string, long>());
-                var key = raw!.ToString()!.Trim().ToLowerInvariant();
-                if (map.TryGetValue(key, out var id))
+                var lu = referenceMaps.GetValueOrDefault(col.ReferenceEntity);
+                var key = raw!.ToLowerInvariant();
+                if (lu is not null && lu.Map.TryGetValue(key, out var id))
                     resolved[col.Key] = id;
                 else
                     errors.Add($"Invalid {col.Label}: '{raw}'.");
@@ -319,7 +305,7 @@ public class MasterImportService : IMasterImportService
 
         foreach (var col in columns.Where(c => c.Unique))
         {
-            var val = row.TryGetValue(col.Key, out var v) && v is not null ? v.ToString()!.Trim() : "";
+            var val = row.TryGetValue(col.Key, out var u) && u is not null ? u.Trim() : "";
             if (string.IsNullOrWhiteSpace(val)) continue;
             if (seenUnique.ContainsKey(val))
                 errors.Add($"Duplicate {col.Label}: '{val}' in file.");
@@ -330,17 +316,33 @@ public class MasterImportService : IMasterImportService
         return (resolved, errors);
     }
 
-    private static object Coerce(object raw, string type) => type switch
+    private static string? ReadValue(Dictionary<string, string> row, ImportColumnMetaDto col)
     {
-        "number" => Convert.ToDecimal(raw),
+        if (row.TryGetValue(col.Key, out var v) && !string.IsNullOrWhiteSpace(v))
+            return v.Trim();
+        if (row.TryGetValue(col.Label, out var v2) && !string.IsNullOrWhiteSpace(v2))
+            return v2.Trim();
+        return null;
+    }
+
+    private static bool IsNullishToken(string raw)
+        => raw.ToLowerInvariant() is "null" or "nil" or "n/a" or "na" or "none";
+
+    private static object Coerce(string raw, string type) => type switch
+    {
+        "number" => decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out var dec)
+            ? dec
+            : throw new FormatException("number"),
         "boolean" => ParseBool(raw),
-        "date" => DateTime.Parse(raw.ToString()!, CultureInfo.InvariantCulture),
-        _ => raw.ToString()!
+        "date" => DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt)
+            ? dt
+            : throw new FormatException("date"),
+        _ => raw
     };
 
-    private static bool ParseBool(object raw)
+    private static bool ParseBool(string raw)
     {
-        var s = raw.ToString()!.Trim().ToLowerInvariant();
+        var s = raw.Trim().ToLowerInvariant();
         return s is "true" or "1" or "yes" or "y";
     }
 
@@ -351,7 +353,7 @@ public class MasterImportService : IMasterImportService
         if (!_definitions.TryGetValue(request.EntityName, out var def))
             throw new NotFoundException($"Import definition '{request.EntityName}' was not found.");
 
-        var referenceMaps = await LoadReferenceMaps(def, user.CompanyId);
+var referenceMaps = await _referenceCatalog.LoadReferenceMapsAsync(def, user.CompanyId);
         var seenUnique = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         var validRows = new List<Dictionary<string, object?>>();
@@ -412,7 +414,7 @@ public class MasterImportService : IMasterImportService
             /* logging must not fail the import */
         }
 
-        return response;
+return response;
     }
 
     /* ---------------- Apply (create) ---------------- */
@@ -543,111 +545,61 @@ public class MasterImportService : IMasterImportService
         }
     }
 
-    /* ---------------- Reference maps ---------------- */
+    /* ---------------- Template (xlsx) ---------------- */
 
-    private async Task<Dictionary<string, Dictionary<string, long>>> LoadReferenceMaps(MasterImportMetaDto def, long companyId)
+    public async Task<byte[]> GenerateTemplateAsync(string entityName, long companyId)
     {
-        var needed = def.Columns
-            .Where(c => c.ReferenceEntity is not null)
-            .Select(c => c.ReferenceEntity!)
-            .Distinct()
-            .ToList();
+        if (!_definitions.TryGetValue(entityName, out var def))
+            throw new NotFoundException($"Import definition '{entityName}' was not found.");
 
-        var maps = new Dictionary<string, Dictionary<string, long>>();
-        foreach (var refEntity in needed)
-            maps[refEntity] = await LoadRefMap(refEntity, companyId);
-        return maps;
-    }
+        var referenceMaps = await _referenceCatalog.LoadReferenceMapsAsync(def, companyId);
+        var refOrder = referenceMaps.Keys.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
 
-    private async Task<Dictionary<string, long>> LoadRefMap(string refEntity, long companyId)
-    {
-        switch (refEntity)
+        using var wb = new XLWorkbook();
+        var dataWs = wb.Worksheets.Add("Import");
+        var refWs = wb.Worksheets.Add("References");
+        refWs.Visibility = XLWorksheetVisibility.VeryHidden;
+
+        for (var i = 0; i < def.Columns.Count; i++)
         {
-            case "ProductCategories":
-                {
-                    var items = await _productCategoryService.GetAllAsync(companyId, true);
-                    return ToMap(items, x => x.Id, x => x.CategoryName, x => x.CategoryCode);
-                }
-            case "ProductSubCategories":
-                {
-                    var items = await _productSubCategoryService.GetAllAsync(companyId, true);
-                    return ToMap(items, x => x.Id, x => x.SubCategoryName);
-                }
-            case "ProductBrands":
-                {
-                    var items = await _productBrandService.GetAllAsync(companyId, true);
-                    return ToMap(items, x => x.Id, x => x.BrandName);
-                }
-            case "ProductUnits":
-                {
-                    var items = await _productUnitService.GetAllAsync(companyId, true);
-                    return ToMap(items, x => x.Id, x => x.UnitName);
-                }
-            case "Taxes":
-                {
-                    var items = (await _taxService.GetPagedAsync(companyId, 1, 10000, "")).Items;
-                    return ToMap(items, x => x.Id, x => x.TaxName);
-                }
-            case "TaxTypeSystems":
-                {
-                    var items = await _taxTypeSystemService.GetAllAsync(true);
-                    return ToMap(items, x => x.Id, x => x.Name, x => x.Code);
-                }
-            case "Branches":
-                {
-                    var items = (await _branchService.GetPagedAsync((int)companyId, 1, 10000, "")).Items;
-                    return ToMap(items, x => x.Id, x => x.BranchName);
-                }
-            case "BusinessTypes":
-                {
-                    var items = await _businessTypeService.GetAllAsync(true);
-                    return ToMap(items, x => x.BusinessTypeId, x => x.Name);
-                }
-            case "IndustryTypes":
-                {
-                    var items = await _industryTypeService.GetAllAsync(true);
-                    return ToMap(items, x => x.IndustryTypeId, x => x.Name);
-                }
-            case "GstRegistrationTypes":
-                {
-                    var items = await _gstRegistrationTypeService.GetAllAsync(true);
-                    return ToMap(items, x => x.GstRegistrationTypeId, x => x.Name);
-                }
-            case "Currencies":
-                {
-                    var items = await _administrationService.GetAllAsync(true);
-                    return ToMap(items, x => x.Id, x => x.CurrencyCode);
-                }
-            case "Languages":
-                {
-                    var items = await _languageService.GetAllAsync(true);
-                    return ToMap(items, x => x.LanguageId, x => x.Name);
-                }
-            case "TimeZones":
-                {
-                    var items = await _timeZoneService.GetAllAsync(true);
-                    return ToMap(items, x => x.TimeZoneId, x => x.Name);
-                }
-            default:
-                return new Dictionary<string, long>();
+            var col = def.Columns[i];
+            var cell = dataWs.Cell(1, i + 1);
+            cell.Value = col.Key;
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontColor = col.Required ? XLColor.Red : XLColor.Black;
         }
-    }
 
-    private static Dictionary<string, long> ToMap<T>(
-        IEnumerable<T> items, Func<T, object> id, params Func<T, string?>[] displays)
-    {
-        var map = new Dictionary<string, long>();
-        foreach (var it in items)
+        for (var i = 0; i < refOrder.Count; i++)
         {
-            var idVal = Convert.ToInt64(id(it));
-            foreach (var d in displays)
-            {
-                var s = d(it)?.Trim().ToLowerInvariant();
-                if (!string.IsNullOrEmpty(s) && !map.ContainsKey(s))
-                    map[s] = idVal;
-            }
+            var entity = refOrder[i];
+            var lu = referenceMaps[entity];
+            refWs.Cell(1, i + 1).Value = entity;
+            for (var j = 0; j < lu.Options.Count; j++)
+                refWs.Cell(2 + j, i + 1).Value = lu.Options[j];
         }
-        return map;
+
+        const int dataRows = 5000;
+        foreach (var col in def.Columns.Where(c => c.ReferenceEntity is not null))
+        {
+            var colId = def.Columns.IndexOf(col) + 1;
+            var entity = col.ReferenceEntity!;
+            if (!referenceMaps.TryGetValue(entity, out var lu) || lu.Options.Count == 0) continue;
+
+            var refCol = refOrder.IndexOf(entity) + 1;
+            var options = refWs.Range(2, refCol, 1 + lu.Options.Count, refCol);
+            var dv = dataWs.Range(2, colId, 2 + dataRows - 1, colId).CreateDataValidation();
+            dv.List(options, true);
+            dv.ShowErrorMessage = true;
+            dv.ErrorStyle = XLErrorStyle.Stop;
+            dv.ErrorMessage = $"Please select a valid {col.Label} from the list.";
+        }
+
+        dataWs.SheetView.FreezeRows(1);
+        dataWs.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        wb.SaveAs(ms);
+        return ms.ToArray();
     }
 
     /* ---------------- Helpers ---------------- */
@@ -678,13 +630,13 @@ public class MasterImportService : IMasterImportService
         if (d.TryGetValue(k, out var v) && v is not null)
         {
             if (v is bool b) return b;
-            return ParseBool(v);
+            return ParseBool(v.ToString()!);
         }
         return def;
     }
 
     private static DateTime? GetDateOrNull(Dictionary<string, object?> d, string k)
         => d.TryGetValue(k, out var v) && v is not null
-            ? DateTime.Parse(v.ToString()!, CultureInfo.InvariantCulture)
+            ? v is DateTime dt ? dt : DateTime.Parse(v.ToString()!, CultureInfo.InvariantCulture)
             : null;
 }

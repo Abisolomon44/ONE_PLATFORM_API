@@ -154,6 +154,146 @@ public class PaymentMethodService : IPaymentMethodService
     };
 }
 
+public interface IPaymentMethodDetailService
+{
+    Task<IEnumerable<PaymentMethodDetailDto>> GetByPaymentMethodIdAsync(long paymentMethodId, bool includeInactive = false);
+    Task<PaymentMethodDetailDto> GetByIdAsync(long id);
+    Task<PaymentMethodDetailDto> CreateAsync(long userId, CreatePaymentMethodDetailRequest request);
+    Task<PaymentMethodDetailDto> UpdateAsync(long id, long userId, UpdatePaymentMethodDetailRequest request);
+    Task<bool> DeleteAsync(long id);
+}
+
+public class PaymentMethodDetailService : IPaymentMethodDetailService
+{
+    private readonly IPaymentMethodDetailRepository _repo;
+    private readonly IPaymentMethodService _paymentMethodService;
+
+    public PaymentMethodDetailService(IPaymentMethodDetailRepository repo, IPaymentMethodService paymentMethodService)
+    {
+        _repo = repo;
+        _paymentMethodService = paymentMethodService;
+    }
+
+    public async Task<IEnumerable<PaymentMethodDetailDto>> GetByPaymentMethodIdAsync(long paymentMethodId, bool includeInactive = false)
+    {
+        var method = await _paymentMethodService.GetByIdAsync(paymentMethodId);
+        var items = await _repo.GetByPaymentMethodIdAsync(paymentMethodId, includeInactive);
+        return items.Select(e => Map(e, method)).ToList();
+    }
+
+    public async Task<PaymentMethodDetailDto> GetByIdAsync(long id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method detail '{id}' was not found.");
+        var method = await _paymentMethodService.GetByIdAsync(e.PaymentMethodId);
+        return Map(e, method);
+    }
+
+    public async Task<PaymentMethodDetailDto> CreateAsync(long userId, CreatePaymentMethodDetailRequest r)
+    {
+        var method = await _paymentMethodService.GetByIdAsync(r.PaymentMethodId)
+            ?? throw new NotFoundException($"Payment method '{r.PaymentMethodId}' was not found.");
+
+        var code = r.Code?.Trim() ?? string.Empty;
+        if (code.Length == 0)
+            throw new DomainException("Code is required.");
+        if (string.IsNullOrWhiteSpace(r.Name))
+            throw new DomainException("Name is required.");
+        if (await _repo.GetByCodeAsync(r.PaymentMethodId, code) is not null)
+            throw new DomainException($"A payment method detail with code '{code}' already exists for this payment method.");
+
+        if (r.IsDefault)
+            await _repo.ClearDefaultAsync(r.PaymentMethodId, null);
+
+        var e = new PaymentMethodDetail
+        {
+            PaymentMethodId = r.PaymentMethodId,
+            Code = code,
+            Name = r.Name.Trim(),
+            DisplayName = r.DisplayName?.Trim(),
+            UPIId = r.UPIId?.Trim(),
+            BankName = r.BankName?.Trim(),
+            AccountNumber = r.AccountNumber?.Trim(),
+            IFSCCode = r.IFSCCode?.Trim(),
+            TerminalName = r.TerminalName?.Trim(),
+            CashCounterName = r.CashCounterName?.Trim(),
+            ReferenceValue = r.ReferenceValue?.Trim(),
+            IsDefault = r.IsDefault,
+            DisplayOrder = r.DisplayOrder,
+            IsActive = r.IsActive,
+            CreatedByUserId = userId,
+        };
+        e.PaymentMethodDetailId = await _repo.InsertAsync(e);
+        return Map(e, method);
+    }
+
+    public async Task<PaymentMethodDetailDto> UpdateAsync(long id, long userId, UpdatePaymentMethodDetailRequest r)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method detail '{id}' was not found.");
+        var method = await _paymentMethodService.GetByIdAsync(e.PaymentMethodId);
+
+        var code = r.Code?.Trim() ?? string.Empty;
+        if (code.Length == 0)
+            throw new DomainException("Code is required.");
+        if (string.IsNullOrWhiteSpace(r.Name))
+            throw new DomainException("Name is required.");
+        var dup = await _repo.GetByCodeAsync(e.PaymentMethodId, code);
+        if (dup is not null && dup.PaymentMethodDetailId != id)
+            throw new DomainException($"A payment method detail with code '{code}' already exists for this payment method.");
+
+        if (r.IsDefault)
+            await _repo.ClearDefaultAsync(e.PaymentMethodId, id);
+
+        e.Code = code;
+        e.Name = r.Name.Trim();
+        e.DisplayName = r.DisplayName?.Trim();
+        e.UPIId = r.UPIId?.Trim();
+        e.BankName = r.BankName?.Trim();
+        e.AccountNumber = r.AccountNumber?.Trim();
+        e.IFSCCode = r.IFSCCode?.Trim();
+        e.TerminalName = r.TerminalName?.Trim();
+        e.CashCounterName = r.CashCounterName?.Trim();
+        e.ReferenceValue = r.ReferenceValue?.Trim();
+        e.IsDefault = r.IsDefault;
+        e.DisplayOrder = r.DisplayOrder;
+        e.IsActive = r.IsActive;
+        e.UpdatedByUserId = userId;
+        await _repo.UpdateAsync(e);
+        return Map(e, method);
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method detail '{id}' was not found.");
+        return await _repo.DeleteAsync(id);
+    }
+
+    private static PaymentMethodDetailDto Map(PaymentMethodDetail e, PaymentMethodDto method) => new()
+    {
+        PaymentMethodDetailId = e.PaymentMethodDetailId,
+        PaymentMethodId = e.PaymentMethodId,
+        PaymentMethodCode = method.Code,
+        PaymentMethodName = method.Name,
+        PaymentCategory = method.PaymentCategory,
+        Code = e.Code,
+        Name = e.Name,
+        DisplayName = e.DisplayName,
+        UPIId = e.UPIId,
+        BankName = e.BankName,
+        AccountNumber = e.AccountNumber,
+        IFSCCode = e.IFSCCode,
+        TerminalName = e.TerminalName,
+        CashCounterName = e.CashCounterName,
+        ReferenceValue = e.ReferenceValue,
+        IsDefault = e.IsDefault,
+        DisplayOrder = e.DisplayOrder,
+        IsActive = e.IsActive,
+        CreatedByUserId = e.CreatedByUserId,
+        CreatedAt = e.CreatedAt,
+        UpdatedByUserId = e.UpdatedByUserId,
+        UpdatedAt = e.UpdatedAt,
+    };
+}
+
 public interface IPaymentService
 {
     Task<PaginatedResult<PaymentDto>> GetPagedAsync(long companyId, int page, int size, string search);

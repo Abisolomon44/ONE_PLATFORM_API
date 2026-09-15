@@ -299,6 +299,7 @@ public interface IBusinessPartnerRepository
     Task<IEnumerable<BusinessPartner>> GetAllAsync(long companyId, bool includeInactive = false);
     Task<BusinessPartner?> GetByIdAsync(long id);
     Task<BusinessPartner?> GetByCodeAsync(long companyId, string code);
+    Task<string> GetNextCodeAsync(long companyId, string prefix = "BP");
     Task<long> InsertAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> DeleteAsync(long id, IDbConnection? connection = null, IDbTransaction? transaction = null);
@@ -330,6 +331,16 @@ public class BusinessPartnerRepository : TenantRepositoryBase, IBusinessPartnerR
         using var connection = OpenTenant();
         return await Sql.QuerySingleOrDefaultAsync<BusinessPartner>(connection,
             "SELECT * FROM dbo.BusinessPartners WHERE CompanyId = @companyId AND PartnerCode = @code", new { companyId, code });
+    }
+
+    public async Task<string> GetNextCodeAsync(long companyId, string prefix = "BP")
+    {
+        using var connection = OpenTenant();
+        const string sql = @"
+            SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(PartnerCode, LEN(@prefix) + 2, 10) AS INT)), 0) + 1
+            FROM dbo.BusinessPartners WHERE CompanyId = @companyId AND PartnerCode LIKE @prefix + '-%'";
+        var next = await Sql.ExecuteScalarAsync<int>(connection, sql, new { companyId, prefix });
+        return $"{prefix}-{next:D3}";
     }
 
     public async Task<long> InsertAsync(BusinessPartner entity, IDbConnection? connection = null, IDbTransaction? transaction = null)

@@ -326,6 +326,12 @@ public class BusinessPartnersController : BaseController
         return Ok(ApiResponse<BusinessPartnerDto>.Ok(result));
     }
 
+    [HttpGet("next-code")]
+    [Permission(Permissions.BusinessPartnersManage)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextCode([FromQuery] string? prefix = null)
+        => Ok(ApiResponse<string>.Ok(await _service.GetNextCodeAsync(prefix ?? "BP")));
+
     [HttpPost]
     [Permission(Permissions.BusinessPartnersManage)]
     [ProducesResponseType(typeof(ApiResponse<BusinessPartnerDto>), 200)]

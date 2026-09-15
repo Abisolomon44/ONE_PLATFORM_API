@@ -26,7 +26,7 @@ public class ImportColumnMetaDto
 public class ImportPreviewRequest
 {
     public string EntityName { get; set; } = string.Empty;
-    public List<Dictionary<string, object?>> Rows { get; set; } = new();
+    public List<Dictionary<string, string>> Rows { get; set; } = new();
 }
 
 public class ImportRowResultDto
@@ -50,7 +50,7 @@ public class ImportPreviewResponse
 public class ImportConfirmRequest
 {
     public string EntityName { get; set; } = string.Empty;
-    public List<Dictionary<string, object?>> Rows { get; set; } = new();
+    public List<Dictionary<string, string>> Rows { get; set; } = new();
     public string FileName { get; set; } = string.Empty;
     public string FileType { get; set; } = "CSV";
 }

@@ -54,6 +54,7 @@ public interface IEmployeeRepository
 
 public interface IWarehouseRepository
 {
+    Task<string> GetNextCodeAsync(int companyId, string prefix = "WH");
     Task<Warehouse?> GetByIdAsync(int id);
     Task<Warehouse?> GetByCodeAsync(int companyId, int branchId, string warehouseCode);
     Task<bool> CodeInUseAsync(int companyId, int branchId, string warehouseCode);
@@ -519,6 +520,17 @@ public class WarehouseRepository : TenantRepositoryBase, IWarehouseRepository
     public WarehouseRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
         : base(sql, accessor, platformFactory)
     {
+    }
+
+    public async Task<string> GetNextCodeAsync(int companyId, string prefix = "WH")
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(WarehouseCode, LEN(@prefix) + 2, 10) AS INT)), 0) + 1
+              FROM dbo.Warehouses
+              WHERE CompanyId = @companyId AND IsDeleted = 0 AND WarehouseCode LIKE @prefix + '-%'",
+            new { companyId, prefix });
+        return $"{prefix}-{next:D3}";
     }
 
     public async Task<Warehouse?> GetByIdAsync(int id)

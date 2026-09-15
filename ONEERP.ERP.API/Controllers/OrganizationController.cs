@@ -342,6 +342,12 @@ public class OrganizationController : BaseController
         return Ok(ApiResponse<IEnumerable<WarehouseDto>>.Ok(result));
     }
 
+    [HttpGet("warehouses/next-code")]
+    [Permission(Permissions.WarehousesCreate)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextWarehouseCode([FromQuery] int companyId, [FromQuery] string? prefix = null)
+        => Ok(ApiResponse<string>.Ok(await _warehouseService.GetNextCodeAsync(companyId, prefix ?? "WH")));
+
     [HttpGet("warehouses/{id:int}")]
     [Permission(Permissions.WarehousesView)]
     [ProducesResponseType(typeof(ApiResponse<WarehouseDto>), 200)]

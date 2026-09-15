@@ -15,6 +15,11 @@ public interface IPurchaseRepository
     Task<long> InsertAsync(Purchase entity, PurchasePaymentInput? payment);
     Task<bool> UpdateAsync(Purchase entity);
     Task<bool> DeleteAsync(long id);
+    Task<string?> GetStatusCodeAsync(long id);
+    Task<int> CountPaymentsAsync(long id);
+    Task<int> CountStockTransactionsAsync(long id);
+    Task<int> CountReturnsAsync(long id);
+    Task<bool> CancelAsync(long id, long userId, string reason);
 }
 
 public class PurchasePaymentInput
@@ -108,17 +113,20 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                 INSERT INTO dbo.Purchase
                 (
                     CompanyId, BranchId, WarehouseId, SupplierId, PurchaseNumber, PurchaseDate,
-                    SupplierInvoiceNumber, SupplierInvoiceDate, TotalGrossAmount, TotalDiscountAmount,
-                    TotalTaxableAmount, TotalTaxAmount, TotalCessAmount, TotalRoundOff, GrandTotal,
-                    PaidAmount, BalanceAmount, PaymentTypeID, PaymentMethodID, StatusID, Remarks,
-                    IsActive, CreatedByUserID, CreatedAt
+                    SupplierInvoiceNumber, SupplierInvoiceDate, SupplierPONumber, ReferenceNumber,
+                    CurrencyId, PurchaseTypeId, AccountingYearId, TaxId, IsGSTInclusive,
+                    TotalGrossAmount, TotalDiscountAmount, TotalTaxableAmount, TotalTaxAmount,
+                    TotalCessAmount, TotalRoundOff, GrandTotal, PaidAmount, BalanceAmount,
+                    PaymentTypeID, PaymentMethodID, StatusID, Remarks, IsActive, CreatedByUserID, CreatedAt
                 )
                 VALUES
                 (
                     @CompanyId, @BranchId, @WarehouseId, @SupplierId, @PurchaseNumber, @PurchaseDate,
-                    @SupplierInvoiceNumber, @SupplierInvoiceDate, @TotalGrossAmount, @TotalDiscountAmount,
-                    @TotalTaxableAmount, @TotalTaxAmount, @TotalCessAmount, @TotalRoundOff, @GrandTotal,
-                    @PaidAmount, @BalanceAmount, @PaymentTypeID, @PaymentMethodID, @StatusID, @Remarks,
+                    @SupplierInvoiceNumber, @SupplierInvoiceDate, @SupplierPONumber, @ReferenceNumber,
+                    @CurrencyId, @PurchaseTypeId, @AccountingYearId, @TaxId, @IsGSTInclusive,
+                    @TotalGrossAmount, @TotalDiscountAmount, @TotalTaxableAmount, @TotalTaxAmount,
+                    @TotalCessAmount, @TotalRoundOff, @GrandTotal, @PaidAmount, @BalanceAmount,
+                    @PaymentTypeID, @PaymentMethodID, @StatusID, @Remarks,
                     1, @CreatedByUserID, SYSUTCDATETIME()
                 );
                 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
@@ -136,7 +144,9 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                         Quantity, FreeQuantity, PurchaseRate, MRP, RetailPrice, WholesalePrice, SaleRate,
                         DiscountPercentage, DiscountAmount, IsGSTInclusive, TaxableValue, GSTRate, GSTAmount,
                         CGSTRate, CGSTAmount, SGSTRate, SGSTAmount, IGSTRate, IGSTAmount, CESSRate, CESSAmount,
-                        LineTotal, ManufacturingDate, ExpiryDate, Remarks
+                        LineTotal, ManufacturingDate, ExpiryDate, Remarks,
+                        TaxId, CessId, OrderedQuantity, ReceivedQuantity, ReturnedQuantity, RemainingQuantity,
+                        PurchaseOrderId, PurchaseOrderItemId, GRNId, BatchNumber, SerialNumber
                     )
                     VALUES
                     (
@@ -145,7 +155,9 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                         @Quantity, @FreeQuantity, @PurchaseRate, @MRP, @RetailPrice, @WholesalePrice, @SaleRate,
                         @DiscountPercentage, @DiscountAmount, @IsGSTInclusive, @TaxableValue, @GSTRate, @GSTAmount,
                         @CGSTRate, @CGSTAmount, @SGSTRate, @SGSTAmount, @IGSTRate, @IGSTAmount, @CESSRate, @CESSAmount,
-                        @LineTotal, @ManufacturingDate, @ExpiryDate, @Remarks
+                        @LineTotal, @ManufacturingDate, @ExpiryDate, @Remarks,
+                        @TaxId, @CessId, @OrderedQuantity, @ReceivedQuantity, @ReturnedQuantity, @RemainingQuantity,
+                        @PurchaseOrderId, @PurchaseOrderItemId, @GRNId, @BatchNumber, @SerialNumber
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS bigint);";
                 await Sql.QuerySingleOrDefaultAsync<long>(connection, sqlI, item, tx);
@@ -260,17 +272,132 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
         }, tx);
     }
 
+    public async Task<string?> GetStatusCodeAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<string?>(connection,
+            @"SELECT s.Code FROM dbo.Purchase p LEFT JOIN dbo.[Status] s ON s.StatusId = p.StatusID WHERE p.PurchaseId = @id",
+            new { id });
+    }
+
+    public async Task<int> CountPaymentsAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<int>(connection,
+            "SELECT COUNT(*) FROM dbo.PaymentAllocation WHERE ReferenceType = 'PURCHASE' AND ReferenceId = @id",
+            new { id });
+    }
+
+    public async Task<int> CountStockTransactionsAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<int>(connection,
+            "SELECT COUNT(*) FROM dbo.StockTransaction WHERE ReferenceType = 'PURCHASE' AND ReferenceId = @id",
+            new { id });
+    }
+
+    public async Task<int> CountReturnsAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<int>(connection,
+            "SELECT COUNT(*) FROM dbo.PurchaseReturn WHERE PurchaseId = @id",
+            new { id });
+    }
+
+    public async Task<bool> CancelAsync(long id, long userId, string reason)
+    {
+        using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
+        try
+        {
+            var header = await Sql.QuerySingleOrDefaultAsync<Purchase>(connection,
+                "SELECT * FROM dbo.Purchase WHERE PurchaseId = @id", new { id }, tx);
+            if (header == null) return false;
+            var items = (await Sql.QueryAsync<PurchaseItem>(connection,
+                "SELECT * FROM dbo.PurchaseItem WHERE PurchaseId = @id", new { id }, tx)).ToList();
+
+            var cancelledId = await Sql.QuerySingleOrDefaultAsync<long>(connection,
+                "SELECT ISNULL(StatusId, 0) FROM dbo.[Status] WHERE Code = 'CANCELLED'", null, tx);
+
+            await Sql.ExecuteAsync(connection,
+                @"UPDATE dbo.Purchase SET StatusID = @sid, CancelledByUserID = @uid,
+                  CancelledAt = SYSUTCDATETIME(), CancellationReason = @reason,
+                  UpdatedByUserID = @uid, UpdatedAt = SYSUTCDATETIME()
+                  WHERE PurchaseId = @id",
+                new { sid = cancelledId, uid = userId, reason, id }, tx);
+
+            // Reverse stock posted by this purchase.
+            foreach (var item in items)
+            {
+                await Sql.ExecuteAsync(connection,
+                    @"UPDATE dbo.Stock SET Quantity = Quantity - @qty, AvailableQuantity = AvailableQuantity - @qty,
+                      UpdatedAt = SYSUTCDATETIME()
+                      WHERE CompanyId=@CompanyId AND BranchId=@BranchId AND WarehouseId=@WarehouseId
+                        AND ProductId=@ProductId AND UnitId=@UnitId",
+                    new
+                    {
+                        header.CompanyId,
+                        header.BranchId,
+                        header.WarehouseId,
+                        item.ProductId,
+                        item.UnitID,
+                        qty = item.Quantity
+                    }, tx);
+
+                await Sql.ExecuteAsync(connection,
+                    @"INSERT INTO dbo.StockTransaction
+                      (CompanyId, BranchId, WarehouseId, ProductId, UnitId, TransactionType, ReferenceType,
+                       ReferenceId, QuantityIn, QuantityOut, Rate, BalanceQuantity, TransactionDate, Remarks, CreatedByUserID)
+                      VALUES (@CompanyId, @BranchId, @WarehouseId, @ProductId, @UnitId, 'OUT', 'PURCHASE',
+                       @ReferenceId, 0, @QuantityOut, @Rate,
+                       (SELECT ISNULL(Quantity,0) FROM dbo.Stock WHERE CompanyId=@CompanyId AND BranchId=@BranchId
+                         AND WarehouseId=@WarehouseId AND ProductId=@ProductId AND UnitId=@UnitId),
+                       SYSUTCDATETIME(), @Remarks, @CreatedByUserID)",
+                    new
+                    {
+                        header.CompanyId,
+                        header.BranchId,
+                        header.WarehouseId,
+                        item.ProductId,
+                        UnitId = item.UnitID,
+                        ReferenceId = id,
+                        QuantityOut = item.Quantity,
+                        Rate = item.PurchaseRate,
+                        Remarks = $"Purchase cancel {header.PurchaseNumber}",
+                        CreatedByUserID = userId
+                    }, tx);
+            }
+
+            tx.Commit();
+            return true;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
     public async Task<bool> UpdateAsync(Purchase entity)
     {
         using var connection = OpenTenant();
         using var tx = connection.BeginTransaction();
         try
         {
+            var oldItems = (await Sql.QueryAsync<PurchaseItem>(connection,
+                "SELECT * FROM dbo.PurchaseItem WHERE PurchaseId = @PurchaseId", new { entity.PurchaseId }, tx)).ToList();
+            var header = await Sql.QuerySingleOrDefaultAsync<Purchase>(connection,
+                "SELECT * FROM dbo.Purchase WHERE PurchaseId = @PurchaseId", new { entity.PurchaseId }, tx);
+            if (header == null) return false;
+
             const string sqlH = @"
                 UPDATE dbo.Purchase SET
                     BranchId = @BranchId, WarehouseId = @WarehouseId, SupplierId = @SupplierId,
                     PurchaseNumber = @PurchaseNumber, PurchaseDate = @PurchaseDate,
                     SupplierInvoiceNumber = @SupplierInvoiceNumber, SupplierInvoiceDate = @SupplierInvoiceDate,
+                    SupplierPONumber = @SupplierPONumber, ReferenceNumber = @ReferenceNumber,
+                    CurrencyId = @CurrencyId, PurchaseTypeId = @PurchaseTypeId,
+                    AccountingYearId = @AccountingYearId, TaxId = @TaxId, IsGSTInclusive = @IsGSTInclusive,
                     TotalGrossAmount = @TotalGrossAmount, TotalDiscountAmount = @TotalDiscountAmount,
                     TotalTaxableAmount = @TotalTaxableAmount, TotalTaxAmount = @TotalTaxAmount,
                     TotalCessAmount = @TotalCessAmount, TotalRoundOff = @TotalRoundOff,
@@ -279,6 +406,20 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                     Remarks = @Remarks, UpdatedByUserID = @UpdatedByUserID, UpdatedAt = SYSUTCDATETIME()
                 WHERE PurchaseId = @PurchaseId;";
             await Sql.ExecuteAsync(connection, sqlH, entity, tx);
+
+            // Reverse previously posted stock, then re-post new quantities (delta-safe).
+            foreach (var old in oldItems)
+            {
+                await Sql.ExecuteAsync(connection,
+                    @"UPDATE dbo.Stock SET Quantity = Quantity - @qty, AvailableQuantity = AvailableQuantity - @qty,
+                      UpdatedAt = SYSUTCDATETIME()
+                      WHERE CompanyId=@CompanyId AND BranchId=@BranchId AND WarehouseId=@WarehouseId
+                        AND ProductId=@ProductId AND UnitId=@UnitId",
+                    new { header.CompanyId, header.BranchId, header.WarehouseId, old.ProductId, old.UnitID, qty = old.Quantity }, tx);
+            }
+            await Sql.ExecuteAsync(connection,
+                "DELETE FROM dbo.StockTransaction WHERE ReferenceType = 'PURCHASE' AND ReferenceId = @PurchaseId",
+                new { entity.PurchaseId }, tx);
 
             await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PurchaseItem WHERE PurchaseId = @PurchaseId", new { entity.PurchaseId }, tx);
 
@@ -293,7 +434,9 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                         Quantity, FreeQuantity, PurchaseRate, MRP, RetailPrice, WholesalePrice, SaleRate,
                         DiscountPercentage, DiscountAmount, IsGSTInclusive, TaxableValue, GSTRate, GSTAmount,
                         CGSTRate, CGSTAmount, SGSTRate, SGSTAmount, IGSTRate, IGSTAmount, CESSRate, CESSAmount,
-                        LineTotal, ManufacturingDate, ExpiryDate, Remarks
+                        LineTotal, ManufacturingDate, ExpiryDate, Remarks,
+                        TaxId, CessId, OrderedQuantity, ReceivedQuantity, ReturnedQuantity, RemainingQuantity,
+                        PurchaseOrderId, PurchaseOrderItemId, GRNId, BatchNumber, SerialNumber
                     )
                     VALUES
                     (
@@ -302,10 +445,13 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                         @Quantity, @FreeQuantity, @PurchaseRate, @MRP, @RetailPrice, @WholesalePrice, @SaleRate,
                         @DiscountPercentage, @DiscountAmount, @IsGSTInclusive, @TaxableValue, @GSTRate, @GSTAmount,
                         @CGSTRate, @CGSTAmount, @SGSTRate, @SGSTAmount, @IGSTRate, @IGSTAmount, @CESSRate, @CESSAmount,
-                        @LineTotal, @ManufacturingDate, @ExpiryDate, @Remarks
+                        @LineTotal, @ManufacturingDate, @ExpiryDate, @Remarks,
+                        @TaxId, @CessId, @OrderedQuantity, @ReceivedQuantity, @ReturnedQuantity, @RemainingQuantity,
+                        @PurchaseOrderId, @PurchaseOrderItemId, @GRNId, @BatchNumber, @SerialNumber
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS bigint);";
                 await Sql.QuerySingleOrDefaultAsync<long>(connection, sqlI, item, tx);
+                await UpdateStockAsync(connection, tx, entity, item);
             }
 
             tx.Commit();
@@ -324,6 +470,24 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
         using var tx = connection.BeginTransaction();
         try
         {
+            var header = await Sql.QuerySingleOrDefaultAsync<Purchase>(connection,
+                "SELECT * FROM dbo.Purchase WHERE PurchaseId = @id", new { id }, tx);
+            if (header == null) return false;
+            var items = (await Sql.QueryAsync<PurchaseItem>(connection,
+                "SELECT * FROM dbo.PurchaseItem WHERE PurchaseId = @id", new { id }, tx)).ToList();
+
+            // Reverse posted stock before hard delete.
+            foreach (var item in items)
+            {
+                await Sql.ExecuteAsync(connection,
+                    @"UPDATE dbo.Stock SET Quantity = Quantity - @qty, AvailableQuantity = AvailableQuantity - @qty,
+                      UpdatedAt = SYSUTCDATETIME()
+                      WHERE CompanyId=@CompanyId AND BranchId=@BranchId AND WarehouseId=@WarehouseId
+                        AND ProductId=@ProductId AND UnitId=@UnitId",
+                    new { header.CompanyId, header.BranchId, header.WarehouseId, item.ProductId, item.UnitID, qty = item.Quantity }, tx);
+            }
+            await Sql.ExecuteAsync(connection,
+                "DELETE FROM dbo.StockTransaction WHERE ReferenceType = 'PURCHASE' AND ReferenceId = @id", new { id }, tx);
             await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PurchaseItem WHERE PurchaseId = @id", new { id }, tx);
             var ok = await Sql.ExecuteAsync(connection, "DELETE FROM dbo.Purchase WHERE PurchaseId = @id", new { id }, tx) > 0;
             tx.Commit();

@@ -32,6 +32,16 @@ public class Purchase
     public DateTime CreatedAt { get; set; }
     public long? UpdatedByUserID { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public string? SupplierPONumber { get; set; }
+    public string? ReferenceNumber { get; set; }
+    public long? CurrencyId { get; set; }
+    public long? PurchaseTypeId { get; set; }
+    public long? AccountingYearId { get; set; }
+    public long? TaxId { get; set; }
+    public bool? IsGSTInclusive { get; set; }
+    public long? CancelledByUserID { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    public string? CancellationReason { get; set; }
     public List<PurchaseItem> Items { get; set; } = new();
 }
 
@@ -75,4 +85,15 @@ public class PurchaseItem
     public DateTime? ManufacturingDate { get; set; }
     public DateTime? ExpiryDate { get; set; }
     public string? Remarks { get; set; }
+    public long? TaxId { get; set; }
+    public long? CessId { get; set; }
+    public decimal? OrderedQuantity { get; set; }
+    public decimal? ReceivedQuantity { get; set; }
+    public decimal? ReturnedQuantity { get; set; }
+    public decimal? RemainingQuantity { get; set; }
+    public long? PurchaseOrderId { get; set; }
+    public long? PurchaseOrderItemId { get; set; }
+    public long? GRNId { get; set; }
+    public string? BatchNumber { get; set; }
+    public string? SerialNumber { get; set; }
 }

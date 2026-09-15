@@ -7,6 +7,15 @@ public class LookupItem
     public string? Name { get; set; }
 }
 
+public class ProductLookupItem : LookupItem
+{
+    public long? UomId { get; set; }
+    public string? UomName { get; set; }
+    public string? HsnCode { get; set; }
+    public decimal? GstRate { get; set; }
+    public string? Barcode { get; set; }
+}
+
 public class PurchaseLookupsDto
 {
     public List<LookupItem> Companies { get; set; } = new();

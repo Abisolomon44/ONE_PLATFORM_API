@@ -52,6 +52,55 @@ public class PaymentTypesController : BaseController
 }
 
 [Authorize]
+[Route("api/payment-method-details")]
+public class PaymentMethodDetailsController : BaseController
+{
+    private readonly IPaymentMethodDetailService _service;
+    private readonly ICurrentUser _currentUser;
+
+    public PaymentMethodDetailsController(IPaymentMethodDetailService service, ICurrentUser currentUser)
+    {
+        _service = service;
+        _currentUser = currentUser;
+    }
+
+    [HttpGet]
+    [Permission(Permissions.PaymentMethodDetailsView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<PaymentMethodDetailDto>>), 200)]
+    public async Task<IActionResult> GetByPaymentMethod([FromQuery] long paymentMethodId, [FromQuery] bool includeInactive = false)
+        => Ok(ApiResponse<IEnumerable<PaymentMethodDetailDto>>.Ok(await _service.GetByPaymentMethodIdAsync(paymentMethodId, includeInactive)));
+
+    [HttpGet("{id:long}")]
+    [Permission(Permissions.PaymentMethodDetailsView)]
+    [ProducesResponseType(typeof(ApiResponse<PaymentMethodDetailDto>), 200)]
+    public async Task<IActionResult> GetById(long id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<PaymentMethodDetailDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.PaymentMethodDetailsManage)]
+    [ProducesResponseType(typeof(ApiResponse<PaymentMethodDetailDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreatePaymentMethodDetailRequest request)
+        => Ok(ApiResponse<PaymentMethodDetailDto>.Ok(await _service.CreateAsync(_currentUser.UserId, request), "Payment method detail created successfully"));
+
+    [HttpPut("{id:long}")]
+    [Permission(Permissions.PaymentMethodDetailsManage)]
+    [ProducesResponseType(typeof(ApiResponse<PaymentMethodDetailDto>), 200)]
+    public async Task<IActionResult> Update(long id, [FromBody] UpdatePaymentMethodDetailRequest request)
+        => Ok(ApiResponse<PaymentMethodDetailDto>.Ok(await _service.UpdateAsync(id, _currentUser.UserId, request), "Payment method detail updated successfully"));
+
+    [HttpDelete("{id:long}")]
+    [Permission(Permissions.PaymentMethodDetailsManage)]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Payment method detail deleted successfully"));
+    }
+}
+
+[Authorize]
 [Route("api/payment-methods")]
 public class PaymentMethodsController : BaseController
 {

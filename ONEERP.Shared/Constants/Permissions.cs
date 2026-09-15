@@ -217,10 +217,21 @@ public const string TaxesView = "taxes.view";
             public const string TenantConfigView = "tenant-config.view";
             public const string TenantConfigManage = "tenant-config.manage";
 
-             public const string PurchasesView = "purchases.view";
-             public const string PurchasesManage = "purchases.manage";
-             public const string PurchasesReturnView = "purchases.return.view";
-             public const string PurchasesReturnManage = "purchases.return.manage";
+              public const string PurchasesView = "purchases.view";
+              public const string PurchasesCreate = "purchases.create";
+              public const string PurchasesEdit = "purchases.edit";
+              public const string PurchasesCancel = "purchases.cancel";
+              public const string PurchasesDelete = "purchases.delete";
+              public const string PurchasesManage = "purchases.manage";
+              // Legacy dot-form return permissions (matrix bridge derives these).
+              public const string PurchasesReturnView = "purchases.return.view";
+              public const string PurchasesReturnManage = "purchases.return.manage";
+              // Final hyphen-form purchase-return permissions (per transaction spec).
+              public const string PurchaseReturnCreate = "purchases-return.create";
+              public const string PurchaseReturnView = "purchases-return.view";
+              public const string PurchaseReturnEdit = "purchases-return.edit";
+              public const string PurchaseReturnCancel = "purchases-return.cancel";
+              public const string PurchaseReturnDelete = "purchases-return.delete";
              public const string SalesView = "sales.view";
              public const string SalesManage = "sales.manage";
              public const string SalesReturnView = "sales.return.view";
@@ -233,6 +244,8 @@ public const string TaxesView = "taxes.view";
             public const string PaymentTypesManage = "payment-types.manage";
             public const string PaymentMethodsView = "payment-methods.view";
             public const string PaymentMethodsManage = "payment-methods.manage";
+            public const string PaymentMethodDetailsView = "payment-method-details.view";
+            public const string PaymentMethodDetailsManage = "payment-method-details.manage";
             public const string PaymentsView = "payments.view";
             public const string PaymentsManage = "payments.manage";
 
@@ -319,10 +332,14 @@ public const string TaxesView = "taxes.view";
 
             MasterImportView, MasterImportManage, ImportLogsView,
              TenantConfigView, TenantConfigManage,
-             PurchasesView, PurchasesManage, PurchasesReturnView, PurchasesReturnManage, StockView, StockManage,
+              PurchasesView, PurchasesCreate, PurchasesEdit, PurchasesCancel, PurchasesDelete, PurchasesManage,
+              PurchasesReturnView, PurchasesReturnManage,
+              PurchaseReturnCreate, PurchaseReturnView, PurchaseReturnEdit, PurchaseReturnCancel, PurchaseReturnDelete,
+              StockView, StockManage,
              SalesView, SalesManage, SalesReturnView, SalesReturnManage, SalesPOSView,
              PaymentTypesView, PaymentTypesManage,
              PaymentMethodsView, PaymentMethodsManage,
+             PaymentMethodDetailsView, PaymentMethodDetailsManage,
              PaymentsView, PaymentsManage,
 
            CurrenciesView, CurrenciesManage,

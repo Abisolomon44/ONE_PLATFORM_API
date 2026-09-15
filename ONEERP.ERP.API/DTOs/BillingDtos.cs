@@ -41,6 +41,17 @@ public class PurchaseItemDto
     public DateTime? ManufacturingDate { get; set; }
     public DateTime? ExpiryDate { get; set; }
     public string? Remarks { get; set; }
+    public long? TaxId { get; set; }
+    public long? CessId { get; set; }
+    public decimal? OrderedQuantity { get; set; }
+    public decimal? ReceivedQuantity { get; set; }
+    public decimal? ReturnedQuantity { get; set; }
+    public decimal? RemainingQuantity { get; set; }
+    public long? PurchaseOrderId { get; set; }
+    public long? PurchaseOrderItemId { get; set; }
+    public long? GRNId { get; set; }
+    public string? BatchNumber { get; set; }
+    public string? SerialNumber { get; set; }
 }
 
 public class PurchaseDto
@@ -73,6 +84,16 @@ public class PurchaseDto
     public bool IsActive { get; set; }
     public long CreatedByUserID { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? SupplierPONumber { get; set; }
+    public string? ReferenceNumber { get; set; }
+    public long? CurrencyId { get; set; }
+    public long? PurchaseTypeId { get; set; }
+    public long? AccountingYearId { get; set; }
+    public long? TaxId { get; set; }
+    public bool? IsGSTInclusive { get; set; }
+    public long? CancelledByUserID { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    public string? CancellationReason { get; set; }
     public List<PurchaseItemDto> Items { get; set; } = new();
 }
 
@@ -88,7 +109,7 @@ public class CreatePurchaseItemInput
     public decimal? WholesalePrice { get; set; }
     public decimal? SaleRate { get; set; }
     public decimal DiscountPercentage { get; set; } = 0;
-    public bool IsGSTInclusive { get; set; } = false;
+     public bool? IsGSTInclusive { get; set; } = false;
     public decimal GSTRate { get; set; } = 0;
     public decimal CGSTRate { get; set; } = 0;
     public decimal SGSTRate { get; set; } = 0;
@@ -102,6 +123,17 @@ public class CreatePurchaseItemInput
     public DateTime? ManufacturingDate { get; set; }
     public DateTime? ExpiryDate { get; set; }
     public string? Remarks { get; set; }
+    public long? TaxId { get; set; }
+    public long? CessId { get; set; }
+    public decimal? OrderedQuantity { get; set; }
+    public decimal? ReceivedQuantity { get; set; }
+    public decimal? ReturnedQuantity { get; set; }
+    public decimal? RemainingQuantity { get; set; }
+    public long? PurchaseOrderId { get; set; }
+    public long? PurchaseOrderItemId { get; set; }
+    public long? GRNId { get; set; }
+    public string? BatchNumber { get; set; }
+    public string? SerialNumber { get; set; }
 }
 
 public class CreatePurchasePaymentInput
@@ -119,12 +151,21 @@ public record CreatePurchaseRequest(
     long SupplierId,
     string PurchaseNumber,
     string PurchaseDate,
+    List<CreatePurchaseItemInput> Items,
     string? SupplierInvoiceNumber = null,
     string? SupplierInvoiceDate = null,
+    string? SupplierPONumber = null,
+    string? ReferenceNumber = null,
+    long? CurrencyId = null,
+    long? PurchaseTypeId = null,
+    long? AccountingYearId = null,
+    long? TaxId = null,
+    bool? IsGSTInclusive = null,
     long? PaymentTypeID = null,
     long? PaymentMethodID = null,
+    decimal PaidAmount = 0,
+    decimal BalanceAmount = 0,
     string? Remarks = null,
-    List<CreatePurchaseItemInput> Items = null!,
     CreatePurchasePaymentInput? Payment = null,
     long CompanyId = 0);
 
@@ -134,13 +175,22 @@ public record UpdatePurchaseRequest(
     long SupplierId,
     string PurchaseNumber,
     string PurchaseDate,
-    string? SupplierInvoiceNumber,
-    string? SupplierInvoiceDate,
-    long? PaymentTypeID,
-    long? PaymentMethodID,
-    string? Remarks,
     List<CreatePurchaseItemInput> Items,
-    long CompanyId = 0);
+    string? SupplierInvoiceNumber = null,
+    string? SupplierInvoiceDate = null,
+    long? PaymentTypeID = null,
+    long? PaymentMethodID = null,
+    decimal PaidAmount = 0,
+    decimal BalanceAmount = 0,
+    string? Remarks = null,
+    long CompanyId = 0,
+    string? SupplierPONumber = null,
+    string? ReferenceNumber = null,
+    long? CurrencyId = null,
+    long? PurchaseTypeId = null,
+    long? AccountingYearId = null,
+    long? TaxId = null,
+    bool? IsGSTInclusive = null);
 
 /* ---------------- Stock ---------------- */
 
@@ -229,6 +279,13 @@ public class PurchaseReturnDto
     public long StatusID { get; set; }
     public string? Reason { get; set; }
     public string? Remarks { get; set; }
+    public long CreatedByUserID { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? UpdatedByUserID { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public long? CancelledByUserID { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    public string? CancellationReason { get; set; }
     public List<PurchaseReturnItemDto> Items { get; set; } = new();
 }
 
@@ -256,9 +313,27 @@ public class CreatePurchaseReturnItemInput
 public record CreatePurchaseReturnRequest(
     long PurchaseId,
     string ReturnDate,
+    List<CreatePurchaseReturnItemInput> Items,
     string? Reason = null,
-    string? Remarks = null,
-    List<CreatePurchaseReturnItemInput> Items = null!);
+    string? Remarks = null);
+
+public record UpdatePurchaseReturnRequest(
+    string ReturnDate,
+    List<CreatePurchaseReturnItemInput> Items,
+    string? Reason = null,
+    string? Remarks = null);
+
+public record CancelTransactionRequest(string Reason);
+
+public class DeleteCheckDto
+{
+    public bool Allowed { get; set; }
+    public List<string> Reasons { get; set; } = new();
+    public string? StatusCode { get; set; }
+    public int PaymentCount { get; set; }
+    public int StockTransactionCount { get; set; }
+    public int ReturnCount { get; set; }
+}
 
 /* ---------------- Payment Allocation ---------------- */
 

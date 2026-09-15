@@ -223,6 +223,7 @@ public interface IBusinessPartnerService
 {
     Task<IEnumerable<BusinessPartnerDto>> GetAllAsync(bool includeInactive = false);
     Task<BusinessPartnerDto> GetByIdAsync(long id);
+    Task<string> GetNextCodeAsync(string prefix = "BP");
     Task<BusinessPartnerDto> CreateAsync(CreateBusinessPartnerRequest request);
     Task<BusinessPartnerDto> UpdateAsync(long id, UpdateBusinessPartnerRequest request);
     Task<bool> DeleteAsync(long id);
@@ -254,9 +255,14 @@ public class BusinessPartnerService : IBusinessPartnerService
         return Map(item);
     }
 
+    public async Task<string> GetNextCodeAsync(string prefix = "BP")
+        => await _repository.GetNextCodeAsync(_currentUser.CompanyId, prefix);
+
     public async Task<BusinessPartnerDto> CreateAsync(CreateBusinessPartnerRequest request)
     {
-        var code = request.PartnerCode.Trim();
+        var code = string.IsNullOrWhiteSpace(request.PartnerCode)
+            ? await _repository.GetNextCodeAsync(_currentUser.CompanyId)
+            : request.PartnerCode.Trim();
         if (await _repository.GetByCodeAsync(_currentUser.CompanyId, code) is not null)
             throw new DomainException($"A business partner with code '{code}' already exists.");
 
@@ -291,12 +297,6 @@ public class BusinessPartnerService : IBusinessPartnerService
         var entity = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"Business partner '{id}' was not found.");
 
-        var code = request.PartnerCode.Trim();
-        var duplicate = await _repository.GetByCodeAsync(_currentUser.CompanyId, code);
-        if (duplicate is not null && duplicate.Id != id)
-            throw new DomainException($"A business partner with code '{code}' already exists.");
-
-        entity.PartnerCode = code;
         entity.PartnerName = request.PartnerName.Trim();
         entity.PatnerRoleIds = request.PatnerRoleIds;
         entity.ContactPerson = request.ContactPerson;

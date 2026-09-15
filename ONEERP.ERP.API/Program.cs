@@ -97,6 +97,8 @@ builder.Services.AddScoped<IGstRegistrationTypeRepository, GstRegistrationTypeRe
 builder.Services.AddScoped<ITenantConfigurationRepository, TenantConfigurationRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IPurchaseReportRepository, PurchaseReportRepository>();
+builder.Services.AddScoped<IPurchaseReportService, PurchaseReportService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
@@ -108,6 +110,8 @@ builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentMethodDetailRepository, PaymentMethodDetailRepository>();
+builder.Services.AddScoped<IPaymentMethodDetailService, PaymentMethodDetailService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAddressTypeRepository, AddressTypeRepository>();
@@ -219,6 +223,8 @@ builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IImportLogRepository, ImportLogRepository>();
 builder.Services.AddScoped<IImportLogService, ImportLogService>();
 builder.Services.AddScoped<IMasterImportService, MasterImportService>();
+builder.Services.AddScoped<IMasterReferenceCatalog, MasterReferenceCatalog>();
+builder.Services.AddScoped<IMasterExportService, MasterExportService>();
 
 builder.Services.AddScoped<IBranchTypeService, BranchTypeService>();
 builder.Services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();

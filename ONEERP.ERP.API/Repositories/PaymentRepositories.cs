@@ -147,6 +147,113 @@ public class PaymentMethodRepository : TenantRepositoryBase, IPaymentMethodRepos
     }
 }
 
+public interface IPaymentMethodDetailRepository
+{
+    Task<IEnumerable<PaymentMethodDetail>> GetByPaymentMethodIdAsync(long paymentMethodId, bool includeInactive = false);
+    Task<PaymentMethodDetail?> GetByIdAsync(long id);
+    Task<PaymentMethodDetail?> GetByCodeAsync(long paymentMethodId, string code);
+    Task<long> InsertAsync(PaymentMethodDetail entity);
+    Task<bool> UpdateAsync(PaymentMethodDetail entity);
+    Task<bool> ClearDefaultAsync(long paymentMethodId, long? excludeId);
+    Task<bool> DeleteAsync(long id);
+}
+
+public class PaymentMethodDetailRepository : TenantRepositoryBase, IPaymentMethodDetailRepository
+{
+    public PaymentMethodDetailRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<PaymentMethodDetail>> GetByPaymentMethodIdAsync(long paymentMethodId, bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.PaymentMethodDetails WHERE PaymentMethodId = @paymentMethodId ORDER BY DisplayOrder, Name"
+            : "SELECT * FROM dbo.PaymentMethodDetails WHERE PaymentMethodId = @paymentMethodId AND IsActive = 1 ORDER BY DisplayOrder, Name";
+        return await Sql.QueryAsync<PaymentMethodDetail>(connection, sql, new { paymentMethodId });
+    }
+
+    public async Task<PaymentMethodDetail?> GetByIdAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<PaymentMethodDetail>(connection,
+            "SELECT * FROM dbo.PaymentMethodDetails WHERE PaymentMethodDetailId = @id", new { id });
+    }
+
+    public async Task<PaymentMethodDetail?> GetByCodeAsync(long paymentMethodId, string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<PaymentMethodDetail>(connection,
+            "SELECT * FROM dbo.PaymentMethodDetails WHERE PaymentMethodId = @paymentMethodId AND Code = @code",
+            new { paymentMethodId, code });
+    }
+
+    public async Task<long> InsertAsync(PaymentMethodDetail entity)
+    {
+        using var connection = OpenTenant();
+        const string sql = @"
+            INSERT INTO dbo.PaymentMethodDetails
+            (
+                PaymentMethodId, Code, Name, DisplayName,
+                UPIId, BankName, AccountNumber, IFSCCode, TerminalName,
+                CashCounterName, ReferenceValue,
+                IsDefault, DisplayOrder, IsActive,
+                CreatedByUserId, CreatedAt
+            )
+            VALUES
+            (
+                @PaymentMethodId, @Code, @Name, @DisplayName,
+                @UPIId, @BankName, @AccountNumber, @IFSCCode, @TerminalName,
+                @CashCounterName, @ReferenceValue,
+                @IsDefault, @DisplayOrder, @IsActive,
+                @CreatedByUserId, SYSUTCDATETIME()
+            );
+            SELECT CAST(SCOPE_IDENTITY() AS bigint);";
+        return await Sql.QuerySingleOrDefaultAsync<long>(connection, sql, entity);
+    }
+
+    public async Task<bool> UpdateAsync(PaymentMethodDetail entity)
+    {
+        using var connection = OpenTenant();
+        const string sql = @"
+            UPDATE dbo.PaymentMethodDetails SET
+                Code = @Code,
+                Name = @Name,
+                DisplayName = @DisplayName,
+                UPIId = @UPIId,
+                BankName = @BankName,
+                AccountNumber = @AccountNumber,
+                IFSCCode = @IFSCCode,
+                TerminalName = @TerminalName,
+                CashCounterName = @CashCounterName,
+                ReferenceValue = @ReferenceValue,
+                IsDefault = @IsDefault,
+                DisplayOrder = @DisplayOrder,
+                IsActive = @IsActive,
+                UpdatedByUserId = @UpdatedByUserId,
+                UpdatedAt = SYSUTCDATETIME()
+            WHERE PaymentMethodDetailId = @PaymentMethodDetailId;";
+        return await Sql.ExecuteAsync(connection, sql, entity) > 0;
+    }
+
+    public async Task<bool> ClearDefaultAsync(long paymentMethodId, long? excludeId)
+    {
+        using var connection = OpenTenant();
+        var sql = excludeId.HasValue
+            ? "UPDATE dbo.PaymentMethodDetails SET IsDefault = 0 WHERE PaymentMethodId = @paymentMethodId AND PaymentMethodDetailId <> @excludeId"
+            : "UPDATE dbo.PaymentMethodDetails SET IsDefault = 0 WHERE PaymentMethodId = @paymentMethodId";
+        await Sql.ExecuteAsync(connection, sql, new { paymentMethodId, excludeId });
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PaymentMethodDetails WHERE PaymentMethodDetailId = @id", new { id }) > 0;
+    }
+}
+
 public interface IPaymentRepository
 {
     Task<(List<Payment> Items, int TotalCount)> GetPagedAsync(long companyId, int pageNumber, int pageSize, string search);

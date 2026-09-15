@@ -44,6 +44,7 @@ public interface IEmployeeService
 
 public interface IWarehouseService
 {
+    Task<string> GetNextCodeAsync(int companyId, string prefix = "WH");
     Task<PaginatedResult<WarehouseDto>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search);
     Task<WarehouseDto> GetByIdAsync(int id);
     Task<WarehouseDto> CreateAsync(CreateWarehouseRequest request);
@@ -641,6 +642,9 @@ public class WarehouseService : IWarehouseService
         _dataScopeResolver = dataScopeResolver;
     }
 
+    public async Task<string> GetNextCodeAsync(int companyId, string prefix = "WH")
+        => await _repository.GetNextCodeAsync(companyId, prefix);
+
     public async Task<PaginatedResult<WarehouseDto>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search)
     {
         var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
@@ -715,7 +719,9 @@ public class WarehouseService : IWarehouseService
             || (request.BranchId.HasValue && request.BranchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync(request.BranchId.Value)))
             throw new UnauthorizedAccess("You do not have access to the selected company or branch.");
 
-        var warehouseCode = request.WarehouseCode.Trim();
+        var warehouseCode = string.IsNullOrWhiteSpace(request.WarehouseCode)
+            ? await _repository.GetNextCodeAsync(request.CompanyId)
+            : request.WarehouseCode.Trim();
         if (await _repository.CodeInUseAsync(request.CompanyId, request.BranchId ?? 0, warehouseCode))
             throw new DomainException($"Warehouse code '{warehouseCode}' is already in use.");
 
@@ -754,7 +760,9 @@ public class WarehouseService : IWarehouseService
             ?? throw new NotFoundException($"Warehouse '{id}' was not found.");
 
         warehouse.EntityId = request.EntityId;
-        warehouse.WarehouseCode = request.WarehouseCode.Trim();
+        warehouse.WarehouseCode = string.IsNullOrWhiteSpace(request.WarehouseCode)
+            ? warehouse.WarehouseCode
+            : request.WarehouseCode.Trim();
         warehouse.WarehouseName = request.WarehouseName.Trim();
         warehouse.ShortName = request.ShortName?.Trim();
         warehouse.WarehouseTypeId = request.WarehouseTypeId;

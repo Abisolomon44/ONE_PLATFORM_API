@@ -205,7 +205,7 @@ public class CreateBusinessTypeRequestValidator : AbstractValidator<DTOs.CreateB
     {
         public CreateBusinessPartnerRequestValidator()
         {
-            RuleFor(x => x.PartnerCode).NotEmpty().MaximumLength(30);
+            RuleFor(x => x.PartnerCode).MaximumLength(30);
             RuleFor(x => x.PartnerName).NotEmpty().MaximumLength(200);
             RuleFor(x => x.PatnerRoleIds).NotEmpty().MaximumLength(100);
             RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
@@ -594,8 +594,9 @@ public class CreateWarehouseRequestValidator : AbstractValidator<DTOs.CreateWare
     public CreateWarehouseRequestValidator()
     {
         RuleFor(x => x.CompanyId).GreaterThan(0);
-        RuleFor(x => x.WarehouseCode).NotEmpty().MaximumLength(20)
-            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Warehouse code may only contain letters, digits, hyphens and underscores.");
+        RuleFor(x => x.WarehouseCode).MaximumLength(20)
+            .Matches("^[A-Za-z0-9_-]+$").WithMessage("Warehouse code may only contain letters, digits, hyphens and underscores.")
+            .When(x => !string.IsNullOrWhiteSpace(x.WarehouseCode));
         RuleFor(x => x.WarehouseName).NotEmpty().MaximumLength(200);
         RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
     }

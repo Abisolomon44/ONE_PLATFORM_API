@@ -58,6 +58,65 @@ public class PaymentMethodDto
     public int DisplayOrder { get; set; }
 }
 
+/* ---------------- PaymentMethodDetail ---------------- */
+
+public class PaymentMethodDetailDto
+{
+    public long PaymentMethodDetailId { get; set; }
+    public long PaymentMethodId { get; set; }
+    public string PaymentMethodCode { get; set; } = string.Empty;
+    public string PaymentMethodName { get; set; } = string.Empty;
+    public string PaymentCategory { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? DisplayName { get; set; }
+    public string? UPIId { get; set; }
+    public string? BankName { get; set; }
+    public string? AccountNumber { get; set; }
+    public string? IFSCCode { get; set; }
+    public string? TerminalName { get; set; }
+    public string? CashCounterName { get; set; }
+    public string? ReferenceValue { get; set; }
+    public bool IsDefault { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; }
+    public long CreatedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? UpdatedByUserId { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public record CreatePaymentMethodDetailRequest(
+    long PaymentMethodId,
+    string Code,
+    string Name,
+    string? DisplayName = null,
+    string? UPIId = null,
+    string? BankName = null,
+    string? AccountNumber = null,
+    string? IFSCCode = null,
+    string? TerminalName = null,
+    string? CashCounterName = null,
+    string? ReferenceValue = null,
+    bool IsDefault = false,
+    int DisplayOrder = 0,
+    bool IsActive = true);
+
+public record UpdatePaymentMethodDetailRequest(
+    string Code,
+    string Name,
+    string? DisplayName,
+    string? UPIId,
+    string? BankName,
+    string? AccountNumber,
+    string? IFSCCode,
+    string? TerminalName,
+    string? CashCounterName,
+    string? ReferenceValue,
+    bool IsDefault,
+    int DisplayOrder,
+    bool IsActive);
+
 /* ---------------- Payment (transaction) ---------------- */
 
 public class PaymentLookupsDto

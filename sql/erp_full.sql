@@ -3273,12 +3273,26 @@ BEGIN
         CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_Purchase_CreatedAt DEFAULT SYSUTCDATETIME(),
         UpdatedByUserID       BIGINT        NULL,
         UpdatedAt             DATETIME2     NULL,
+        SupplierPONumber      NVARCHAR(50)  NULL,
+        ReferenceNumber       NVARCHAR(50)  NULL,
+        CurrencyId            BIGINT        NULL,
+        PurchaseTypeId        BIGINT        NULL,
+        AccountingYearId      BIGINT        NULL,
+        TaxId                 BIGINT        NULL,
+        IsGSTInclusive        BIT           NULL,
+        CancelledByUserID     BIGINT        NULL,
+        CancelledAt           DATETIME2     NULL,
+        CancellationReason    NVARCHAR(500) NULL,
 
-        CONSTRAINT UQ_Purchase_No UNIQUE (CompanyId, PurchaseNumber)
+        CONSTRAINT UQ_Purchase_No UNIQUE (CompanyId, PurchaseNumber),
+        CONSTRAINT FK_Purchase_Taxes FOREIGN KEY (TaxId) REFERENCES dbo.Taxes(Id),
+        CONSTRAINT FK_Purchase_FinancialYear FOREIGN KEY (AccountingYearId) REFERENCES dbo.FinancialYear(FinancialYearId)
     );
 
     CREATE INDEX IX_Purchase_Company_Date ON dbo.Purchase (CompanyId, PurchaseDate);
     CREATE INDEX IX_Purchase_Supplier ON dbo.Purchase (SupplierId);
+    CREATE INDEX IX_Purchase_AccountingYearId ON dbo.Purchase (AccountingYearId);
+    CREATE INDEX IX_Purchase_TaxId ON dbo.Purchase (TaxId);
 END
 ;
 
@@ -3325,11 +3339,27 @@ BEGIN
         LineTotal          DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseItem_Line DEFAULT 0,
         ManufacturingDate  DATE          NULL,
         ExpiryDate         DATE          NULL,
-        Remarks            NVARCHAR(500) NULL
+        Remarks            NVARCHAR(500) NULL,
+        TaxId              BIGINT        NULL,
+        CessId             BIGINT        NULL,
+        OrderedQuantity    DECIMAL(18,3) NULL,
+        ReceivedQuantity   DECIMAL(18,3) NULL,
+        ReturnedQuantity   DECIMAL(18,3) NULL,
+        RemainingQuantity  DECIMAL(18,3) NULL,
+        PurchaseOrderId    BIGINT        NULL,
+        PurchaseOrderItemId BIGINT       NULL,
+        GRNId              BIGINT        NULL,
+        BatchNumber        NVARCHAR(100) NULL,
+        SerialNumber       NVARCHAR(100) NULL,
+
+        CONSTRAINT FK_PurchaseItem_Taxes FOREIGN KEY (TaxId) REFERENCES dbo.Taxes(Id)
     );
 
     CREATE INDEX IX_PurchaseItem_PurchaseId ON dbo.PurchaseItem (PurchaseId);
     CREATE INDEX IX_PurchaseItem_ProductId ON dbo.PurchaseItem (ProductId);
+    CREATE INDEX IX_PurchaseItem_TaxId ON dbo.PurchaseItem (TaxId);
+    CREATE INDEX IX_PurchaseItem_PurchaseOrderId ON dbo.PurchaseItem (PurchaseOrderId);
+    CREATE INDEX IX_PurchaseItem_GRNId ON dbo.PurchaseItem (GRNId);
 END
 ;
 
@@ -3368,11 +3398,28 @@ BEGIN
         CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_PurchaseReturn_CreatedAt DEFAULT SYSUTCDATETIME(),
         UpdatedByUserID       BIGINT        NULL,
         UpdatedAt             DATETIME2     NULL,
+        SupplierInvoiceNumber NVARCHAR(50)  NULL,
+        ReferenceNumber       NVARCHAR(50)  NULL,
+        CurrencyId            BIGINT        NULL,
+        PurchaseReturnTypeId  BIGINT        NULL,
+        AccountingYearId      BIGINT        NULL,
+        PaymentTypeId         BIGINT        NULL,
+        PaymentMethodId       BIGINT        NULL,
+        ReturnReasonId        BIGINT        NULL,
+        CancelledByUserID     BIGINT        NULL,
+        CancelledAt           DATETIME2     NULL,
+        CancellationReason    NVARCHAR(500) NULL,
 
-        CONSTRAINT UQ_PurchaseReturn_No UNIQUE (CompanyId, ReturnNumber)
+        CONSTRAINT UQ_PurchaseReturn_No UNIQUE (CompanyId, ReturnNumber),
+        CONSTRAINT FK_PurchaseReturn_FinancialYear FOREIGN KEY (AccountingYearId) REFERENCES dbo.FinancialYear(FinancialYearId),
+        CONSTRAINT FK_PurchaseReturn_PaymentType FOREIGN KEY (PaymentTypeId) REFERENCES dbo.PaymentType(PaymentTypeId),
+        CONSTRAINT FK_PurchaseReturn_PaymentMethod FOREIGN KEY (PaymentMethodId) REFERENCES dbo.PaymentMethod(PaymentMethodId)
     );
 
     CREATE INDEX IX_PurchaseReturn_Company_Date ON dbo.PurchaseReturn (CompanyId, ReturnDate);
+    CREATE INDEX IX_PurchaseReturn_AccountingYearId ON dbo.PurchaseReturn (AccountingYearId);
+    CREATE INDEX IX_PurchaseReturn_PaymentTypeId ON dbo.PurchaseReturn (PaymentTypeId);
+    CREATE INDEX IX_PurchaseReturn_PaymentMethodId ON dbo.PurchaseReturn (PaymentMethodId);
 END
 ;
 
@@ -3406,11 +3453,20 @@ BEGIN
         IGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_IGSTA DEFAULT 0,
         CESSRate             DECIMAL(8,3)  NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSR DEFAULT 0,
         CESSAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_CESSA DEFAULT 0,
-        LineTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Line DEFAULT 0
+        LineTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_PurchaseReturnItem_Line DEFAULT 0,
+        TaxId                BIGINT        NULL,
+        CessId               BIGINT        NULL,
+        BarcodeSnapshot      NVARCHAR(100) NULL,
+        BatchNumber          NVARCHAR(100) NULL,
+        SerialNumber         NVARCHAR(100) NULL,
+        ReasonId             BIGINT        NULL,
+
+        CONSTRAINT FK_PurchaseReturnItem_Taxes FOREIGN KEY (TaxId) REFERENCES dbo.Taxes(Id)
     );
 
     CREATE INDEX IX_PurchaseReturnItem_ReturnId ON dbo.PurchaseReturnItem (PurchaseReturnId);
     CREATE INDEX IX_PurchaseReturnItem_ProductId ON dbo.PurchaseReturnItem (ProductId);
+    CREATE INDEX IX_PurchaseReturnItem_TaxId ON dbo.PurchaseReturnItem (TaxId);
 END
 ;
 
@@ -4414,6 +4470,7 @@ CROSS JOIN (VALUES
     ('currencies.view'), ('currencies.manage'),
     ('payment-types.view'), ('payment-types.manage'),
     ('payment-methods.view'), ('payment-methods.manage'),
+    ('payment-method-details.view'), ('payment-method-details.manage'),
     ('permission-modules.view'), ('permission-modules.manage'),
     ('permission-actions.view'), ('permission-actions.manage'),
     ('audit.view'), ('profile.edit'),
@@ -4430,8 +4487,9 @@ CROSS JOIN (VALUES
     ('sales.view'), ('sales.manage'), ('sales.create'), ('sales.edit'), ('sales.delete'),
     ('sales.pos.view'), ('sales.return.view'), ('sales.return.manage'),
     /* PURCHASE */
-    ('purchases.view'), ('purchases.manage'),
+    ('purchases.view'), ('purchases.create'), ('purchases.edit'), ('purchases.cancel'), ('purchases.delete'), ('purchases.manage'),
     ('purchases.return.view'), ('purchases.return.manage'),
+    ('purchases-return.create'), ('purchases-return.view'), ('purchases-return.edit'), ('purchases-return.cancel'), ('purchases-return.delete'),
     /* INVENTORY */
     ('stock.view'), ('stock.manage'),
     /* PAYMENTS */

@@ -73,6 +73,9 @@ public class PurchaseReturn
     public DateTime CreatedAt { get; set; }
     public long? UpdatedByUserID { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public long? CancelledByUserID { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    public string? CancellationReason { get; set; }
     public List<PurchaseReturnItem> Items { get; set; } = new();
 }
 

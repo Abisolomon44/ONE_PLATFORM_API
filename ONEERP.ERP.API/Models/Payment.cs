@@ -24,6 +24,29 @@ public class PaymentMethod
     public DateTime CreatedAt { get; set; }
 }
 
+public class PaymentMethodDetail
+{
+    public long PaymentMethodDetailId { get; set; }
+    public long PaymentMethodId { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? DisplayName { get; set; }
+    public string? UPIId { get; set; }
+    public string? BankName { get; set; }
+    public string? AccountNumber { get; set; }
+    public string? IFSCCode { get; set; }
+    public string? TerminalName { get; set; }
+    public string? CashCounterName { get; set; }
+    public string? ReferenceValue { get; set; }
+    public bool IsDefault { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public long CreatedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? UpdatedByUserId { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
 public class Payment
 {
     public long PaymentId { get; set; }
