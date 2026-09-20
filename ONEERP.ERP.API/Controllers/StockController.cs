@@ -42,4 +42,29 @@ public class StockController : BaseController
         var result = await _service.GetTransactionsAsync(_currentUser.CompanyId, page, size, productId, warehouseId);
         return Ok(ApiResponse<PaginatedResult<StockTransactionDto>>.Ok(result));
     }
+
+    [HttpGet("price-master-products")]
+    [Permission(Permissions.StockView)]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResult<PriceMasterProductDto>>), 200)]
+    public async Task<IActionResult> GetPriceMasterProducts(
+        [FromQuery] long? companyId = null,
+        [FromQuery] long? branchId = null,
+        [FromQuery] long? warehouseId = null,
+        [FromQuery] string? search = null,
+        [FromQuery] long? categoryId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 500)
+    {
+        var resolvedCompanyId = (companyId.HasValue && companyId.Value > 0) ? companyId.Value : _currentUser.CompanyId;
+        var result = await _service.GetPriceMasterPurchaseProductsAsync(
+            resolvedCompanyId,
+            branchId,
+            warehouseId,
+            search,
+            categoryId,
+            page,
+            size);
+
+        return Ok(ApiResponse<PaginatedResult<PriceMasterProductDto>>.Ok(result));
+    }
 }

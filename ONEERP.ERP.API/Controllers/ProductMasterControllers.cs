@@ -433,4 +433,38 @@ public class ProductsController : BaseController
         await _service.DeleteAsync(id, _currentUser.CompanyId);
         return Ok(ApiResponse.Ok("Product deleted successfully"));
     }
+
+    [HttpGet("price-master-products")]
+    [Permission(Permissions.ProductsView)]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResult<PriceMasterProductDto>>), 200)]
+    public async Task<IActionResult> GetPriceMasterProducts(
+        [FromQuery] long? companyId = null,
+        [FromQuery] long? branchId = null,
+        [FromQuery] long? warehouseId = null,
+        [FromQuery] string? search = null,
+        [FromQuery] long? categoryId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 500)
+    {
+        var resolvedCompanyId = (companyId.HasValue && companyId.Value > 0) ? companyId.Value : _currentUser.CompanyId;
+        if (!await _dataScopeResolver.CanAccessCompanyAsync((int)resolvedCompanyId))
+            return Ok(ApiResponse<PaginatedResult<PriceMasterProductDto>>.Ok(new PaginatedResult<PriceMasterProductDto>
+            {
+                Items = new List<PriceMasterProductDto>(),
+                TotalCount = 0,
+                PageNumber = page < 1 ? 1 : page,
+                PageSize = size < 1 ? 10 : size
+            }));
+
+        var result = await _service.GetPriceMasterDirectProductsAsync(
+            resolvedCompanyId,
+            branchId,
+            warehouseId,
+            search,
+            categoryId,
+            page,
+            size);
+
+        return Ok(ApiResponse<PaginatedResult<PriceMasterProductDto>>.Ok(result));
+    }
 }

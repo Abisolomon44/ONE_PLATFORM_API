@@ -65,15 +65,16 @@ public class BarcodeDto
 
 /* ---------------- HSN/SAC (company) ---------------- */
 
-public record CreateHsnSacRequest(string Code, string Name, string HsnSacType, long? TaxId = null, string? Description = null);
+public record CreateHsnSacRequest(string Code, string GovernmentCode, string Name, string HsnSacType, long? TaxId = null, string? Description = null);
 
-public record UpdateHsnSacRequest(string Code, string Name, string HsnSacType, long? TaxId, string? Description, bool IsActive);
+public record UpdateHsnSacRequest(string Code, string GovernmentCode, string Name, string HsnSacType, long? TaxId, string? Description, bool IsActive);
 
 public class HsnSacDto
 {
     public long HsnSacId { get; set; }
     public long CompanyId { get; set; }
     public string Code { get; set; } = string.Empty;
+    public string GovernmentCode { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string HsnSacType { get; set; } = string.Empty;
     public string? Description { get; set; }
@@ -155,15 +156,17 @@ public class PriceListDto
 
 /* ---------------- Price List Details (child of PriceList) ---------------- */
 
-public record CreatePriceListDetailRequest(long PriceListId, long ProductId, long? UnitId, decimal Price, decimal MinimumQuantity = 1, decimal? MaximumQuantity = null);
+public record CreatePriceListDetailRequest(long PriceListId, long ProductId, long PriceTypeId, long? UnitId, decimal Price, decimal MinimumQuantity = 1, decimal? MaximumQuantity = null);
 
-public record UpdatePriceListDetailRequest(long PriceListId, long ProductId, long? UnitId, decimal Price, decimal MinimumQuantity, decimal? MaximumQuantity, bool IsActive);
+public record UpdatePriceListDetailRequest(long PriceListId, long ProductId, long PriceTypeId, long? UnitId, decimal Price, decimal MinimumQuantity, decimal? MaximumQuantity, bool IsActive);
 
 public class PriceListDetailDto
 {
     public long PriceListDetailId { get; set; }
     public long PriceListId { get; set; }
     public long ProductId { get; set; }
+    public long PriceTypeId { get; set; }
+    public string? PriceTypeName { get; set; }
     public string? ProductName { get; set; }
     public long? UnitId { get; set; }
     public string? UnitName { get; set; }
@@ -177,6 +180,23 @@ public class PriceListDetailDto
 public class PriceListDetailsReplaceRequest
 {
     public List<CreatePriceListDetailRequest> Items { get; set; } = new();
+}
+
+/* ---------------- Price List Price Types (junction) ---------------- */
+
+public record CreatePriceListPriceTypeRequest(long PriceListId, long PriceTypeId);
+
+public record UpdatePriceListPriceTypeRequest(long PriceListId, long PriceTypeId, bool IsActive);
+
+public class PriceListPriceTypeDto
+{
+    public long PriceListPriceTypeId { get; set; }
+    public long PriceListId { get; set; }
+    public long PriceTypeId { get; set; }
+    public string? PriceTypeName { get; set; }
+    public string? PriceTypeCode { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
 
 /* ---------------- Discount Rules (company) ---------------- */

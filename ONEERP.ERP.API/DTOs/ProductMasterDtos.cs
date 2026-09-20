@@ -120,6 +120,7 @@ public record CreateProductRequest(
     long? BrandId = null,
     long UOMId = 0,
     long? BranchId = null,
+    long? WarehouseId = null,
     string? SKU = null,
     string? Barcode = null,
     decimal? MRP = null,
@@ -142,6 +143,7 @@ public record UpdateProductRequest(
     long? BrandId,
     long UOMId,
     long? BranchId,
+    long? WarehouseId,
     string? SKU,
     string? Barcode,
     decimal? MRP,
@@ -162,6 +164,7 @@ public class ProductDto
     public long? EntityId { get; set; }
     public long CompanyId { get; set; }
     public long? BranchId { get; set; }
+    public long? WarehouseId { get; set; }
 
     public string ProductCode { get; set; } = string.Empty;
     public string ProductName { get; set; } = string.Empty;
@@ -193,6 +196,7 @@ public class ProductDto
     public string? BrandName { get; set; }
     public string? UOMName { get; set; }
     public string? BranchName { get; set; }
+    public string? WarehouseName { get; set; }
     public string? HsnSacCode { get; set; }
 
     public DateTime CreatedAt { get; set; }

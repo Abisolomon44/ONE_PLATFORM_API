@@ -87,4 +87,13 @@ public class FinancialYearsController : BaseController
         await _service.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Financial year deleted successfully"));
     }
+
+    [HttpGet("next-code")]
+    [Permission(Permissions.FinancialYearsView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextFYCode([FromQuery] int companyId)
+    {
+        var code = await _service.GetNextFYCodeAsync(companyId);
+        return Ok(ApiResponse<string>.Ok(code));
+    }
 }

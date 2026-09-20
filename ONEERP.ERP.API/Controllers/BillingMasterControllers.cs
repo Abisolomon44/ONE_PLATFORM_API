@@ -541,6 +541,72 @@ public class PriceListsController : BaseController
 }
 
 [Authorize]
+[Route("api/price-lists/{priceListId:long}/price-types")]
+public class PriceListPriceTypesController : BaseController
+{
+    private readonly IPriceListPriceTypeService _service;
+    private readonly IValidator<CreatePriceListPriceTypeRequest> _createValidator;
+    private readonly IValidator<UpdatePriceListPriceTypeRequest> _updateValidator;
+    private readonly ICurrentUser _currentUser;
+
+    public PriceListPriceTypesController(
+        IPriceListPriceTypeService service,
+        IValidator<CreatePriceListPriceTypeRequest> createValidator,
+        IValidator<UpdatePriceListPriceTypeRequest> updateValidator,
+        ICurrentUser currentUser)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+        _currentUser = currentUser;
+    }
+
+    [HttpGet]
+    [Permission(Permissions.PriceListsView)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<PriceListPriceTypeDto>>), 200)]
+    public async Task<IActionResult> GetByPriceList(long priceListId)
+        => Ok(ApiResponse<IEnumerable<PriceListPriceTypeDto>>.Ok(await _service.GetByPriceListAsync(priceListId)));
+
+    [HttpPost]
+    [Permission(Permissions.PriceListsEdit)]
+    [ProducesResponseType(typeof(ApiResponse<PriceListPriceTypeDto>), 200)]
+    public async Task<IActionResult> Create(long priceListId, [FromBody] CreatePriceListPriceTypeRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request with { PriceListId = priceListId });
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<PriceListPriceTypeDto>.Fail("Validation failed", errors));
+        var result = await _service.CreateAsync(_currentUser.CompanyId, request with { PriceListId = priceListId });
+        return Ok(ApiResponse<PriceListPriceTypeDto>.Ok(result, "Price type assigned to price list"));
+    }
+
+    [HttpPut("{priceTypeId:long}")]
+    [Permission(Permissions.PriceListsEdit)]
+    [ProducesResponseType(typeof(ApiResponse<PriceListPriceTypeDto>), 200)]
+    public async Task<IActionResult> Update(long priceListId, long priceTypeId, [FromBody] UpdatePriceListPriceTypeRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<PriceListPriceTypeDto>.Fail("Validation failed", errors));
+        // Find the junction record ID
+        var items = await _service.GetByPriceListAsync(priceListId);
+        var entity = items.FirstOrDefault(x => x.PriceTypeId == priceTypeId);
+        if (entity == null)
+            return NotFound(ApiResponse<PriceListPriceTypeDto>.Fail("Price type not found on this price list"));
+        var result = await _service.UpdateAsync(entity.PriceListPriceTypeId, _currentUser.CompanyId, request);
+        return Ok(ApiResponse<PriceListPriceTypeDto>.Ok(result, "Price list price type updated"));
+    }
+
+    [HttpDelete("{priceTypeId:long}")]
+    [Permission(Permissions.PriceListsEdit)]
+    [ProducesResponseType(typeof(ApiResponse), 200)]
+    public async Task<IActionResult> Delete(long priceListId, long priceTypeId)
+    {
+        var result = await _service.DeleteAsync(priceListId, priceTypeId);
+        return Ok(ApiResponse.Ok(result ? "Price type removed from price list" : "Not found"));
+    }
+}
+
+[Authorize]
 [Route("api/price-list-details")]
 public class PriceListDetailsController : BaseController
 {

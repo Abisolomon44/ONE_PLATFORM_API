@@ -82,6 +82,7 @@ public class CreateHsnSacRequestValidator : AbstractValidator<CreateHsnSacReques
     public CreateHsnSacRequestValidator()
     {
         RuleFor(x => x.Code).MaximumLength(20);
+        RuleFor(x => x.GovernmentCode).MaximumLength(20);
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200).WithMessage("Name is required (max 200).");
         RuleFor(x => x.HsnSacType).NotEmpty().Must(x => x is "HSN" or "SAC").WithMessage("Type must be HSN or SAC.");
         RuleFor(x => x.Description).MaximumLength(500);
@@ -94,6 +95,7 @@ public class UpdateHsnSacRequestValidator : AbstractValidator<UpdateHsnSacReques
     public UpdateHsnSacRequestValidator()
     {
         RuleFor(x => x.Code).MaximumLength(20);
+        RuleFor(x => x.GovernmentCode).MaximumLength(20);
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200).WithMessage("Name is required (max 200).");
         RuleFor(x => x.HsnSacType).NotEmpty().Must(x => x is "HSN" or "SAC").WithMessage("Type must be HSN or SAC.");
         RuleFor(x => x.Description).MaximumLength(500);
@@ -213,6 +215,26 @@ public class PriceListDetailsReplaceRequestValidator : AbstractValidator<PriceLi
     {
         RuleFor(x => x.Items).NotNull().WithMessage("Details are required.");
         RuleForEach(x => x.Items).SetValidator(new CreatePriceListDetailRequestValidator());
+    }
+}
+
+/* ---------------- Price List Price Types (junction) ---------------- */
+
+public class CreatePriceListPriceTypeRequestValidator : AbstractValidator<CreatePriceListPriceTypeRequest>
+{
+    public CreatePriceListPriceTypeRequestValidator()
+    {
+        RuleFor(x => x.PriceListId).GreaterThan(0).WithMessage("Price list is required.");
+        RuleFor(x => x.PriceTypeId).GreaterThan(0).WithMessage("Price type is required.");
+    }
+}
+
+public class UpdatePriceListPriceTypeRequestValidator : AbstractValidator<UpdatePriceListPriceTypeRequest>
+{
+    public UpdatePriceListPriceTypeRequestValidator()
+    {
+        RuleFor(x => x.PriceListId).GreaterThan(0).WithMessage("Price list is required.");
+        RuleFor(x => x.PriceTypeId).GreaterThan(0).WithMessage("Price type is required.");
     }
 }
 

@@ -14,6 +14,7 @@ public interface IStoreService
     Task<StoreDto> CreateAsync(CreateStoreRequest request);
     Task<StoreDto> UpdateAsync(int id, UpdateStoreRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<string> GetNextStoreCodeAsync(int companyId, int? branchId);
 }
 
 public class StoreService : IStoreService
@@ -116,6 +117,11 @@ public class StoreService : IStoreService
         return true;
     }
 
+    public async Task<string> GetNextStoreCodeAsync(int companyId, int? branchId)
+    {
+        return await _repository.GetNextStoreCodeAsync(companyId, branchId);
+    }
+
     private static StoreDto ToDto(Store s) => new()
     {
         StoreId = s.StoreId, CompanyId = s.CompanyId, BranchId = s.BranchId, StoreCode = s.StoreCode,
@@ -134,6 +140,7 @@ public interface ICounterService
     Task<CounterDto> CreateAsync(CreateCounterRequest request);
     Task<CounterDto> UpdateAsync(int id, UpdateCounterRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<string> GetNextCounterCodeAsync(int storeId);
 }
 
 public class CounterService : ICounterService
@@ -228,6 +235,11 @@ public class CounterService : ICounterService
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("Counter", id.ToString(), "Delete", _currentUser.Username);
         return true;
+    }
+
+    public async Task<string> GetNextCounterCodeAsync(int storeId)
+    {
+        return await _repository.GetNextCounterCodeAsync(storeId);
     }
 
     private static CounterDto ToDto(Counter c) => new()

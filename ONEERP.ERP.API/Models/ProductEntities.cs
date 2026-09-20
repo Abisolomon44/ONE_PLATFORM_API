@@ -77,6 +77,7 @@ public class Product
     public long? EntityId { get; set; }
     public long CompanyId { get; set; }
     public long? BranchId { get; set; }
+    public long? WarehouseId { get; set; }
 
     public string ProductCode { get; set; } = string.Empty;
     public string ProductName { get; set; } = string.Empty;
@@ -102,6 +103,10 @@ public class Product
     public bool IsActive { get; set; } = true;
 
     public string? Description { get; set; }
+
+    // Enrichment properties (not mapped to DB)
+    public string? CategoryName { get; set; }
+    public string? UOMName { get; set; }
 
     public long? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

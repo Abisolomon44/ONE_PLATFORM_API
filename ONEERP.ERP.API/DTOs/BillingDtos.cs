@@ -335,6 +335,24 @@ public class DeleteCheckDto
     public int ReturnCount { get; set; }
 }
 
+/* ---------------- Price Master Products ---------------- */
+
+public class PriceMasterProductDto
+{
+    public long ProductId { get; set; }
+    public string ProductCode { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
+    public long? CategoryId { get; set; }
+    public string? CategoryName { get; set; }
+    public long UnitId { get; set; }
+    public string UnitName { get; set; } = string.Empty;
+    public decimal LatestPurchasePrice { get; set; }
+    public decimal CurrentStock { get; set; }
+    public bool IsActive { get; set; }
+    public long? BranchId { get; set; }
+    public long? WarehouseId { get; set; }
+}
+
 /* ---------------- Payment Allocation ---------------- */
 
 public class PaymentAllocationDto

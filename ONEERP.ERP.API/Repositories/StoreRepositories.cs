@@ -14,6 +14,7 @@ public interface IStoreRepository
     Task<int> InsertAsync(Store store, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Store store, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextStoreCodeAsync(int companyId, int? branchId);
 }
 
 public class StoreRepository : TenantRepositoryBase, IStoreRepository
@@ -134,6 +135,17 @@ public class StoreRepository : TenantRepositoryBase, IStoreRepository
             if (own) conn.Dispose();
         }
     }
+
+    public async Task<string> GetNextStoreCodeAsync(int companyId, int? branchId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(StoreCode, 5, 10) AS INT)), 0) + 1
+              FROM dbo.Stores
+              WHERE CompanyId = @companyId AND (@branchId IS NULL OR BranchId = @branchId) AND IsDeleted = 0 AND StoreCode LIKE 'STR-%'",
+            new { companyId, branchId });
+        return $"STR-{next:D3}";
+    }
 }
 
 public interface ICounterRepository
@@ -148,6 +160,7 @@ public interface ICounterRepository
     Task<int> InsertAsync(Counter counter, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Counter counter, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextCounterCodeAsync(int storeId);
 }
 
 public class CounterRepository : TenantRepositoryBase, ICounterRepository
@@ -277,6 +290,17 @@ public class CounterRepository : TenantRepositoryBase, ICounterRepository
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<string> GetNextCounterCodeAsync(int storeId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(CounterCode, 5, 10) AS INT)), 0) + 1
+              FROM dbo.Counters
+              WHERE StoreId = @storeId AND IsDeleted = 0 AND CounterCode LIKE 'CNT-%'",
+            new { storeId });
+        return $"CNT-{next:D3}";
     }
 }
 

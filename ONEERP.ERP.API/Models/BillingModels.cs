@@ -23,6 +23,13 @@ public class Stock
     public decimal AverageCost { get; set; }
     public decimal LastPurchaseRate { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    // Additional fields from JOIN queries (Price Master)
+    public string ProductCode { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
+    public long? CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
+    public string UnitName { get; set; } = string.Empty;
 }
 
 public class StockTransaction

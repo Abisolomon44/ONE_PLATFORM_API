@@ -13,6 +13,7 @@ using ONEERP.ERP.API.Services;
 using ONEERP.Shared.Constants;
 using ONEERP.Shared.Exceptions;
 using Serilog;
+using static ONEERP.ERP.API.Repositories.PriceListRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -208,6 +209,8 @@ builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IPriceListRepository, PriceListRepository>();
 builder.Services.AddScoped<IPriceListService, PriceListService>();
+builder.Services.AddScoped<IPriceListPriceTypeRepository, PriceListPriceTypeRepository>();
+builder.Services.AddScoped<IPriceListPriceTypeService, PriceListPriceTypeService>();
 builder.Services.AddScoped<IPriceListDetailRepository, PriceListDetailRepository>();
 builder.Services.AddScoped<IPriceListDetailService, PriceListDetailService>();
 builder.Services.AddScoped<IDiscountRuleRepository, DiscountRuleRepository>();

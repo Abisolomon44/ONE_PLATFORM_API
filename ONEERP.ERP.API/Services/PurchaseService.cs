@@ -207,18 +207,20 @@ public class PurchaseService : IPurchaseService
         if (hasPay && (paymentMethodID == null || paymentMethodID <= 0)
             && (payment?.PaymentMethodID == null || payment?.PaymentMethodID <= 0))
             throw new DomainException("Payment Method is required.");
-        // CASH only: paid amount must be > 0.
+        // CASH only: paid amount must be > 0. DB codes are PAYTYPE-001 etc, names are Cash/Credit.
         var paymentTypeCode = string.Empty;
+        var paymentTypeName = string.Empty;
         try
         {
             var pt = await _paymentTypeService.GetByIdAsync(paymentTypeID.Value);
             paymentTypeCode = (pt.Code ?? string.Empty).Trim().ToUpperInvariant();
+            paymentTypeName = (pt.Name ?? string.Empty).Trim().ToUpperInvariant();
         }
         catch (NotFoundException)
         {
             throw new DomainException("Payment Type is invalid.");
         }
-        if (paymentTypeCode == "CASH")
+        if (paymentTypeCode.Contains("CASH") || paymentTypeName.Contains("CASH"))
         {
             var effectivePaid = (payment != null && payment.Amount > 0) ? payment.Amount : paidAmount;
             if (!(effectivePaid > 0))

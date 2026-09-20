@@ -543,6 +543,16 @@ public interface IProductService
     Task<ProductDto> CreateAsync(long companyId, CreateProductRequest request);
     Task<ProductDto> UpdateAsync(long id, long companyId, UpdateProductRequest request);
     Task<bool> DeleteAsync(long id, long companyId);
+
+    // Price Master: Get direct products from Products table
+    Task<PaginatedResult<PriceMasterProductDto>> GetPriceMasterDirectProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int pageNumber = 1,
+        int pageSize = 500);
 }
 
 public class ProductService : IProductService
@@ -553,6 +563,7 @@ public class ProductService : IProductService
     private readonly IProductBrandRepository _brandRepository;
     private readonly IProductUnitRepository _unitRepository;
     private readonly IHsnSacRepository _hsnSacRepository;
+    private readonly IWarehouseRepository _warehouseRepository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
 
@@ -563,6 +574,7 @@ public class ProductService : IProductService
         IProductBrandRepository brandRepository,
         IProductUnitRepository unitRepository,
         IHsnSacRepository hsnSacRepository,
+        IWarehouseRepository warehouseRepository,
         IAuditService auditService,
         ICurrentUser currentUser)
     {
@@ -572,6 +584,7 @@ public class ProductService : IProductService
         _brandRepository = brandRepository;
         _unitRepository = unitRepository;
         _hsnSacRepository = hsnSacRepository;
+        _warehouseRepository = warehouseRepository;
         _auditService = auditService;
         _currentUser = currentUser;
     }
@@ -617,6 +630,7 @@ public class ProductService : IProductService
         {
             CompanyId = companyId,
             BranchId = request.BranchId,
+            WarehouseId = request.WarehouseId,
             ProductCode = code,
             ProductName = request.ProductName.Trim(),
             CategoryId = request.CategoryId,
@@ -659,6 +673,7 @@ public class ProductService : IProductService
             throw new DomainException($"Product code '{code}' is already in use.");
 
         entity.BranchId = request.BranchId;
+        entity.WarehouseId = request.WarehouseId;
         entity.ProductCode = code;
         entity.ProductName = request.ProductName.Trim();
         entity.CategoryId = request.CategoryId;
@@ -702,6 +717,7 @@ public class ProductService : IProductService
         EntityId = e.EntityId,
         CompanyId = e.CompanyId,
         BranchId = e.BranchId,
+        WarehouseId = e.WarehouseId,
         ProductCode = e.ProductCode,
         ProductName = e.ProductName,
         CategoryId = e.CategoryId,
@@ -724,19 +740,21 @@ public class ProductService : IProductService
         ModifiedAt = e.ModifiedAt
     };
 
-    private async Task EnrichAsync(long companyId, List<ProductDto> dtos)
+private async Task EnrichAsync(long companyId, List<ProductDto> dtos)
     {
         var catIds = dtos.Where(d => d.CategoryId.HasValue).Select(d => d.CategoryId!.Value).Distinct().ToList();
         var subIds = dtos.Where(d => d.SubCategoryId.HasValue).Select(d => d.SubCategoryId!.Value).Distinct().ToList();
         var brandIds = dtos.Where(d => d.BrandId.HasValue).Select(d => d.BrandId!.Value).Distinct().ToList();
         var uomIds = dtos.Where(d => d.UOMId > 0).Select(d => d.UOMId).Distinct().ToList();
         var hsnIds = dtos.Where(d => d.HsnSacId.HasValue).Select(d => d.HsnSacId!.Value).Distinct().ToList();
+        var warehouseIds = dtos.Where(d => d.WarehouseId.HasValue).Select(d => d.WarehouseId!.Value).Distinct().ToList();
 
         var catNames = catIds.Count > 0 ? await _categoryRepository.GetNamesAsync(companyId, catIds) : new Dictionary<long, string>();
         var subNames = subIds.Count > 0 ? await _subCategoryRepository.GetNamesAsync(companyId, subIds) : new Dictionary<long, string>();
         var brandNames = brandIds.Count > 0 ? await _brandRepository.GetNamesAsync(companyId, brandIds) : new Dictionary<long, string>();
         var uomNames = uomIds.Count > 0 ? await _unitRepository.GetNamesAsync(companyId, uomIds) : new Dictionary<long, string>();
         var hsnNames = hsnIds.Count > 0 ? await _hsnSacRepository.GetNamesAsync(companyId, hsnIds) : new Dictionary<long, string>();
+        var warehouseNames = warehouseIds.Count > 0 ? await _warehouseRepository.GetAllForCompanyAsync((int)companyId) : new List<Warehouse>();
 
         foreach (var d in dtos)
         {
@@ -745,6 +763,59 @@ public class ProductService : IProductService
             if (d.BrandId.HasValue && brandNames.TryGetValue(d.BrandId.Value, out var bn)) d.BrandName = bn;
             if (uomNames.TryGetValue(d.UOMId, out var un)) d.UOMName = un;
             if (d.HsnSacId.HasValue && hsnNames.TryGetValue(d.HsnSacId.Value, out var hn)) d.HsnSacCode = hn;
+            if (d.WarehouseId.HasValue)
+            {
+                var wh = warehouseNames.FirstOrDefault(w => w.Id == d.WarehouseId.Value);
+                if (wh != null) d.WarehouseName = wh.WarehouseName;
+            }
         }
     }
+
+    public async Task<PaginatedResult<PriceMasterProductDto>> GetPriceMasterDirectProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int pageNumber = 1,
+        int pageSize = 500)
+    {
+        var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
+        var normalizedSize = pageSize < 1 ? 10 : pageSize;
+
+        var (items, total) = await _repository.GetPriceMasterDirectProductsAsync(
+            companyId,
+            branchId,
+            warehouseId,
+            search,
+            categoryId,
+            normalizedPage,
+            normalizedSize);
+
+        var dtos = items.Select(ToPriceMasterDto).ToList();
+
+        return new PaginatedResult<PriceMasterProductDto>
+        {
+            Items = dtos,
+            TotalCount = total,
+            PageNumber = normalizedPage,
+            PageSize = normalizedSize
+        };
+    }
+
+    private static PriceMasterProductDto ToPriceMasterDto(Product e) => new()
+    {
+        ProductId = e.Id,
+        ProductCode = e.ProductCode,
+        ProductName = e.ProductName,
+        CategoryId = e.CategoryId,
+        CategoryName = e.CategoryName,
+        UnitId = e.UOMId,
+        UnitName = e.UOMName ?? string.Empty,
+        LatestPurchasePrice = e.PurchasePrice ?? 0m,
+        CurrentStock = 0, // Direct products don't have stock info
+        IsActive = e.IsActive,
+        BranchId = e.BranchId,
+        WarehouseId = null
+    };
 }

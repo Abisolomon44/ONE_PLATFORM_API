@@ -13,6 +13,7 @@ public interface IBranchService
     Task<BranchDto> CreateAsync(CreateBranchRequest request);
     Task<BranchDto> UpdateAsync(int id, UpdateBranchRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<string> GetNextBranchCodeAsync(int companyId);
 }
 
 public interface IDepartmentService
@@ -22,6 +23,7 @@ public interface IDepartmentService
     Task<DepartmentDto> CreateAsync(CreateDepartmentRequest request);
     Task<DepartmentDto> UpdateAsync(int id, UpdateDepartmentRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<string> GetNextDepartmentCodeAsync(int companyId, int branchId);
 }
 
 public interface IDesignationService
@@ -31,6 +33,7 @@ public interface IDesignationService
     Task<DesignationDto> CreateAsync(CreateDesignationRequest request);
     Task<DesignationDto> UpdateAsync(int id, UpdateDesignationRequest request);
     Task<bool> DeleteAsync(int id);
+    Task<string> GetNextDesignationCodeAsync(int companyId);
 }
 
 public interface IEmployeeService
@@ -215,6 +218,11 @@ public class BranchService : IBranchService
         return true;
     }
 
+    public async Task<string> GetNextBranchCodeAsync(int companyId)
+    {
+        return await _repository.GetNextBranchCodeAsync(companyId);
+    }
+
     private static BranchDto ToDto(Branch b) => new()
     {
         Id = b.Id, CompanyId = b.CompanyId, EntityId = b.EntityId, BranchCode = b.BranchCode, BranchName = b.BranchName,
@@ -341,6 +349,11 @@ public class DepartmentService : IDepartmentService
         return true;
     }
 
+    public async Task<string> GetNextDepartmentCodeAsync(int companyId, int branchId)
+    {
+        return await _repository.GetNextDepartmentCodeAsync(companyId, branchId);
+    }
+
     private static DepartmentDto ToDto(Department d) => new()
     {
         Id = d.Id, CompanyId = d.CompanyId, BranchId = d.BranchId, DepartmentCode = d.DepartmentCode,
@@ -461,6 +474,11 @@ public class DesignationService : IDesignationService
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("Designation", id.ToString(), "Delete", _currentUser.Username);
         return true;
+    }
+
+    public async Task<string> GetNextDesignationCodeAsync(int companyId)
+    {
+        return await _repository.GetNextDesignationCodeAsync(companyId);
     }
 
     private static DesignationDto ToDto(Designation d) => new()

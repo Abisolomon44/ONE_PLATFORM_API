@@ -87,6 +87,15 @@ public class StoresController : BaseController
         await _service.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Store deleted successfully"));
     }
+
+    [HttpGet("next-code")]
+    [Permission(Permissions.StoresView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextStoreCode([FromQuery] int companyId, [FromQuery] int? branchId)
+    {
+        var code = await _service.GetNextStoreCodeAsync(companyId, branchId);
+        return Ok(ApiResponse<string>.Ok(code));
+    }
 }
 
 [Authorize]
@@ -177,6 +186,15 @@ public class CountersController : BaseController
     {
         await _service.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Counter deleted successfully"));
+    }
+
+    [HttpGet("next-code")]
+    [Permission(Permissions.CountersView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextCounterCode([FromQuery] int storeId)
+    {
+        var code = await _service.GetNextCounterCodeAsync(storeId);
+        return Ok(ApiResponse<string>.Ok(code));
     }
 }
 

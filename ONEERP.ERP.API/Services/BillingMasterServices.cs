@@ -3,6 +3,7 @@ using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
 using ONEERP.Shared.Exceptions;
 using ONEERP.Shared.Models;
+using static ONEERP.ERP.API.Repositories.PriceListRepository;
 
 namespace ONEERP.ERP.API.Services;
 
@@ -499,10 +500,17 @@ public class HsnSacService : IHsnSacService
         if (await _repository.CodeInUseAsync(companyId, code))
             throw new DomainException($"HSN/SAC code '{code}' is already in use.");
 
+        var governmentCode = string.IsNullOrWhiteSpace(request.GovernmentCode)
+            ? code
+            : request.GovernmentCode.Trim().ToUpper();
+        if (await _repository.GovernmentCodeInUseAsync(companyId, governmentCode))
+            throw new DomainException($"Government code '{governmentCode}' is already in use.");
+
         var entity = new HsnSac
         {
             CompanyId = companyId,
             Code = code,
+            GovernmentCode = governmentCode,
             Name = request.Name.Trim(),
             HsnSacType = request.HsnSacType.ToUpper(),
             Description = request.Description?.Trim(),
@@ -528,7 +536,12 @@ public class HsnSacService : IHsnSacService
         if (code != entity.Code && await _repository.CodeInUseAsync(companyId, code, id))
             throw new DomainException($"HSN/SAC code '{code}' is already in use.");
 
+        var governmentCode = string.IsNullOrWhiteSpace(request.GovernmentCode) ? entity.GovernmentCode : request.GovernmentCode.Trim().ToUpper();
+        if (governmentCode != entity.GovernmentCode && await _repository.GovernmentCodeInUseAsync(companyId, governmentCode, id))
+            throw new DomainException($"Government code '{governmentCode}' is already in use.");
+
         entity.Code = code;
+        entity.GovernmentCode = governmentCode;
         entity.Name = request.Name.Trim();
         entity.HsnSacType = request.HsnSacType.ToUpper();
         entity.Description = request.Description?.Trim();
@@ -557,6 +570,7 @@ public class HsnSacService : IHsnSacService
         HsnSacId = e.HsnSacId,
         CompanyId = e.CompanyId,
         Code = e.Code,
+        GovernmentCode = e.GovernmentCode,
         Name = e.Name,
         HsnSacType = e.HsnSacType,
         Description = e.Description,
@@ -1055,6 +1069,111 @@ public class PriceListService : IPriceListService
     }
 }
 
+/* ---------------- Price List Price Types (junction) ---------------- */
+
+public interface IPriceListPriceTypeService
+{
+    Task<IEnumerable<PriceListPriceTypeDto>> GetByPriceListAsync(long priceListId);
+    Task<PriceListPriceTypeDto> CreateAsync(long companyId, CreatePriceListPriceTypeRequest request);
+    Task<PriceListPriceTypeDto> UpdateAsync(long id, long companyId, UpdatePriceListPriceTypeRequest request);
+    Task<bool> DeleteAsync(long priceListId, long priceTypeId);
+}
+
+public class PriceListPriceTypeService : IPriceListPriceTypeService
+{
+    private readonly IPriceListPriceTypeRepository _repository;
+    private readonly IPriceListRepository _priceListRepository;
+    private readonly IAuditService _auditService;
+    private readonly ICurrentUser _currentUser;
+
+    public PriceListPriceTypeService(IPriceListPriceTypeRepository repository, IPriceListRepository priceListRepository, IAuditService auditService, ICurrentUser currentUser)
+    {
+        _repository = repository;
+        _priceListRepository = priceListRepository;
+        _auditService = auditService;
+        _currentUser = currentUser;
+    }
+
+    public async Task<IEnumerable<PriceListPriceTypeDto>> GetByPriceListAsync(long priceListId)
+    {
+        var items = await _repository.GetByPriceListAsync(priceListId);
+        var dtos = items.Select(ToDto).ToList();
+        await EnrichAsync(_currentUser.CompanyId, dtos);
+        return dtos;
+    }
+
+    public async Task<PriceListPriceTypeDto> CreateAsync(long companyId, CreatePriceListPriceTypeRequest request)
+    {
+        var priceList = await _priceListRepository.GetByIdAsync(request.PriceListId);
+        if (priceList == null || priceList.CompanyId != companyId)
+            throw new UnauthorizedAccess("Price list not found or access denied.");
+
+        if (await _repository.ExistsAsync(request.PriceListId, request.PriceTypeId))
+            throw new DomainException("Price type already assigned to this price list.");
+
+        var entity = new PriceListPriceType
+        {
+            PriceListId = request.PriceListId,
+            PriceTypeId = request.PriceTypeId,
+            IsActive = true,
+            CreatedBy = _currentUser.UserId
+        };
+
+        entity.PriceListPriceTypeId = await _repository.InsertAsync(entity);
+        await _auditService.WriteAsync("PriceListPriceType", entity.PriceListPriceTypeId.ToString(), "Create", _currentUser.Username);
+        var dto = ToDto(entity);
+        await EnrichAsync(companyId, new List<PriceListPriceTypeDto> { dto });
+        return dto;
+    }
+
+    public async Task<PriceListPriceTypeDto> UpdateAsync(long id, long companyId, UpdatePriceListPriceTypeRequest request)
+    {
+        var entity = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Price list price type '{id}' was not found.");
+
+        var priceList = await _priceListRepository.GetByIdAsync(entity.PriceListId);
+        if (priceList?.CompanyId != companyId)
+            throw new UnauthorizedAccess("Access denied.");
+
+        entity.IsActive = request.IsActive;
+        entity.ModifiedBy = _currentUser.UserId;
+
+        await _repository.UpdateAsync(entity);
+        await _auditService.WriteAsync("PriceListPriceType", id.ToString(), "Update", _currentUser.Username);
+        var dto = ToDto(entity);
+        await EnrichAsync(companyId, new List<PriceListPriceTypeDto> { dto });
+        return dto;
+    }
+
+    public async Task<bool> DeleteAsync(long priceListId, long priceTypeId)
+    {
+        var priceList = await _priceListRepository.GetByIdAsync(priceListId);
+        if (priceList?.CompanyId != _currentUser.CompanyId)
+            throw new UnauthorizedAccess("Access denied.");
+
+        var result = await _repository.SoftDeleteAsync(priceListId, priceTypeId);
+        await _auditService.WriteAsync("PriceListPriceType", $"{priceListId}-{priceTypeId}", "Delete", _currentUser.Username);
+        return result;
+    }
+
+    private static PriceListPriceTypeDto ToDto(PriceListPriceType e) => new()
+    {
+        PriceListPriceTypeId = e.PriceListPriceTypeId,
+        PriceListId = e.PriceListId,
+        PriceTypeId = e.PriceTypeId,
+        IsActive = e.IsActive,
+        CreatedAt = e.CreatedAt
+    };
+
+    private async Task EnrichAsync(long companyId, List<PriceListPriceTypeDto> dtos)
+    {
+        var priceTypeIds = dtos.Select(d => d.PriceTypeId).Distinct().ToList();
+        var priceTypeNames = await _repository.GetPriceTypeNamesAsync(priceTypeIds);
+        foreach (var d in dtos)
+            if (priceTypeNames.TryGetValue(d.PriceTypeId, out var pn)) d.PriceTypeName = pn;
+    }
+}
+
 /* ---------------- Price List Details (child of PriceList) ---------------- */
 
 public interface IPriceListDetailService
@@ -1174,6 +1293,7 @@ public class PriceListDetailService : IPriceListDetailService
         {
             PriceListId = priceListId,
             ProductId = i.ProductId,
+            PriceTypeId = i.PriceTypeId,
             UnitId = i.UnitId,
             Price = i.Price,
             MinimumQuantity = i.MinimumQuantity,
@@ -1204,6 +1324,7 @@ public class PriceListDetailService : IPriceListDetailService
         PriceListDetailId = e.PriceListDetailId,
         PriceListId = e.PriceListId,
         ProductId = e.ProductId,
+        PriceTypeId = e.PriceTypeId,
         UnitId = e.UnitId,
         Price = e.Price,
         MinimumQuantity = e.MinimumQuantity,
@@ -1216,14 +1337,17 @@ public class PriceListDetailService : IPriceListDetailService
     {
         var productIds = dtos.Select(d => d.ProductId).Distinct().ToList();
         var unitIds = dtos.Where(d => d.UnitId.HasValue).Select(d => d.UnitId!.Value).Distinct().ToList();
+        var priceTypeIds = dtos.Select(d => d.PriceTypeId).Distinct().ToList();
 
         var productNames = await _detailRepository.GetProductNamesAsync(companyId, productIds);
         var unitNames = unitIds.Count > 0 ? await _detailRepository.GetUnitNamesAsync(companyId, unitIds) : new Dictionary<long, string>();
+        var priceTypeNames = priceTypeIds.Count > 0 ? await _detailRepository.GetPriceTypeNamesAsync(companyId, priceTypeIds) : new Dictionary<long, string>();
 
         foreach (var d in dtos)
         {
             if (productNames.TryGetValue(d.ProductId, out var pn)) d.ProductName = pn;
             if (d.UnitId.HasValue && unitNames.TryGetValue(d.UnitId.Value, out var un)) d.UnitName = un;
+            if (priceTypeNames.TryGetValue(d.PriceTypeId, out var ptn)) d.PriceTypeName = ptn;
         }
     }
 }

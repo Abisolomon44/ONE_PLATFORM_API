@@ -14,6 +14,7 @@ public interface IBranchRepository
     Task<int> InsertAsync(Branch branch, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Branch branch, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextBranchCodeAsync(int companyId);
 }
 
 public interface IDepartmentRepository
@@ -26,6 +27,7 @@ public interface IDepartmentRepository
     Task<int> InsertAsync(Department department, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Department department, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextDepartmentCodeAsync(int companyId, int branchId);
 }
 
 public interface IDesignationRepository
@@ -38,6 +40,7 @@ public interface IDesignationRepository
     Task<int> InsertAsync(Designation designation, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Designation designation, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextDesignationCodeAsync(int companyId);
 }
 
 public interface IEmployeeRepository
@@ -118,6 +121,17 @@ public class BranchRepository : TenantRepositoryBase, IBranchRepository
             WHERE CompanyId = @companyId AND IsDeleted = 0
               AND (@search = '' OR BranchName LIKE '%' + @search + '%' OR BranchCode LIKE '%' + @search + '%' OR ShortName LIKE '%' + @search + '%')",
             new { companyId, search });
+    }
+
+    public async Task<string> GetNextBranchCodeAsync(int companyId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(BranchCode, 4, 10) AS INT)), 0) + 1
+              FROM dbo.Branches
+              WHERE CompanyId = @companyId AND IsDeleted = 0 AND BranchCode LIKE 'BR-%'",
+            new { companyId });
+        return $"BR-{next:D3}";
     }
 
     public async Task<IEnumerable<Branch>> GetAllForCompanyAsync(int companyId)
@@ -293,6 +307,17 @@ public class DepartmentRepository : TenantRepositoryBase, IDepartmentRepository
             if (own) conn.Dispose();
         }
     }
+
+    public async Task<string> GetNextDepartmentCodeAsync(int companyId, int branchId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(DepartmentCode, 5, 10) AS INT)), 0) + 1
+              FROM dbo.Departments
+              WHERE CompanyId = @companyId AND BranchId = @branchId AND IsDeleted = 0 AND DepartmentCode LIKE 'DEP-%'",
+            new { companyId, branchId });
+        return $"DEP-{next:D3}";
+    }
 }
 
 public class DesignationRepository : TenantRepositoryBase, IDesignationRepository
@@ -400,6 +425,17 @@ public class DesignationRepository : TenantRepositoryBase, IDesignationRepositor
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<string> GetNextDesignationCodeAsync(int companyId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(DesignationCode, 5, 10) AS INT)), 0) + 1
+              FROM dbo.Designations
+              WHERE CompanyId = @companyId AND IsDeleted = 0 AND DesignationCode LIKE 'DES-%'",
+            new { companyId });
+        return $"DES-{next:D3}";
     }
 }
 

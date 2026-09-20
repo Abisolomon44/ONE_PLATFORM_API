@@ -10,6 +10,16 @@ public interface IStockService
 {
     Task<PaginatedResult<StockDto>> GetPagedAsync(long companyId, int page, int size, string search, long? warehouseId, long? productId);
     Task<PaginatedResult<StockTransactionDto>> GetTransactionsAsync(long companyId, int page, int size, long? productId, long? warehouseId);
+
+    // Price Master: Get purchase products from stock (joined with product details)
+    Task<PaginatedResult<PriceMasterProductDto>> GetPriceMasterPurchaseProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int page = 1,
+        int size = 500);
 }
 
 public class StockService : IStockService
@@ -46,7 +56,7 @@ public class StockService : IStockService
 
     public async Task<PaginatedResult<StockTransactionDto>> GetTransactionsAsync(long companyId, int page, int size, long? productId, long? warehouseId)
     {
-        var items = await _repo.GetTransactionsAsync(companyId, page, size, productId, warehouseId);
+        var (items, total) = await _repo.GetTransactionsAsync(companyId, page, size, productId, warehouseId);
         return new PaginatedResult<StockTransactionDto>
         {
             Items = items.Select(e => new StockTransactionDto
@@ -67,11 +77,59 @@ public class StockService : IStockService
                 TransactionDate = e.TransactionDate,
                 Remarks = e.Remarks,
             }).ToList(),
-            TotalCount = items.Count,
+            TotalCount = total,
             PageNumber = page,
             PageSize = size,
         };
     }
+
+    public async Task<PaginatedResult<PriceMasterProductDto>> GetPriceMasterPurchaseProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int page = 1,
+        int size = 500)
+    {
+        var normalizedPage = page < 1 ? 1 : page;
+        var normalizedSize = size < 1 ? 10 : size;
+
+        var (items, total) = await _repo.GetPriceMasterPurchaseProductsAsync(
+            companyId,
+            branchId,
+            warehouseId,
+            search,
+            categoryId,
+            normalizedPage,
+            normalizedSize);
+
+        var dtos = items.Select(ToPriceMasterDto).ToList();
+
+        return new PaginatedResult<PriceMasterProductDto>
+        {
+            Items = dtos,
+            TotalCount = total,
+            PageNumber = normalizedPage,
+            PageSize = normalizedSize
+        };
+    }
+
+    private static PriceMasterProductDto ToPriceMasterDto(Stock e) => new()
+    {
+        ProductId = e.ProductId,
+        ProductCode = e.ProductCode,
+        ProductName = e.ProductName,
+        CategoryId = e.CategoryId,
+        CategoryName = e.CategoryName,
+        UnitId = e.UnitId,
+        UnitName = e.UnitName,
+        LatestPurchasePrice = e.LastPurchaseRate,
+        CurrentStock = e.AvailableQuantity,
+        IsActive = true,
+        BranchId = e.BranchId,
+        WarehouseId = e.WarehouseId
+    };
 }
 
 public interface IPurchaseReturnService

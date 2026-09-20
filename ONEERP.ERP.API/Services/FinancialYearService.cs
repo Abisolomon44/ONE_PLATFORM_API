@@ -14,6 +14,7 @@ public interface IFinancialYearService
     Task<FinancialYearDto> CreateAsync(CreateFinancialYearRequest request);
     Task<FinancialYearDto> UpdateAsync(long id, UpdateFinancialYearRequest request);
     Task<bool> DeleteAsync(long id);
+    Task<string> GetNextFYCodeAsync(int companyId);
 }
 
 public class FinancialYearService : IFinancialYearService
@@ -114,6 +115,11 @@ public class FinancialYearService : IFinancialYearService
         await _repository.SoftDeleteAsync(id, _currentUser.UserId);
         await _auditService.WriteAsync("FinancialYear", id.ToString(), "Delete", _currentUser.Username);
         return true;
+    }
+
+    public async Task<string> GetNextFYCodeAsync(int companyId)
+    {
+        return await _repository.GetNextFYCodeAsync(companyId);
     }
 
     private static FinancialYearDto ToDto(FinancialYear f) => new()

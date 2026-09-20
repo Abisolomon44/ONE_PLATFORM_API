@@ -160,6 +160,15 @@ public class OrganizationController : BaseController
         return Ok(ApiResponse.Ok("Branch deleted successfully"));
     }
 
+    [HttpGet("branches/next-code")]
+    [Permission(Permissions.BranchesView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextBranchCode([FromQuery] int companyId)
+    {
+        var code = await _branchService.GetNextBranchCodeAsync(companyId);
+        return Ok(ApiResponse<string>.Ok(code));
+    }
+
     /* ==================== Departments ==================== */
 
     [HttpGet("departments")]
@@ -214,6 +223,15 @@ public class OrganizationController : BaseController
         return Ok(ApiResponse.Ok("Department deleted successfully"));
     }
 
+    [HttpGet("departments/next-code")]
+    [Permission(Permissions.DepartmentsView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextDepartmentCode([FromQuery] int companyId, [FromQuery] int branchId)
+    {
+        var code = await _departmentService.GetNextDepartmentCodeAsync(companyId, branchId);
+        return Ok(ApiResponse<string>.Ok(code));
+    }
+
     /* ==================== Designations ==================== */
 
     [HttpGet("designations")]
@@ -266,6 +284,15 @@ public class OrganizationController : BaseController
     {
         await _designationService.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Designation deleted successfully"));
+    }
+
+    [HttpGet("designations/next-code")]
+    [Permission(Permissions.DesignationsView)]
+    [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+    public async Task<IActionResult> GetNextDesignationCode([FromQuery] int companyId)
+    {
+        var code = await _designationService.GetNextDesignationCodeAsync(companyId);
+        return Ok(ApiResponse<string>.Ok(code));
     }
 
     /* ==================== Employees ==================== */

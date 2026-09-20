@@ -1,4 +1,5 @@
 using System.Data;
+using Dapper;
 using ONEERP.ERP.API.Models;
 
 namespace ONEERP.ERP.API.Repositories;
@@ -631,6 +632,16 @@ public interface IProductRepository
     Task<bool> UpdateAsync(Product entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(long id, long companyId, long modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<string> GetNextCodeAsync(long companyId, string prefix = "PRC");
+
+    // Price Master: Get direct products from Products table
+    Task<(IEnumerable<Product> Items, int TotalCount)> GetPriceMasterDirectProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int pageNumber,
+        int pageSize);
 }
 
 public class ProductRepository : TenantRepositoryBase, IProductRepository
@@ -687,12 +698,12 @@ public class ProductRepository : TenantRepositoryBase, IProductRepository
         {
             const string sql = @"
                 INSERT INTO dbo.Products (
-                    CompanyId, BranchId, ProductCode, ProductName, CategoryId, SubCategoryId, BrandId, UOMId,
+                    CompanyId, BranchId, WarehouseId, ProductCode, ProductName, CategoryId, SubCategoryId, BrandId, UOMId,
                     SKU, Barcode, MRP, PurchasePrice, SalesPrice, TaxId, HsnSacId,
                     IsStockItem, IsSaleable, IsPurchaseable, IsActive, Description,
                     CreatedBy, CreatedAt, ModifiedBy, ModifiedAt, EntityId)
                 VALUES (
-                    @CompanyId, @BranchId, @ProductCode, @ProductName, @CategoryId, @SubCategoryId, @BrandId, @UOMId,
+                    @CompanyId, @BranchId, @WarehouseId, @ProductCode, @ProductName, @CategoryId, @SubCategoryId, @BrandId, @UOMId,
                     @SKU, @Barcode, @MRP, @PurchasePrice, @SalesPrice, @TaxId, @HsnSacId,
                     @IsStockItem, @IsSaleable, @IsPurchaseable, @IsActive, @Description,
                     @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME(), @EntityId);
@@ -714,6 +725,7 @@ public class ProductRepository : TenantRepositoryBase, IProductRepository
             const string sql = @"
                 UPDATE dbo.Products
                 SET BranchId = @BranchId,
+                    WarehouseId = @WarehouseId,
                     ProductCode = @ProductCode,
                     ProductName = @ProductName,
                     CategoryId = @CategoryId,
@@ -767,5 +779,71 @@ public class ProductRepository : TenantRepositoryBase, IProductRepository
             "FROM dbo.Products WHERE CompanyId = @companyId AND ProductCode LIKE @prefix + '-%'",
             new { companyId, prefix });
         return $"{prefix}-{next:D3}";
+    }
+
+    public async Task<(IEnumerable<Product> Items, int TotalCount)> GetPriceMasterDirectProductsAsync(
+        long companyId,
+        long? branchId,
+        long? warehouseId,
+        string? search,
+        long? categoryId,
+        int pageNumber,
+        int pageSize)
+    {
+        using var connection = OpenTenant();
+        var offset = (pageNumber - 1) * pageSize;
+
+        var whereClause = new List<string> { "p.CompanyId = @companyId", "p.IsActive = 1" };
+        var parameters = new DynamicParameters();
+        parameters.Add("companyId", companyId);
+        parameters.Add("offset", (pageNumber - 1) * pageSize);
+        parameters.Add("pageSize", pageSize);
+
+        if (branchId.HasValue && branchId.Value > 0)
+        {
+            whereClause.Add("p.BranchId = @branchId");
+            parameters.Add("branchId", branchId.Value);
+        }
+        // No branch filter when not specified - allow all branches for the company
+
+        if (warehouseId.HasValue && warehouseId.Value > 0)
+        {
+            whereClause.Add("p.WarehouseId = @warehouseId");
+            parameters.Add("warehouseId", warehouseId.Value);
+        }
+
+        if (categoryId.HasValue && categoryId.Value > 0)
+        {
+            whereClause.Add("p.CategoryId = @categoryId");
+            parameters.Add("categoryId", categoryId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            whereClause.Add("(p.ProductName LIKE '%' + @search + '%' OR p.ProductCode LIKE '%' + @search + '%' OR p.SKU LIKE '%' + @search + '%' OR p.Barcode LIKE '%' + @search + '%')");
+            parameters.Add("search", search);
+        }
+
+        var whereSql = string.Join(" AND ", whereClause);
+
+        // Total count
+        var countSql = $@"SELECT COUNT(1) FROM dbo.Products p WHERE {whereSql}";
+        var total = await Sql.ExecuteScalarAsync<int>(connection, countSql, parameters);
+
+        // Paged items
+        var sql = $@"
+            SELECT p.*, u.UnitName as UOMName
+            FROM dbo.Products p
+            LEFT JOIN dbo.Units u ON p.UOMId = u.Id
+            WHERE {whereSql}
+            ORDER BY p.Id DESC
+            OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+
+        parameters.Add("offset", (pageNumber - 1) * pageSize);
+        parameters.Add("pageSize", pageSize);
+
+        var items = await Sql.QueryAsync<Product>(connection, sql, parameters);
+
+        return (items, total);
     }
 }

@@ -2455,14 +2455,41 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
-   Products
-   --------------------------------------------------------------------------- */
+    Entity - common identity (COMPANY, BRANCH, WAREHOUSE, STORE, PRODUCT,
+             SERVICE, EMPLOYEE, CUSTOMER, SUPPLIER ...)
+    MUST be created BEFORE Products, Companies, Branches, Warehouses, etc.
+    that reference it via FK_Products_Entity, FK_Companies_Entity, etc.
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Entity]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Entity (
+        EntityId   BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Entity PRIMARY KEY,
+        EntityType VARCHAR(30)            NOT NULL,
+        EntityCode VARCHAR(50)            NOT NULL,
+        EntityName VARCHAR(200)           NOT NULL,
+        IsActive   BIT                    NOT NULL CONSTRAINT DF_Entity_IsActive DEFAULT 1,
+        CreatedBy  BIGINT                 NULL,
+        CreatedAt  DATETIME               NOT NULL CONSTRAINT DF_Entity_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy BIGINT                 NULL,
+        ModifiedAt DATETIME               NULL,
+        CONSTRAINT UQ_Entity_Type_Code UNIQUE (EntityType, EntityCode)
+    );
+
+    CREATE INDEX IX_Entity_EntityType ON dbo.Entity (EntityType);
+    CREATE INDEX IX_Entity_IsActive ON dbo.Entity (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+    Products
+    --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND type = N'U')
 BEGIN
     CREATE TABLE dbo.Products (
         Id BIGINT IDENTITY(1,1) CONSTRAINT PK_Products PRIMARY KEY,
         CompanyId BIGINT NOT NULL,
         BranchId BIGINT NULL,
+        WarehouseId BIGINT NULL,
         ProductCode VARCHAR(30) NOT NULL,
         ProductName VARCHAR(200) NOT NULL,
         CategoryId BIGINT NULL,
@@ -2481,11 +2508,36 @@ BEGIN
         IsPurchaseable BIT NOT NULL DEFAULT 1,
         IsActive BIT NOT NULL DEFAULT 1,
         Description VARCHAR(500) NULL,
+        EntityId BIGINT NULL,
         CreatedBy BIGINT NULL,
         CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
         ModifiedBy BIGINT NULL,
         ModifiedAt DATETIME NULL
     );
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'WarehouseId')
+BEGIN
+    ALTER TABLE dbo.Products ADD WarehouseId BIGINT NULL;
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'HsnSacId')
+BEGIN
+    ALTER TABLE dbo.Products ADD HsnSacId BIGINT NULL;
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = N'EntityId')
+BEGIN
+    ALTER TABLE dbo.Products ADD EntityId BIGINT NULL;
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Products_Entity')
+BEGIN
+    ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
 END
 ;
 
@@ -2663,43 +2715,26 @@ END
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND type = N'U')
 BEGIN
     CREATE TABLE dbo.HsnSacs (
-        HsnSacId    BIGINT IDENTITY(1,1) CONSTRAINT PK_HsnSacs PRIMARY KEY,
-        CompanyId   BIGINT       NOT NULL,
-        Code        VARCHAR(20)  NOT NULL,
-        [Name]      VARCHAR(200) NOT NULL,
-        HsnSacType  VARCHAR(10)  NOT NULL,
-        Description VARCHAR(500) NULL,
-        TaxId       BIGINT       NULL,
-        IsActive    BIT          NOT NULL CONSTRAINT DF_HsnSacs_IsActive DEFAULT 1,
-        CreatedBy   BIGINT       NULL,
-        CreatedAt   DATETIME     NOT NULL CONSTRAINT DF_HsnSacs_CreatedAt DEFAULT GETDATE(),
-        ModifiedBy  BIGINT       NULL,
-        ModifiedAt  DATETIME     NULL,
+        HsnSacId       BIGINT IDENTITY(1,1) CONSTRAINT PK_HsnSacs PRIMARY KEY,
+        CompanyId      BIGINT       NOT NULL,
+        Code           VARCHAR(20)  NOT NULL,
+        GovernmentCode VARCHAR(20)  NOT NULL,
+        [Name]         VARCHAR(200) NOT NULL,
+        HsnSacType     VARCHAR(10)  NOT NULL,
+        Description    VARCHAR(500) NULL,
+        TaxId          BIGINT       NULL,
+        IsActive       BIT          NOT NULL CONSTRAINT DF_HsnSacs_IsActive DEFAULT 1,
+        CreatedBy      BIGINT       NULL,
+        CreatedAt      DATETIME     NOT NULL CONSTRAINT DF_HsnSacs_CreatedAt DEFAULT GETDATE(),
+        ModifiedBy     BIGINT       NULL,
+        ModifiedAt     DATETIME     NULL,
         CONSTRAINT UQ_HsnSacs_Company_Code UNIQUE (CompanyId, Code),
+        CONSTRAINT UQ_HsnSacs_Company_GovtCode UNIQUE (CompanyId, GovernmentCode),
         CONSTRAINT CK_HsnSacs_Type CHECK (HsnSacType IN ('HSN', 'SAC')),
         CONSTRAINT FK_HsnSacs_Tax FOREIGN KEY (TaxId) REFERENCES dbo.Taxes (Id)
     );
 
     CREATE INDEX IX_HsnSacs_Company ON dbo.HsnSacs (CompanyId);
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND name = 'TaxId')
-BEGIN
-    ALTER TABLE dbo.HsnSacs ADD TaxId BIGINT NULL;
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[HsnSacs]') AND name = 'TaxId')
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_HsnSacs_Tax')
-        ALTER TABLE dbo.HsnSacs ADD CONSTRAINT FK_HsnSacs_Tax FOREIGN KEY (TaxId) REFERENCES dbo.Taxes (Id);
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Products_HsnSac')
-BEGIN
-    ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_HsnSac FOREIGN KEY (HsnSacId) REFERENCES dbo.HsnSacs (HsnSacId);
 END
 ;
 
@@ -2794,6 +2829,29 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
+   PriceListPriceTypes (junction: many-to-many PriceList <-> PriceType).
+   Allows a single PriceList to be associated with multiple PriceTypes.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PriceListPriceTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PriceListPriceTypes (
+        PriceListPriceTypeId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PriceListPriceTypes PRIMARY KEY CLUSTERED,
+        PriceListId BIGINT NOT NULL,
+        PriceTypeId BIGINT NOT NULL,
+        IsActive BIT NOT NULL CONSTRAINT DF_PriceListPriceTypes_IsActive DEFAULT (1),
+        CreatedBy BIGINT NULL,
+        CreatedAt DATETIME NOT NULL CONSTRAINT DF_PriceListPriceTypes_CreatedAt DEFAULT (GETDATE()),
+        CONSTRAINT FK_PriceListPriceTypes_PriceList FOREIGN KEY (PriceListId) REFERENCES dbo.PriceLists (PriceListId),
+        CONSTRAINT FK_PriceListPriceTypes_PriceType FOREIGN KEY (PriceTypeId) REFERENCES dbo.PriceTypes (PriceTypeId),
+        CONSTRAINT UQ_PriceListPriceTypes UNIQUE (PriceListId, PriceTypeId)
+    );
+
+    CREATE INDEX IX_PriceListPriceTypes_PriceList ON dbo.PriceListPriceTypes (PriceListId);
+    CREATE INDEX IX_PriceListPriceTypes_PriceType ON dbo.PriceListPriceTypes (PriceTypeId);
+END
+;
+
+/* ---------------------------------------------------------------------------
    PriceListDetails (child of PriceList).
    --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PriceListDetails]') AND type = N'U')
@@ -2822,6 +2880,74 @@ BEGIN
 
     CREATE INDEX IX_PriceListDetails_PriceList ON dbo.PriceListDetails (PriceListId);
     CREATE INDEX IX_PriceListDetails_Product ON dbo.PriceListDetails (ProductId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   PriceListDetails - Migration 007: Add PriceTypeId for multi-price-type support
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PriceListDetails') AND name = 'PriceTypeId')
+BEGIN
+    ALTER TABLE dbo.PriceListDetails 
+    ADD PriceTypeId BIGINT NULL;
+END
+;
+
+-- Backfill from parent PriceList (existing single price type per list)
+UPDATE d
+SET d.PriceTypeId = p.PriceTypeId
+FROM dbo.PriceListDetails d
+JOIN dbo.PriceLists p ON d.PriceListId = p.PriceListId
+WHERE d.PriceTypeId IS NULL
+  AND p.PriceTypeId IS NOT NULL
+;
+
+-- Make NOT NULL
+IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PriceListDetails') AND name = 'PriceTypeId' AND is_nullable = 1)
+BEGIN
+    ALTER TABLE dbo.PriceListDetails ALTER COLUMN PriceTypeId BIGINT NOT NULL;
+END
+;
+
+-- Add FK to PriceTypes
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_PriceListDetails_PriceType')
+BEGIN
+    ALTER TABLE dbo.PriceListDetails
+    ADD CONSTRAINT FK_PriceListDetails_PriceType 
+    FOREIGN KEY (PriceTypeId) REFERENCES dbo.PriceTypes (PriceTypeId);
+END
+;
+
+-- Update unique constraint for multi-price-type support
+-- Drop old unique constraint
+IF EXISTS (SELECT 1 FROM sys.key_constraints WHERE name = 'UQ_PriceListDetails_Product')
+BEGIN
+    ALTER TABLE dbo.PriceListDetails
+    DROP CONSTRAINT UQ_PriceListDetails_Product;
+END
+;
+
+-- Add new unique constraint including PriceTypeId
+IF NOT EXISTS (SELECT 1 FROM sys.key_constraints WHERE name = 'UQ_PriceListDetails_Product')
+BEGIN
+    ALTER TABLE dbo.PriceListDetails
+    ADD CONSTRAINT UQ_PriceListDetails_Product 
+    UNIQUE (PriceListId, ProductId, UnitId, PriceTypeId);
+END
+;
+
+-- Add index for PriceTypeId lookups
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PriceListDetails_PriceType' AND object_id = OBJECT_ID(N'dbo.PriceListDetails'))
+BEGIN
+    CREATE INDEX IX_PriceListDetails_PriceType 
+    ON dbo.PriceListDetails (PriceTypeId);
+END
+;
+
+-- Optional: Add PriceTypeId index on PriceLists for backward compat queries
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PriceLists_PriceType' AND object_id = OBJECT_ID(N'dbo.PriceLists'))
+BEGIN
+    CREATE INDEX IX_PriceLists_PriceType ON dbo.PriceLists (PriceTypeId);
 END
 ;
 
@@ -3181,8 +3307,70 @@ WHERE NOT EXISTS (SELECT 1 FROM dbo.PaymentMethod p WHERE p.Code = k.Code);
 ;
 
 /* ---------------------------------------------------------------------------
+   PaymentMethodDetails (child master of PaymentMethod)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PaymentMethodDetails]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.PaymentMethodDetails (
+        PaymentMethodDetailId BIGINT IDENTITY(1,1)
+            CONSTRAINT PK_PaymentMethodDetails PRIMARY KEY,
+
+        PaymentMethodId BIGINT NOT NULL,
+
+        Code            NVARCHAR(50)  NOT NULL,
+        [Name]          NVARCHAR(100) NOT NULL,
+        DisplayName     NVARCHAR(150) NULL,
+
+        UPIId           NVARCHAR(150) NULL,
+
+        BankName        NVARCHAR(150) NULL,
+        AccountNumber   NVARCHAR(100) NULL,
+        IFSCCode        NVARCHAR(20)  NULL,
+
+        TerminalName    NVARCHAR(100) NULL,
+
+        CashCounterName NVARCHAR(100) NULL,
+
+        ReferenceValue  NVARCHAR(200) NULL,
+
+        IsDefault       BIT           NOT NULL CONSTRAINT DF_PaymentMethodDetails_IsDefault DEFAULT 0,
+        DisplayOrder    INT           NOT NULL CONSTRAINT DF_PaymentMethodDetails_DisplayOrder DEFAULT 0,
+        IsActive        BIT           NOT NULL CONSTRAINT DF_PaymentMethodDetails_IsActive DEFAULT 1,
+
+        CreatedByUserId BIGINT        NOT NULL,
+        CreatedAt       DATETIME2     NOT NULL CONSTRAINT DF_PaymentMethodDetails_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserId BIGINT        NULL,
+        UpdatedAt       DATETIME2     NULL,
+
+        CONSTRAINT FK_PaymentMethodDetails_PaymentMethod
+            FOREIGN KEY (PaymentMethodId) REFERENCES dbo.PaymentMethod(PaymentMethodId),
+
+        CONSTRAINT UQ_PaymentMethodDetails_Code UNIQUE (PaymentMethodId, Code)
+    );
+
+    CREATE INDEX IX_PaymentMethodDetails_PaymentMethodId ON dbo.PaymentMethodDetails (PaymentMethodId);
+    CREATE INDEX IX_PaymentMethodDetails_IsActive ON dbo.PaymentMethodDetails (IsActive);
+    CREATE INDEX IX_PaymentMethodDetails_IsDefault ON dbo.PaymentMethodDetails (PaymentMethodId, IsDefault) WHERE IsDefault = 1;
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Permission codes for PaymentMethodDetails screen
+--------------------------------------------------------------------------- */
+INSERT INTO dbo.RolePermissionsLegacy (RoleId, PermissionCode, CreatedBy)
+SELECT r.RoleId, v.code, 'system'
+FROM dbo.Roles r
+CROSS JOIN (VALUES
+    ('payment-method-details.view'),
+    ('payment-method-details.manage')
+) AS v(code)
+WHERE r.Code IN ('SuperAdmin', 'Administrator')
+  AND NOT EXISTS (SELECT 1 FROM dbo.RolePermissionsLegacy rp WHERE rp.RoleId = r.RoleId AND rp.PermissionCode = v.code);
+;
+
+/* ---------------------------------------------------------------------------
    Payment
-   --------------------------------------------------------------------------- */
+--------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Payment]') AND type = N'U')
 BEGIN
     CREATE TABLE dbo.Payment (
@@ -3850,9 +4038,10 @@ FROM (VALUES
     ('SERVICE-CATEGORIES',  'Service Categories',   'MASTER', '/service-categories',  'ServiceCategoryPage',   5, 1, 'system'),
     ('SERVICES',            'Services',             'MASTER', '/services',            'ServicePage',           6, 1, 'system'),
     ('PRICE-LISTS',         'Price Lists',          'MASTER', '/price-lists',         'PriceListPage',         7, 1, 'system'),
-    ('DISCOUNT-RULES',      'Discount Rules',       'MASTER', '/discount-rules',      'DiscountRulePage',      8, 1, 'system'),
-    ('OFFERS',              'Offers',               'MASTER', '/offers',              'OfferPage',             9, 1, 'system'),
-    ('COUPONS',             'Coupons',              'MASTER', '/coupons',             'CouponPage',           10, 1, 'system')
+    ('PRICE-MASTER',        'Price Master',         'MASTER', '/price-master',        'PriceMasterPage',       8, 1, 'system'),
+    ('DISCOUNT-RULES',      'Discount Rules',       'MASTER', '/discount-rules',      'DiscountRulePage',      9, 1, 'system'),
+    ('OFFERS',              'Offers',               'MASTER', '/offers',              'OfferPage',            10, 1, 'system'),
+    ('COUPONS',             'Coupons',              'MASTER', '/coupons',             'CouponPage',           11, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-BILLSETUP'
 WHERE NOT EXISTS (
@@ -3944,10 +4133,9 @@ INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteU
 SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
 FROM (VALUES
     ('PURCHASE_ENTRY',       'Purchase Entry',   'ENTRY',       '/purchase-entry',         'PurchaseEntryPage',    1, 1, 'system'),
-    ('PURCHASE_LIST',        'Purchases',        'LIST',        '/purchase?tab=list',      'PurchaseListPage',     2, 1, 'system'),
-    ('PURCHASE_STOCK',       'Stock',            'LIST',        '/purchase?tab=stock',     'StockPage',            3, 1, 'system'),
-    ('PURCHASE_RETURNS',     'Purchase Returns', 'TRANSACTION', '/purchase?tab=returns',   'PurchaseReturnPage',   4, 1, 'system'),
-    ('PURCHASE_REPORTS',     'Purchase Reports', 'REPORT',      '/reports',                'ReportsWorkspace',     5, 1, 'system')
+    ('PURCHASE_RETURNS',     'Purchase Returns', 'TRANSACTION', '/purchase-returns',       'PurchaseReturnPage',   2, 1, 'system'),
+    ('PURCHASE_RETURN_ENTRY','Purchase Return Entry', 'ENTRY',  '/purchase-returns/new',   'PurchaseReturnEntryPage', 3, 1, 'system'),
+    ('PURCHASE_REPORTS',     'Purchase Reports', 'REPORT',      '/reports',                'ReportsWorkspace',     4, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PURCHASETXN'
 WHERE NOT EXISTS (
@@ -4586,6 +4774,7 @@ INNER JOIN (VALUES
     ('StoreManager',   'PURCHASE_LIST',       'view'),
     ('StoreManager',   'PURCHASE_STOCK',      'view'),
     ('StoreManager',   'PURCHASE_RETURNS',    'view'),
+    ('StoreManager',   'PURCHASE_RETURN_ENTRY', 'view'),
     ('StoreManager',   'REPORTS_HOME',        'view'),
     ('StoreManager',   'MASTER_IMPORT',       'view'),
     ('StoreManager',   'IMPORT-LOGS',         'view'),
@@ -4605,6 +4794,7 @@ INNER JOIN (VALUES
     ('PurchaseAdmin',  'PURCHASE_LIST',       NULL),
     ('PurchaseAdmin',  'PURCHASE_STOCK',      'view'),
     ('PurchaseAdmin',  'PURCHASE_RETURNS',    NULL),
+    ('PurchaseAdmin',  'PURCHASE_RETURN_ENTRY', NULL),
     ('PurchaseAdmin',  'PURCHASE_REPORTS',    NULL),
     ('PurchaseAdmin',  'PRODUCTS',            'view'),
     ('PurchaseAdmin',  'PRODUCT-CATEGORIES',  'view'),
@@ -4701,7 +4891,8 @@ INNER JOIN (VALUES
     ('PURCHASE_ENTRY',          'purchases'),
     ('PURCHASE_LIST',           'purchases'),
     ('PURCHASE_STOCK',          'purchases'),
-    ('PURCHASE_RETURNS',        'purchases.return'),
+    ('PURCHASE_RETURNS',        'purchases-return'),
+    ('PURCHASE_RETURN_ENTRY',   'purchases-return'),
     ('PURCHASE_REPORTS',        'reports'),
     ('STOCK_HOME',              'stock'),
     ('PAYMENT_HOME',            'payments'),

@@ -14,6 +14,7 @@ public interface IFinancialYearRepository
     Task<long> InsertAsync(FinancialYear fy, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(FinancialYear fy, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(long id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<string> GetNextFYCodeAsync(int companyId);
 }
 
 public class FinancialYearRepository : TenantRepositoryBase, IFinancialYearRepository
@@ -129,5 +130,16 @@ public class FinancialYearRepository : TenantRepositoryBase, IFinancialYearRepos
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<string> GetNextFYCodeAsync(int companyId)
+    {
+        using var connection = OpenTenant();
+        var next = await Sql.QuerySingleOrDefaultAsync<int?>(connection,
+            @"SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(Code, 4, 10) AS INT)), 0) + 1
+              FROM dbo.FinancialYear
+              WHERE CompanyId = @companyId AND Code LIKE 'FY-%'",
+            new { companyId });
+        return $"FY-{next:D3}";
     }
 }

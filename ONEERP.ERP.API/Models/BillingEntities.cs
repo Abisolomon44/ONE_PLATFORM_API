@@ -57,6 +57,7 @@ public class HsnSac
     public long HsnSacId { get; set; }
     public long CompanyId { get; set; }
     public string Code { get; set; } = string.Empty;
+    public string GovernmentCode { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string HsnSacType { get; set; } = string.Empty;
     public string? Description { get; set; }
@@ -126,12 +127,26 @@ public class PriceList
     public DateTime? ModifiedAt { get; set; }
 }
 
+/// <summary>Junction: PriceList <-> PriceType (many-to-many).</summary>
+public class PriceListPriceType
+{
+    public long PriceListPriceTypeId { get; set; }
+    public long PriceListId { get; set; }
+    public long PriceTypeId { get; set; }
+    public bool IsActive { get; set; } = true;
+    public long? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+}
+
 /// <summary>Price list line item (child of PriceList).</summary>
 public class PriceListDetail
 {
     public long PriceListDetailId { get; set; }
     public long PriceListId { get; set; }
     public long ProductId { get; set; }
+    public long PriceTypeId { get; set; }
     public long? UnitId { get; set; }
     public decimal Price { get; set; }
     public decimal MinimumQuantity { get; set; } = 1;
