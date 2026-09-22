@@ -1,0 +1,429 @@
+2026-09-08 14:42:12.574 +05:30 [INF] ONE ERP Platform API starting
+2026-09-08 14:42:16.197 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 4.4337 ms
+2026-09-08 14:42:16.185 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 213.2393 ms
+2026-09-08 14:42:16.512 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 118.0852 ms
+2026-09-08 14:42:36.092 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 18.0584 ms
+2026-09-08 14:42:36.236 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4432 ms
+2026-09-08 14:42:42.174 +05:30 [INF] HTTP GET /api/plans responded 401 in 4023.7931 ms
+2026-09-08 14:42:42.175 +05:30 [INF] HTTP GET /api/tenants responded 401 in 3279.6322 ms
+2026-09-08 14:42:42.942 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1580 ms
+2026-09-08 14:42:43.016 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1513 ms
+2026-09-08 14:42:49.975 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 6910.0800 ms
+2026-09-08 14:42:49.990 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 6925.0801 ms
+2026-09-08 14:42:50.633 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1637 ms
+2026-09-08 14:42:51.735 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 7.0570 ms
+2026-09-08 14:42:52.616 +05:30 [INF] HTTP GET /api/plans responded 200 in 284.1306 ms
+2026-09-08 14:42:52.617 +05:30 [INF] HTTP GET /api/tenants responded 200 in 869.8871 ms
+2026-09-08 14:42:56.750 +05:30 [INF] HTTP OPTIONS /api/tenants/59 responded 204 in 0.1081 ms
+2026-09-08 14:43:00.911 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 14:43:01.185 +05:30 [INF] HTTP DELETE /api/tenants/59 responded 200 in 4318.6503 ms
+2026-09-08 14:43:01.295 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1276 ms
+2026-09-08 14:43:01.411 +05:30 [INF] HTTP GET /api/tenants responded 200 in 95.4752 ms
+2026-09-08 20:40:15.871 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 2.1235 ms
+2026-09-08 20:40:15.904 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 17.4035 ms
+2026-09-08 20:40:15.950 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.3533 ms
+2026-09-08 20:40:16.036 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 70.1308 ms
+2026-09-08 20:40:16.303 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 256.3831 ms
+2026-09-08 20:40:17.477 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1203 ms
+2026-09-08 20:40:17.485 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1058 ms
+2026-09-08 20:40:17.559 +05:30 [INF] HTTP GET /api/plans responded 200 in 65.8945 ms
+2026-09-08 20:40:17.582 +05:30 [INF] HTTP GET /api/tenants responded 200 in 81.4865 ms
+2026-09-08 21:06:27.486 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 36.6860 ms
+2026-09-08 21:06:27.500 +05:30 [INF] HTTP POST /api/tenants responded 401 in 1.8980 ms
+2026-09-08 21:06:27.511 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1238 ms
+2026-09-08 21:06:27.756 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 237.7418 ms
+2026-09-08 21:06:29.719 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 21:06:34.649 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 21:06:34.714 +05:30 [INF] HTTP POST /api/tenants responded 200 in 6944.4595 ms
+2026-09-08 21:06:34.726 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1957 ms
+2026-09-08 21:06:34.822 +05:30 [INF] HTTP GET /api/tenants responded 200 in 80.8080 ms
+2026-09-08 21:31:47.196 +05:30 [INF] HTTP OPTIONS /api/tenants/60 responded 204 in 0.9007 ms
+2026-09-08 21:31:47.222 +05:30 [INF] HTTP DELETE /api/tenants/60 responded 401 in 4.2048 ms
+2026-09-08 21:31:47.239 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0828 ms
+2026-09-08 21:31:47.385 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 132.4201 ms
+2026-09-08 21:31:50.634 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 21:31:50.659 +05:30 [INF] HTTP DELETE /api/tenants/60 responded 200 in 3264.5315 ms
+2026-09-08 21:31:50.670 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0647 ms
+2026-09-08 21:31:50.742 +05:30 [INF] HTTP GET /api/tenants responded 200 in 61.2106 ms
+2026-09-08 21:32:22.863 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1373 ms
+2026-09-08 21:32:23.878 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 21:32:28.120 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 21:32:28.153 +05:30 [INF] HTTP POST /api/tenants responded 200 in 5276.5264 ms
+2026-09-08 21:32:28.166 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1235 ms
+2026-09-08 21:32:28.241 +05:30 [INF] HTTP GET /api/tenants responded 200 in 63.8494 ms
+2026-09-08 21:33:09.075 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2395 ms
+2026-09-08 21:33:09.120 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4115 ms
+2026-09-08 21:33:09.395 +05:30 [INF] HTTP GET /api/plans responded 200 in 237.5207 ms
+2026-09-08 21:33:09.410 +05:30 [INF] HTTP GET /api/tenants responded 200 in 202.4742 ms
+2026-09-08 21:34:03.540 +05:30 [INF] ONE ERP Platform API starting
+2026-09-08 21:34:04.828 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 62.3629 ms
+2026-09-08 21:34:07.835 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 191.6692 ms
+2026-09-08 21:34:07.937 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.0675 ms
+2026-09-08 21:34:08.562 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 89.5558 ms
+2026-09-08 21:34:12.695 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 7792.0984 ms
+2026-09-08 21:34:12.792 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 1.3034 ms
+2026-09-08 21:34:13.339 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 519.3502 ms
+2026-09-08 21:34:16.060 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.2025 ms
+2026-09-08 21:34:16.078 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1490 ms
+2026-09-08 21:34:16.301 +05:30 [INF] HTTP GET /api/plans responded 200 in 211.4323 ms
+2026-09-08 21:34:16.312 +05:30 [INF] HTTP GET /api/tenants responded 200 in 202.1263 ms
+2026-09-08 21:34:19.078 +05:30 [INF] HTTP OPTIONS /api/tenants/61 responded 204 in 0.1811 ms
+2026-09-08 21:34:19.432 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 21:34:19.459 +05:30 [INF] HTTP DELETE /api/tenants/61 responded 200 in 370.3143 ms
+2026-09-08 21:34:19.515 +05:30 [INF] HTTP GET /api/tenants responded 200 in 44.3129 ms
+2026-09-08 21:34:43.878 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1173 ms
+2026-09-08 21:34:45.356 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 21:34:50.802 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 21:34:50.872 +05:30 [INF] HTTP POST /api/tenants responded 200 in 6968.3827 ms
+2026-09-08 21:34:51.030 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1186 ms
+2026-09-08 21:34:51.113 +05:30 [INF] HTTP GET /api/tenants responded 200 in 68.7252 ms
+2026-09-08 21:41:31.096 +05:30 [INF] HTTP OPTIONS /api/tenants/62 responded 204 in 0.1513 ms
+2026-09-08 21:41:34.426 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 21:41:34.474 +05:30 [INF] HTTP DELETE /api/tenants/62 responded 200 in 3368.0671 ms
+2026-09-08 21:41:34.504 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1247 ms
+2026-09-08 21:41:34.639 +05:30 [INF] HTTP GET /api/tenants responded 200 in 83.1245 ms
+2026-09-08 21:42:04.134 +05:30 [INF] ONE ERP Platform API starting
+2026-09-08 21:42:06.520 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 288.3650 ms
+2026-09-08 21:42:06.535 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.5731 ms
+2026-09-08 21:42:07.032 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 162.1401 ms
+2026-09-08 21:42:09.959 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 14.1334 ms
+2026-09-08 21:42:09.985 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.6613 ms
+2026-09-08 21:42:16.437 +05:30 [INF] HTTP GET /api/tenants responded 200 in 6407.6579 ms
+2026-09-08 21:42:16.437 +05:30 [INF] HTTP GET /api/plans responded 200 in 6409.7374 ms
+2026-09-08 21:43:52.843 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3074 ms
+2026-09-08 21:43:55.254 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 21:44:07.349 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 21:44:07.694 +05:30 [INF] HTTP POST /api/tenants responded 200 in 14838.6881 ms
+2026-09-08 21:44:07.741 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2802 ms
+2026-09-08 21:44:08.078 +05:30 [INF] HTTP GET /api/tenants responded 200 in 199.1528 ms
+2026-09-08 21:44:28.422 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.6278 ms
+2026-09-08 21:44:28.725 +05:30 [INF] HTTP GET /api/plans responded 200 in 65.1183 ms
+2026-09-08 21:44:31.223 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1299 ms
+2026-09-08 21:44:31.238 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1125 ms
+2026-09-08 21:44:31.283 +05:30 [INF] HTTP GET /api/plans responded 200 in 52.9972 ms
+2026-09-08 21:44:31.517 +05:30 [INF] HTTP GET /api/tenants responded 200 in 220.8035 ms
+2026-09-08 21:44:31.571 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 215.1127 ms
+2026-09-08 21:44:37.758 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1767 ms
+2026-09-08 21:44:37.812 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 45.3107 ms
+2026-09-08 21:44:38.139 +05:30 [INF] HTTP OPTIONS /api/subscriptions/29 responded 204 in 0.1073 ms
+2026-09-08 21:44:38.288 +05:30 [INF] HTTP PUT /api/subscriptions/29 responded 200 in 128.7349 ms
+2026-09-08 21:44:38.392 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 89.0843 ms
+2026-09-08 21:44:41.500 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.3159 ms
+2026-09-08 21:44:42.123 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 490.7657 ms
+2026-09-08 21:44:45.711 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3679 ms
+2026-09-08 21:44:46.009 +05:30 [INF] HTTP GET /api/plans responded 200 in 122.8862 ms
+2026-09-08 21:44:46.547 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1056 ms
+2026-09-08 21:44:46.697 +05:30 [INF] HTTP GET /api/plans responded 200 in 156.0120 ms
+2026-09-08 21:44:46.751 +05:30 [INF] HTTP GET /api/tenants responded 200 in 80.7715 ms
+2026-09-08 22:05:26.177 +05:30 [INF] ONE ERP Platform API starting
+2026-09-08 22:05:30.680 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 315.2305 ms
+2026-09-08 22:05:31.046 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.2014 ms
+2026-09-08 22:05:32.677 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 135.3394 ms
+2026-09-08 22:06:13.236 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.6854 ms
+2026-09-08 22:06:13.237 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 9.1038 ms
+2026-09-08 22:06:13.876 +05:30 [INF] HTTP GET /api/plans responded 401 in 519.2639 ms
+2026-09-08 22:06:13.878 +05:30 [INF] HTTP GET /api/tenants responded 401 in 556.4019 ms
+2026-09-08 22:06:13.963 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1917 ms
+2026-09-08 22:06:13.968 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1644 ms
+2026-09-08 22:06:16.760 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2730.5022 ms
+2026-09-08 22:06:16.760 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2778.2804 ms
+2026-09-08 22:06:17.359 +05:30 [INF] HTTP GET /api/plans responded 200 in 458.0370 ms
+2026-09-08 22:06:17.360 +05:30 [INF] HTTP GET /api/tenants responded 200 in 493.6422 ms
+2026-09-08 22:06:19.946 +05:30 [INF] HTTP OPTIONS /api/tenants/63 responded 204 in 0.4035 ms
+2026-09-08 22:06:23.299 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 22:06:23.409 +05:30 [INF] HTTP DELETE /api/tenants/63 responded 200 in 3440.2751 ms
+2026-09-08 22:06:23.437 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1092 ms
+2026-09-08 22:06:23.546 +05:30 [INF] HTTP GET /api/tenants responded 200 in 75.1958 ms
+2026-09-08 22:06:51.140 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1107 ms
+2026-09-08 22:06:53.375 +05:30 [INF] Created tenant database SMARTBILL
+2026-09-08 22:06:59.624 +05:30 [INF] Provisioned tenant schema and seed data for SMARTBILL
+2026-09-08 22:06:59.704 +05:30 [INF] HTTP POST /api/tenants responded 200 in 8458.5883 ms
+2026-09-08 22:06:59.713 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0868 ms
+2026-09-08 22:06:59.764 +05:30 [INF] HTTP GET /api/tenants responded 200 in 40.7698 ms
+2026-09-08 22:25:50.680 +05:30 [INF] ONE ERP Platform API starting
+2026-09-08 22:25:53.095 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 167.2370 ms
+2026-09-08 22:25:53.214 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 70.9879 ms
+2026-09-08 22:25:53.802 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 134.6297 ms
+2026-09-08 22:25:59.248 +05:30 [INF] HTTP OPTIONS /api/tenants/64 responded 204 in 9.5978 ms
+2026-09-08 22:25:59.603 +05:30 [INF] HTTP DELETE /api/tenants/64 responded 401 in 330.3385 ms
+2026-09-08 22:25:59.628 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2216 ms
+2026-09-08 22:26:01.186 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1545.2719 ms
+2026-09-08 22:26:04.606 +05:30 [WRN] Dropped tenant database SMARTBILL (cleanup after failed provisioning)
+2026-09-08 22:26:04.681 +05:30 [INF] HTTP DELETE /api/tenants/64 responded 200 in 3482.7975 ms
+2026-09-08 22:26:04.698 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1661 ms
+2026-09-08 22:26:04.874 +05:30 [INF] HTTP GET /api/tenants responded 200 in 165.8520 ms
+2026-09-08 22:26:26.838 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3364 ms
+2026-09-08 22:26:28.699 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 22:26:34.801 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 22:26:34.981 +05:30 [INF] HTTP POST /api/tenants responded 200 in 8128.3734 ms
+2026-09-08 22:26:34.997 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1154 ms
+2026-09-08 22:26:35.135 +05:30 [INF] HTTP GET /api/tenants responded 200 in 126.5198 ms
+2026-09-08 22:30:54.292 +05:30 [INF] HTTP OPTIONS /api/tenants/65/status responded 204 in 0.1248 ms
+2026-09-08 22:30:54.363 +05:30 [INF] HTTP PUT /api/tenants/65/status responded 200 in 59.6214 ms
+2026-09-08 22:30:54.379 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1924 ms
+2026-09-08 22:30:54.433 +05:30 [INF] HTTP GET /api/tenants responded 200 in 41.3107 ms
+2026-09-08 22:30:56.276 +05:30 [INF] HTTP OPTIONS /api/tenants/65 responded 204 in 0.1047 ms
+2026-09-08 22:30:59.413 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 22:30:59.440 +05:30 [INF] HTTP DELETE /api/tenants/65 responded 200 in 3154.8246 ms
+2026-09-08 22:30:59.454 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0987 ms
+2026-09-08 22:30:59.520 +05:30 [INF] HTTP GET /api/tenants responded 200 in 57.4375 ms
+2026-09-08 22:31:36.190 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 30.0393 ms
+2026-09-08 22:31:37.172 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 22:31:40.476 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 22:31:40.506 +05:30 [INF] HTTP POST /api/tenants responded 200 in 4304.7328 ms
+2026-09-08 22:31:40.517 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3615 ms
+2026-09-08 22:31:40.562 +05:30 [INF] HTTP GET /api/tenants responded 200 in 36.2359 ms
+2026-09-08 22:57:40.810 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 23.7465 ms
+2026-09-08 22:57:41.117 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 34.4742 ms
+2026-09-08 22:57:41.225 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1216 ms
+2026-09-08 22:57:42.329 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.4330 ms
+2026-09-08 22:57:42.506 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2267 ms
+2026-09-08 22:57:42.728 +05:30 [INF] HTTP GET /api/plans responded 401 in 1.7376 ms
+2026-09-08 22:57:43.132 +05:30 [INF] HTTP GET /api/tenants responded 401 in 62.5110 ms
+2026-09-08 22:57:47.184 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 5932.7494 ms
+2026-09-08 22:58:20.984 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1167 ms
+2026-09-08 22:58:18.479 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 1.4983 ms
+2026-09-08 22:58:18.476 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 35345.4506 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:29.789 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 1.6120 ms
+2026-09-08 22:58:29.866 +05:30 [INF] HTTP GET /api/plans responded 401 in 3.9157 ms
+2026-09-08 22:58:29.861 +05:30 [INF] HTTP GET /api/tenants responded 401 in 4.9279 ms
+2026-09-08 22:58:32.255 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.1200 ms
+2026-09-08 22:58:32.489 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 4.3103 ms
+2026-09-08 22:58:32.213 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:58:18.476 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1213 ms
+2026-09-08 22:58:21.078 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1126 ms
+2026-09-08 22:58:32.715 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1801 ms
+2026-09-08 22:58:32.834 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0970 ms
+2026-09-08 22:58:32.672 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 2.9436 ms
+2026-09-08 22:58:32.981 +05:30 [INF] HTTP GET /api/plans responded 401 in 11.2393 ms
+2026-09-08 22:58:32.951 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0886 ms
+2026-09-08 22:58:36.363 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 3139.5823 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:38.279 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 1944.2514 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:40.150 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 1807.9674 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:40.905 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:58:43.042 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:58:44.512 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:58:32.890 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 4.4826 ms
+2026-09-08 22:58:33.148 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 2.2446 ms
+2026-09-08 22:58:29.764 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 46287.9224 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:29.755 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.2017 ms
+2026-09-08 22:58:45.212 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 577.4550 ms
+Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Unexpected end of request content.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ContentLengthMessageBody.ReadAsyncInternal(CancellationToken cancellationToken)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpRequestStream.ReadAsyncInternal(Memory`1 destination, CancellationToken cancellationToken)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at System.Text.Json.Serialization.ReadBufferState.ReadFromStreamAsync(Stream utf8Json, CancellationToken cancellationToken, Boolean fillBuffer)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsync(Stream utf8Json, CancellationToken cancellationToken)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsObjectAsync(Stream utf8Json, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder.BindModelAsync(ModelBindingContext bindingContext)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.ParameterBinder.BindModelAsync(ActionContext actionContext, IModelBinder modelBinder, IValueProvider valueProvider, ParameterDescriptor parameter, ModelMetadata metadata, Object value, Object container)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerBinderDelegateProvider.<>c__DisplayClass0_0.<<CreateBinderDelegate>g__Bind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:44.668 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1410 ms
+2026-09-08 22:58:46.069 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:58:47.092 +05:30 [ERR] Unhandled exception for POST /api/auth/refresh
+Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Unexpected end of request content.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1ContentLengthMessageBody.ReadAsyncInternal(CancellationToken cancellationToken)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpRequestStream.ReadAsyncInternal(Memory`1 destination, CancellationToken cancellationToken)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at System.Text.Json.Serialization.ReadBufferState.ReadFromStreamAsync(Stream utf8Json, CancellationToken cancellationToken, Boolean fillBuffer)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsync(Stream utf8Json, CancellationToken cancellationToken)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsObjectAsync(Stream utf8Json, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonInputFormatter.ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder.BindModelAsync(ModelBindingContext bindingContext)
+   at Microsoft.AspNetCore.Mvc.ModelBinding.ParameterBinder.BindModelAsync(ActionContext actionContext, IModelBinder modelBinder, IValueProvider valueProvider, ParameterDescriptor parameter, ModelMetadata metadata, Object value, Object container)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerBinderDelegateProvider.<>c__DisplayClass0_0.<<CreateBinderDelegate>g__Bind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+2026-09-08 22:58:46.342 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0947 ms
+2026-09-08 22:58:47.246 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 1.9078 ms
+2026-09-08 22:58:46.386 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0677 ms
+2026-09-08 22:58:47.666 +05:30 [INF] HTTP GET /api/plans responded 401 in 7.0763 ms
+2026-09-08 22:58:47.693 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1265 ms
+2026-09-08 22:58:47.736 +05:30 [INF] HTTP GET /api/tenants responded 401 in 4.6097 ms
+2026-09-08 22:58:47.762 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2308 ms
+2026-09-08 22:58:50.773 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 2994.9056 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:58:58.966 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 8257.8126 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:59:00.695 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 1510.5488 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-08 22:59:01.440 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:59:03.156 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:59:03.894 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-08 22:59:40.853 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0856 ms
+2026-09-08 22:59:41.617 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 718.5248 ms
+2026-09-08 22:59:41.725 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0704 ms
+2026-09-08 22:59:42.586 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 771.1734 ms
+2026-09-08 22:59:44.566 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0712 ms
+2026-09-08 22:59:44.596 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0697 ms
+2026-09-08 22:59:44.902 +05:30 [INF] HTTP GET /api/tenants responded 200 in 196.7985 ms
+2026-09-08 22:59:45.023 +05:30 [INF] HTTP GET /api/plans responded 200 in 351.3606 ms
+2026-09-08 22:59:46.918 +05:30 [INF] HTTP OPTIONS /api/tenants/66 responded 204 in 0.2860 ms
+2026-09-08 22:59:47.658 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-08 22:59:47.714 +05:30 [INF] HTTP DELETE /api/tenants/66 responded 200 in 729.7975 ms
+2026-09-08 22:59:47.825 +05:30 [INF] HTTP GET /api/tenants responded 200 in 77.7101 ms
+2026-09-08 23:00:58.082 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4620 ms
+2026-09-08 23:00:59.315 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-08 23:01:04.579 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-08 23:01:04.616 +05:30 [INF] HTTP POST /api/tenants responded 200 in 6520.7784 ms
+2026-09-08 23:01:04.623 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0957 ms
+2026-09-08 23:01:04.686 +05:30 [INF] HTTP GET /api/tenants responded 200 in 53.2294 ms
+2026-09-08 23:06:25.193 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.1045 ms
+2026-09-08 23:06:25.284 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 72.6230 ms

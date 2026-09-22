@@ -1,0 +1,230 @@
+2026-09-13 00:53:53.039 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 7.4757 ms
+2026-09-13 00:53:53.142 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 16.6329 ms
+2026-09-13 00:53:53.157 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1474 ms
+2026-09-13 00:53:53.451 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 287.5438 ms
+2026-09-13 00:53:53.758 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 292.6641 ms
+2026-09-13 00:53:56.404 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.6814 ms
+2026-09-13 00:53:56.413 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2499 ms
+2026-09-13 00:53:56.490 +05:30 [INF] HTTP GET /api/plans responded 200 in 30.0079 ms
+2026-09-13 00:53:56.520 +05:30 [INF] HTTP GET /api/tenants responded 200 in 48.1163 ms
+2026-09-13 00:54:07.651 +05:30 [INF] HTTP OPTIONS /api/tenants/72 responded 204 in 0.7659 ms
+2026-09-13 00:54:10.844 +05:30 [WRN] Dropped tenant database ABC (cleanup after failed provisioning)
+2026-09-13 00:54:10.879 +05:30 [INF] HTTP DELETE /api/tenants/72 responded 200 in 3219.4082 ms
+2026-09-13 00:54:10.896 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2063 ms
+2026-09-13 00:54:10.911 +05:30 [INF] HTTP GET /api/tenants responded 200 in 6.1790 ms
+2026-09-13 00:55:00.725 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3620 ms
+2026-09-13 00:55:01.469 +05:30 [INF] Created tenant database TEST
+2026-09-13 00:55:04.621 +05:30 [INF] Provisioned tenant schema and seed data for TEST
+2026-09-13 00:55:04.643 +05:30 [INF] HTTP POST /api/tenants responded 200 in 3899.9662 ms
+2026-09-13 00:55:04.654 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1278 ms
+2026-09-13 00:55:04.700 +05:30 [INF] HTTP GET /api/tenants responded 200 in 40.4065 ms
+2026-09-13 09:27:01.739 +05:30 [INF] ONE ERP Platform API starting
+2026-09-13 09:27:04.860 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 221.4373 ms
+2026-09-13 09:27:04.927 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 9.4815 ms
+2026-09-13 09:27:07.475 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 100.3832 ms
+2026-09-13 09:27:14.570 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.9107 ms
+2026-09-13 09:27:14.570 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 7.9267 ms
+2026-09-13 09:27:15.028 +05:30 [INF] HTTP GET /api/tenants responded 401 in 431.3195 ms
+2026-09-13 09:27:15.028 +05:30 [INF] HTTP GET /api/plans responded 401 in 391.1504 ms
+2026-09-13 09:27:15.052 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1612 ms
+2026-09-13 09:27:15.056 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2493 ms
+2026-09-13 09:27:17.272 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2136.8797 ms
+2026-09-13 09:27:17.272 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2203.3497 ms
+2026-09-13 09:34:54.300 +05:30 [ERR] HTTP GET /api/tenants responded 500 in 458073.1348 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryAsync[T](IDbConnection cnn, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 434
+   at ONEERP.Platform.API.Repositories.TenantRepository.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 69
+   at ONEERP.Platform.API.Services.TenantService.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 64
+   at ONEERP.Platform.API.Controllers.TenantsController.GetPaged(Int32 page, Int32 size, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 34
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:aa62f0bc-1a55-4266-b056-98be844d7351
+Error Number:-2,State:0,Class:11
+2026-09-13 09:35:05.267 +05:30 [ERR] HTTP GET /api/plans responded 500 in 469051.9727 ms
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteReaderAsync>b__201_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteScalarImplAsync[T](IDbConnection cnn, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 1241
+   at ONEERP.Platform.API.Repositories.PlanRepository.CountAsync(String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Repositories\PlanRepository.cs:line 54
+   at ONEERP.Platform.API.Services.PlanService.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlanService.cs:line 38
+   at ONEERP.Platform.API.Controllers.PlansController.GetPaged(Int32 page, Int32 size, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\PlansController.cs:line 34
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+ClientConnectionId:20a9b85e-710b-4735-b56e-2fb2a32e0f3b
+Error Number:-2,State:0,Class:11
+2026-09-13 09:35:06.061 +05:30 [ERR] Unhandled exception for GET /api/tenants
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryAsync[T](IDbConnection cnn, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 434
+   at ONEERP.Platform.API.Repositories.TenantRepository.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Repositories\TenantRepository.cs:line 69
+   at ONEERP.Platform.API.Services.TenantService.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 64
+   at ONEERP.Platform.API.Controllers.TenantsController.GetPaged(Int32 page, Int32 size, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 34
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:aa62f0bc-1a55-4266-b056-98be844d7351
+Error Number:-2,State:0,Class:11
+2026-09-13 09:35:06.555 +05:30 [ERR] Unhandled exception for GET /api/plans
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteReaderAsync>b__201_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteScalarImplAsync[T](IDbConnection cnn, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 1241
+   at ONEERP.Platform.API.Repositories.PlanRepository.CountAsync(String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Repositories\PlanRepository.cs:line 54
+   at ONEERP.Platform.API.Services.PlanService.GetPagedAsync(Int32 pageNumber, Int32 pageSize, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlanService.cs:line 38
+   at ONEERP.Platform.API.Controllers.PlansController.GetPaged(Int32 page, Int32 size, String search) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\PlansController.cs:line 34
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at ONEERP.Platform.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Middleware\GlobalExceptionMiddleware.cs:line 26
+ClientConnectionId:20a9b85e-710b-4735-b56e-2fb2a32e0f3b
+Error Number:-2,State:0,Class:11
+2026-09-13 09:37:58.983 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1612 ms
+2026-09-13 09:37:58.987 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.8377 ms
+2026-09-13 09:37:59.629 +05:30 [INF] HTTP GET /api/plans responded 200 in 414.4856 ms
+2026-09-13 09:37:59.660 +05:30 [INF] HTTP GET /api/tenants responded 200 in 361.0858 ms
+2026-09-13 09:38:12.535 +05:30 [INF] HTTP OPTIONS /api/tenants/73 responded 204 in 0.1075 ms
+2026-09-13 09:38:12.903 +05:30 [WRN] Dropped tenant database TEST (cleanup after failed provisioning)
+2026-09-13 09:38:12.969 +05:30 [INF] HTTP DELETE /api/tenants/73 responded 200 in 405.7057 ms
+2026-09-13 09:38:12.984 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1199 ms
+2026-09-13 09:38:13.037 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.5130 ms
+2026-09-13 09:39:34.883 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2491 ms
+2026-09-13 09:39:36.444 +05:30 [INF] Created tenant database TEST_COMPANY
+2026-09-13 09:39:40.734 +05:30 [INF] Provisioned tenant schema and seed data for TEST_COMPANY
+2026-09-13 09:39:40.769 +05:30 [INF] HTTP POST /api/tenants responded 200 in 5832.2205 ms
+2026-09-13 09:39:40.779 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0974 ms
+2026-09-13 09:39:40.829 +05:30 [INF] HTTP GET /api/tenants responded 200 in 43.2249 ms
+2026-09-13 10:09:51.262 +05:30 [INF] ONE ERP Platform API starting
+2026-09-13 10:09:56.129 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 332.1167 ms
+2026-09-13 10:09:56.202 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 20.0826 ms
+2026-09-13 10:09:57.784 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 198.0396 ms
+2026-09-13 18:12:29.481 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 38.1301 ms
+2026-09-13 18:12:30.053 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 535.1137 ms
+2026-09-13 18:12:30.107 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.6119 ms
+2026-09-13 18:12:31.187 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1692 ms
+2026-09-13 18:12:31.200 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2539 ms
+2026-09-13 18:12:31.275 +05:30 [INF] HTTP GET /api/plans responded 401 in 8.3647 ms
+2026-09-13 18:12:31.282 +05:30 [INF] HTTP GET /api/tenants responded 401 in 5.3162 ms
+2026-09-13 18:12:31.912 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1736.3898 ms
+2026-09-13 18:12:31.912 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 604.2944 ms
+2026-09-13 18:12:31.912 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 612.6744 ms
+2026-09-13 18:12:32.139 +05:30 [INF] HTTP GET /api/plans responded 200 in 185.9652 ms
+2026-09-13 18:12:32.159 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 229.9617 ms
+2026-09-13 18:12:32.166 +05:30 [INF] HTTP GET /api/tenants responded 200 in 228.3871 ms
+2026-09-13 18:13:10.952 +05:30 [INF] HTTP OPTIONS /api/tenants/74 responded 204 in 0.2365 ms
+2026-09-13 18:13:14.499 +05:30 [WRN] Dropped tenant database TEST_COMPANY (cleanup after failed provisioning)
+2026-09-13 18:13:14.561 +05:30 [INF] HTTP DELETE /api/tenants/74 responded 200 in 3536.9060 ms
+2026-09-13 18:13:14.572 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1010 ms
+2026-09-13 18:13:14.637 +05:30 [INF] HTTP GET /api/tenants responded 200 in 53.6073 ms
+2026-09-13 18:14:19.314 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3463 ms
+2026-09-13 18:14:20.813 +05:30 [INF] Created tenant database TEST
+2026-09-13 18:14:26.364 +05:30 [INF] Provisioned tenant schema and seed data for TEST
+2026-09-13 18:14:26.409 +05:30 [INF] HTTP POST /api/tenants responded 200 in 7078.0496 ms
+2026-09-13 18:14:26.424 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1297 ms
+2026-09-13 18:14:26.506 +05:30 [INF] HTTP GET /api/tenants responded 200 in 70.0561 ms
+2026-09-13 18:52:34.674 +05:30 [INF] ONE ERP Platform API starting
+2026-09-13 18:52:38.880 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 345.3708 ms
+2026-09-13 18:52:38.924 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 22.4123 ms
+2026-09-13 18:52:39.513 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 136.3050 ms
+2026-09-13 18:53:07.673 +05:30 [INF] HTTP OPTIONS /api/tenants/75 responded 204 in 8.4721 ms
+2026-09-13 18:53:08.671 +05:30 [INF] HTTP DELETE /api/tenants/75 responded 401 in 790.1969 ms
+2026-09-13 18:53:09.212 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1737 ms
+2026-09-13 18:53:12.023 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2797.4416 ms
+2026-09-13 18:53:13.004 +05:30 [WRN] Dropped tenant database TEST (cleanup after failed provisioning)
+2026-09-13 18:53:13.518 +05:30 [INF] HTTP DELETE /api/tenants/75 responded 200 in 1358.5830 ms
+2026-09-13 18:53:13.767 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1391 ms
+2026-09-13 18:53:13.960 +05:30 [INF] HTTP GET /api/tenants responded 200 in 142.8004 ms
+2026-09-13 18:54:03.314 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1280 ms
+2026-09-13 18:54:06.165 +05:30 [INF] Created tenant database TEST
+2026-09-13 18:54:15.796 +05:30 [INF] Provisioned tenant schema and seed data for TEST
+2026-09-13 18:54:15.933 +05:30 [INF] HTTP POST /api/tenants responded 200 in 12295.7064 ms
+2026-09-13 18:54:15.980 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1773 ms
+2026-09-13 18:54:16.202 +05:30 [INF] HTTP GET /api/tenants responded 200 in 49.6736 ms
+2026-09-13 20:08:35.186 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3609 ms
+2026-09-13 20:08:35.224 +05:30 [INF] HTTP GET /api/plans responded 401 in 8.1469 ms
+2026-09-13 20:08:35.245 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1195 ms
+2026-09-13 20:08:35.264 +05:30 [INF] HTTP GET /api/tenants responded 401 in 1.5296 ms
+2026-09-13 20:08:35.407 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2010 ms
+2026-09-13 20:08:35.513 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 76.1263 ms
+2026-09-13 20:08:35.520 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 104.8341 ms
+2026-09-13 20:08:36.463 +05:30 [INF] HTTP GET /api/tenants responded 200 in 232.2354 ms
+2026-09-13 20:08:36.610 +05:30 [INF] HTTP GET /api/plans responded 200 in 390.0002 ms
+2026-09-13 20:08:38.278 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.6883 ms
+2026-09-13 20:08:38.322 +05:30 [INF] HTTP GET /api/tenants responded 200 in 62.5680 ms
+2026-09-13 21:03:13.141 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 6.7417 ms
+2026-09-13 21:03:13.141 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.7417 ms
+2026-09-13 21:03:13.179 +05:30 [INF] HTTP GET /api/tenants responded 401 in 8.7094 ms
+2026-09-13 21:03:13.179 +05:30 [INF] HTTP GET /api/plans responded 401 in 13.5891 ms
+2026-09-13 21:03:13.195 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.4047 ms
+2026-09-13 21:03:13.197 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1451 ms
+2026-09-13 21:03:13.401 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 197.5529 ms
+2026-09-13 21:03:13.401 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 195.2351 ms
+2026-09-13 21:03:13.452 +05:30 [INF] HTTP GET /api/plans responded 200 in 24.8285 ms
+2026-09-13 21:03:13.470 +05:30 [INF] HTTP GET /api/tenants responded 200 in 46.3544 ms

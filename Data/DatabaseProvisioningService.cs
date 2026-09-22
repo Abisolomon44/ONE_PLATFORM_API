@@ -36,8 +36,7 @@ public interface IDatabaseProvisioningService
 
 public class DatabaseProvisioningService : IDatabaseProvisioningService
 {
-    private const string SchemaResource = "ONEERP.Platform.API.SqlScripts.erp_schema.sql";
-    private const string SeedResource = "ONEERP.Platform.API.SqlScripts.erp_seed.sql";
+    private const string ProvisionResource = "ONEERP.Platform.API.SqlScripts.erp_full.sql";
 
     private static readonly Regex DatabaseNameRegex = new(@"^[A-Za-z0-9_]{1,128}$", RegexOptions.Compiled);
 
@@ -75,12 +74,10 @@ public class DatabaseProvisioningService : IDatabaseProvisioningService
     {
         EnsureValidName(databaseName);
 
-        var schemaScript = ReadEmbeddedScript(SchemaResource);
-        var seedScript = ReadEmbeddedScript(SeedResource);
+        var script = ReadEmbeddedScript(ProvisionResource);
 
         using var connection = _factory.CreateDatabaseConnection(databaseName);
-        await connection.ExecuteAsync(schemaScript, commandTimeout: _commandTimeoutSeconds);
-        await connection.ExecuteAsync(seedScript, new
+        await connection.ExecuteAsync(script, new
         {
             options.CompanyCode,
             options.CompanyName,

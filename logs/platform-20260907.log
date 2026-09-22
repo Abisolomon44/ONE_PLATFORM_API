@@ -1,0 +1,129 @@
+2026-09-07 22:09:58.629 +05:30 [INF] ONE ERP Platform API starting
+2026-09-07 22:10:03.870 +05:30 [INF] HTTP GET /swagger responded 301 in 14.2717 ms
+2026-09-07 22:10:04.115 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 167.9307 ms
+2026-09-07 22:10:04.300 +05:30 [INF] HTTP GET /swagger/index.css responded 200 in 169.2337 ms
+2026-09-07 22:10:04.290 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.3213 ms
+2026-09-07 22:10:04.417 +05:30 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 291.1696 ms
+2026-09-07 22:10:04.417 +05:30 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 246.3384 ms
+2026-09-07 22:10:04.484 +05:30 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 264.4041 ms
+2026-09-07 22:10:04.926 +05:30 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 0.4716 ms
+2026-09-07 22:10:05.108 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 222.5768 ms
+2026-09-07 22:10:15.679 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.0365 ms
+2026-09-07 22:10:15.679 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 8.1006 ms
+2026-09-07 22:10:18.062 +05:30 [INF] HTTP GET /api/tenants responded 401 in 2360.3516 ms
+2026-09-07 22:10:18.062 +05:30 [INF] HTTP GET /api/plans responded 401 in 2294.6166 ms
+2026-09-07 22:10:18.084 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1571 ms
+2026-09-07 22:10:18.093 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1789 ms
+2026-09-07 22:10:20.931 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2830.2573 ms
+2026-09-07 22:10:20.931 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 2835.0200 ms
+2026-09-07 22:10:21.030 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1141 ms
+2026-09-07 22:10:21.041 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1568 ms
+2026-09-07 22:10:21.325 +05:30 [INF] HTTP GET /api/plans responded 200 in 281.0019 ms
+2026-09-07 22:10:21.325 +05:30 [INF] HTTP GET /api/tenants responded 200 in 267.4727 ms
+2026-09-07 22:10:27.310 +05:30 [INF] HTTP OPTIONS /api/tenants/55 responded 204 in 0.1149 ms
+2026-09-07 22:10:30.727 +05:30 [WRN] Dropped tenant database SMARTBILL (cleanup after failed provisioning)
+2026-09-07 22:10:30.798 +05:30 [INF] HTTP DELETE /api/tenants/55 responded 200 in 3478.5022 ms
+2026-09-07 22:10:30.811 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1904 ms
+2026-09-07 22:10:30.929 +05:30 [INF] HTTP GET /api/tenants responded 200 in 106.8178 ms
+2026-09-07 22:11:01.715 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1703 ms
+2026-09-07 22:11:03.512 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-07 22:11:07.410 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-07 22:11:51.357 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 49601.0259 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Missing end comment mark '*/'.
+Incorrect syntax near ';'.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-07 22:11:51.850 +05:30 [WRN] Domain error 500: Database provisioning failed: Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Incorrect syntax near '<<'.
+Incorrect syntax near '='.
+Incorrect syntax near '>>'.
+Missing end comment mark '*/'.
+Incorrect syntax near ';'.
+2026-09-07 22:14:45.332 +05:30 [INF] ONE ERP Platform API starting
+2026-09-07 22:14:48.330 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 200.0553 ms
+2026-09-07 22:14:48.360 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 30.0433 ms
+2026-09-07 22:14:48.944 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 164.4038 ms
+2026-09-07 22:15:14.763 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 5.0041 ms
+2026-09-07 22:15:17.821 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-07 22:15:21.607 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-07 22:15:21.735 +05:30 [INF] HTTP POST /api/tenants responded 200 in 6925.3761 ms
+2026-09-07 22:15:21.752 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2381 ms
+2026-09-07 22:15:21.963 +05:30 [INF] HTTP GET /api/tenants responded 200 in 142.6239 ms
+2026-09-07 22:22:45.412 +05:30 [INF] ONE ERP Platform API starting
+2026-09-07 22:22:47.472 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 18.6162 ms
+2026-09-07 22:22:47.472 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 18.5611 ms
+2026-09-07 22:22:48.683 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 190.7532 ms
+2026-09-07 22:22:48.712 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.4471 ms
+2026-09-07 22:22:49.285 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 276.1733 ms
+2026-09-07 22:22:50.835 +05:30 [INF] HTTP GET /api/plans responded 200 in 3083.8608 ms
+2026-09-07 22:22:50.835 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3111.5667 ms
+2026-09-07 22:22:53.068 +05:30 [INF] HTTP OPTIONS /api/tenants/57 responded 204 in 0.2856 ms
+2026-09-07 22:22:56.362 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-07 22:22:56.428 +05:30 [INF] HTTP DELETE /api/tenants/57 responded 200 in 3348.8412 ms
+2026-09-07 22:22:56.440 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1325 ms
+2026-09-07 22:22:56.512 +05:30 [INF] HTTP GET /api/tenants responded 200 in 50.2467 ms
+2026-09-07 22:24:03.329 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1561 ms
+2026-09-07 22:24:05.225 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-07 22:24:08.862 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-07 22:24:08.912 +05:30 [INF] HTTP POST /api/tenants responded 200 in 5572.0600 ms
+2026-09-07 22:24:08.925 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1209 ms
+2026-09-07 22:24:09.063 +05:30 [INF] HTTP GET /api/tenants responded 200 in 129.4884 ms
+2026-09-07 22:37:15.072 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.1197 ms
+2026-09-07 22:37:15.099 +05:30 [INF] HTTP POST /api/auth/logout responded 401 in 18.0565 ms
+2026-09-07 22:37:15.113 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.3704 ms
+2026-09-07 22:37:15.251 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 131.4940 ms
+2026-09-07 22:37:15.272 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 12.2050 ms
+2026-09-07 22:37:17.138 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1338 ms
+2026-09-07 22:37:17.656 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 508.1738 ms
+2026-09-07 22:37:17.721 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.3998 ms
+2026-09-07 22:37:17.967 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 226.9789 ms
+2026-09-07 22:37:21.095 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0783 ms
+2026-09-07 22:37:21.130 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3867 ms
+2026-09-07 22:37:21.241 +05:30 [INF] HTTP GET /api/plans responded 200 in 109.1799 ms
+2026-09-07 22:37:21.329 +05:30 [INF] HTTP GET /api/tenants responded 200 in 120.9149 ms
+2026-09-07 22:37:24.104 +05:30 [INF] HTTP OPTIONS /api/tenants/58 responded 204 in 0.0974 ms
+2026-09-07 22:37:27.361 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-07 22:37:27.391 +05:30 [INF] HTTP DELETE /api/tenants/58 responded 200 in 3280.8296 ms
+2026-09-07 22:37:27.402 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1238 ms
+2026-09-07 22:37:27.439 +05:30 [INF] HTTP GET /api/tenants responded 200 in 31.1172 ms
+2026-09-07 22:38:22.073 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0778 ms
+2026-09-07 22:38:23.059 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-07 22:38:25.626 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-07 22:38:25.653 +05:30 [INF] HTTP POST /api/tenants responded 200 in 3571.5363 ms
+2026-09-07 22:38:25.660 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0851 ms
+2026-09-07 22:38:25.701 +05:30 [INF] HTTP GET /api/tenants responded 200 in 31.6329 ms
+2026-09-07 22:39:39.359 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 5.7124 ms
+2026-09-07 22:39:39.395 +05:30 [INF] HTTP GET /api/plans responded 200 in 21.9027 ms
+2026-09-07 22:39:43.373 +05:30 [INF] HTTP GET /api/plans responded 200 in 29.1764 ms
+2026-09-07 22:39:45.855 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0923 ms
+2026-09-07 22:39:45.864 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0867 ms
+2026-09-07 22:39:45.920 +05:30 [INF] HTTP GET /api/plans responded 200 in 51.9104 ms
+2026-09-07 22:39:45.945 +05:30 [INF] HTTP GET /api/tenants responded 200 in 64.2593 ms

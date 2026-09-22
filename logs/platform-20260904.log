@@ -1,0 +1,15 @@
+2026-09-04 00:30:44.978 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 3.6160 ms
+2026-09-04 00:30:45.210 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 50.4547 ms
+2026-09-04 00:30:45.289 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0648 ms
+2026-09-04 00:30:46.149 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 839.7896 ms
+2026-09-04 00:30:47.441 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0721 ms
+2026-09-04 00:30:47.500 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0494 ms
+2026-09-04 00:30:48.201 +05:30 [INF] HTTP GET /api/plans responded 200 in 514.2400 ms
+2026-09-04 00:30:48.547 +05:30 [INF] HTTP GET /api/tenants responded 200 in 544.0045 ms
+2026-09-04 00:30:49.211 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 2836.2755 ms
+2026-09-04 00:30:50.611 +05:30 [INF] HTTP GET /api/plans responded 200 in 250.0085 ms
+2026-09-04 00:30:52.306 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0486 ms
+2026-09-04 00:30:52.313 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0565 ms
+2026-09-04 00:30:56.567 +05:30 [INF] HTTP GET /api/tenants responded 200 in 2175.8652 ms
+2026-09-04 00:30:53.696 +05:30 [INF] HTTP GET /api/plans responded 200 in 1385.5958 ms
+2026-09-04 00:30:58.345 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 1264.2428 ms

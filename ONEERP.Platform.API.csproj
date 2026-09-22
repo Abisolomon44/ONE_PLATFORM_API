@@ -25,11 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\sql\erp_schema.sql">
-      <LogicalName>ONEERP.Platform.API.SqlScripts.erp_schema.sql</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\sql\erp_seed.sql">
-      <LogicalName>ONEERP.Platform.API.SqlScripts.erp_seed.sql</LogicalName>
+    <EmbeddedResource Include="..\sql\erp_full.sql">
+      <LogicalName>ONEERP.Platform.API.SqlScripts.erp_full.sql</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

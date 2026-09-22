@@ -1,0 +1,24 @@
+2026-09-14 09:27:39.202 +05:30 [INF] ONE ERP Platform API starting
+2026-09-14 09:27:49.070 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 40.4930 ms
+2026-09-14 09:27:49.000 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 2002.5681 ms
+2026-09-14 09:28:11.092 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 140.6361 ms
+2026-09-14 22:40:36.120 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 27.5777 ms
+2026-09-14 22:40:38.794 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 2578.4680 ms
+2026-09-14 22:40:38.810 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1332 ms
+2026-09-14 22:40:42.483 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 3662.2020 ms
+2026-09-14 22:40:42.497 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1241 ms
+2026-09-14 22:40:42.709 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 202.8887 ms
+2026-09-14 22:42:49.956 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1852 ms
+2026-09-14 22:42:49.977 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1098 ms
+2026-09-14 22:42:50.453 +05:30 [INF] HTTP GET /api/plans responded 200 in 374.0920 ms
+2026-09-14 22:42:50.491 +05:30 [INF] HTTP GET /api/tenants responded 200 in 380.8160 ms
+2026-09-14 22:42:54.119 +05:30 [INF] HTTP OPTIONS /api/tenants/76 responded 204 in 0.2711 ms
+2026-09-14 22:42:54.590 +05:30 [WRN] Dropped tenant database TEST (cleanup after failed provisioning)
+2026-09-14 22:42:54.683 +05:30 [INF] HTTP DELETE /api/tenants/76 responded 200 in 533.1763 ms
+2026-09-14 22:42:54.755 +05:30 [INF] HTTP GET /api/tenants responded 200 in 59.7276 ms
+2026-09-14 22:43:42.283 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1224 ms
+2026-09-14 22:43:44.555 +05:30 [INF] Created tenant database DMART
+2026-09-14 22:45:27.491 +05:30 [INF] Provisioned tenant schema and seed data for DMART
+2026-09-14 22:45:27.873 +05:30 [INF] HTTP POST /api/tenants responded 200 in 105257.5918 ms
+2026-09-14 22:45:27.884 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0910 ms
+2026-09-14 22:45:27.964 +05:30 [INF] HTTP GET /api/tenants responded 200 in 72.2825 ms

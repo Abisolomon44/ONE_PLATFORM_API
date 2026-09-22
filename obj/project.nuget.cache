@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "w+F9XeJoAo4=",
+  "dgSpecHash": "C1yPoU3IO40=",
   "success": true,
-  "projectFilePath": "D:\\AWS\\ERP\\ONEERP.Platform.API\\ONEERP.Platform.API.csproj",
+  "projectFilePath": "D:\\Old\\Migrate\\Atrifcial Intellegience\\AWS\\ERP\\ONEERP.Platform.API\\ONEERP.Platform.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\abiso\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\abiso\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

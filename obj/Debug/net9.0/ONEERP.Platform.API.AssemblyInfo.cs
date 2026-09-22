@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ONEERP.Platform.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33912aa249f958e6e063107d7a84db7518724394")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc4fd24afc7d20b2af1bf3a46550d3976163b7c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("ONEERP.Platform.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ONEERP.Platform.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

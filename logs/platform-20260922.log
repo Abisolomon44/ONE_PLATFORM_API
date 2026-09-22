@@ -1,0 +1,96 @@
+2026-09-22 07:40:38.033 +05:30 [INF] ONE ERP Platform API starting
+2026-09-22 07:40:41.853 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 391.7678 ms
+2026-09-22 07:40:41.951 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 28.0993 ms
+2026-09-22 07:40:42.408 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 157.6686 ms
+2026-09-22 07:40:46.830 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.3688 ms
+2026-09-22 07:40:46.831 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 5.5233 ms
+2026-09-22 07:40:49.628 +05:30 [INF] HTTP GET /api/plans responded 401 in 2648.9710 ms
+2026-09-22 07:40:49.628 +05:30 [INF] HTTP GET /api/tenants responded 401 in 2640.8298 ms
+2026-09-22 07:40:49.642 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1896 ms
+2026-09-22 07:40:49.645 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1598 ms
+2026-09-22 07:40:53.044 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 3389.8512 ms
+2026-09-22 07:40:53.044 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 3392.7530 ms
+2026-09-22 07:40:53.056 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1208 ms
+2026-09-22 07:40:53.058 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1013 ms
+2026-09-22 07:40:53.234 +05:30 [INF] HTTP GET /api/plans responded 200 in 167.4527 ms
+2026-09-22 07:40:53.237 +05:30 [INF] HTTP GET /api/tenants responded 200 in 173.2057 ms
+2026-09-22 07:41:18.568 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1282 ms
+2026-09-22 07:41:19.952 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-22 07:41:23.916 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-22 07:44:34.131 +05:30 [ERR] HTTP POST /api/tenants responded 500 in 195545.0476 ms
+ONEERP.Shared.Exceptions.DomainException: Database provisioning failed: Multiple identity columns specified for table 'Operators'. Only one identity column per table is allowed.
+   at ONEERP.Platform.API.Services.TenantService.CreateAsync(CreateTenantRequest request, String currentUser) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantService.cs:line 204
+   at ONEERP.Platform.API.Controllers.TenantsController.Create(CreateTenantRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantsController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-22 07:44:34.617 +05:30 [WRN] Domain error 500: Database provisioning failed: Multiple identity columns specified for table 'Operators'. Only one identity column per table is allowed.
+2026-09-22 07:44:37.184 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1907 ms
+2026-09-22 07:44:38.287 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-22 07:44:42.166 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-22 07:45:33.323 +05:30 [INF] ONE ERP Platform API starting
+2026-09-22 07:45:35.553 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 189.2218 ms
+2026-09-22 07:45:35.556 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.7412 ms
+2026-09-22 07:45:35.943 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 92.6473 ms
+2026-09-22 07:45:38.840 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.1908 ms
+2026-09-22 07:45:44.910 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-22 07:45:48.916 +05:30 [WRN] Dropped tenant database ERPNEXT (cleanup after failed provisioning)
+2026-09-22 07:47:20.220 +05:30 [INF] ONE ERP Platform API starting
+2026-09-22 07:47:21.812 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 162.8876 ms
+2026-09-22 07:47:21.828 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 13.4094 ms
+2026-09-22 07:47:22.185 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 93.3151 ms
+2026-09-22 07:47:26.578 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 7.3403 ms
+2026-09-22 07:47:28.504 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1913.4636 ms
+2026-09-22 07:47:28.578 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2268 ms
+2026-09-22 07:47:28.877 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 290.4480 ms
+2026-09-22 07:47:32.117 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3115 ms
+2026-09-22 07:47:32.128 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1853 ms
+2026-09-22 07:47:32.354 +05:30 [INF] HTTP GET /api/plans responded 200 in 214.7836 ms
+2026-09-22 07:47:32.383 +05:30 [INF] HTTP GET /api/tenants responded 200 in 241.8119 ms
+2026-09-22 07:48:10.124 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3509 ms
+2026-09-22 07:48:11.143 +05:30 [INF] Created tenant database ERPNEXT
+2026-09-22 07:48:16.248 +05:30 [INF] Provisioned tenant schema and seed data for ERPNEXT
+2026-09-22 07:48:16.307 +05:30 [INF] HTTP POST /api/tenants responded 200 in 6143.3088 ms
+2026-09-22 07:48:16.315 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1340 ms
+2026-09-22 07:48:16.342 +05:30 [INF] HTTP GET /api/tenants responded 200 in 19.1304 ms
+2026-09-22 07:51:52.394 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1524 ms
+2026-09-22 07:51:52.435 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1395 ms
+2026-09-22 07:51:52.520 +05:30 [INF] HTTP GET /api/plans responded 200 in 111.1602 ms
+2026-09-22 07:51:52.604 +05:30 [INF] HTTP GET /api/tenants responded 200 in 78.6643 ms
+2026-09-22 09:40:21.037 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1286 ms
+2026-09-22 09:40:21.203 +05:30 [INF] HTTP GET /api/plans responded 401 in 33.0073 ms
+2026-09-22 09:40:21.330 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3249 ms
+2026-09-22 09:40:21.365 +05:30 [INF] HTTP GET /api/tenants responded 401 in 5.2928 ms
+2026-09-22 09:40:21.439 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2328 ms
+2026-09-22 09:40:22.074 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 612.5657 ms
+2026-09-22 09:40:22.148 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 601.6088 ms
+2026-09-22 09:40:22.269 +05:30 [INF] HTTP GET /api/plans responded 200 in 32.9209 ms
+2026-09-22 09:40:22.528 +05:30 [INF] HTTP GET /api/tenants responded 200 in 274.0453 ms
+2026-09-22 09:41:08.168 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 32.8856 ms
+2026-09-22 09:41:08.205 +05:30 [INF] HTTP POST /api/auth/logout responded 200 in 28.6559 ms
+2026-09-22 09:41:12.083 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1591 ms
+2026-09-22 09:41:12.469 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 369.6632 ms
+2026-09-22 09:41:12.532 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.2239 ms
+2026-09-22 09:41:12.775 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 193.4259 ms
+2026-09-22 09:41:14.884 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3945 ms
+2026-09-22 09:41:14.909 +05:30 [INF] HTTP GET /api/plans responded 200 in 17.1976 ms
+2026-09-22 09:41:17.369 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4335 ms
+2026-09-22 09:41:17.433 +05:30 [INF] HTTP GET /api/plans responded 200 in 67.4565 ms
+2026-09-22 09:41:17.502 +05:30 [INF] HTTP GET /api/tenants responded 200 in 69.0624 ms
+2026-09-22 09:41:18.960 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0692 ms
+2026-09-22 09:41:18.964 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0744 ms
+2026-09-22 09:41:19.024 +05:30 [INF] HTTP GET /api/plans responded 200 in 57.5340 ms
+2026-09-22 09:41:19.056 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.6737 ms
+2026-09-22 09:41:19.098 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 78.1401 ms
+2026-09-22 09:41:19.783 +05:30 [INF] HTTP GET /api/plans responded 200 in 36.3111 ms

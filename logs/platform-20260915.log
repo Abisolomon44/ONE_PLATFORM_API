@@ -1,0 +1,66 @@
+2026-09-15 06:22:34.500 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 12.8021 ms
+2026-09-15 06:22:34.500 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 12.8181 ms
+2026-09-15 06:22:34.607 +05:30 [INF] HTTP GET /api/tenants responded 401 in 30.9012 ms
+2026-09-15 06:22:34.607 +05:30 [INF] HTTP GET /api/plans responded 401 in 31.4810 ms
+2026-09-15 06:22:34.626 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1179 ms
+2026-09-15 06:22:34.630 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1328 ms
+2026-09-15 06:22:34.865 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 224.0127 ms
+2026-09-15 06:22:34.865 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 229.4174 ms
+2026-09-15 06:22:34.983 +05:30 [INF] HTTP GET /api/plans responded 200 in 84.1080 ms
+2026-09-15 06:22:35.033 +05:30 [INF] HTTP GET /api/tenants responded 200 in 113.5920 ms
+2026-09-15 09:10:37.629 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.4272 ms
+2026-09-15 09:10:37.661 +05:30 [INF] HTTP GET /api/plans responded 401 in 2.1448 ms
+2026-09-15 09:10:37.677 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1829 ms
+2026-09-15 09:10:37.694 +05:30 [INF] HTTP GET /api/tenants responded 401 in 1.6382 ms
+2026-09-15 09:10:37.895 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1402 ms
+2026-09-15 09:10:38.179 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 273.9601 ms
+2026-09-15 09:10:38.179 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 269.7139 ms
+2026-09-15 09:10:38.253 +05:30 [INF] HTTP GET /api/plans responded 200 in 41.2664 ms
+2026-09-15 09:10:38.286 +05:30 [INF] HTTP GET /api/tenants responded 200 in 50.5617 ms
+2026-09-15 09:34:39.464 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1912 ms
+2026-09-15 09:34:39.490 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0951 ms
+2026-09-15 09:34:39.545 +05:30 [INF] HTTP GET /api/plans responded 401 in 9.0411 ms
+2026-09-15 09:34:39.596 +05:30 [INF] HTTP GET /api/tenants responded 401 in 39.1104 ms
+2026-09-15 09:34:39.880 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0968 ms
+2026-09-15 09:34:39.883 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0729 ms
+2026-09-15 09:34:40.321 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 408.5574 ms
+2026-09-15 09:34:40.341 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 437.2706 ms
+2026-09-15 09:34:40.878 +05:30 [INF] HTTP GET /api/plans responded 200 in 99.7899 ms
+2026-09-15 09:34:40.894 +05:30 [INF] HTTP GET /api/tenants responded 200 in 116.4825 ms
+2026-09-15 09:58:39.638 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1208 ms
+2026-09-15 09:58:39.670 +05:30 [INF] HTTP GET /api/plans responded 401 in 2.1742 ms
+2026-09-15 09:58:39.712 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0658 ms
+2026-09-15 09:58:39.736 +05:30 [INF] HTTP GET /api/tenants responded 401 in 8.7377 ms
+2026-09-15 09:58:40.565 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2002 ms
+2026-09-15 09:58:40.603 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0753 ms
+2026-09-15 09:58:42.350 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1745.4276 ms
+2026-09-15 20:28:15.329 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.2849 ms
+2026-09-15 20:28:15.443 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 37.5847 ms
+2026-09-15 20:28:15.442 +05:30 [ERR] HTTP POST /api/auth/refresh responded 500 in 37774688.7462 ms
+ONEERP.Shared.Exceptions.UnauthorizedAccess: Invalid or expired refresh token.
+   at ONEERP.Platform.API.Services.PlatformAuthService.RefreshAsync(String refreshToken) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PlatformAuthService.cs:line 55
+   at ONEERP.Platform.API.Controllers.AuthController.Refresh(RefreshTokenRequest request) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\AuthController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-09-15 20:28:15.402 +05:30 [INF] HTTP OPTIONS /api/auth/logout responded 204 in 0.0812 ms
+2026-09-15 20:28:15.442 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0698 ms
+2026-09-15 20:28:15.969 +05:30 [WRN] Domain error 401: Invalid or expired refresh token.
+2026-09-15 20:28:16.425 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 451.7784 ms
+2026-09-15 20:28:16.666 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0778 ms
+2026-09-15 20:28:16.768 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 92.8424 ms
+2026-09-15 20:28:24.219 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3977 ms
+2026-09-15 20:28:24.277 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1401 ms
+2026-09-15 20:28:24.277 +05:30 [INF] HTTP GET /api/plans responded 200 in 34.6134 ms
+2026-09-15 20:28:24.313 +05:30 [INF] HTTP GET /api/tenants responded 200 in 23.0116 ms
