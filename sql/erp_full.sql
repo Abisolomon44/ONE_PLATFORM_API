@@ -790,6 +790,78 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
+   OperatorTypes (POS: operator classification master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OperatorTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.OperatorTypes (
+        Id              INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_OperatorTypes PRIMARY KEY,
+        Code            NVARCHAR(50)        NOT NULL CONSTRAINT UQ_OperatorTypes_Code UNIQUE,
+        Name            NVARCHAR(100)       NOT NULL,
+        Description     NVARCHAR(250)       NULL,
+        SortOrder       INT                 NOT NULL CONSTRAINT DF_OperatorTypes_SortOrder DEFAULT 1,
+        IsActive        BIT                 NOT NULL CONSTRAINT DF_OperatorTypes_IsActive DEFAULT 1,
+        IsDeleted       BIT                 NOT NULL CONSTRAINT DF_OperatorTypes_IsDeleted DEFAULT 0,
+        CreatedBy       NVARCHAR(100)       NULL,
+        CreatedDate     DATETIME2           NOT NULL CONSTRAINT DF_OperatorTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy      NVARCHAR(100)       NULL,
+        ModifiedDate    DATETIME2           NOT NULL CONSTRAINT DF_OperatorTypes_ModifiedDate DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_OperatorTypes_IsActive ON dbo.OperatorTypes (IsActive);
+    CREATE INDEX IX_OperatorTypes_SortOrder ON dbo.OperatorTypes (SortOrder);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   StoreTypes (POS: store classification master)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StoreTypes]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StoreTypes (
+        Id              INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_StoreTypes PRIMARY KEY,
+        Code            NVARCHAR(50)        NOT NULL CONSTRAINT UQ_StoreTypes_Code UNIQUE,
+        Name            NVARCHAR(100)       NOT NULL,
+        Description     NVARCHAR(250)       NULL,
+        SortOrder       INT                 NOT NULL CONSTRAINT DF_StoreTypes_SortOrder DEFAULT 1,
+        IsActive        BIT                 NOT NULL CONSTRAINT DF_StoreTypes_IsActive DEFAULT 1,
+        IsDeleted       BIT                 NOT NULL CONSTRAINT DF_StoreTypes_IsDeleted DEFAULT 0,
+        CreatedBy       NVARCHAR(100)       NULL,
+        CreatedDate     DATETIME2           NOT NULL CONSTRAINT DF_StoreTypes_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy      NVARCHAR(100)       NULL,
+        ModifiedDate    DATETIME2           NOT NULL CONSTRAINT DF_StoreTypes_ModifiedDate DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_StoreTypes_IsActive ON dbo.StoreTypes (IsActive);
+    CREATE INDEX IX_StoreTypes_SortOrder ON dbo.StoreTypes (SortOrder);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Master Data - Sources (transaction channels: SALES, POS, ONLINE, ...)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Sources]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Sources (
+        Id              INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Sources PRIMARY KEY,
+        Code            NVARCHAR(50)        NOT NULL CONSTRAINT UQ_Sources_Code UNIQUE,
+        Name            NVARCHAR(100)       NOT NULL,
+        Description     NVARCHAR(250)       NULL,
+        SortOrder       INT                 NOT NULL CONSTRAINT DF_Sources_SortOrder DEFAULT 1,
+        IsActive        BIT                 NOT NULL CONSTRAINT DF_Sources_IsActive DEFAULT 1,
+        IsDeleted       BIT                 NOT NULL CONSTRAINT DF_Sources_IsDeleted DEFAULT 0,
+        CreatedBy       NVARCHAR(100)       NULL,
+        CreatedDate     DATETIME2           NOT NULL CONSTRAINT DF_Sources_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy      NVARCHAR(100)       NULL,
+        ModifiedDate    DATETIME2           NOT NULL CONSTRAINT DF_Sources_ModifiedDate DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_Sources_IsActive ON dbo.Sources (IsActive);
+    CREATE INDEX IX_Sources_SortOrder ON dbo.Sources (SortOrder);
+END
+;
+
+/* ---------------------------------------------------------------------------
    Genders (HR: gender master)
 --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Genders]') AND type = N'U')
@@ -1080,43 +1152,131 @@ END
 ;
 
 /* ---------------------------------------------------------------------------
+   Operators (POS: cashiers/operators linked to users and operator types)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Operators]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Operators (
+        OperatorId        INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Operators PRIMARY KEY,
+        Id                INT                 NOT NULL,
+        CompanyId         INT                 NOT NULL,
+        BranchId          INT                 NULL,
+        UserId            INT                 NOT NULL,
+        OperatorTypeId    INT                 NULL,
+        OperatorCode      NVARCHAR(50)        NOT NULL,
+        OperatorName      NVARCHAR(150)       NOT NULL,
+        IsActive          BIT                 NOT NULL CONSTRAINT DF_Operators_IsActive DEFAULT 1,
+        IsDeleted         BIT                 NOT NULL CONSTRAINT DF_Operators_IsDeleted DEFAULT 0,
+        CreatedBy         NVARCHAR(100)       NULL,
+        CreatedAt         DATETIME2           NOT NULL CONSTRAINT DF_Operators_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy         NVARCHAR(100)       NULL,
+        UpdatedAt         DATETIME2           NULL,
+        CONSTRAINT UQ_Operators_Company_Code UNIQUE (CompanyId, OperatorCode),
+        CONSTRAINT FK_Operators_Company FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (Id),
+        CONSTRAINT FK_Operators_Branch FOREIGN KEY (BranchId) REFERENCES dbo.Branches (Id),
+        CONSTRAINT FK_Operators_User FOREIGN KEY (UserId) REFERENCES dbo.Users (UserId),
+        CONSTRAINT FK_Operators_OperatorType FOREIGN KEY (OperatorTypeId) REFERENCES dbo.OperatorTypes (Id)
+    );
+
+    CREATE INDEX IX_Operators_CompanyId ON dbo.Operators (CompanyId);
+    CREATE INDEX IX_Operators_BranchId ON dbo.Operators (BranchId);
+    CREATE INDEX IX_Operators_UserId ON dbo.Operators (UserId);
+    CREATE INDEX IX_Operators_OperatorTypeId ON dbo.Operators (OperatorTypeId);
+    CREATE INDEX IX_Operators_IsActive ON dbo.Operators (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   CounterAssignments (POS: operator-counter assignments with validity periods)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CounterAssignments]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.CounterAssignments (
+        AssignmentId      INT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_CounterAssignments PRIMARY KEY,
+        Id                INT                 NOT NULL,
+        CompanyId         INT                 NOT NULL,
+        BranchId          INT                 NULL,
+        StoreId           INT                 NOT NULL,
+        CounterId         INT                 NOT NULL,
+        OperatorId        INT                 NOT NULL,
+        IsPrimary         BIT                 NOT NULL CONSTRAINT DF_CounterAssignments_IsPrimary DEFAULT 0,
+        ValidFrom         DATETIME2           NULL,
+        ValidTo           DATETIME2           NULL,
+        IsActive          BIT                 NOT NULL CONSTRAINT DF_CounterAssignments_IsActive DEFAULT 1,
+        IsDeleted         BIT                 NOT NULL CONSTRAINT DF_CounterAssignments_IsDeleted DEFAULT 0,
+        CreatedBy         NVARCHAR(100)       NULL,
+        CreatedAt         DATETIME2           NOT NULL CONSTRAINT DF_CounterAssignments_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedBy         NVARCHAR(100)       NULL,
+        UpdatedAt         DATETIME2           NULL,
+        CONSTRAINT FK_CounterAssignments_Company FOREIGN KEY (CompanyId) REFERENCES dbo.Companies (Id),
+        CONSTRAINT FK_CounterAssignments_Branch FOREIGN KEY (BranchId) REFERENCES dbo.Branches (Id),
+        CONSTRAINT FK_CounterAssignments_Store FOREIGN KEY (StoreId) REFERENCES dbo.Stores (StoreId),
+        CONSTRAINT FK_CounterAssignments_Counter FOREIGN KEY (CounterId) REFERENCES dbo.Counters (CounterId),
+        CONSTRAINT FK_CounterAssignments_Operator FOREIGN KEY (OperatorId) REFERENCES dbo.Operators (OperatorId)
+    );
+
+    CREATE INDEX IX_CounterAssignments_CompanyId ON dbo.CounterAssignments (CompanyId);
+    CREATE INDEX IX_CounterAssignments_StoreId ON dbo.CounterAssignments (StoreId);
+    CREATE INDEX IX_CounterAssignments_CounterId ON dbo.CounterAssignments (CounterId);
+    CREATE INDEX IX_CounterAssignments_OperatorId ON dbo.CounterAssignments (OperatorId);
+    CREATE INDEX IX_CounterAssignments_IsActive ON dbo.CounterAssignments (IsActive);
+END
+;
+
+/* ---------------------------------------------------------------------------
    POS Sessions (cashier session at a store/counter with opening/closing cash)
+   Hierarchy: Store > Counter > Counter Assignment > Operator.
+   Created after Operators/CounterAssignments because of the FKs.
+   CompanyId/BranchId are resolved by the backend from the selected Store.
+   ExpectedClosingCash/CashDifference are system-controlled, never user-entered.
 --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[POSSessions]') AND type = N'U')
 BEGIN
     CREATE TABLE dbo.POSSessions (
-        POSSessionId    BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_POSSessions PRIMARY KEY,
-        CompanyId       INT NOT NULL,
-        CompanyName     NVARCHAR(200) NULL,
-        BranchId        INT NULL,
-        BranchName      NVARCHAR(200) NULL,
-        StoreId         INT NULL,
-        StoreName       NVARCHAR(200) NULL,
-        CounterId       INT NULL,
-        CounterName     NVARCHAR(200) NULL,
-        CashierUserId   INT NULL,
-        CashierUserName NVARCHAR(200) NULL,
-        SessionNumber   NVARCHAR(50) NOT NULL,
-        OpeningCash     DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_OpeningCash DEFAULT 0,
-        ClosingCash     DECIMAL(18,2) NULL,
-        OpenedAt        DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_OpenedAt DEFAULT SYSUTCDATETIME(),
-        ClosedAt        DATETIME2 NULL,
-        Status          TINYINT NOT NULL CONSTRAINT DF_POSSessions_Status DEFAULT 1,
-        CreatedBy       INT NULL,
-        CreatedAt       DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_CreatedAt DEFAULT SYSUTCDATETIME(),
-        UpdatedBy       INT NULL,
-        UpdatedAt       DATETIME2 NULL,
+        POSSessionId         BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_POSSessions PRIMARY KEY,
+        CompanyId            INT NOT NULL,
+        CompanyName          NVARCHAR(200) NULL,
+        BranchId             INT NULL,
+        BranchName           NVARCHAR(200) NULL,
+        StoreId              INT NULL,
+        StoreName            NVARCHAR(200) NULL,
+        CounterId            INT NULL,
+        CounterName          NVARCHAR(200) NULL,
+        CounterAssignmentId  INT NULL,
+        OperatorId           INT NULL,
+        OperatorNameSnapshot NVARCHAR(200) NULL,
+        SessionNumber        NVARCHAR(50) NOT NULL,
+        OpeningCash          DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_OpeningCash DEFAULT 0,
+        ExpectedClosingCash  DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_ExpectedClosing DEFAULT 0,
+        ActualClosingCash    DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_ActualClosing DEFAULT 0,
+        CashDifference       DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSSessions_CashDifference DEFAULT 0,
+        OpenedAt             DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_OpenedAt DEFAULT SYSUTCDATETIME(),
+        OpenedBy             INT NULL,
+        ClosedAt             DATETIME2 NULL,
+        ClosedBy             INT NULL,
+        ClosingRemarks       NVARCHAR(500) NULL,
+        Status               TINYINT NOT NULL CONSTRAINT DF_POSSessions_Status DEFAULT 1,
+        Version              ROWVERSION NOT NULL,
+        CreatedAt            DATETIME2 NOT NULL CONSTRAINT DF_POSSessions_CreatedAt DEFAULT SYSUTCDATETIME(),
+        CreatedBy            INT NULL,
+        UpdatedAt            DATETIME2 NULL,
+        UpdatedBy            INT NULL,
         CONSTRAINT FK_POSSessions_Company FOREIGN KEY (CompanyId) REFERENCES Companies(Id),
         CONSTRAINT FK_POSSessions_Store FOREIGN KEY (StoreId) REFERENCES Stores(StoreId),
-        CONSTRAINT FK_POSSessions_Counter FOREIGN KEY (CounterId) REFERENCES Counters(CounterId)
+        CONSTRAINT FK_POSSessions_Counter FOREIGN KEY (CounterId) REFERENCES Counters(CounterId),
+        CONSTRAINT FK_POSSessions_Operator FOREIGN KEY (OperatorId) REFERENCES Operators(OperatorId),
+        CONSTRAINT FK_POSSessions_CounterAssignment FOREIGN KEY (CounterAssignmentId) REFERENCES CounterAssignments(AssignmentId)
     );
 
     CREATE INDEX IX_POSSessions_Company ON dbo.POSSessions (CompanyId);
     CREATE INDEX IX_POSSessions_Branch ON dbo.POSSessions (BranchId);
     CREATE INDEX IX_POSSessions_Store ON dbo.POSSessions (StoreId);
     CREATE INDEX IX_POSSessions_Counter ON dbo.POSSessions (CounterId);
+    CREATE INDEX IX_POSSessions_Operator ON dbo.POSSessions (OperatorId);
+    CREATE INDEX IX_POSSessions_CounterAssignment ON dbo.POSSessions (CounterAssignmentId);
     CREATE INDEX IX_POSSessions_Status ON dbo.POSSessions (Status);
-    CREATE INDEX IX_POSSessions_SessionNumber ON dbo.POSSessions (SessionNumber);
+    CREATE UNIQUE INDEX UX_POSSessions_SessionNumber ON dbo.POSSessions (SessionNumber);
+    CREATE UNIQUE INDEX UX_POSSessions_OpenCounter ON dbo.POSSessions (CounterId) WHERE Status = 1;
 END
 ;
 
@@ -1935,6 +2095,57 @@ BEGIN
     ('AFFILIATE',   'Affiliate',   'Affiliate entity',                           1),
     ('OTHER',       'Other',       'Miscellaneous role',           1);
 END
+;
+
+/* ---------------------------------------------------------------------------
+   Master Data - OperatorTypes
+   -------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.OperatorTypes)
+BEGIN
+    INSERT INTO dbo.OperatorTypes (Code, Name, Description, SortOrder, IsActive)
+    VALUES
+    ('CASHIER',         'Cashier',               'Handles retail billing and payment collection',          10, 1),
+    ('POS_OPERATOR',    'POS Operator',          'Operates POS billing transactions',                      20, 1),
+    ('SUPERVISOR',      'Supervisor',            'Supervises counter operations and approvals',            30, 1),
+    ('SERVICE_OPERATOR','Service Operator',      'Handles service center transactions',                    40, 1),
+    ('WAREHOUSE_OP',    'Warehouse Operator',    'Handles warehouse and stock operations',                 50, 1),
+    ('SALES_OPERATOR',  'Sales Operator',        'Handles sales order and sales invoice activities',       60, 1),
+    ('BACKOFFICE_OP',   'Back Office Operator',  'Handles back-office billing and administrative activities', 70, 1);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Master Data - StoreTypes
+   -------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.StoreTypes)
+BEGIN
+    INSERT INTO dbo.StoreTypes (Code, Name, Description, SortOrder, IsActive)
+    VALUES
+    ('RETAIL',     'Retail Store',      'Standard retail point-of-sale',          10, 1),
+    ('WHOLESALE',  'Wholesale Store',   'Bulk/wholesale distribution outlet',     20, 1),
+    ('WAREHOUSE',  'Warehouse',         'Storage and distribution center',        30, 1),
+    ('SERVICE',    'Service Center',    'Service and repair facility',            40, 1),
+    ('ONLINE',     'E-Commerce',        'Online sales channel',                   50, 1),
+    ('FRANCHISE',  'Franchise Outlet',  'Franchise branded location',             60, 1),
+    ('POPUP',      'Pop-up Store',      'Temporary/seasonal retail location',     70, 1);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   Master Data - Sources (seed)
+   -------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Sources)
+BEGIN
+    INSERT INTO dbo.Sources (Code, Name, Description, SortOrder, IsActive)
+    VALUES
+    ('SALES',   'Sales Entry',       'Normal sales entry transaction',                10, 1),
+    ('POS',     'POS Billing',       'Point of sale billing transaction',             20, 1),
+    ('ONLINE',  'Online',             'Online sales transaction',                      30, 1),
+    ('IMPORT',  'Import',             'Imported transaction',                          40, 1),
+    ('API',     'API',                'Transaction created through API integration',   50, 1),
+    ('MOBILE',  'Mobile',             'Transaction created through mobile application', 60, 1);
+END
+;
 
 /* ---------------------------------------------------------------------------
    BusinessPartners (company business partners)
@@ -2517,35 +2728,13 @@ BEGIN
 END
 ;
 
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'WarehouseId')
-BEGIN
-    ALTER TABLE dbo.Products ADD WarehouseId BIGINT NULL;
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'HsnSacId')
-BEGIN
-    ALTER TABLE dbo.Products ADD HsnSacId BIGINT NULL;
-END
-;
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = N'EntityId')
-BEGIN
-    ALTER TABLE dbo.Products ADD EntityId BIGINT NULL;
-END
-;
-
 IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Products_Entity')
 BEGIN
     ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
 END
 ;
 
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'HsnSacId')
-BEGIN
-    ALTER TABLE dbo.Products ADD HsnSacId BIGINT NULL;
-END
-;
+
 
 /* =============================================================================
    Tax Masters (merged from tax_init.sql, taxes_init.sql)
@@ -2861,6 +3050,7 @@ BEGIN
         PriceListId       BIGINT        NOT NULL,
         ProductId         BIGINT        NOT NULL,
         UnitId            BIGINT        NULL,
+        PriceTypeId       BIGINT        NOT NULL,
         Price             DECIMAL(18,4) NOT NULL,
         MinimumQuantity   DECIMAL(18,4) NOT NULL CONSTRAINT DF_PriceListDetails_MinQty DEFAULT 1,
         MaximumQuantity   DECIMAL(18,4) NULL,
@@ -2869,87 +3059,22 @@ BEGIN
         CreatedAt         DATETIME      NOT NULL CONSTRAINT DF_PriceListDetails_CreatedAt DEFAULT GETDATE(),
         ModifiedBy        BIGINT        NULL,
         ModifiedAt        DATETIME      NULL,
-        CONSTRAINT UQ_PriceListDetails_Product UNIQUE (PriceListId, ProductId, UnitId),
+        CONSTRAINT UQ_PriceListDetails_Product UNIQUE (PriceListId, ProductId, UnitId, PriceTypeId),
         CONSTRAINT CK_PriceListDetails_Price CHECK (Price >= 0),
         CONSTRAINT CK_PriceListDetails_MinQty CHECK (MinimumQuantity > 0),
         CONSTRAINT CK_PriceListDetails_MaxQty CHECK (MaximumQuantity IS NULL OR MaximumQuantity >= MinimumQuantity),
         CONSTRAINT FK_PriceListDetails_PriceList FOREIGN KEY (PriceListId) REFERENCES dbo.PriceLists (PriceListId),
         CONSTRAINT FK_PriceListDetails_Product FOREIGN KEY (ProductId) REFERENCES dbo.Products (Id),
-        CONSTRAINT FK_PriceListDetails_Unit FOREIGN KEY (UnitId) REFERENCES dbo.Units (Id)
+        CONSTRAINT FK_PriceListDetails_Unit FOREIGN KEY (UnitId) REFERENCES dbo.Units (Id),
+        CONSTRAINT FK_PriceListDetails_PriceType FOREIGN KEY (PriceTypeId) REFERENCES dbo.PriceTypes (PriceTypeId)
     );
 
     CREATE INDEX IX_PriceListDetails_PriceList ON dbo.PriceListDetails (PriceListId);
     CREATE INDEX IX_PriceListDetails_Product ON dbo.PriceListDetails (ProductId);
+    CREATE INDEX IX_PriceListDetails_PriceType ON dbo.PriceListDetails (PriceTypeId);
 END
 ;
 
-/* ---------------------------------------------------------------------------
-   PriceListDetails - Migration 007: Add PriceTypeId for multi-price-type support
-   --------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PriceListDetails') AND name = 'PriceTypeId')
-BEGIN
-    ALTER TABLE dbo.PriceListDetails 
-    ADD PriceTypeId BIGINT NULL;
-END
-;
-
--- Backfill from parent PriceList (existing single price type per list)
-UPDATE d
-SET d.PriceTypeId = p.PriceTypeId
-FROM dbo.PriceListDetails d
-JOIN dbo.PriceLists p ON d.PriceListId = p.PriceListId
-WHERE d.PriceTypeId IS NULL
-  AND p.PriceTypeId IS NOT NULL
-;
-
--- Make NOT NULL
-IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PriceListDetails') AND name = 'PriceTypeId' AND is_nullable = 1)
-BEGIN
-    ALTER TABLE dbo.PriceListDetails ALTER COLUMN PriceTypeId BIGINT NOT NULL;
-END
-;
-
--- Add FK to PriceTypes
-IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_PriceListDetails_PriceType')
-BEGIN
-    ALTER TABLE dbo.PriceListDetails
-    ADD CONSTRAINT FK_PriceListDetails_PriceType 
-    FOREIGN KEY (PriceTypeId) REFERENCES dbo.PriceTypes (PriceTypeId);
-END
-;
-
--- Update unique constraint for multi-price-type support
--- Drop old unique constraint
-IF EXISTS (SELECT 1 FROM sys.key_constraints WHERE name = 'UQ_PriceListDetails_Product')
-BEGIN
-    ALTER TABLE dbo.PriceListDetails
-    DROP CONSTRAINT UQ_PriceListDetails_Product;
-END
-;
-
--- Add new unique constraint including PriceTypeId
-IF NOT EXISTS (SELECT 1 FROM sys.key_constraints WHERE name = 'UQ_PriceListDetails_Product')
-BEGIN
-    ALTER TABLE dbo.PriceListDetails
-    ADD CONSTRAINT UQ_PriceListDetails_Product 
-    UNIQUE (PriceListId, ProductId, UnitId, PriceTypeId);
-END
-;
-
--- Add index for PriceTypeId lookups
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PriceListDetails_PriceType' AND object_id = OBJECT_ID(N'dbo.PriceListDetails'))
-BEGIN
-    CREATE INDEX IX_PriceListDetails_PriceType 
-    ON dbo.PriceListDetails (PriceTypeId);
-END
-;
-
--- Optional: Add PriceTypeId index on PriceLists for backward compat queries
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PriceLists_PriceType' AND object_id = OBJECT_ID(N'dbo.PriceLists'))
-BEGIN
-    CREATE INDEX IX_PriceLists_PriceType ON dbo.PriceLists (PriceTypeId);
-END
-;
 
 /* ---------------------------------------------------------------------------
    DiscountRules (company-scoped pricing rules: percentage or fixed amount).
@@ -3145,6 +3270,9 @@ BEGIN
 
         SalesTypeId           INT                  NULL,
         PriceListId           BIGINT               NULL,
+        /* Set when the invoice was raised inside a POS drawer session; this is
+           the link used to reconcile expected closing cash. */
+        POSSessionId          BIGINT               NULL,
 
         ReferenceNo           NVARCHAR(50)         NULL,
         ReferenceDate         DATE                 NULL,
@@ -3174,11 +3302,13 @@ BEGIN
         UpdatedByUserID       BIGINT               NULL,
         UpdatedAt             DATETIME2            NULL,
 
-        CONSTRAINT UQ_SalesInvoice_No UNIQUE (CompanyId, SalesInvoiceNo)
+        CONSTRAINT UQ_SalesInvoice_No UNIQUE (CompanyId, SalesInvoiceNo),
+        CONSTRAINT FK_SalesInvoice_POSSession FOREIGN KEY (POSSessionId) REFERENCES dbo.POSSessions (POSSessionId)
     );
 
     CREATE INDEX IX_SalesInvoice_Company_Date ON dbo.SalesInvoice (CompanyId, InvoiceDate);
     CREATE INDEX IX_SalesInvoice_CustomerId ON dbo.SalesInvoice (CustomerId);
+    CREATE INDEX IX_SalesInvoice_POSSession ON dbo.SalesInvoice (POSSessionId);
 END
 ;
 
@@ -3822,9 +3952,14 @@ FROM (VALUES
     ('DEPARTMENT_MASTER',    'Department',      'MASTER', '/department',      'Department',         4, 1, 'system'),
     ('WAREHOUSE_MASTER',     'Warehouse',       'MASTER', '/warehouse',       'Warehouse',          5, 1, 'system'),
     ('DESIGNATION_MASTER',   'Designation',     'MASTER', '/designation',     'Designation',        6, 1, 'system'),
-    ('STORE_MASTER',         'Stores',          'MASTER', '/stores',          'StoresPage',         7, 1, 'system'),
-    ('COUNTER_MASTER',       'Counters',        'MASTER', '/counters',        'CountersPage',       8, 1, 'system'),
-    ('POS_SESSION_MASTER',   'POS Sessions',    'MASTER', '/pos-sessions',    'PosSessionsPage',    9, 1, 'system')
+    ('STORE_TYPE_MASTER',    'Store Types',     'MASTER', '/store-types',     'StoreTypesPage',     7, 1, 'system'),
+    ('STORE_MASTER',         'Stores',          'MASTER', '/stores',          'StoresPage',         8, 1, 'system'),
+    ('COUNTER_MASTER',       'Counters',        'MASTER', '/counters',        'CountersPage',       9, 1, 'system'),
+    ('OPERATOR_TYPE_MASTER', 'Operator Types',  'MASTER', '/operator-types',  'OperatorTypesPage',  10, 1, 'system'),
+    ('POS_SESSION_MASTER',   'POS Sessions',    'MASTER', '/pos-sessions',    'PosSessionsPage',    11, 1, 'system'),
+    ('OPERATOR_MASTER',      'Operators',       'MASTER', '/operators',       'OperatorsPage',      12, 1, 'system'),
+    ('COUNTER_ASSIGN_MASTER', 'Counter Assignments', 'MASTER', '/counter-assignments', 'CounterAssignmentsPage', 13, 1, 'system'),
+    ('SOURCE_MASTER',          'Sources',             'MASTER', '/sources',             'SourcesPage',             14, 1, 'system')
 ) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
 INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-ORGSETUP'
 WHERE NOT EXISTS (
@@ -4654,6 +4789,9 @@ CROSS JOIN (VALUES
     ('branch-types.view'), ('branch-types.manage'),
     ('warehouse-types.view'), ('warehouse-types.manage'),
     ('employment-types.view'), ('employment-types.manage'),
+    ('operator-types.view'), ('operator-types.manage'),
+    ('store-types.view'), ('store-types.manage'),
+    ('sources.view'), ('sources.manage'),
     ('employees.view'), ('employees.create'), ('employees.edit'), ('employees.delete'),
     ('currencies.view'), ('currencies.manage'),
     ('payment-types.view'), ('payment-types.manage'),
@@ -4973,29 +5111,7 @@ PRINT 'ERP module configuration seed complete.';
    Safe     : Re-runnable (IF NOT EXISTS guards on every object / column / FK).
    ============================================================================= */
 
-/* ---------------------------------------------------------------------------
-   Entity - common identity (COMPANY, BRANCH, WAREHOUSE, STORE, PRODUCT,
-            SERVICE, EMPLOYEE, CUSTOMER, SUPPLIER ...)
---------------------------------------------------------------------------- */
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Entity]') AND type = N'U')
-BEGIN
-    CREATE TABLE dbo.Entity (
-        EntityId   BIGINT IDENTITY(1,1)   NOT NULL CONSTRAINT PK_Entity PRIMARY KEY,
-        EntityType VARCHAR(30)            NOT NULL,
-        EntityCode VARCHAR(50)            NOT NULL,
-        EntityName VARCHAR(200)           NOT NULL,
-        IsActive   BIT                    NOT NULL CONSTRAINT DF_Entity_IsActive DEFAULT 1,
-        CreatedBy  BIGINT                 NULL,
-        CreatedAt  DATETIME               NOT NULL CONSTRAINT DF_Entity_CreatedAt DEFAULT GETDATE(),
-        ModifiedBy BIGINT                 NULL,
-        ModifiedAt DATETIME               NULL,
-        CONSTRAINT UQ_Entity_Type_Code UNIQUE (EntityType, EntityCode)
-    );
 
-    CREATE INDEX IX_Entity_EntityType ON dbo.Entity (EntityType);
-    CREATE INDEX IX_Entity_IsActive ON dbo.Entity (IsActive);
-END
-;
 
 /* ---------------------------------------------------------------------------
    Address - reusable postal address.
@@ -5265,11 +5381,6 @@ IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[St
     ALTER TABLE dbo.Stores ADD EntityId BIGINT NULL;
 IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Stores_Entity')
     ALTER TABLE dbo.Stores ADD CONSTRAINT FK_Stores_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = N'EntityId')
-    ALTER TABLE dbo.Products ADD EntityId BIGINT NULL;
-IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Products_Entity')
-    ALTER TABLE dbo.Products ADD CONSTRAINT FK_Products_Entity FOREIGN KEY (EntityId) REFERENCES dbo.Entity (EntityId);
 
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Services]') AND name = N'EntityId')
     ALTER TABLE dbo.Services ADD EntityId BIGINT NULL;
