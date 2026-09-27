@@ -451,6 +451,12 @@ public class Counter
     public DateTime? UpdatedAt { get; set; }
 }
 
+/// <summary>
+/// Operator session at a store counter.
+/// Hierarchy: Store &gt; Counter &gt; CounterAssignment &gt; Operator.
+/// CompanyId/BranchId are resolved from the Store; ExpectedClosingCash and
+/// CashDifference are system-controlled; Version carries optimistic concurrency.
+/// </summary>
 public class POSSession
 {
     public long POSSessionId { get; set; }
@@ -462,23 +468,75 @@ public class POSSession
     public string? StoreName { get; set; }
     public int? CounterId { get; set; }
     public string? CounterName { get; set; }
-    public int? CashierUserId { get; set; }
-    public string? CashierUserName { get; set; }
+    public int? CounterAssignmentId { get; set; }
+    public int? OperatorId { get; set; }
+    public string? OperatorNameSnapshot { get; set; }
     public string SessionNumber { get; set; } = string.Empty;
     public decimal OpeningCash { get; set; }
-    public decimal? ClosingCash { get; set; }
+    public decimal ExpectedClosingCash { get; set; }
+    public decimal ActualClosingCash { get; set; }
+    public decimal CashDifference { get; set; }
     public DateTime OpenedAt { get; set; }
+    public int? OpenedBy { get; set; }
     public DateTime? ClosedAt { get; set; }
+    public int? ClosedBy { get; set; }
+    public string? ClosingRemarks { get; set; }
     public byte Status { get; set; }
+    public byte[]? Version { get; set; }
     public int? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
 
+/// <summary>POS Operator linked to a User and OperatorType.</summary>
+public class Operator
+{
+    public int OperatorId { get; set; }
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int UserId { get; set; }
+    public int? OperatorTypeId { get; set; }
+    public string OperatorCode { get; set; } = string.Empty;
+    public string OperatorName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+/// <summary>Assignment of an Operator to a Counter with validity period.</summary>
+public class CounterAssignment
+{
+    public int AssignmentId { get; set; }
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int StoreId { get; set; }
+    public int CounterId { get; set; }
+    public int OperatorId { get; set; }
+    public bool IsPrimary { get; set; }
+    public DateTime? ValidFrom { get; set; }
+    public DateTime? ValidTo { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public int? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+
+    // Navigation properties (populated via JOIN)
+    public string? StoreName { get; set; }
+    public string? CounterCode { get; set; }
+    public string? CounterName { get; set; }
+    public string? OperatorCode { get; set; }
+    public string? OperatorName { get; set; }
+}
+
 /* ---------------------------------------------------------------------------
     Permission System Entities
-    --------------------------------------------------------------------------- */
+--------------------------------------------------------------------------- */
 
 public class PermissionModule
 {

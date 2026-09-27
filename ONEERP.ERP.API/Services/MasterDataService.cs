@@ -2,6 +2,7 @@ using ONEERP.ERP.API.DTOs;
 using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
 using ONEERP.Shared.Exceptions;
+using ONEERP.Shared.Models;
 
 namespace ONEERP.ERP.API.Services;
 
@@ -222,6 +223,7 @@ public class BusinessPartnerRoleService : IBusinessPartnerRoleService
 public interface IBusinessPartnerService
 {
     Task<IEnumerable<BusinessPartnerDto>> GetAllAsync(bool includeInactive = false);
+    Task<IEnumerable<BusinessPartnerDto>> GetByRoleCodeAsync(long companyId, string roleCode, bool includeInactive = false);
     Task<BusinessPartnerDto> GetByIdAsync(long id);
     Task<string> GetNextCodeAsync(string prefix = "BP");
     Task<BusinessPartnerDto> CreateAsync(CreateBusinessPartnerRequest request);
@@ -245,6 +247,12 @@ public class BusinessPartnerService : IBusinessPartnerService
     public async Task<IEnumerable<BusinessPartnerDto>> GetAllAsync(bool includeInactive = false)
     {
         var items = await _repository.GetAllAsync(_currentUser.CompanyId, includeInactive);
+        return items.Select(Map);
+    }
+
+    public async Task<IEnumerable<BusinessPartnerDto>> GetByRoleCodeAsync(long companyId, string roleCode, bool includeInactive = false)
+    {
+        var items = await _repository.GetByRoleCodeAsync(companyId, roleCode, includeInactive);
         return items.Select(Map);
     }
 
@@ -433,6 +441,357 @@ public class IndustryTypeService : IIndustryTypeService
     private static IndustryTypeDto Map(IndustryType entity) => new()
     {
         IndustryTypeId = entity.IndustryTypeId,
+        Name = entity.Name,
+        Description = entity.Description,
+        SortOrder = entity.SortOrder,
+        IsActive = entity.IsActive
+    };
+}
+
+public interface IStoreTypeService
+{
+    Task<IEnumerable<StoreTypeDto>> GetAllAsync(bool includeInactive = false);
+    Task<PaginatedResult<StoreTypeDto>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<StoreTypeDto> GetByIdAsync(int id);
+    Task<StoreTypeDto> CreateAsync(CreateStoreTypeRequest request);
+    Task<StoreTypeDto> UpdateAsync(int id, UpdateStoreTypeRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class StoreTypeService : IStoreTypeService
+{
+    private readonly IStoreTypeRepository _repository;
+    private readonly IAuditService _auditService;
+    private readonly ICurrentUser _currentUser;
+
+    public StoreTypeService(IStoreTypeRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    {
+        _repository = repository;
+        _auditService = auditService;
+        _currentUser = currentUser;
+    }
+
+    public async Task<IEnumerable<StoreTypeDto>> GetAllAsync(bool includeInactive = false)
+    {
+        var items = await _repository.GetAllAsync(includeInactive);
+        return items.Select(Map).ToList();
+    }
+
+    public async Task<PaginatedResult<StoreTypeDto>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
+        var normalizedSize = pageSize < 1 ? 10 : pageSize;
+        var normalizedSearch = search ?? string.Empty;
+        var items = await _repository.GetPagedAsync(normalizedPage, normalizedSize, normalizedSearch);
+        var total = await _repository.CountAsync(normalizedSearch);
+        return new PaginatedResult<StoreTypeDto>
+        {
+            Items = items.Select(Map).ToList(),
+            TotalCount = total,
+            PageNumber = normalizedPage,
+            PageSize = normalizedSize
+        };
+    }
+
+    public async Task<StoreTypeDto> GetByIdAsync(int id)
+    {
+        var item = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Store type '{id}' was not found.");
+        return Map(item);
+    }
+
+    public async Task<StoreTypeDto> CreateAsync(CreateStoreTypeRequest request)
+    {
+        var code = request.Code.Trim().ToUpperInvariant();
+        if (await _repository.GetByCodeAsync(code) is not null)
+            throw new DomainException($"A store type with code '{code}' already exists.");
+
+        var entity = new StoreType
+        {
+            Code = code,
+            Name = request.Name.Trim(),
+            Description = request.Description,
+            SortOrder = request.SortOrder,
+            IsActive = true,
+            CreatedBy = _currentUser.Username,
+            ModifiedBy = _currentUser.Username
+        };
+
+        entity.Id = await _repository.InsertAsync(entity);
+        await _auditService.WriteAsync("StoreType", entity.Id.ToString(), "Create", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<StoreTypeDto> UpdateAsync(int id, UpdateStoreTypeRequest request)
+    {
+        var entity = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Store type '{id}' was not found.");
+
+        var code = request.Code.Trim().ToUpperInvariant();
+        var duplicate = await _repository.GetByCodeAsync(code);
+        if (duplicate is not null && duplicate.Id != id)
+            throw new DomainException($"A store type with code '{code}' already exists.");
+
+        entity.Code = code;
+        entity.Name = request.Name.Trim();
+        entity.Description = request.Description;
+        entity.SortOrder = request.SortOrder;
+        entity.IsActive = request.IsActive;
+        entity.ModifiedBy = _currentUser.Username;
+
+        await _repository.UpdateAsync(entity);
+        await _auditService.WriteAsync("StoreType", id.ToString(), "Update", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var existing = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Store type '{id}' was not found.");
+
+        await _repository.SoftDeleteAsync(id, _currentUser.Username);
+        await _auditService.WriteAsync("StoreType", id.ToString(), "Delete", _currentUser.Username);
+        return true;
+    }
+
+    private static StoreTypeDto Map(StoreType entity) => new()
+    {
+        Id = entity.Id,
+        Code = entity.Code,
+        Name = entity.Name,
+        Description = entity.Description,
+        SortOrder = entity.SortOrder,
+        IsActive = entity.IsActive
+    };
+}
+
+public interface ISourceService
+{
+    Task<IEnumerable<SourceDto>> GetAllAsync(bool includeInactive = false);
+    Task<PaginatedResult<SourceDto>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<SourceDto> GetByIdAsync(int id);
+    Task<SourceDto> CreateAsync(CreateSourceRequest request);
+    Task<SourceDto> UpdateAsync(int id, UpdateSourceRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class SourceService : ISourceService
+{
+    private readonly ISourceRepository _repository;
+    private readonly IAuditService _auditService;
+    private readonly ICurrentUser _currentUser;
+
+    public SourceService(ISourceRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    {
+        _repository = repository;
+        _auditService = auditService;
+        _currentUser = currentUser;
+    }
+
+    public async Task<IEnumerable<SourceDto>> GetAllAsync(bool includeInactive = false)
+    {
+        var items = await _repository.GetAllAsync(includeInactive);
+        return items.Select(Map).ToList();
+    }
+
+    public async Task<PaginatedResult<SourceDto>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
+        var normalizedSize = pageSize < 1 ? 10 : pageSize;
+        var normalizedSearch = search ?? string.Empty;
+        var items = await _repository.GetPagedAsync(normalizedPage, normalizedSize, normalizedSearch);
+        var total = await _repository.CountAsync(normalizedSearch);
+        return new PaginatedResult<SourceDto>
+        {
+            Items = items.Select(Map).ToList(),
+            TotalCount = total,
+            PageNumber = normalizedPage,
+            PageSize = normalizedSize
+        };
+    }
+
+    public async Task<SourceDto> GetByIdAsync(int id)
+    {
+        var item = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Source '{id}' was not found.");
+        return Map(item);
+    }
+
+    public async Task<SourceDto> CreateAsync(CreateSourceRequest request)
+    {
+        var code = request.Code.Trim().ToUpperInvariant();
+        if (await _repository.GetByCodeAsync(code) is not null)
+            throw new DomainException($"A source with code '{code}' already exists.");
+
+        var entity = new Source
+        {
+            Code = code,
+            Name = request.Name.Trim(),
+            Description = request.Description,
+            SortOrder = request.SortOrder,
+            IsActive = true,
+            CreatedBy = _currentUser.Username,
+            ModifiedBy = _currentUser.Username
+        };
+
+        entity.Id = await _repository.InsertAsync(entity);
+        await _auditService.WriteAsync("Source", entity.Id.ToString(), "Create", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<SourceDto> UpdateAsync(int id, UpdateSourceRequest request)
+    {
+        var entity = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Source '{id}' was not found.");
+
+        var code = request.Code.Trim().ToUpperInvariant();
+        var duplicate = await _repository.GetByCodeAsync(code);
+        if (duplicate is not null && duplicate.Id != id)
+            throw new DomainException($"A source with code '{code}' already exists.");
+
+        entity.Code = code;
+        entity.Name = request.Name.Trim();
+        entity.Description = request.Description;
+        entity.SortOrder = request.SortOrder;
+        entity.IsActive = request.IsActive;
+        entity.ModifiedBy = _currentUser.Username;
+
+        await _repository.UpdateAsync(entity);
+        await _auditService.WriteAsync("Source", id.ToString(), "Update", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var existing = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Source '{id}' was not found.");
+
+        await _repository.SoftDeleteAsync(id, _currentUser.Username);
+        await _auditService.WriteAsync("Source", id.ToString(), "Delete", _currentUser.Username);
+        return true;
+    }
+
+    private static SourceDto Map(Source entity) => new()
+    {
+        Id = entity.Id,
+        Code = entity.Code,
+        Name = entity.Name,
+        Description = entity.Description,
+        SortOrder = entity.SortOrder,
+        IsActive = entity.IsActive
+    };
+}
+
+public interface IOperatorTypeService
+{
+    Task<IEnumerable<OperatorTypeDto>> GetAllAsync(bool includeInactive = false);
+    Task<PaginatedResult<OperatorTypeDto>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<OperatorTypeDto> GetByIdAsync(int id);
+    Task<OperatorTypeDto> CreateAsync(CreateOperatorTypeRequest request);
+    Task<OperatorTypeDto> UpdateAsync(int id, UpdateOperatorTypeRequest request);
+    Task<bool> DeleteAsync(int id);
+}
+
+public class OperatorTypeService : IOperatorTypeService
+{
+    private readonly IOperatorTypeRepository _repository;
+    private readonly IAuditService _auditService;
+    private readonly ICurrentUser _currentUser;
+
+    public OperatorTypeService(IOperatorTypeRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    {
+        _repository = repository;
+        _auditService = auditService;
+        _currentUser = currentUser;
+    }
+
+    public async Task<IEnumerable<OperatorTypeDto>> GetAllAsync(bool includeInactive = false)
+    {
+        var items = await _repository.GetAllAsync(includeInactive);
+        return items.Select(Map).ToList();
+    }
+
+    public async Task<PaginatedResult<OperatorTypeDto>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        var normalizedPage = pageNumber < 1 ? 1 : pageNumber;
+        var normalizedSize = pageSize < 1 ? 10 : pageSize;
+        var normalizedSearch = search ?? string.Empty;
+        var items = await _repository.GetPagedAsync(normalizedPage, normalizedSize, normalizedSearch);
+        var total = await _repository.CountAsync(normalizedSearch);
+        return new PaginatedResult<OperatorTypeDto>
+        {
+            Items = items.Select(Map).ToList(),
+            TotalCount = total,
+            PageNumber = normalizedPage,
+            PageSize = normalizedSize
+        };
+    }
+
+    public async Task<OperatorTypeDto> GetByIdAsync(int id)
+    {
+        var item = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Operator type '{id}' was not found.");
+        return Map(item);
+    }
+
+    public async Task<OperatorTypeDto> CreateAsync(CreateOperatorTypeRequest request)
+    {
+        var code = request.Code.Trim().ToUpperInvariant();
+        if (await _repository.GetByCodeAsync(code) is not null)
+            throw new DomainException($"An operator type with code '{code}' already exists.");
+
+        var entity = new OperatorType
+        {
+            Code = code,
+            Name = request.Name.Trim(),
+            Description = request.Description,
+            SortOrder = request.SortOrder,
+            IsActive = true,
+            CreatedBy = _currentUser.Username,
+            ModifiedBy = _currentUser.Username
+        };
+
+        entity.Id = await _repository.InsertAsync(entity);
+        await _auditService.WriteAsync("OperatorType", entity.Id.ToString(), "Create", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<OperatorTypeDto> UpdateAsync(int id, UpdateOperatorTypeRequest request)
+    {
+        var entity = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Operator type '{id}' was not found.");
+
+        var code = request.Code.Trim().ToUpperInvariant();
+        var duplicate = await _repository.GetByCodeAsync(code);
+        if (duplicate is not null && duplicate.Id != id)
+            throw new DomainException($"An operator type with code '{code}' already exists.");
+
+        entity.Code = code;
+        entity.Name = request.Name.Trim();
+        entity.Description = request.Description;
+        entity.SortOrder = request.SortOrder;
+        entity.IsActive = request.IsActive;
+        entity.ModifiedBy = _currentUser.Username;
+
+        await _repository.UpdateAsync(entity);
+        await _auditService.WriteAsync("OperatorType", id.ToString(), "Update", _currentUser.Username);
+        return Map(entity);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var existing = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Operator type '{id}' was not found.");
+
+        await _repository.SoftDeleteAsync(id, _currentUser.Username);
+        await _auditService.WriteAsync("OperatorType", id.ToString(), "Delete", _currentUser.Username);
+        return true;
+    }
+
+    private static OperatorTypeDto Map(OperatorType entity) => new()
+    {
+        Id = entity.Id,
+        Code = entity.Code,
         Name = entity.Name,
         Description = entity.Description,
         SortOrder = entity.SortOrder,

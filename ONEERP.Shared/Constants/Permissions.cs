@@ -70,6 +70,15 @@ public const string OrganizationTypesView = "organization-types.view";
     public const string EmploymentTypesView = "employment-types.view";
     public const string EmploymentTypesManage = "employment-types.manage";
 
+    public const string StoreTypesView = "store-types.view";
+    public const string StoreTypesManage = "store-types.manage";
+
+    public const string OperatorTypesView = "operator-types.view";
+    public const string OperatorTypesManage = "operator-types.manage";
+
+    public const string SourcesView = "sources.view";
+    public const string SourcesManage = "sources.manage";
+
     public const string BranchesView = "branches.view";
     public const string BranchesCreate = "branches.create";
     public const string BranchesEdit = "branches.edit";
@@ -114,6 +123,16 @@ public const string OrganizationTypesView = "organization-types.view";
         public const string POSSessionCreate = "pos-sessions.create";
         public const string POSSessionEdit = "pos-sessions.edit";
         public const string POSSessionDelete = "pos-sessions.delete";
+
+        public const string OperatorsView = "operators.view";
+        public const string OperatorsCreate = "operators.create";
+        public const string OperatorsEdit = "operators.edit";
+        public const string OperatorsDelete = "operators.delete";
+
+        public const string CounterAssignmentsView = "counter-assignments.view";
+        public const string CounterAssignmentsCreate = "counter-assignments.create";
+        public const string CounterAssignmentsEdit = "counter-assignments.edit";
+        public const string CounterAssignmentsDelete = "counter-assignments.delete";
 
         public const string ProductCategoriesView = "product-categories.view";
         public const string ProductCategoriesCreate = "product-categories.create";
@@ -270,6 +289,56 @@ public const string TaxesView = "taxes.view";
     public const string InvoiceTemplatesPrint = "invoice-templates.print";
     public const string InvoiceTemplatesExport = "invoice-templates.export";
 
+    public const string InvoiceTypesView = "invoice-types.view";
+    public const string InvoiceTypesCreate = "invoice-types.create";
+    public const string InvoiceTypesEdit = "invoice-types.edit";
+    public const string InvoiceTypesDelete = "invoice-types.delete";
+
+    public const string InvoicePaperSizesView = "invoice-paper-sizes.view";
+    public const string InvoicePaperSizesCreate = "invoice-paper-sizes.create";
+    public const string InvoicePaperSizesEdit = "invoice-paper-sizes.edit";
+    public const string InvoicePaperSizesDelete = "invoice-paper-sizes.delete";
+
+    public const string InvoiceTemplateCategoriesView = "invoice-template-categories.view";
+    public const string InvoiceTemplateCategoriesCreate = "invoice-template-categories.create";
+    public const string InvoiceTemplateCategoriesEdit = "invoice-template-categories.edit";
+    public const string InvoiceTemplateCategoriesDelete = "invoice-template-categories.delete";
+
+    public const string InvoiceTemplateComponentsView = "invoice-template-components.view";
+    public const string InvoiceTemplateComponentsCreate = "invoice-template-components.create";
+    public const string InvoiceTemplateComponentsEdit = "invoice-template-components.edit";
+    public const string InvoiceTemplateComponentsDelete = "invoice-template-components.delete";
+
+    public const string InvoiceTemplateVariablesView = "invoice-template-variables.view";
+    public const string InvoiceTemplateVariablesCreate = "invoice-template-variables.create";
+    public const string InvoiceTemplateVariablesEdit = "invoice-template-variables.edit";
+    public const string InvoiceTemplateVariablesDelete = "invoice-template-variables.delete";
+
+    public const string InvoiceFontsView = "invoice-fonts.view";
+    public const string InvoiceFontsCreate = "invoice-fonts.create";
+    public const string InvoiceFontsEdit = "invoice-fonts.edit";
+    public const string InvoiceFontsDelete = "invoice-fonts.delete";
+
+    public const string PrintOrientationsView = "print-orientations.view";
+    public const string PrintOrientationsCreate = "print-orientations.create";
+    public const string PrintOrientationsEdit = "print-orientations.edit";
+    public const string PrintOrientationsDelete = "print-orientations.delete";
+
+    public const string PrintUnitsView = "print-units.view";
+    public const string PrintUnitsCreate = "print-units.create";
+    public const string PrintUnitsEdit = "print-units.edit";
+    public const string PrintUnitsDelete = "print-units.delete";
+
+    public const string PrinterTypesView = "printer-types.view";
+    public const string PrinterTypesCreate = "printer-types.create";
+    public const string PrinterTypesEdit = "printer-types.edit";
+    public const string PrinterTypesDelete = "printer-types.delete";
+
+    public const string PrinterModelsView = "printer-models.view";
+    public const string PrinterModelsCreate = "printer-models.create";
+    public const string PrinterModelsEdit = "printer-models.edit";
+    public const string PrinterModelsDelete = "printer-models.delete";
+
     public const string AuditView = "audit.view";
     public const string ProfileEdit = "profile.edit";
 
@@ -301,6 +370,9 @@ public const string TaxesView = "taxes.view";
         BranchTypesView, BranchTypesManage,
         WarehouseTypesView, WarehouseTypesManage,
         EmploymentTypesView, EmploymentTypesManage,
+        StoreTypesView, StoreTypesManage,
+        OperatorTypesView, OperatorTypesManage,
+        SourcesView, SourcesManage,
         BranchesView, BranchesCreate, BranchesEdit, BranchesDelete,
         DepartmentsView, DepartmentsCreate, DepartmentsEdit, DepartmentsDelete,
         DesignationsView, DesignationsCreate, DesignationsEdit, DesignationsDelete,
@@ -310,6 +382,8 @@ public const string TaxesView = "taxes.view";
         FinancialYearsView, FinancialYearsCreate, FinancialYearsEdit, FinancialYearsDelete,
         CountersView, CountersCreate, CountersEdit, CountersDelete,
         POSSessionView, POSSessionCreate, POSSessionEdit, POSSessionDelete,
+        OperatorsView, OperatorsCreate, OperatorsEdit, OperatorsDelete,
+        CounterAssignmentsView, CounterAssignmentsCreate, CounterAssignmentsEdit, CounterAssignmentsDelete,
          ProductCategoriesView, ProductCategoriesCreate, ProductCategoriesEdit, ProductCategoriesDelete,
          ProductSubCategoriesView, ProductSubCategoriesCreate, ProductSubCategoriesEdit, ProductSubCategoriesDelete,
          BrandsView, BrandsCreate, BrandsEdit, BrandsDelete,
@@ -348,6 +422,15 @@ public const string TaxesView = "taxes.view";
         InvoiceTemplatesView, InvoiceTemplatesCreate, InvoiceTemplatesEdit, InvoiceTemplatesDelete,
         InvoiceTemplatesDuplicate, InvoiceTemplatesPreview, InvoiceTemplatesPublish,
         InvoiceTemplatesAssign, InvoiceTemplatesPrint, InvoiceTemplatesExport,
+        InvoiceTypesView, InvoiceTypesCreate, InvoiceTypesEdit, InvoiceTypesDelete,
+        InvoicePaperSizesView, InvoicePaperSizesCreate, InvoicePaperSizesEdit, InvoicePaperSizesDelete,
+        InvoiceTemplateCategoriesView, InvoiceTemplateCategoriesCreate, InvoiceTemplateCategoriesEdit, InvoiceTemplateCategoriesDelete,
+        InvoiceTemplateComponentsView, InvoiceTemplateComponentsCreate, InvoiceTemplateComponentsEdit, InvoiceTemplateComponentsDelete,
+        InvoiceTemplateVariablesView, InvoiceTemplateVariablesCreate, InvoiceTemplateVariablesEdit, InvoiceTemplateVariablesDelete,
+        InvoiceFontsView, InvoiceFontsCreate, InvoiceFontsEdit, InvoiceFontsDelete,
+        PrintOrientationsView, PrintOrientationsCreate, PrintOrientationsEdit, PrintOrientationsDelete,
+        PrinterTypesView, PrinterTypesCreate, PrinterTypesEdit, PrinterTypesDelete,
+        PrinterModelsView, PrinterModelsCreate, PrinterModelsEdit, PrinterModelsDelete,
         AuditView, ProfileEdit,
         PermissionModulesView, PermissionModulesManage,
         PermissionActionsView, PermissionActionsManage

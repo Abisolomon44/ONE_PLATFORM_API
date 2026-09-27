@@ -221,6 +221,225 @@ public class IndustryTypesController : BaseController
 }
 
 [Authorize]
+[Route("api/store-types")]
+public class StoreTypesController : BaseController
+{
+    private readonly IStoreTypeService _service;
+    private readonly IValidator<CreateStoreTypeRequest> _createValidator;
+    private readonly IValidator<UpdateStoreTypeRequest> _updateValidator;
+
+    public StoreTypesController(
+        IStoreTypeService service,
+        IValidator<CreateStoreTypeRequest> createValidator,
+        IValidator<UpdateStoreTypeRequest> updateValidator)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+    }
+
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResult<StoreTypeDto>>), 200)]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string search = "")
+    {
+        var result = await _service.GetPagedAsync(page, size, search);
+        return Ok(ApiResponse<PaginatedResult<StoreTypeDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<StoreTypeDto>), 200)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<StoreTypeDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.StoreTypesManage)]
+    [ProducesResponseType(typeof(ApiResponse<StoreTypeDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreateStoreTypeRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<StoreTypeDto>.Fail("Validation failed", errors));
+
+        var result = await _service.CreateAsync(request);
+        return Ok(ApiResponse<StoreTypeDto>.Ok(result, "Store type created successfully"));
+    }
+
+    [HttpPut("{id:int}")]
+    [Permission(Permissions.StoreTypesManage)]
+    [ProducesResponseType(typeof(ApiResponse<StoreTypeDto>), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateStoreTypeRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<StoreTypeDto>.Fail("Validation failed", errors));
+
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(ApiResponse<StoreTypeDto>.Ok(result, "Store type updated successfully"));
+    }
+
+    [HttpDelete("{id:int}")]
+    [Permission(Permissions.StoreTypesManage)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Store type deleted successfully"));
+    }
+}
+
+[Authorize]
+[Route("api/sources")]
+public class SourcesController : BaseController
+{
+    private readonly ISourceService _service;
+    private readonly IValidator<CreateSourceRequest> _createValidator;
+    private readonly IValidator<UpdateSourceRequest> _updateValidator;
+
+    public SourcesController(
+        ISourceService service,
+        IValidator<CreateSourceRequest> createValidator,
+        IValidator<UpdateSourceRequest> updateValidator)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+    }
+
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResult<SourceDto>>), 200)]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string search = "")
+    {
+        var result = await _service.GetPagedAsync(page, size, search);
+        return Ok(ApiResponse<PaginatedResult<SourceDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<SourceDto>), 200)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<SourceDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.SourcesManage)]
+    [ProducesResponseType(typeof(ApiResponse<SourceDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreateSourceRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<SourceDto>.Fail("Validation failed", errors));
+
+        var result = await _service.CreateAsync(request);
+        return Ok(ApiResponse<SourceDto>.Ok(result, "Source created successfully"));
+    }
+
+    [HttpPut("{id:int}")]
+    [Permission(Permissions.SourcesManage)]
+    [ProducesResponseType(typeof(ApiResponse<SourceDto>), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateSourceRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<SourceDto>.Fail("Validation failed", errors));
+
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(ApiResponse<SourceDto>.Ok(result, "Source updated successfully"));
+    }
+
+    [HttpDelete("{id:int}")]
+    [Permission(Permissions.SourcesManage)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Source deleted successfully"));
+    }
+}
+
+[Authorize]
+[Route("api/operator-types")]
+public class OperatorTypesController : BaseController
+{
+    private readonly IOperatorTypeService _service;
+    private readonly IValidator<CreateOperatorTypeRequest> _createValidator;
+    private readonly IValidator<UpdateOperatorTypeRequest> _updateValidator;
+
+    public OperatorTypesController(
+        IOperatorTypeService service,
+        IValidator<CreateOperatorTypeRequest> createValidator,
+        IValidator<UpdateOperatorTypeRequest> updateValidator)
+    {
+        _service = service;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
+    }
+
+    // No [Permission] gate: simple lookup used to populate dropdowns app-wide.
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResult<OperatorTypeDto>>), 200)]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string search = "")
+    {
+        var result = await _service.GetPagedAsync(page, size, search);
+        return Ok(ApiResponse<PaginatedResult<OperatorTypeDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<OperatorTypeDto>), 200)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(ApiResponse<OperatorTypeDto>.Ok(result));
+    }
+
+    [HttpPost]
+    [Permission(Permissions.OperatorTypesManage)]
+    [ProducesResponseType(typeof(ApiResponse<OperatorTypeDto>), 200)]
+    public async Task<IActionResult> Create([FromBody] CreateOperatorTypeRequest request)
+    {
+        var errors = await ValidateAsync(_createValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<OperatorTypeDto>.Fail("Validation failed", errors));
+
+        var result = await _service.CreateAsync(request);
+        return Ok(ApiResponse<OperatorTypeDto>.Ok(result, "Operator type created successfully"));
+    }
+
+    [HttpPut("{id:int}")]
+    [Permission(Permissions.OperatorTypesManage)]
+    [ProducesResponseType(typeof(ApiResponse<OperatorTypeDto>), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateOperatorTypeRequest request)
+    {
+        var errors = await ValidateAsync(_updateValidator, request);
+        if (errors.Count > 0)
+            return BadRequest(ApiResponse<OperatorTypeDto>.Fail("Validation failed", errors));
+
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(ApiResponse<OperatorTypeDto>.Ok(result, "Operator type updated successfully"));
+    }
+
+    [HttpDelete("{id:int}")]
+    [Permission(Permissions.OperatorTypesManage)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(ApiResponse.Ok("Operator type deleted successfully"));
+    }
+}
+
+[Authorize]
 [Route("api/company-groups")]
 public class CompanyGroupsController : BaseController
 {

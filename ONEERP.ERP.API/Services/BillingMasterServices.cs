@@ -1282,8 +1282,11 @@ public class PriceListDetailService : IPriceListDetailService
         await EnsurePriceListAsync(companyId, priceListId);
 
         var duplicates = request.Items
-            .Where(i => request.Items.Any(o => o != i && o.ProductId == i.ProductId && o.UnitId == i.UnitId))
-            .Select(i => $"product {i.ProductId}")
+            .Where(i => request.Items.Any(o => o != i 
+                && o.ProductId == i.ProductId 
+                && o.UnitId == i.UnitId 
+                && o.PriceTypeId == i.PriceTypeId))
+            .Select(i => $"product {i.ProductId} price type {i.PriceTypeId}")
             .Distinct()
             .ToList();
         if (duplicates.Count > 0)

@@ -197,6 +197,375 @@ public class IndustryTypeRepository : TenantRepositoryBase, IIndustryTypeReposit
     }
 }
 
+public interface IStoreTypeRepository
+{
+    Task<IEnumerable<StoreType>> GetAllAsync(bool includeInactive = false);
+    Task<IEnumerable<StoreType>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<int> CountAsync(string search);
+    Task<StoreType?> GetByIdAsync(int id);
+    Task<StoreType?> GetByCodeAsync(string code);
+    Task<int> InsertAsync(StoreType entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> UpdateAsync(StoreType entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+}
+
+public class StoreTypeRepository : TenantRepositoryBase, IStoreTypeRepository
+{
+    public StoreTypeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<StoreType>> GetAllAsync(bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.StoreTypes WHERE IsDeleted = 0 ORDER BY SortOrder, [Name]"
+            : "SELECT * FROM dbo.StoreTypes WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY SortOrder, [Name]";
+        return await Sql.QueryAsync<StoreType>(connection, sql);
+    }
+
+    public async Task<IEnumerable<StoreType>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        using var connection = OpenTenant();
+        var offset = (pageNumber - 1) * pageSize;
+        return await Sql.QueryAsync<StoreType>(connection, @"
+            SELECT * FROM dbo.StoreTypes
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')
+            ORDER BY SortOrder, [Name]
+            OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
+            new { search, offset, pageSize });
+    }
+
+    public async Task<int> CountAsync(string search)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteScalarAsync<int>(connection, @"
+            SELECT COUNT(1) FROM dbo.StoreTypes
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')",
+            new { search });
+    }
+
+    public async Task<StoreType?> GetByIdAsync(int id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<StoreType>(connection,
+            "SELECT * FROM dbo.StoreTypes WHERE Id = @id AND IsDeleted = 0", new { id });
+    }
+
+    public async Task<StoreType?> GetByCodeAsync(string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<StoreType>(connection,
+            "SELECT * FROM dbo.StoreTypes WHERE Code = @code AND IsDeleted = 0", new { code });
+    }
+
+    public async Task<int> InsertAsync(StoreType entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                INSERT INTO dbo.StoreTypes (Code, [Name], [Description], SortOrder, IsActive, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@Code, @Name, @Description, @SortOrder, @IsActive, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                SELECT CAST(SCOPE_IDENTITY() AS int);";
+            return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity, transaction);
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> UpdateAsync(StoreType entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                UPDATE dbo.StoreTypes
+                SET Code = @Code,
+                    [Name] = @Name,
+                    [Description] = @Description,
+                    SortOrder = @SortOrder,
+                    IsActive = @IsActive,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = SYSUTCDATETIME()
+                WHERE Id = @Id;";
+            return await Sql.ExecuteAsync(conn, sql, entity, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = "UPDATE dbo.StoreTypes SET IsDeleted = 1, IsActive = 0, ModifiedBy = @modifiedBy, ModifiedDate = SYSUTCDATETIME() WHERE Id = @id;";
+            return await Sql.ExecuteAsync(conn, sql, new { id, modifiedBy }, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+}
+
+public interface ISourceRepository
+{
+    Task<IEnumerable<Source>> GetAllAsync(bool includeInactive = false);
+    Task<IEnumerable<Source>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<int> CountAsync(string search);
+    Task<Source?> GetByIdAsync(int id);
+    Task<Source?> GetByCodeAsync(string code);
+    Task<int> InsertAsync(Source entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> UpdateAsync(Source entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+}
+
+public class SourceRepository : TenantRepositoryBase, ISourceRepository
+{
+    public SourceRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<Source>> GetAllAsync(bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.Sources WHERE IsDeleted = 0 ORDER BY SortOrder, [Name]"
+            : "SELECT * FROM dbo.Sources WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY SortOrder, [Name]";
+        return await Sql.QueryAsync<Source>(connection, sql);
+    }
+
+    public async Task<IEnumerable<Source>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        using var connection = OpenTenant();
+        var offset = (pageNumber - 1) * pageSize;
+        return await Sql.QueryAsync<Source>(connection, @"
+            SELECT * FROM dbo.Sources
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')
+            ORDER BY SortOrder, [Name]
+            OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
+            new { search, offset, pageSize });
+    }
+
+    public async Task<int> CountAsync(string search)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteScalarAsync<int>(connection, @"
+            SELECT COUNT(1) FROM dbo.Sources
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')",
+            new { search });
+    }
+
+    public async Task<Source?> GetByIdAsync(int id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<Source>(connection,
+            "SELECT * FROM dbo.Sources WHERE Id = @id AND IsDeleted = 0", new { id });
+    }
+
+    public async Task<Source?> GetByCodeAsync(string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<Source>(connection,
+            "SELECT * FROM dbo.Sources WHERE Code = @code AND IsDeleted = 0", new { code });
+    }
+
+    public async Task<int> InsertAsync(Source entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                INSERT INTO dbo.Sources (Code, [Name], [Description], SortOrder, IsActive, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@Code, @Name, @Description, @SortOrder, @IsActive, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                SELECT CAST(SCOPE_IDENTITY() AS int);";
+            return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity, transaction);
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> UpdateAsync(Source entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                UPDATE dbo.Sources
+                SET Code = @Code,
+                    [Name] = @Name,
+                    [Description] = @Description,
+                    SortOrder = @SortOrder,
+                    IsActive = @IsActive,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = SYSUTCDATETIME()
+                WHERE Id = @Id;";
+            return await Sql.ExecuteAsync(conn, sql, entity, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = "UPDATE dbo.Sources SET IsDeleted = 1, IsActive = 0, ModifiedBy = @modifiedBy, ModifiedDate = SYSUTCDATETIME() WHERE Id = @id;";
+            return await Sql.ExecuteAsync(conn, sql, new { id, modifiedBy }, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+}
+
+public interface IOperatorTypeRepository
+{
+    Task<IEnumerable<OperatorType>> GetAllAsync(bool includeInactive = false);
+    Task<IEnumerable<OperatorType>> GetPagedAsync(int pageNumber, int pageSize, string search);
+    Task<int> CountAsync(string search);
+    Task<OperatorType?> GetByIdAsync(int id);
+    Task<OperatorType?> GetByCodeAsync(string code);
+    Task<int> InsertAsync(OperatorType entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> UpdateAsync(OperatorType entity, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+}
+
+public class OperatorTypeRepository : TenantRepositoryBase, IOperatorTypeRepository
+{
+    public OperatorTypeRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
+        : base(sql, accessor, platformFactory)
+    {
+    }
+
+    public async Task<IEnumerable<OperatorType>> GetAllAsync(bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        var sql = includeInactive
+            ? "SELECT * FROM dbo.OperatorTypes WHERE IsDeleted = 0 ORDER BY SortOrder, [Name]"
+            : "SELECT * FROM dbo.OperatorTypes WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY SortOrder, [Name]";
+        return await Sql.QueryAsync<OperatorType>(connection, sql);
+    }
+
+    public async Task<IEnumerable<OperatorType>> GetPagedAsync(int pageNumber, int pageSize, string search)
+    {
+        using var connection = OpenTenant();
+        var offset = (pageNumber - 1) * pageSize;
+        return await Sql.QueryAsync<OperatorType>(connection, @"
+            SELECT * FROM dbo.OperatorTypes
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')
+            ORDER BY SortOrder, [Name]
+            OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
+            new { search, offset, pageSize });
+    }
+
+    public async Task<int> CountAsync(string search)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteScalarAsync<int>(connection, @"
+            SELECT COUNT(1) FROM dbo.OperatorTypes
+            WHERE IsDeleted = 0
+              AND (@search = '' OR Code LIKE '%' + @search + '%' OR [Name] LIKE '%' + @search + '%' OR [Description] LIKE '%' + @search + '%')",
+            new { search });
+    }
+
+    public async Task<OperatorType?> GetByIdAsync(int id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<OperatorType>(connection,
+            "SELECT * FROM dbo.OperatorTypes WHERE Id = @id AND IsDeleted = 0", new { id });
+    }
+
+    public async Task<OperatorType?> GetByCodeAsync(string code)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<OperatorType>(connection,
+            "SELECT * FROM dbo.OperatorTypes WHERE Code = @code AND IsDeleted = 0", new { code });
+    }
+
+    public async Task<int> InsertAsync(OperatorType entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                INSERT INTO dbo.OperatorTypes (Code, [Name], [Description], SortOrder, IsActive, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+                VALUES (@Code, @Name, @Description, @SortOrder, @IsActive, @CreatedBy, SYSUTCDATETIME(), @ModifiedBy, SYSUTCDATETIME());
+                SELECT CAST(SCOPE_IDENTITY() AS int);";
+            return await Sql.QuerySingleOrDefaultAsync<int>(conn, sql, entity, transaction);
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> UpdateAsync(OperatorType entity, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = @"
+                UPDATE dbo.OperatorTypes
+                SET Code = @Code,
+                    [Name] = @Name,
+                    [Description] = @Description,
+                    SortOrder = @SortOrder,
+                    IsActive = @IsActive,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = SYSUTCDATETIME()
+                WHERE Id = @Id;";
+            return await Sql.ExecuteAsync(conn, sql, entity, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+
+    public async Task<bool> SoftDeleteAsync(int id, string? modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    {
+        var conn = connection ?? OpenTenant();
+        var own = connection is null;
+        try
+        {
+            const string sql = "UPDATE dbo.OperatorTypes SET IsDeleted = 1, IsActive = 0, ModifiedBy = @modifiedBy, ModifiedDate = SYSUTCDATETIME() WHERE Id = @id;";
+            return await Sql.ExecuteAsync(conn, sql, new { id, modifiedBy }, transaction) > 0;
+        }
+        finally
+        {
+            if (own) conn.Dispose();
+        }
+    }
+}
+
 public interface IBusinessPartnerRoleRepository
 {
     Task<IEnumerable<BusinessPartnerRole>> GetAllAsync(bool includeInactive = false);
@@ -297,6 +666,7 @@ public class BusinessPartnerRoleRepository : TenantRepositoryBase, IBusinessPart
 public interface IBusinessPartnerRepository
 {
     Task<IEnumerable<BusinessPartner>> GetAllAsync(long companyId, bool includeInactive = false);
+    Task<IEnumerable<BusinessPartner>> GetByRoleCodeAsync(long companyId, string roleCode, bool includeInactive = false);
     Task<BusinessPartner?> GetByIdAsync(long id);
     Task<BusinessPartner?> GetByCodeAsync(long companyId, string code);
     Task<string> GetNextCodeAsync(long companyId, string prefix = "BP");
@@ -317,6 +687,23 @@ public class BusinessPartnerRepository : TenantRepositoryBase, IBusinessPartnerR
         using var connection = OpenTenant();
         var sql = "SELECT * FROM dbo.BusinessPartners WHERE CompanyId = @companyId AND (IsActive = 1 OR @includeInactive = 1) ORDER BY PartnerName";
         return await Sql.QueryAsync<BusinessPartner>(connection, sql, new { companyId, includeInactive });
+    }
+
+    public async Task<IEnumerable<BusinessPartner>> GetByRoleCodeAsync(long companyId, string roleCode, bool includeInactive = false)
+    {
+        using var connection = OpenTenant();
+        const string sql = @"
+            SELECT bp.* FROM dbo.BusinessPartners bp
+            WHERE bp.CompanyId = @companyId
+              AND (bp.IsActive = 1 OR @includeInactive = 1)
+              AND EXISTS (
+                  SELECT 1 FROM dbo.BusinessPartnerRoles r
+                  WHERE r.[Code] = @roleCode
+                    AND (',' + REPLACE(ISNULL(bp.PatnerRoleIds, ''), ' ', '') + ',')
+                        LIKE '%,' + CAST(r.BusinessPartnerRoleId AS VARCHAR(11)) + ',%'
+              )
+            ORDER BY bp.PartnerName";
+        return await Sql.QueryAsync<BusinessPartner>(connection, sql, new { companyId, roleCode, includeInactive });
     }
 
     public async Task<BusinessPartner?> GetByIdAsync(long id)

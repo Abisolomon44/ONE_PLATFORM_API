@@ -247,6 +247,72 @@ public class UpdateIndustryTypeRequestValidator : AbstractValidator<DTOs.UpdateI
     }
 }
 
+public class CreateStoreTypeRequestValidator : AbstractValidator<DTOs.CreateStoreTypeRequest>
+{
+    public CreateStoreTypeRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateStoreTypeRequestValidator : AbstractValidator<DTOs.UpdateStoreTypeRequest>
+{
+    public UpdateStoreTypeRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class CreateOperatorTypeRequestValidator : AbstractValidator<DTOs.CreateOperatorTypeRequest>
+{
+    public CreateOperatorTypeRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateOperatorTypeRequestValidator : AbstractValidator<DTOs.UpdateOperatorTypeRequest>
+{
+    public UpdateOperatorTypeRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class CreateSourceRequestValidator : AbstractValidator<DTOs.CreateSourceRequest>
+{
+    public CreateSourceRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateSourceRequestValidator : AbstractValidator<DTOs.UpdateSourceRequest>
+{
+    public UpdateSourceRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Description).MaximumLength(250);
+        RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);
+    }
+}
+
 public class CreateCompanyGroupRequestValidator : AbstractValidator<DTOs.CreateCompanyGroupRequest>
 {
     public CreateCompanyGroupRequestValidator()

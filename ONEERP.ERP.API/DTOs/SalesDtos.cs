@@ -74,6 +74,8 @@ public class SalesInvoiceDto
 
     public int? SalesTypeId { get; set; }
     public long? PriceListId { get; set; }
+    public long? FinancialYearId { get; set; }
+    public long? POSSessionId { get; set; }
     public string? ReferenceNo { get; set; }
     public DateTime? ReferenceDate { get; set; }
 
@@ -127,6 +129,24 @@ public class CreateSalesPaymentInput
     public string? Remarks { get; set; }
 }
 
+public class SalesProductSearchDto
+{
+    public long ProductId { get; set; }
+    public string? ProductCode { get; set; }
+    public string? ProductName { get; set; }
+    public string? Barcode { get; set; }
+    public long UnitId { get; set; }
+    public string? UnitName { get; set; }
+    public long? HSNID { get; set; }
+    public string? HSNCode { get; set; }
+    public long? TaxId { get; set; }
+    public decimal TaxRate { get; set; }
+    public decimal Price { get; set; }
+    public decimal AvailableQuantity { get; set; }
+    public bool InStock { get; set; }
+    public bool IsStockItem { get; set; }
+}
+
 public record CreateSalesRequest(
     long BranchId,
     long WarehouseId,
@@ -136,6 +156,8 @@ public record CreateSalesRequest(
     string SourceType = "SALES",
     int? SalesTypeId = null,
     long? PriceListId = null,
+    long? FinancialYearId = null,
+    long? POSSessionId = null,
     string? ReferenceNo = null,
     string? ReferenceDate = null,
     long? PaymentTypeID = null,
@@ -143,6 +165,7 @@ public record CreateSalesRequest(
     string? Remarks = null,
     List<CreateSalesItemInput> Items = null!,
     CreateSalesPaymentInput? Payment = null,
+    List<CreateSalesPaymentInput>? Payments = null,
     long CompanyId = 0);
 
 public record UpdateSalesRequest(
@@ -159,4 +182,6 @@ public record UpdateSalesRequest(
     long? PaymentMethodID,
     string? Remarks,
     List<CreateSalesItemInput> Items,
-    long CompanyId = 0);
+    long CompanyId = 0,
+    long? FinancialYearId = null,
+    long? POSSessionId = null);

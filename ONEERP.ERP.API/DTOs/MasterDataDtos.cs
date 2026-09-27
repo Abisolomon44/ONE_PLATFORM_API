@@ -103,6 +103,54 @@ public class IndustryTypeDto
     public bool IsActive { get; set; }
 }
 
+/* ---------------- StoreTypes ---------------- */
+
+public record CreateStoreTypeRequest(string Code, string Name, string? Description, int SortOrder = 1);
+
+public record UpdateStoreTypeRequest(string Code, string Name, string? Description, int SortOrder, bool IsActive);
+
+public class StoreTypeDto
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}
+
+/* ---------------- OperatorTypes ---------------- */
+
+public record CreateOperatorTypeRequest(string Code, string Name, string? Description, int SortOrder = 1);
+
+public record UpdateOperatorTypeRequest(string Code, string Name, string? Description, int SortOrder, bool IsActive);
+
+public class OperatorTypeDto
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}
+
+/* ---------------- Sources ---------------- */
+
+public record CreateSourceRequest(string Code, string Name, string? Description, int SortOrder = 1);
+
+public record UpdateSourceRequest(string Code, string Name, string? Description, int SortOrder, bool IsActive);
+
+public class SourceDto
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; }
+}
+
 /* ---------------- CompanyGroups ---------------- */
 
 public record CreateCompanyGroupRequest(

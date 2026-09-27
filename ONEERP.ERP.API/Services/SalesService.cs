@@ -15,6 +15,8 @@ public interface ISalesService
     Task<List<StockTransaction>> GetStockTransactionsAsync(long id);
     Task<string> GetNextSalesNoAsync(long companyId);
     Task<List<ProductStockDto>> GetStockAvailabilityAsync(long companyId, long productId);
+    Task<List<SalesProductSearchDto>> SearchProductsAsync(long companyId, long branchId, long warehouseId, long? priceListId, string search, int size, bool includeOutOfStock);
+    Task<SalesInvoicePrintDto?> GetPrintDataAsync(long salesInvoiceId);
     Task<SalesInvoiceDto> CreateAsync(long companyId, long userId, CreateSalesRequest request);
     Task<SalesInvoiceDto> UpdateAsync(long id, long userId, UpdateSalesRequest request);
     Task DeleteAsync(long id);
@@ -28,6 +30,7 @@ public class SalesService : ISalesService
     private readonly IProductUnitService _unitService;
     private readonly IBusinessPartnerService _businessPartnerService;
     private readonly ICompanyService _companyService;
+    private readonly IFinancialYearRepository _financialYearRepository;
 
     public SalesService(
         ISalesRepository repo,
@@ -35,7 +38,8 @@ public class SalesService : ISalesService
         IProductService productService,
         IProductUnitService unitService,
         IBusinessPartnerService businessPartnerService,
-        ICompanyService companyService)
+        ICompanyService companyService,
+        IFinancialYearRepository financialYearRepository)
     {
         _repo = repo;
         _statusRepo = statusRepo;
@@ -43,6 +47,39 @@ public class SalesService : ISalesService
         _unitService = unitService;
         _businessPartnerService = businessPartnerService;
         _companyService = companyService;
+        _financialYearRepository = financialYearRepository;
+    }
+
+    private static List<CreateSalesPaymentInput>? ResolvePayments(
+        List<CreateSalesPaymentInput>? payments, CreateSalesPaymentInput? single)
+    {
+        if (payments is { Count: > 0 }) return payments;
+        return single is not null ? new List<CreateSalesPaymentInput> { single } : null;
+    }
+
+    private async Task<long> ResolveFinancialYearIdAsync(long companyId, DateTime invoiceDate, long? requested)
+    {
+        FinancialYear? year;
+        if (requested.HasValue && requested.Value > 0)
+        {
+            year = await _financialYearRepository.GetByIdAsync(requested.Value)
+                ?? throw new DomainException($"Financial year '{requested.Value}' was not found.");
+            if (year.CompanyId != (int)companyId)
+                throw new DomainException($"Financial year '{year.Code}' belongs to a different company.");
+        }
+        else
+        {
+            year = await _financialYearRepository.GetForDateAsync((int)companyId, invoiceDate)
+                ?? throw new DomainException(
+                    $"No financial year is defined for {invoiceDate:dd MMM yyyy}. Define one before raising sales.");
+        }
+
+        if (year.IsClosed)
+            throw new DomainException($"Financial year '{year.Code}' is closed and cannot accept new sales.");
+        if (!year.IsActive)
+            throw new DomainException($"Financial year '{year.Code}' is inactive.");
+
+        return year.FinancialYearId;
     }
 
     public async Task<PaginatedResult<SalesInvoiceDto>> GetPagedAsync(long companyId, int page, int size, string search)
@@ -75,6 +112,12 @@ public class SalesService : ISalesService
     public Task<List<ProductStockDto>> GetStockAvailabilityAsync(long companyId, long productId)
         => _repo.GetStockAvailabilityAsync(companyId, productId);
 
+    public Task<SalesInvoicePrintDto?> GetPrintDataAsync(long salesInvoiceId) => _repo.GetPrintDataAsync(salesInvoiceId);
+
+    public Task<List<SalesProductSearchDto>> SearchProductsAsync(
+        long companyId, long branchId, long warehouseId, long? priceListId, string search, int size, bool includeOutOfStock)
+        => _repo.SearchProductsAsync(companyId, branchId, warehouseId, priceListId, search, size, includeOutOfStock);
+
     public async Task<SalesInvoiceDto> CreateAsync(long companyId, long userId, CreateSalesRequest r)
     {
         var effectiveCompanyId = r.CompanyId > 0 ? r.CompanyId : companyId;
@@ -82,7 +125,9 @@ public class SalesService : ISalesService
             r.InvoiceNumber, r.InvoiceDate, r.SourceType, r.SalesTypeId, r.PriceListId,
             r.ReferenceNo, r.ReferenceDate, r.PaymentTypeID, r.PaymentMethodID, r.Remarks, r.Items, "POSTED");
         entity.CompanyNameSnapshot = await GetCompanyNameAsync(effectiveCompanyId);
-        await _repo.InsertAsync(entity, r.Payment);
+        entity.POSSessionId = r.POSSessionId;
+        entity.FinancialYearId = await ResolveFinancialYearIdAsync(effectiveCompanyId, entity.InvoiceDate, r.FinancialYearId);
+        await _repo.InsertAsync(entity, ResolvePayments(r.Payments, r.Payment));
         return Map(await _repo.GetByIdAsync(entity.SalesInvoiceId) ?? entity);
     }
 
@@ -99,6 +144,8 @@ public class SalesService : ISalesService
         entity.CreatedByUserID = existing.CreatedByUserID;
         entity.CreatedAt = existing.CreatedAt;
         entity.UpdatedByUserID = userId;
+        entity.POSSessionId = r.POSSessionId ?? existing.POSSessionId;
+        entity.FinancialYearId = await ResolveFinancialYearIdAsync(effectiveCompanyId, entity.InvoiceDate, r.FinancialYearId ?? existing.FinancialYearId);
         await _repo.UpdateAsync(entity);
         return Map(await _repo.GetByIdAsync(id) ?? entity);
     }
@@ -131,11 +178,14 @@ public class SalesService : ISalesService
     {
         var products = (await _productService.GetPagedAsync(companyId, 1, 10000, "")).Items.ToDictionary(p => p.Id);
         var units = (await _unitService.GetAllAsync(companyId, true)).ToDictionary(u => u.Id);
-        var partners = (await _businessPartnerService.GetAllAsync(true)).ToDictionary(p => p.Id);
 
         if (!products.Any())
             throw new DomainException("No products found for the company.");
-        var customer = partners.GetValueOrDefault(customerId);
+
+        var customers = (await _businessPartnerService.GetByRoleCodeAsync(companyId, "CUSTOMER", true)).ToList();
+        var customer = customers.FirstOrDefault(c => c.Id == customerId);
+        if (customer is null)
+            throw new DomainException("The selected customer does not exist in this company or is not assigned the Customer role.");
 
         var statusId = await _statusRepo.GetIdByCodeAsync(statusCode);
         if (statusId == 0) statusId = await _statusRepo.GetIdByCodeAsync("POSTED");
@@ -249,6 +299,8 @@ public class SalesService : ISalesService
         SourceType = e.SourceType,
         SalesTypeId = e.SalesTypeId,
         PriceListId = e.PriceListId,
+        FinancialYearId = e.FinancialYearId,
+        POSSessionId = e.POSSessionId,
         ReferenceNo = e.ReferenceNo,
         ReferenceDate = e.ReferenceDate,
         TotalGrossAmount = e.TotalGrossAmount,

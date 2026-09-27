@@ -19,12 +19,64 @@ public interface IInvoiceTemplateLookupRepository
     Task<IEnumerable<InvoiceFont>> GetFontsAsync(bool includeInactive = false);
     Task<IEnumerable<PrintOrientation>> GetOrientationsAsync(bool includeInactive = false);
     Task<IEnumerable<PrintUnit>> GetUnitsAsync(bool includeInactive = false);
+    Task<InvoiceType?> GetInvoiceTypeByIdAsync(long id);
+    Task<InvoicePaperSize?> GetPaperSizeByIdAsync(long id);
+    Task<PrinterModel?> GetPrinterModelByIdAsync(long id);
+    Task<PrintOrientation?> GetOrientationByIdAsync(long id);
+    Task<IndustryType?> GetIndustryTypeByIdAsync(int id);
+    Task<InvoiceTemplate?> GetDefaultTemplateAsync(long invoiceTypeId, long? paperSizeId);
 }
 
 public class InvoiceTemplateLookupRepository : TenantRepositoryBase, IInvoiceTemplateLookupRepository
 {
     public InvoiceTemplateLookupRepository(ISqlHelper sql, TenantAccessor accessor, IPlatformDbConnectionFactory platformFactory)
         : base(sql, accessor, platformFactory) { }
+
+    public async Task<InvoiceType?> GetInvoiceTypeByIdAsync(long id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<InvoiceType>(conn,
+            "SELECT * FROM dbo.InvoiceType WHERE InvoiceTypeId = @id", new { id });
+    }
+
+    public async Task<InvoicePaperSize?> GetPaperSizeByIdAsync(long id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<InvoicePaperSize>(conn,
+            "SELECT * FROM dbo.InvoicePaperSize WHERE PaperSizeId = @id", new { id });
+    }
+
+    public async Task<PrinterModel?> GetPrinterModelByIdAsync(long id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<PrinterModel>(conn,
+            "SELECT * FROM dbo.PrinterModel WHERE PrinterModelId = @id", new { id });
+    }
+
+    public async Task<PrintOrientation?> GetOrientationByIdAsync(long id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<PrintOrientation>(conn,
+            "SELECT * FROM dbo.PrintOrientation WHERE OrientationId = @id", new { id });
+    }
+
+    public async Task<IndustryType?> GetIndustryTypeByIdAsync(int id)
+    {
+        using var conn = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<IndustryType>(conn,
+            "SELECT * FROM dbo.IndustryTypes WHERE IndustryTypeId = @id", new { id });
+    }
+
+    public async Task<InvoiceTemplate?> GetDefaultTemplateAsync(long invoiceTypeId, long? paperSizeId)
+    {
+        using var conn = OpenTenant();
+        const string sql = @"
+            SELECT TOP 1 * FROM dbo.InvoiceTemplate
+            WHERE IsActive = 1 AND IsDefault = 1 AND InvoiceTypeId = @invoiceTypeId
+              AND (@paperSizeId IS NULL OR PaperSizeId = @paperSizeId)
+            ORDER BY InvoiceTemplateId";
+        return await Sql.QuerySingleOrDefaultAsync<InvoiceTemplate>(conn, sql, new { invoiceTypeId, paperSizeId });
+    }
 
     public async Task<IEnumerable<InvoiceType>> GetInvoiceTypesAsync(bool includeInactive = false)
     {
@@ -224,6 +276,7 @@ public interface IInvoiceTemplateVersionRepository
     Task<InvoiceTemplateVersion?> GetByNumberAsync(long templateId, int versionNumber);
     Task<long> InsertAsync(InvoiceTemplateVersion version);
     Task<bool> UpdateStatusAsync(long versionId, string status, bool isPublished, long? publishedBy, DateTime? publishedAt);
+    Task<bool> UpdateTemplateJsonAsync(long versionId, string templateJson);
     Task<long> CloneToDraftAsync(long templateId);
     Task<DesignerVersionDto> GetDesignerAsync(long templateVersionId);
     Task<bool> ReplaceDesignerAsync(long templateVersionId, IReadOnlyList<DesignerSectionDto> sections);
@@ -300,6 +353,16 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
             UPDATE dbo.InvoiceTemplateVersion
             SET Status = @status, IsPublished = @isPublished, PublishedBy = @publishedBy, PublishedAt = @publishedAt
             WHERE TemplateVersionId = @versionId AND Status = 'DRAFT'", new { versionId, status, isPublished, publishedBy, publishedAt }) > 0;
+    }
+
+    /// <summary>Updates only the durable TemplateJson snapshot of a version.</summary>
+    public async Task<bool> UpdateTemplateJsonAsync(long versionId, string templateJson)
+    {
+        using var conn = OpenTenant();
+        return await Sql.ExecuteAsync(conn, @"
+            UPDATE dbo.InvoiceTemplateVersion
+            SET TemplateJson = @templateJson
+            WHERE TemplateVersionId = @versionId", new { versionId, templateJson }) > 0;
     }
 
     /// <summary>Creates a new DRAFT version (max+1) that copies the latest version's design.</summary>
@@ -414,8 +477,12 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
                 FontId = st.FontId,
                 FontSize = st.FontSize,
                 FontWeight = st.FontWeight,
+                FontStyle = st.FontStyle,
                 TextAlign = st.TextAlign,
                 VerticalAlign = st.VerticalAlign,
+                TextColor = st.TextColor,
+                BackgroundColor = st.BackgroundColor,
+                BorderColor = st.BorderColor,
                 PaddingTop = st.PaddingTop,
                 PaddingRight = st.PaddingRight,
                 PaddingBottom = st.PaddingBottom,
@@ -485,7 +552,7 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
             await InsertSectionsAsync(conn, tx, templateVersionId, sections.ToList());
 
             await Sql.ExecuteAsync(conn, @"
-                UPDATE dbo.InvoiceTemplateVersion SET TemplateJson = @json, ModifiedAt = GETDATE()
+                UPDATE dbo.InvoiceTemplateVersion SET TemplateJson = @json
                 WHERE TemplateVersionId = @templateVersionId",
                 new { templateVersionId, json = ToJson(sections) }, tx);
 
@@ -552,7 +619,8 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
                 Style = styles.FirstOrDefault(s => s.ElementId == e.ElementId) is { } st ? new DesignerStyleDto
                 {
                     FontId = st.FontId, FontSize = st.FontSize, FontWeight = st.FontWeight,
-                    TextAlign = st.TextAlign, VerticalAlign = st.VerticalAlign,
+                    FontStyle = st.FontStyle, TextAlign = st.TextAlign, VerticalAlign = st.VerticalAlign,
+                    TextColor = st.TextColor, BackgroundColor = st.BackgroundColor, BorderColor = st.BorderColor,
                     PaddingTop = st.PaddingTop, PaddingRight = st.PaddingRight,
                     PaddingBottom = st.PaddingBottom, PaddingLeft = st.PaddingLeft,
                     BorderTop = st.BorderTop, BorderRight = st.BorderRight,
@@ -579,9 +647,11 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
             INSERT INTO dbo.InvoiceTemplateItemColumn (ElementId, FieldName, HeaderText, DisplayOrder, Width, Alignment, IsVisible)
             VALUES (@ElementId, @FieldName, @HeaderText, @DisplayOrder, @Width, @Alignment, @IsVisible);";
         const string styleSql = @"
-            INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight, TextAlign, VerticalAlign,
+            INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight, FontStyle, TextAlign, VerticalAlign,
+                TextColor, BackgroundColor, BorderColor,
                 PaddingTop, PaddingRight, PaddingBottom, PaddingLeft, BorderTop, BorderRight, BorderBottom, BorderLeft)
-            VALUES (@ElementId, @FontId, @FontSize, @FontWeight, @TextAlign, @VerticalAlign,
+            VALUES (@ElementId, @FontId, @FontSize, @FontWeight, @FontStyle, @TextAlign, @VerticalAlign,
+                @TextColor, @BackgroundColor, @BorderColor,
                 @PaddingTop, @PaddingRight, @PaddingBottom, @PaddingLeft, @BorderTop, @BorderRight, @BorderBottom, @BorderLeft);";
 
         foreach (var section in sections)
@@ -625,7 +695,9 @@ public class InvoiceTemplateVersionRepository : TenantRepositoryBase, IInvoiceTe
                     await Sql.ExecuteAsync(conn, styleSql, new
                     {
                         ElementId = elementId, style.FontId, style.FontSize, style.FontWeight,
-                        style.TextAlign, style.VerticalAlign, style.PaddingTop, style.PaddingRight,
+                        style.FontStyle, style.TextAlign, style.VerticalAlign,
+                        style.TextColor, style.BackgroundColor, style.BorderColor,
+                        style.PaddingTop, style.PaddingRight,
                         style.PaddingBottom, style.PaddingLeft, style.BorderTop, style.BorderRight,
                         style.BorderBottom, style.BorderLeft
                     }, tx);

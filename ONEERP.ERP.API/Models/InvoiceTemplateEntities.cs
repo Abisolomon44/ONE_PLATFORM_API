@@ -2,7 +2,7 @@ namespace ONEERP.ERP.API.Models;
 
 /* ---------------------------------------------------------------------------
    Invoice Template Design - entities (tables created by
-   sql/erp_migration_002_invoice_templates.sql)
+   sql/erp_full.sql)
    --------------------------------------------------------------------------- */
 
 public class InvoiceType
@@ -249,8 +249,12 @@ public class InvoiceTemplateStyle
     public long? FontId { get; set; }
     public decimal? FontSize { get; set; }
     public string? FontWeight { get; set; }
+    public string? FontStyle { get; set; }
     public string? TextAlign { get; set; }
     public string? VerticalAlign { get; set; }
+    public string? TextColor { get; set; }
+    public string? BackgroundColor { get; set; }
+    public string? BorderColor { get; set; }
     public decimal? PaddingTop { get; set; }
     public decimal? PaddingRight { get; set; }
     public decimal? PaddingBottom { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ONEERP.ERP.API.Data;
 using ONEERP.ERP.API.Middleware;
+using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
 using ONEERP.ERP.API.Security;
 using ONEERP.ERP.API.Services;
@@ -124,6 +125,9 @@ builder.Services.AddScoped<IAdministrationService, AdministrationService>();
 builder.Services.AddScoped<IBranchTypeRepository, BranchTypeRepository>();
 builder.Services.AddScoped<IWarehouseTypeRepository, WarehouseTypeRepository>();
 builder.Services.AddScoped<IEmploymentTypeRepository, EmploymentTypeRepository>();
+builder.Services.AddScoped<IStoreTypeRepository, StoreTypeRepository>();
+builder.Services.AddScoped<IOperatorTypeRepository, OperatorTypeRepository>();
+builder.Services.AddScoped<ISourceRepository, SourceRepository>();
 // Organization Repositories
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -135,6 +139,10 @@ builder.Services.AddScoped<ICounterRepository, CounterRepository>();
 builder.Services.AddScoped<IPOSSessionRepository, POSSessionRepository>();
 builder.Services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
 builder.Services.AddScoped<IEntityRepository, EntityRepository>();
+
+// POS Repositories
+builder.Services.AddScoped<IOperatorRepository, OperatorRepository>();
+builder.Services.AddScoped<ICounterAssignmentRepository, CounterAssignmentRepository>();
 
 
 
@@ -154,6 +162,9 @@ builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<IBusinessPartnerRoleService, BusinessPartnerRoleService>();
     builder.Services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
     builder.Services.AddScoped<IIndustryTypeService, IndustryTypeService>();
+builder.Services.AddScoped<IStoreTypeService, StoreTypeService>();
+builder.Services.AddScoped<IOperatorTypeService, OperatorTypeService>();
+builder.Services.AddScoped<ISourceService, SourceService>();
 builder.Services.AddScoped<ICompanyGroupService, CompanyGroupService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IStateService, StateService>();
@@ -176,6 +187,35 @@ builder.Services.AddScoped<ICounterService, CounterService>();
 builder.Services.AddScoped<IPOSSessionService, POSSessionService>();
 builder.Services.AddScoped<IFinancialYearService, FinancialYearService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
+
+// POS Services
+builder.Services.AddScoped<IOperatorService, OperatorService>();
+builder.Services.AddScoped<ICounterAssignmentService, CounterAssignmentService>();
+
+// Document module - master CRUD repos + service
+builder.Services.AddScoped<IInvoiceTypeRepository, InvoiceTypeRepository>();
+builder.Services.AddScoped<ITemplateCategoryRepository, TemplateCategoryRepository>();
+builder.Services.AddScoped<ITemplateComponentRepository, TemplateComponentRepository>();
+builder.Services.AddScoped<ITemplateVariableRepository, TemplateVariableRepository>();
+builder.Services.AddScoped<IInvoiceFontRepository, InvoiceFontRepository>();
+builder.Services.AddScoped<IDocumentPaperSizeRepository, DocumentPaperSizeRepository>();
+builder.Services.AddScoped<IDocumentPrinterTypeRepository, DocumentPrinterTypeRepository>();
+builder.Services.AddScoped<IDocumentPrinterModelRepository, DocumentPrinterModelRepository>();
+builder.Services.AddScoped<IPrintOrientationRepository, PrintOrientationRepository>();
+builder.Services.AddScoped<IPrintUnitRepository, PrintUnitRepository>();
+builder.Services.AddScoped<IDocumentMasterGuardRepository, DocumentMasterGuardRepository>();
+builder.Services.AddScoped<IDocumentMasterService, DocumentMasterService>();
+builder.Services.AddScoped<IDocumentQueryRepository, DocumentQueryRepository>();
+builder.Services.AddScoped<IInvoiceTemplateRepository, InvoiceTemplateRepository>();
+builder.Services.AddScoped<IInvoiceTemplateLookupRepository, InvoiceTemplateLookupRepository>();
+builder.Services.AddScoped<IInvoiceTemplateVersionRepository, InvoiceTemplateVersionRepository>();
+builder.Services.AddScoped<IInvoiceTemplateAssignmentRepository, InvoiceTemplateAssignmentRepository>();
+builder.Services.AddScoped<IInvoiceTemplatePrinterRepository, InvoiceTemplatePrinterRepository>();
+builder.Services.AddScoped<IDocumentDesignService, DocumentDesignService>();
+builder.Services.AddScoped<IDocumentSettingService, DocumentSettingService>();
+
+// Sale Entry Context
+builder.Services.AddScoped<ISaleEntryContextService, SaleEntryContextService>();
 
 // Product / Billing Masters
 builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
@@ -319,7 +359,7 @@ builder.Services.AddCors(options =>
         .AllowCredentials());
 });
 
-var app = builder.Build();
+  var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();

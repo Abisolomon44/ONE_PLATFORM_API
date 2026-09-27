@@ -11,6 +11,7 @@ public interface IStoreRepository
     Task<IEnumerable<Store>> GetPagedAsync(int companyId, int branchId, int pageNumber, int pageSize, string search);
     Task<int> CountAsync(int companyId, int branchId, string search);
     Task<IEnumerable<Store>> GetAllAsync(bool includeInactive);
+    Task<IEnumerable<Store>> GetByBranchAsync(int branchId, bool includeInactive);
     Task<int> InsertAsync(Store store, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Store store, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int id, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
@@ -72,7 +73,7 @@ public class StoreRepository : TenantRepositoryBase, IStoreRepository
             new { companyId, branchId, search });
     }
 
-    public async Task<IEnumerable<Store>> GetAllAsync(bool includeInactive)
+public async Task<IEnumerable<Store>> GetAllAsync(bool includeInactive)
     {
         using var connection = OpenTenant();
         var sql = @"
@@ -81,6 +82,17 @@ public class StoreRepository : TenantRepositoryBase, IStoreRepository
                   + (includeInactive ? "" : " AND IsActive = 1")
                   + @" ORDER BY StoreName;";
         return await Sql.QueryAsync<Store>(connection, sql);
+    }
+
+    public async Task<IEnumerable<Store>> GetByBranchAsync(int branchId, bool includeInactive)
+    {
+        using var connection = OpenTenant();
+        var sql = @"
+            SELECT * FROM dbo.Stores
+            WHERE BranchId = @branchId AND IsDeleted = 0"
+                  + (includeInactive ? "" : " AND IsActive = 1")
+                  + @" ORDER BY StoreName;";
+        return await Sql.QueryAsync<Store>(connection, sql, new { branchId });
     }
 
     public async Task<int> InsertAsync(Store store, IDbConnection? connection = null, IDbTransaction? transaction = null)
@@ -144,7 +156,7 @@ public class StoreRepository : TenantRepositoryBase, IStoreRepository
               FROM dbo.Stores
               WHERE CompanyId = @companyId AND (@branchId IS NULL OR BranchId = @branchId) AND IsDeleted = 0 AND StoreCode LIKE 'STR-%'",
             new { companyId, branchId });
-        return $"STR-{next:D3}";
+return $"STR-{next:D3}";
     }
 }
 
@@ -305,15 +317,18 @@ public class CounterRepository : TenantRepositoryBase, ICounterRepository
 }
 
 public interface IPOSSessionRepository
-{
-    Task<POSSession?> GetByIdAsync(long id);
-    Task<POSSession?> GetByNumberAsync(string sessionNumber);
-    Task<IEnumerable<POSSession>> GetPagedAsync(int companyId, int branchId, int storeId, int status, int pageNumber, int pageSize, string search);
-    Task<int> CountAsync(int companyId, int branchId, int storeId, int status, string search);
-    Task<long> InsertAsync(POSSession session, IDbConnection? connection = null, IDbTransaction? transaction = null);
-    Task<bool> UpdateAsync(POSSession session, IDbConnection? connection = null, IDbTransaction? transaction = null);
-    Task<bool> SoftDeleteAsync(long id, int updatedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
-}
+    {
+        Task<POSSession?> GetByIdAsync(long id);
+        Task<POSSession?> GetByNumberAsync(string sessionNumber);
+        Task<IEnumerable<POSSession>> GetPagedAsync(int companyId, int branchId, int storeId, int status, int pageNumber, int pageSize, string search);
+        Task<int> CountAsync(int companyId, int branchId, int storeId, int status, string search);
+        Task<long> InsertAsync(POSSession session, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<bool> UpdateAsync(POSSession session, byte[]? expectedVersion, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<bool> SoftDeleteAsync(long id, int updatedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<IEnumerable<POSSession>> GetActiveByCounterAsync(int counterId);
+        Task<string> GetNextSessionNumberAsync(int companyId, DateTime onDate);
+        Task<decimal> GetExpectedClosingCashAsync(long sessionId);
+    }
 
 public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
 {
@@ -346,7 +361,7 @@ public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
               AND (@branchId = 0 OR BranchId = @branchId)
               AND (@storeId = 0 OR StoreId = @storeId)
               AND (@status = 0 OR Status = @status)
-              AND (@search = '' OR SessionNumber LIKE '%' + @search + '%' OR StoreName LIKE '%' + @search + '%' OR CashierUserName LIKE '%' + @search + '%')
+              AND (@search = '' OR SessionNumber LIKE '%' + @search + '%' OR StoreName LIKE '%' + @search + '%' OR OperatorNameSnapshot LIKE '%' + @search + '%')
             ORDER BY POSSessionId DESC
             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY",
             new { companyId, branchId, storeId, status, search, offset, pageSize });
@@ -361,7 +376,7 @@ public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
               AND (@branchId = 0 OR BranchId = @branchId)
               AND (@storeId = 0 OR StoreId = @storeId)
               AND (@status = 0 OR Status = @status)
-              AND (@search = '' OR SessionNumber LIKE '%' + @search + '%' OR StoreName LIKE '%' + @search + '%' OR CashierUserName LIKE '%' + @search + '%')",
+              AND (@search = '' OR SessionNumber LIKE '%' + @search + '%' OR StoreName LIKE '%' + @search + '%' OR OperatorNameSnapshot LIKE '%' + @search + '%')",
             new { companyId, branchId, storeId, status, search });
     }
 
@@ -372,8 +387,8 @@ public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
         try
         {
             const string sql = @"
-                INSERT INTO dbo.POSSessions (CompanyId, CompanyName, BranchId, BranchName, StoreId, StoreName, CounterId, CounterName, CashierUserId, CashierUserName, SessionNumber, OpeningCash, ClosingCash, OpenedAt, ClosedAt, Status, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
-                VALUES (@CompanyId, @CompanyName, @BranchId, @BranchName, @StoreId, @StoreName, @CounterId, @CounterName, @CashierUserId, @CashierUserName, @SessionNumber, @OpeningCash, @ClosingCash, @OpenedAt, @ClosedAt, @Status, @CreatedBy, SYSUTCDATETIME(), @UpdatedBy, SYSUTCDATETIME());
+                INSERT INTO dbo.POSSessions (CompanyId, CompanyName, BranchId, BranchName, StoreId, StoreName, CounterId, CounterName, CounterAssignmentId, OperatorId, OperatorNameSnapshot, SessionNumber, OpeningCash, ExpectedClosingCash, ActualClosingCash, CashDifference, OpenedAt, OpenedBy, ClosedAt, ClosedBy, ClosingRemarks, Status, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
+                VALUES (@CompanyId, @CompanyName, @BranchId, @BranchName, @StoreId, @StoreName, @CounterId, @CounterName, @CounterAssignmentId, @OperatorId, @OperatorNameSnapshot, @SessionNumber, @OpeningCash, @ExpectedClosingCash, @ActualClosingCash, @CashDifference, @OpenedAt, @OpenedBy, @ClosedAt, @ClosedBy, @ClosingRemarks, @Status, @CreatedBy, SYSUTCDATETIME(), @UpdatedBy, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
             return await Sql.QuerySingleOrDefaultAsync<long>(conn, sql, session, transaction);
         }
@@ -383,18 +398,27 @@ public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
         }
     }
 
-    public async Task<bool> UpdateAsync(POSSession session, IDbConnection? connection = null, IDbTransaction? transaction = null)
+    public async Task<bool> UpdateAsync(POSSession session, byte[]? expectedVersion, IDbConnection? connection = null, IDbTransaction? transaction = null)
     {
         var conn = connection ?? OpenTenant();
         var own = connection is null;
         try
         {
+            // Optimistic concurrency: when the caller supplies a Version token the
+            // row must still carry it, otherwise another user already saved.
             const string sql = @"
                 UPDATE dbo.POSSessions
-                SET ClosingCash = @ClosingCash, ClosedAt = @ClosedAt, Status = @Status,
+                SET ExpectedClosingCash = @ExpectedClosingCash, ActualClosingCash = @ActualClosingCash,
+                    CashDifference = @CashDifference, ClosedAt = @ClosedAt, ClosedBy = @ClosedBy,
+                    ClosingRemarks = @ClosingRemarks, Status = @Status,
                     UpdatedBy = @UpdatedBy, UpdatedAt = SYSUTCDATETIME()
-                WHERE POSSessionId = @POSSessionId;";
-            return await Sql.ExecuteAsync(conn, sql, session, transaction) > 0;
+                WHERE POSSessionId = @POSSessionId
+                  AND (@expectedVersion IS NULL OR Version = @expectedVersion);";
+            return await Sql.ExecuteAsync(conn, sql,
+                new { session.POSSessionId, session.ExpectedClosingCash, session.ActualClosingCash,
+                      session.CashDifference, session.ClosedAt, session.ClosedBy, session.ClosingRemarks,
+                      session.Status, session.UpdatedBy, expectedVersion },
+                transaction) > 0;
         }
         finally
         {
@@ -415,5 +439,56 @@ public class POSSessionRepository : TenantRepositoryBase, IPOSSessionRepository
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<IEnumerable<POSSession>> GetActiveByCounterAsync(int counterId)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QueryAsync<POSSession>(connection,
+            "SELECT * FROM dbo.POSSessions WHERE CounterId = @counterId AND Status = 1 ORDER BY OpenedAt DESC",
+            new { counterId });
+    }
+
+    /// <summary>
+    /// Session numbers are sequential per company per day: POS-20260927-001.
+    /// </summary>
+    public async Task<string> GetNextSessionNumberAsync(int companyId, DateTime onDate)
+    {
+        using var connection = OpenTenant();
+        var prefix = $"POS-{onDate:yyyyMMdd}-";
+        var next = await Sql.ExecuteScalarAsync<int>(connection, @"
+            SELECT ISNULL(MAX(TRY_CAST(RIGHT(SessionNumber, 4) AS INT)), 0) + 1
+            FROM dbo.POSSessions
+            WHERE CompanyId = @companyId AND SessionNumber LIKE @prefix + '[0-9][0-9][0-9][0-9]'",
+            new { companyId, prefix });
+        return $"{prefix}{next:D3}";
+    }
+
+    /// <summary>
+    /// Expected closing cash = opening float + cash movements taken during the
+    /// session. Sales invoices carry POSSessionId, so this is an exact link -
+    /// no date-window guessing. Cash movements are the cash payments allocated
+    /// to those invoices, net of cash refunds. Sales totals are never duplicated
+    /// into the session; they are read from the existing invoice/payment tables.
+    /// </summary>
+    public async Task<decimal> GetExpectedClosingCashAsync(long sessionId)
+    {
+        using var connection = OpenTenant();
+        return await Sql.ExecuteScalarAsync<decimal>(connection, @"
+            SELECT ISNULL(s.OpeningCash, 0)
+                 + ISNULL((
+                     SELECT SUM(
+                         CASE WHEN pt.Code = 'PAYTYPE-004' THEN -p.Amount ELSE p.Amount END)
+                     FROM dbo.Payment p
+                     INNER JOIN dbo.PaymentMethod pm ON pm.PaymentMethodId = p.PaymentMethodID
+                     LEFT JOIN dbo.PaymentType pt ON pt.PaymentTypeId = p.PaymentTypeID
+                     INNER JOIN dbo.SalesInvoice si ON si.SalesInvoiceId = p.ReferenceId
+                     WHERE si.POSSessionId = @sessionId
+                       AND p.ReferenceType = 'SALES'
+                       AND pm.IsCash = 1
+                   ), 0)
+            FROM dbo.POSSessions s
+            WHERE s.POSSessionId = @sessionId",
+            new { sessionId });
     }
 }

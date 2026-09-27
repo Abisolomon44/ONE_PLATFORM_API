@@ -4418,6 +4418,101 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Screens WHERE ScreenCode = 'BUSINESS_PARTNERS')
 ;
 
 /* =============================================================================
+   INVOICE_DESIGN WORKSPACE (Invoice & Print > Template Design + Print Setup)
+   Purpose  : One workspace for the whole invoice/print design module seeded by
+              the Invoice Template Design tables further down this script. The
+              designer screen (INVOICE_TEMPLATES) is the entry point; the nine
+              lookup masters that configure it live in Print Setup.
+   Safe     : Re-runnable (existence checks on the workspace, domain, module,
+              submodule and every screen row).
+   ========================================================================== */
+IF NOT EXISTS (SELECT 1 FROM dbo.Workspaces WHERE WorkspaceCode = 'INVOICE_DESIGN')
+BEGIN
+    INSERT INTO dbo.Workspaces (WorkspaceCode, WorkspaceName, Icon, Route, SortOrder, IsActive, CreatedBy)
+    VALUES ('INVOICE_DESIGN', 'Invoice & Print Design', 'file-text', '/invoice-templates', 12, 1, 'system');
+END
+;
+
+/* Toolbar action consumed by the invoice template designer (set-default). */
+IF NOT EXISTS (SELECT 1 FROM dbo.Actions WHERE ActionCode = 'set-default')
+    INSERT INTO dbo.Actions (ActionCode, ActionName, DisplayOrder, IsActive)
+    VALUES ('set-default', 'Set Default', 18, 1);
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-INVOICEPRINT')
+BEGIN
+    INSERT INTO dbo.Domains (WorkspaceId, DomainCode, DomainName, Icon, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'DOM-INVOICEPRINT', 'Invoice & Print', 'file-text', 1, 1, 'system'
+    FROM dbo.Workspaces WHERE WorkspaceCode = 'INVOICE_DESIGN';
+END
+;
+
+/* --- Invoice & Print > Template Design > Invoice Templates --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-TEMPLATEDESIGN')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-TEMPLATEDESIGN', 'Template Design', 'layout-template', '/invoice-templates', 1, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-INVOICEPRINT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-TEMPLATEMASTER')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-TEMPLATEMASTER', 'Invoice Templates', 'file-text', '/invoice-templates', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-TEMPLATEDESIGN';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('INVOICE_TEMPLATES',           'Invoice Design',        'MASTER', '/invoice-templates',            'InvoiceTemplatePage',           1, 1, 'system'),
+    ('DOCUMENT_DESIGN',             'Document Design',       'MASTER', '/document-design',              'DocumentDesignPage',            2, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-TEMPLATEMASTER'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* --- Invoice & Print > Print Setup > Print Configuration (designer lookups) --- */
+IF NOT EXISTS (SELECT 1 FROM dbo.Modules WHERE ModuleCode = 'MOD-PRINTSETUP')
+BEGIN
+    INSERT INTO dbo.Modules (DomainId, ModuleCode, ModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'MOD-PRINTSETUP', 'Print Setup', 'printer', '/invoice-templates', 2, 1, 'system'
+    FROM dbo.Domains WHERE DomainCode = 'DOM-INVOICEPRINT';
+END
+;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.SubModules WHERE SubModuleCode = 'SUB-PRINTSETUP')
+BEGIN
+    INSERT INTO dbo.SubModules (ModuleId, SubModuleCode, SubModuleName, Icon, RouteUrl, SortOrder, IsActive, CreatedBy)
+    SELECT Id, 'SUB-PRINTSETUP', 'Print Configuration', 'printer', '/invoice-templates', 1, 1, 'system'
+    FROM dbo.Modules WHERE ModuleCode = 'MOD-PRINTSETUP';
+END
+;
+
+INSERT INTO dbo.Screens (SubModuleId, ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+SELECT sm.Id, k.ScreenCode, k.ScreenName, k.ScreenType, k.RouteUrl, k.ComponentName, k.SortOrder, k.IsActive, k.CreatedBy
+FROM (VALUES
+    ('INVOICE_TYPES',              'Invoice Types',          'MASTER', '/invoice-types',                'InvoiceTypePage',               1, 1, 'system'),
+    ('INVOICE_PAPER_SIZES',        'Paper Sizes',            'MASTER', '/invoice-paper-sizes',           'InvoicePaperSizePage',          2, 1, 'system'),
+    ('INVOICE_TEMPLATE_CATEGORIES','Template Categories',    'MASTER', '/invoice-template-categories',   'InvoiceTemplateCategoryPage',   3, 1, 'system'),
+    ('INVOICE_TEMPLATE_COMPONENTS','Template Components',    'MASTER', '/invoice-template-components',   'InvoiceTemplateComponentPage',  4, 1, 'system'),
+    ('INVOICE_TEMPLATE_VARIABLES', 'Template Variables',     'MASTER', '/invoice-template-variables',    'InvoiceTemplateVariablePage',   5, 1, 'system'),
+    ('INVOICE_FONTS',              'Invoice Fonts',          'MASTER', '/invoice-fonts',                 'InvoiceFontPage',               6, 1, 'system'),
+    ('PRINT_ORIENTATIONS',         'Print Orientations',     'MASTER', '/print-orientations',            'PrintOrientationPage',          7, 1, 'system'),
+    ('PRINTER_TYPES',              'Printer Types',          'MASTER', '/printer-types',                'PrinterTypePage',               8, 1, 'system'),
+    ('PRINTER_MODELS',             'Printer Models',         'MASTER', '/printer-models',               'PrinterModelPage',              9, 1, 'system')
+) AS k(ScreenCode, ScreenName, ScreenType, RouteUrl, ComponentName, SortOrder, IsActive, CreatedBy)
+INNER JOIN dbo.SubModules sm ON sm.SubModuleCode = 'SUB-PRINTSETUP'
+WHERE NOT EXISTS (
+    SELECT 1 FROM dbo.Screens s WHERE s.SubModuleId = sm.Id AND s.ScreenCode = k.ScreenCode
+);
+;
+
+/* =============================================================================
    SECURITY WORKSPACE (Security > User Management + Role Management)
    ============================================================================= */
 IF NOT EXISTS (SELECT 1 FROM dbo.Domains WHERE DomainCode = 'DOM-SECURITY')
@@ -4824,6 +4919,19 @@ CROSS JOIN (VALUES
     ('reports.view'),
     /* BUSINESS_PARTNERS */
     ('business-partners.view'), ('business-partners.manage'),
+    /* INVOICE_DESIGN - designer + print setup lookups */
+    ('invoice-templates.view'), ('invoice-templates.create'), ('invoice-templates.edit'), ('invoice-templates.delete'),
+    ('invoice-templates.duplicate'), ('invoice-templates.preview'), ('invoice-templates.publish'),
+    ('invoice-templates.assign'), ('invoice-templates.print'), ('invoice-templates.export'),
+    ('invoice-types.view'), ('invoice-types.create'), ('invoice-types.edit'), ('invoice-types.delete'),
+    ('invoice-paper-sizes.view'), ('invoice-paper-sizes.create'), ('invoice-paper-sizes.edit'), ('invoice-paper-sizes.delete'),
+    ('invoice-template-categories.view'), ('invoice-template-categories.create'), ('invoice-template-categories.edit'), ('invoice-template-categories.delete'),
+    ('invoice-template-components.view'), ('invoice-template-components.create'), ('invoice-template-components.edit'), ('invoice-template-components.delete'),
+    ('invoice-template-variables.view'), ('invoice-template-variables.create'), ('invoice-template-variables.edit'), ('invoice-template-variables.delete'),
+    ('invoice-fonts.view'), ('invoice-fonts.create'), ('invoice-fonts.edit'), ('invoice-fonts.delete'),
+    ('print-orientations.view'), ('print-orientations.create'), ('print-orientations.edit'), ('print-orientations.delete'),
+    ('printer-types.view'), ('printer-types.create'), ('printer-types.edit'), ('printer-types.delete'),
+    ('printer-models.view'), ('printer-models.create'), ('printer-models.edit'), ('printer-models.delete'),
     /* SECURITY */
     ('users.view'), ('users.create'), ('users.edit'), ('users.delete'),
     ('roles.view'), ('roles.manage'),
@@ -5037,6 +5145,17 @@ INNER JOIN (VALUES
     ('PAYMENT_ENTRY',           'payments'),
     ('REPORTS_HOME',            'reports'),
     ('BUSINESS_PARTNERS',       'business-partners'),
+    ('INVOICE_TEMPLATES',           'invoice-templates'),
+    ('DOCUMENT_DESIGN',             'document-design'),
+    ('INVOICE_TYPES',               'invoice-types'),
+    ('INVOICE_PAPER_SIZES',         'invoice-paper-sizes'),
+    ('INVOICE_TEMPLATE_CATEGORIES', 'invoice-template-categories'),
+    ('INVOICE_TEMPLATE_COMPONENTS', 'invoice-template-components'),
+    ('INVOICE_TEMPLATE_VARIABLES',  'invoice-template-variables'),
+    ('INVOICE_FONTS',               'invoice-fonts'),
+    ('PRINT_ORIENTATIONS',          'print-orientations'),
+    ('PRINTER_TYPES',               'printer-types'),
+    ('PRINTER_MODELS',              'printer-models'),
     ('USERS',                   'users'),
     ('ROLES',                   'roles'),
     ('WORKS',                   'workspaces'),
@@ -5399,8 +5518,55 @@ IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_BusinessPartners
 
 PRINT 'Universal Entity layer added.';
 
+/* ---------------------------------------------------------------------------
+   Sales Invoice -> FinancialYear
+   Every SalesInvoice row must belong to a financial year so that period
+   reporting, GST returns and the period-close check are reproducible. The
+   column is added as NULLABLE so an already-provisioned tenant can be upgraded
+   in place without rewriting history, and is then back-filled from the invoice
+   date. New rows get their year resolved by the sales service on save.
+   Safe     : Re-runnable. IF NOT EXISTS guards on the column, the FK and the
+              index; the back-fill only touches rows that are still NULL.
+   Note     : The line-item FK is created only when no orphan rows exist, so a
+              tenant holding inconsistent data is reported rather than silently
+              altered or deleted.
+--------------------------------------------------------------------------- */
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoice]') AND name = N'FinancialYearId')
+    ALTER TABLE dbo.SalesInvoice ADD FinancialYearId BIGINT NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_SalesInvoice_FinancialYear')
+    ALTER TABLE dbo.SalesInvoice ADD CONSTRAINT FK_SalesInvoice_FinancialYear FOREIGN KEY (FinancialYearId) REFERENCES dbo.FinancialYear (FinancialYearId);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesInvoice]') AND name = N'IX_SalesInvoice_FinancialYearId')
+    CREATE INDEX IX_SalesInvoice_FinancialYearId ON dbo.SalesInvoice (FinancialYearId);
+
+/* Back-fill the period for historical rows: the year whose StartDate/EndDate
+   contains the invoice date. Latest StartDate wins if ranges ever overlap. */
+IF EXISTS (SELECT 1 FROM dbo.SalesInvoice WHERE FinancialYearId IS NULL)
+    UPDATE si
+    SET si.FinancialYearId = fy.FinancialYearId
+    FROM dbo.SalesInvoice AS si
+    CROSS APPLY (
+        SELECT TOP (1) f.FinancialYearId
+        FROM dbo.FinancialYear AS f
+        WHERE f.CompanyId = si.CompanyId
+          AND f.StartDate <= CAST(si.InvoiceDate AS DATE)
+          AND f.EndDate >= CAST(si.InvoiceDate AS DATE)
+        ORDER BY f.StartDate DESC
+    ) AS fy
+    WHERE si.FinancialYearId IS NULL;
+
+/* A line must belong to its invoice. Added only when the table is free of
+   orphans, so inconsistent data surfaces instead of being removed. */
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_SalesInvoiceItem_SalesInvoice')
+   AND NOT EXISTS (
+        SELECT 1
+        FROM dbo.SalesInvoiceItem AS si
+        WHERE NOT EXISTS (
+            SELECT 1 FROM dbo.SalesInvoice AS s WHERE s.SalesInvoiceId = si.SalesInvoiceId))
+    ALTER TABLE dbo.SalesInvoiceItem ADD CONSTRAINT FK_SalesInvoiceItem_SalesInvoice FOREIGN KEY (SalesInvoiceId) REFERENCES dbo.SalesInvoice (SalesInvoiceId);
+
 /* =============================================================================
-   Invoice Template Design (merged from sql/erp_migration_002_invoice_templates.sql)
+   Invoice Template Design (merged from the original invoice template migration)
    Purpose  : Adds the Invoice Template Design module - a single common designer
               used for Retail, POS, Service, Wholesale, GST, Export and Purchase
               documents. One InvoiceType (what document), one PaperSize (physical
@@ -5708,6 +5874,33 @@ BEGIN
 END
 ;
 
+/* Extended variable set (re-runnable): print pipeline additions such as paid /
+   balance / round-off, company contact + logo, customer phone, item code and
+   branch / warehouse names. Guarded row-by-row so re-runs never duplicate. */
+INSERT INTO dbo.InvoiceTemplateVariable (Code, Name, BindingPath, DataType, Category, Description, IsCollection)
+SELECT v.Code, v.Name, v.BindingPath, v.DataType, v.Category, v.[Description], 0
+FROM (VALUES
+    ('Invoice.PaidAmount',        'Paid Amount',        'Invoice.PaidAmount',        'DECIMAL', 'Invoice',   'Amount paid against the invoice'),
+    ('Invoice.BalanceAmount',     'Balance Amount',     'Invoice.BalanceAmount',     'DECIMAL', 'Invoice',   'Outstanding balance'),
+    ('Invoice.RoundOff',          'Round Off',          'Invoice.RoundOff',          'DECIMAL', 'Invoice',   'Rounding adjustment'),
+    ('Invoice.TaxableAmount',     'Taxable Amount',     'Invoice.TaxableAmount',     'DECIMAL', 'Invoice',   'Total taxable amount'),
+    ('Invoice.CGST',              'CGST Amount',        'Invoice.CGST',              'DECIMAL', 'Invoice',   'Total CGST'),
+    ('Invoice.SGST',              'SGST Amount',        'Invoice.SGST',              'DECIMAL', 'Invoice',   'Total SGST'),
+    ('Invoice.IGST',              'IGST Amount',        'Invoice.IGST',              'DECIMAL', 'Invoice',   'Total IGST'),
+    ('Invoice.CESS',              'CESS Amount',        'Invoice.CESS',              'DECIMAL', 'Invoice',   'Total CESS'),
+    ('Invoice.Remarks',           'Invoice Remarks',    'Invoice.Remarks',           'STRING',  'Invoice',   'Free-form invoice remarks'),
+    ('Company.Phone',             'Company Phone',      'Company.Phone',             'STRING',  'Company',   'Primary phone number'),
+    ('Company.Email',             'Company Email',      'Company.Email',             'STRING',  'Company',   'Primary email address'),
+    ('Company.LogoUrl',           'Company Logo URL',   'Company.LogoUrl',           'STRING',  'Company',   'Logo image URL'),
+    ('Customer.Phone',            'Customer Phone',     'Customer.Phone',            'STRING',  'Customer',  'Customer mobile number'),
+    ('Branch.Name',               'Branch Name',        'Branch.Name',               'STRING',  'Branch',    'Invoicing branch name'),
+    ('Warehouse.Name',            'Warehouse Name',     'Warehouse.Name',            'STRING',  'Warehouse', 'Dispatch warehouse name'),
+    ('Item.ProductCode',          'Product Code',       'Item.ProductCode',          'STRING',  'Item',      'Product / SKU code'),
+    ('Item.SlNo',                 'Serial Number',      'Item.SlNo',                 'NUMBER',  'Item',      'Row serial number in the item table')
+) v(Code, Name, BindingPath, DataType, Category, [Description])
+WHERE NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateVariable iv WHERE iv.BindingPath = v.BindingPath);
+;
+
 /* =============================================================================
    08. InvoiceFont - seeded font choices (FontFileId reserved for font files)
    ============================================================================= */
@@ -5981,8 +6174,12 @@ BEGIN
         FontId         BIGINT               NULL,
         FontSize       DECIMAL(6,2)         NULL,
         FontWeight     VARCHAR(20)          NULL,
+        FontStyle      VARCHAR(20)          NULL,
         TextAlign      VARCHAR(20)          NULL,
         VerticalAlign  VARCHAR(20)          NULL,
+        TextColor       VARCHAR(20)          NULL,
+        BackgroundColor VARCHAR(20)          NULL,
+        BorderColor    VARCHAR(20)          NULL,
         PaddingTop     DECIMAL(8,2)         NULL,
         PaddingRight   DECIMAL(8,2)         NULL,
         PaddingBottom  DECIMAL(8,2)         NULL,
@@ -5999,6 +6196,345 @@ BEGIN
     CREATE INDEX IX_InvoiceTemplateStyle_FontId ON dbo.InvoiceTemplateStyle (FontId);
 END
 ;
+
+/* 18b. Idempotent style column upgrades for existing installs
+   (text style / colors used by the A4 document designer + renderer). */
+IF COL_LENGTH('dbo.InvoiceTemplateStyle', 'FontStyle') IS NULL
+    ALTER TABLE dbo.InvoiceTemplateStyle ADD FontStyle VARCHAR(20) NULL;
+IF COL_LENGTH('dbo.InvoiceTemplateStyle', 'TextColor') IS NULL
+    ALTER TABLE dbo.InvoiceTemplateStyle ADD TextColor VARCHAR(20) NULL;
+IF COL_LENGTH('dbo.InvoiceTemplateStyle', 'BackgroundColor') IS NULL
+    ALTER TABLE dbo.InvoiceTemplateStyle ADD BackgroundColor VARCHAR(20) NULL;
+IF COL_LENGTH('dbo.InvoiceTemplateStyle', 'BorderColor') IS NULL
+    ALTER TABLE dbo.InvoiceTemplateStyle ADD BorderColor VARCHAR(20) NULL;
+
+/* 18c. Idempotent SALES-INVOICE-A4 template seed (live production).
+   Provisions the default A4 Sales Invoice so a fresh tenant can print
+   invoices without any designer clicks:
+     - Template SALES-INVOICE-A4 (global, CompanyId NULL, IsDefault)
+     - Version 1 with the full 12-section default A4 design
+       (sections -> elements -> fields -> item columns -> styles),
+       identical to the UI "Create Default A4 Sales Invoice" flow
+     - Default assignment for document type SALES + paper size A4
+   Safety rules:
+     - Skips entirely when the template already exists (UI-created or a
+       previous run) - never duplicates, never overwrites user designs.
+     - Section/element/field/column inserts only run when Version 1 has no
+       sections yet.
+     - Version 1 is seeded PUBLISHED so runtime resolution (SALES + A4)
+       finds a printable template immediately; subsequent edits made in the
+       designer remain DRAFT until explicitly published (spec section 7).
+     - Fields are inserted via SELECT on the variable's BindingPath, so a
+       missing variable degrades gracefully instead of failing the batch.
+     - Component ids are resolved by Code before each element insert. */
+DECLARE @a4_tpl      BIGINT = (SELECT TOP 1 InvoiceTemplateId FROM dbo.InvoiceTemplate WHERE Code = 'SALES-INVOICE-A4');
+DECLARE @a4_sales    BIGINT = (SELECT TOP 1 InvoiceTypeId    FROM dbo.InvoiceType       WHERE Code = 'SALES');
+DECLARE @a4_paper    BIGINT = (SELECT TOP 1 PaperSizeId      FROM dbo.InvoicePaperSize  WHERE Code = 'A4');
+DECLARE @a4_orient   BIGINT = (SELECT TOP 1 OrientationId    FROM dbo.PrintOrientation  WHERE Code = 'PORTRAIT');
+DECLARE @a4_font     BIGINT = (SELECT TOP 1 FontId           FROM dbo.InvoiceFont       WHERE Code = 'ARIAL');
+DECLARE @a4_gstcat   BIGINT = (SELECT TOP 1 TemplateCategoryId FROM dbo.InvoiceTemplateCategory WHERE Code = 'GST');
+
+IF @a4_tpl IS NULL AND @a4_sales IS NOT NULL AND @a4_paper IS NOT NULL AND @a4_orient IS NOT NULL
+BEGIN
+    INSERT INTO dbo.InvoiceTemplate
+        (CompanyId, TemplateCategoryId, InvoiceTypeId, PaperSizeId, OrientationId, Code, Name, Description, Width, Height, IsDefault, IsActive)
+    VALUES
+        (NULL, @a4_gstcat, @a4_sales, @a4_paper, @a4_orient, 'SALES-INVOICE-A4', 'Sales Invoice A4',
+         'Default A4 Sales Invoice Template', 210.00, 297.00, 1, 1);
+    SET @a4_tpl = SCOPE_IDENTITY();
+END
+
+DECLARE @a4_ver BIGINT = (SELECT TOP 1 TemplateVersionId FROM dbo.InvoiceTemplateVersion
+                          WHERE InvoiceTemplateId = @a4_tpl AND VersionNumber = 1);
+
+IF @a4_ver IS NULL AND @a4_tpl IS NOT NULL
+BEGIN
+    INSERT INTO dbo.InvoiceTemplateVersion (InvoiceTemplateId, VersionNumber, TemplateJson, Status, IsPublished, PublishedAt)
+    VALUES (@a4_tpl, 1, '{}', 'PUBLISHED', 1, GETDATE());
+    SET @a4_ver = SCOPE_IDENTITY();
+END
+
+IF @a4_ver IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateSection WHERE TemplateVersionId = @a4_ver)
+BEGIN
+    DECLARE @a4_sec BIGINT, @a4_elm BIGINT, @a4_comp BIGINT;
+
+    /* ---- 1. HEADER (x10 y10 w190 h30) -------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'HEADER', 'Header', 1, 10, 10, 190, 30, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'LOGO');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Company Logo', 0, 0, 40, 22, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.2, 'LEFT');
+    END
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'COMPANY_NAME');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Company Name', 45, 0, 100, 10, 1, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight, TextAlign) VALUES (@a4_elm, @a4_font, 5.0, 'bold', 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Company.Name', 'Company.Name', NULL FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Company.Name';
+    END
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'CUSTOM_TEXT');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Company Address / Contact / GSTIN', 45, 11, 110, 18, 2, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.0, 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Company.Address', 'Company.Address', NULL FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Company.Address';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Company.Phone', 'Company.Phone', 'Phone' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Company.Phone';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Company.GSTIN', 'Company.GSTIN', 'GSTIN' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Company.GSTIN';
+    END
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'CUSTOM_TEXT');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'TAX INVOICE', 145, 0, 45, 10, 3, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight, TextAlign) VALUES (@a4_elm, @a4_font, 5.5, 'bold', 'RIGHT');
+    END
+
+    /* ---- 2. INVOICE_INFO (x10 y44 w190 h20) --------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'INVOICE_INFO', 'Invoice Information', 2, 10, 44, 190, 20, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'CUSTOMER');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'BILL TO', 0, 0, 60, 6, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight) VALUES (@a4_elm, @a4_font, 3.4, 'bold');
+    END
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'INVOICE_INFO');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Invoice No / Date / Due Date', 100, 0, 90, 19, 1, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.2, 'RIGHT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.Number', 'Invoice.Number', 'Invoice No' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.Number';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.Date', 'Invoice.Date', 'Invoice Date' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.Date';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.DueDate', 'Invoice.DueDate', 'Due Date' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.DueDate';
+    END
+
+    /* ---- 3. BILL_TO (x10 y68 w190 h24) -------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'BILL_TO', 'Bill To / Customer', 3, 10, 68, 190, 24, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'CUSTOMER');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Customer Info', 0, 0, 95, 23, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.2, 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Customer.Name', 'Customer.Name', NULL FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Customer.Name';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Customer.Address', 'Customer.Address', NULL FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Customer.Address';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Customer.GSTIN', 'Customer.GSTIN', 'GSTIN' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Customer.GSTIN';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Customer.Phone', 'Customer.Phone', 'Contact' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Customer.Phone';
+    END
+
+    /* ---- 4. ITEMS (x10 y96 w190 h80) ---------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'ITEMS', 'Items', 4, 10, 96, 190, 80, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'ITEM_TABLE');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'item-column', 'Item Table', 0, 0, 190, 78, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign, BorderBottom, BorderColor)
+            VALUES (@a4_elm, @a4_font, 3.0, 'LEFT', 1, '#999999');
+        INSERT INTO dbo.InvoiceTemplateItemColumn (ElementId, FieldName, HeaderText, DisplayOrder, Width, Alignment) VALUES
+            (@a4_elm, 'SlNo',           '#',                     1, 10, 'CENTER'),
+            (@a4_elm, 'ProductName',    'Product / Description', 2, 64, 'LEFT'),
+            (@a4_elm, 'HsnCode',        'HSN/SAC',               3, 18, 'CENTER'),
+            (@a4_elm, 'UnitName',       'Unit',                  4, 14, 'CENTER'),
+            (@a4_elm, 'Quantity',       'Qty',                   5, 14, 'RIGHT'),
+            (@a4_elm, 'Rate',           'Rate',                  6, 20, 'RIGHT'),
+            (@a4_elm, 'DiscountAmount', 'Discount',              7, 18, 'RIGHT'),
+            (@a4_elm, 'TaxAmount',      'GST',                   8, 16, 'RIGHT'),
+            (@a4_elm, 'LineTotal',      'Amount',                9, 16, 'RIGHT');
+    END
+
+    /* ---- 5. TAX_SUMMARY (x10 y180 w190 h24) --------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'TAX_SUMMARY', 'Tax Summary', 5, 10, 180, 190, 24, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'TAX_SUMMARY');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Tax Rate Summary', 0, 0, 90, 23, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.0, 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.TaxableAmount', 'Invoice.TaxableAmount', 'Taxable Amount' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.TaxableAmount';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.CGST', 'Invoice.CGST', 'CGST' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.CGST';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.SGST', 'Invoice.SGST', 'SGST' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.SGST';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.IGST', 'Invoice.IGST', 'IGST' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.IGST';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.CESS', 'Invoice.CESS', 'CESS' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.CESS';
+    END
+
+    /* ---- 6. TOTALS (x10 y208 w190 h26) -------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'TOTALS', 'Totals', 6, 10, 208, 190, 26, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'SUBTOTAL');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Gross / Discount / Taxable', 100, 0, 90, 15, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.2, 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.SubTotal', 'Invoice.SubTotal', 'Subtotal' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.SubTotal';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.Discount', 'Invoice.Discount', 'Discount' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.Discount';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.Tax', 'Invoice.Tax', 'Tax (GST)' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.Tax';
+    END
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'TOTAL');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Grand Total', 100, 16, 90, 9, 1, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontWeight, TextAlign, BorderTop) VALUES (@a4_elm, @a4_font, 4.2, 'bold', 'LEFT', 1);
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.GrandTotal', 'Invoice.GrandTotal', 'GRAND TOTAL' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.GrandTotal';
+    END
+
+    /* ---- 7. PAYMENT (x10 y238 w190 h14) ------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'PAYMENT', 'Payment', 7, 10, 238, 190, 14, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'PAYMENT');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'variable', 'Payment Details', 0, 0, 120, 13, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.0, 'LEFT');
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Payment.Method', 'Payment.Method', 'Payment Mode' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Payment.Method';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.PaidAmount', 'Invoice.PaidAmount', 'Amount Paid' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.PaidAmount';
+        INSERT INTO dbo.InvoiceTemplateField (ElementId, VariableId, FieldName, BindingPath, Label)
+            SELECT @a4_elm, VariableId, 'Invoice.BalanceAmount', 'Invoice.BalanceAmount', 'Balance' FROM dbo.InvoiceTemplateVariable WHERE BindingPath = 'Invoice.BalanceAmount';
+    END
+
+    /* ---- 8. AMOUNT_IN_WORDS (x10 y256 w190 h10) ----------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'AMOUNT_IN_WORDS', 'Amount in Words', 8, 10, 256, 190, 10, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'CUSTOM_TEXT');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Amount in Words', 0, 0, 190, 9, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, FontStyle, TextAlign) VALUES (@a4_elm, @a4_font, 2.8, 'italic', 'LEFT');
+    END
+
+    /* ---- 9. BANK_DETAILS (x10 y268 w190 h10) -------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'BANK_DETAILS', 'Bank Details', 9, 10, 268, 190, 10, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'BANK_DETAILS');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Bank Details', 0, 0, 190, 9, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 2.8, 'LEFT');
+    END
+
+    /* ---- 10. TERMS (x10 y280 w110 h9) --------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'TERMS', 'Terms & Conditions', 10, 10, 280, 110, 9, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'TERMS');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Terms & Conditions', 0, 0, 108, 8, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 2.5, 'LEFT');
+    END
+
+    /* ---- 11. SIGNATURE (x125 y280 w75 h9) ----------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'SIGNATURE', 'Authorized Signature', 11, 125, 280, 75, 9, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'SIGNATURE');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Authorized Signatory', 0, 0, 75, 8, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 3.0, 'RIGHT');
+    END
+
+    /* ---- 12. FOOTER (x10 y291 w190 h6) -------------------------------- */
+    INSERT INTO dbo.InvoiceTemplateSection (TemplateVersionId, SectionCode, SectionName, DisplayOrder, X, Y, Width, Height, IsVisible)
+    VALUES (@a4_ver, 'FOOTER', 'Footer', 12, 10, 291, 190, 6, 1);
+    SET @a4_sec = SCOPE_IDENTITY();
+
+    SET @a4_comp = (SELECT ComponentId FROM dbo.InvoiceTemplateComponent WHERE Code = 'FOOTER');
+    IF @a4_comp IS NOT NULL
+    BEGIN
+        INSERT INTO dbo.InvoiceTemplateElement (SectionId, ComponentId, ElementType, ElementName, X, Y, Width, Height, DisplayOrder, IsVisible)
+        VALUES (@a4_sec, @a4_comp, 'static', 'Thank You For Your Business', 0, 0, 190, 5, 0, 1);
+        SET @a4_elm = SCOPE_IDENTITY();
+        INSERT INTO dbo.InvoiceTemplateStyle (ElementId, FontId, FontSize, TextAlign) VALUES (@a4_elm, @a4_font, 2.8, 'CENTER');
+    END
+END
+
+/* Default assignment: SALES + A4 -> SALES-INVOICE-A4 (only when the template
+   has no active assignment yet; never duplicates or overrides user scopes). */
+IF @a4_tpl IS NOT NULL AND @a4_sales IS NOT NULL AND @a4_paper IS NOT NULL
+   AND NOT EXISTS (SELECT 1 FROM dbo.InvoiceTemplateAssignment WHERE InvoiceTemplateId = @a4_tpl AND IsActive = 1)
+    INSERT INTO dbo.InvoiceTemplateAssignment (InvoiceTemplateId, CompanyId, InvoiceTypeId, PaperSizeId, IsDefault, IsActive)
+    VALUES (@a4_tpl, NULL, @a4_sales, @a4_paper, 1, 1);
 
 /* =============================================================================
    19. InvoiceTemplatePrinter - printer binding for a template

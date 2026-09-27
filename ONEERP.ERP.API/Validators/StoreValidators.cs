@@ -56,7 +56,9 @@ public class CreatePOSSessionRequestValidator : AbstractValidator<DTOs.CreatePOS
 {
     public CreatePOSSessionRequestValidator()
     {
-        RuleFor(x => x.CompanyId).GreaterThan(0);
+        RuleFor(x => x.StoreId).GreaterThan(0).WithMessage("Store is required.");
+        RuleFor(x => x.CounterId).GreaterThan(0).WithMessage("Counter is required.");
+        RuleFor(x => x.OperatorId).GreaterThan(0).WithMessage("Operator is required.");
         RuleFor(x => x.OpeningCash).GreaterThanOrEqualTo(0);
     }
 }
@@ -65,7 +67,11 @@ public class UpdatePOSSessionRequestValidator : AbstractValidator<DTOs.UpdatePOS
 {
     public UpdatePOSSessionRequestValidator()
     {
-        RuleFor(x => x.ClosingCash).GreaterThanOrEqualTo(0);
-        RuleFor(x => (int)x.Status).InclusiveBetween(1, 3);
+        RuleFor(x => x.ActualClosingCash).GreaterThanOrEqualTo(0);
+        RuleFor(x => (int)x.Status).InclusiveBetween(2, 3)
+            .WithMessage("Status must be Closed (2) or Void (3).");
+        RuleFor(x => x.ClosingRemarks).MaximumLength(500);
+        RuleFor(x => x).Must(x => x.Status != 2 || x.ActualClosingCash.HasValue)
+            .WithMessage("Actual closing cash is required to close a session.");
     }
 }

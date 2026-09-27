@@ -17,6 +17,19 @@ public class SalesInvoice
     public int? SalesTypeId { get; set; }
     public long? PriceListId { get; set; }
 
+    /// <summary>
+    /// Company fiscal period this invoice belongs to. Resolved from the invoice
+    /// date on save, and used to keep period reporting and period-close checks
+    /// reproducible.
+    /// </summary>
+    public long? FinancialYearId { get; set; }
+
+    /// <summary>
+    /// Set when the invoice was raised inside a POS drawer session. This is the
+    /// only reliable link used to reconcile expected closing cash.
+    /// </summary>
+    public long? POSSessionId { get; set; }
+
     public string? ReferenceNo { get; set; }
     public DateTime? ReferenceDate { get; set; }
 

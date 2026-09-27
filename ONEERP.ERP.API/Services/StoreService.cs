@@ -261,13 +261,35 @@ public interface IPOSSessionService
 
 public class POSSessionService : IPOSSessionService
 {
+    private const byte StatusOpen = 1;
+    private const byte StatusClosed = 2;
+    private const byte StatusVoid = 3;
+
     private readonly IPOSSessionRepository _repository;
+    private readonly IStoreRepository _storeRepository;
+    private readonly ICounterRepository _counterRepository;
+    private readonly ICounterAssignmentRepository _counterAssignmentRepository;
+    private readonly IOperatorRepository _operatorRepository;
+    private readonly ICompanyRepository _companyRepository;
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
 
-    public POSSessionService(IPOSSessionRepository repository, IAuditService auditService, ICurrentUser currentUser)
+    public POSSessionService(
+        IPOSSessionRepository repository,
+        IStoreRepository storeRepository,
+        ICounterRepository counterRepository,
+        ICounterAssignmentRepository counterAssignmentRepository,
+        IOperatorRepository operatorRepository,
+        ICompanyRepository companyRepository,
+        IAuditService auditService,
+        ICurrentUser currentUser)
     {
         _repository = repository;
+        _storeRepository = storeRepository;
+        _counterRepository = counterRepository;
+        _counterAssignmentRepository = counterAssignmentRepository;
+        _operatorRepository = operatorRepository;
+        _companyRepository = companyRepository;
         _auditService = auditService;
         _currentUser = currentUser;
     }
@@ -296,28 +318,52 @@ public class POSSessionService : IPOSSessionService
 
     public async Task<POSSessionDto> CreateAsync(CreatePOSSessionRequest request)
     {
-        var sessionNumber = GenerateSessionNumber();
-        if (await _repository.GetByNumberAsync(sessionNumber) != null)
-            sessionNumber = GenerateSessionNumber();
+        // Company and branch are context, never user input: they come from the
+        // selected store, which is itself checked against the caller's scope.
+        var store = await ResolveStoreAsync(request.StoreId);
 
+        var counter = await _counterRepository.GetByIdAsync(request.CounterId)
+            ?? throw new DomainException("The selected counter does not exist.");
+        if (counter.IsDeleted || !counter.IsActive)
+            throw new DomainException("The selected counter is inactive.");
+        if (counter.StoreId != store.StoreId)
+            throw new DomainException("The selected counter does not belong to the selected store.");
+
+        var operatorEntity = await _operatorRepository.GetByIdAsync(request.OperatorId)
+            ?? throw new DomainException("The selected operator does not exist.");
+        if (operatorEntity.IsDeleted || !operatorEntity.IsActive)
+            throw new DomainException("The selected operator is inactive.");
+        if (operatorEntity.CompanyId != store.CompanyId)
+            throw new DomainException("The selected operator does not belong to the store's company.");
+
+        // The operator must hold an active counter assignment for this counter.
+        var assignment = await _counterAssignmentRepository.GetActiveByCounterAndOperatorAsync(counter.CounterId, operatorEntity.OperatorId)
+            ?? throw new DomainException("The selected operator is not assigned to the selected counter.");
+
+        if ((await _repository.GetActiveByCounterAsync(counter.CounterId)).Any())
+            throw new DomainException($"Counter '{counter.CounterName}' already has an open session.");
+
+        var now = DateTime.UtcNow;
         var session = new POSSession
         {
-            CompanyId = request.CompanyId,
-            CompanyName = request.CompanyName?.Trim(),
-            BranchId = request.BranchId,
-            BranchName = request.BranchName?.Trim(),
-            StoreId = request.StoreId,
-            StoreName = request.StoreName?.Trim(),
-            CounterId = request.CounterId,
-            CounterName = request.CounterName?.Trim(),
-            CashierUserId = request.CashierUserId,
-            CashierUserName = request.CashierUserName?.Trim(),
-            SessionNumber = sessionNumber,
+            CompanyId = store.CompanyId,
+            BranchId = store.BranchId,
+            StoreId = store.StoreId,
+            StoreName = store.StoreName,
+            CounterId = counter.CounterId,
+            CounterName = counter.CounterName,
+            CounterAssignmentId = assignment.AssignmentId,
+            OperatorId = operatorEntity.OperatorId,
+            // Historical display uses the snapshot, not the live master name.
+            OperatorNameSnapshot = operatorEntity.OperatorName,
+            SessionNumber = await GenerateSessionNumberAsync(store.CompanyId, now),
             OpeningCash = request.OpeningCash,
-            ClosingCash = null,
-            OpenedAt = DateTime.UtcNow,
-            ClosedAt = null,
-            Status = 1,
+            ExpectedClosingCash = request.OpeningCash,
+            ActualClosingCash = 0m,
+            CashDifference = 0m,
+            OpenedAt = now,
+            OpenedBy = _currentUser.UserId,
+            Status = StatusOpen,
             CreatedBy = _currentUser.UserId,
             UpdatedBy = _currentUser.UserId
         };
@@ -332,14 +378,33 @@ public class POSSessionService : IPOSSessionService
         var session = await _repository.GetByIdAsync(id)
             ?? throw new NotFoundException($"POS session '{id}' was not found.");
 
-        session.ClosingCash = request.ClosingCash;
+        if (session.Status != StatusOpen)
+            throw new DomainException("Only an open session can be closed or voided.");
+        if (request.Status is not (StatusClosed or StatusVoid))
+            throw new DomainException("Status must be Closed (2) or Void (3).");
+        if (request.Status == StatusClosed && request.ActualClosingCash is null)
+            throw new DomainException("Actual closing cash is required to close a session.");
+
+        // Expected closing cash and the difference are owned by the backend.
+        session.ExpectedClosingCash = await _repository.GetExpectedClosingCashAsync(id);
+        session.ActualClosingCash = request.ActualClosingCash ?? 0m;
+        session.CashDifference = session.ActualClosingCash - session.ExpectedClosingCash;
         session.Status = request.Status;
-        session.ClosedAt = request.Status == 2 ? DateTime.UtcNow : session.ClosedAt;
+        session.ClosingRemarks = string.IsNullOrWhiteSpace(request.ClosingRemarks) ? null : request.ClosingRemarks.Trim();
+        session.ClosedAt = DateTime.UtcNow;
+        session.ClosedBy = _currentUser.UserId;
         session.UpdatedBy = _currentUser.UserId;
 
-        await _repository.UpdateAsync(session);
+        if (!await _repository.UpdateAsync(session, request.Version))
+            throw new DomainException(
+                "This POS session was modified by another user. Reload the record and try again.",
+                StatusCodes.Status409Conflict);
+
         await _auditService.WriteAsync("POSSession", id.ToString(), "Update", _currentUser.Username);
-        return ToDto(session);
+
+        // Re-read so the caller gets the rowversion the update produced, not the
+        // stale token it sent.
+        return ToDto(await _repository.GetByIdAsync(id) ?? session);
     }
 
     public async Task<bool> DeleteAsync(long id)
@@ -352,18 +417,49 @@ public class POSSessionService : IPOSSessionService
         return true;
     }
 
-    private static string GenerateSessionNumber()
+    /// <summary>Loads a store and verifies the caller may see its company.</summary>
+    private async Task<Store> ResolveStoreAsync(int storeId)
     {
-        return $"POS-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..6].ToUpperInvariant()}";
+        if (storeId <= 0)
+            throw new DomainException("Store is required.");
+
+        var store = await _storeRepository.GetByIdAsync(storeId)
+            ?? throw new DomainException("The selected store does not exist.");
+        if (store.IsDeleted || !store.IsActive)
+            throw new DomainException("The selected store is inactive.");
+
+        if (_currentUser.IsSuperAdmin)
+            return store;
+
+        var accessible = await _companyRepository.GetAccessibleAsync(_currentUser.UserId);
+        if (!accessible.Any(c => c.Id == store.CompanyId))
+            throw new DomainException("The selected store is outside your authorized companies.");
+
+        return store;
+    }
+
+    private async Task<string> GenerateSessionNumberAsync(int companyId, DateTime onDate)
+    {
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            var candidate = await _repository.GetNextSessionNumberAsync(companyId, onDate);
+            if (await _repository.GetByNumberAsync(candidate) == null)
+                return candidate;
+        }
+        throw new DomainException("Could not allocate a session number. Please try again.");
     }
 
     private static POSSessionDto ToDto(POSSession p) => new()
     {
         POSSessionId = p.POSSessionId, CompanyId = p.CompanyId, CompanyName = p.CompanyName,
         BranchId = p.BranchId, BranchName = p.BranchName, StoreId = p.StoreId, StoreName = p.StoreName,
-        CounterId = p.CounterId, CounterName = p.CounterName, CashierUserId = p.CashierUserId,
-        CashierUserName = p.CashierUserName, SessionNumber = p.SessionNumber, OpeningCash = p.OpeningCash,
-        ClosingCash = p.ClosingCash, OpenedAt = p.OpenedAt, ClosedAt = p.ClosedAt, Status = p.Status,
+        CounterId = p.CounterId, CounterName = p.CounterName,
+        CounterAssignmentId = p.CounterAssignmentId, OperatorId = p.OperatorId,
+        OperatorNameSnapshot = p.OperatorNameSnapshot, SessionNumber = p.SessionNumber,
+        OpeningCash = p.OpeningCash, ExpectedClosingCash = p.ExpectedClosingCash,
+        ActualClosingCash = p.ActualClosingCash, CashDifference = p.CashDifference,
+        OpenedAt = p.OpenedAt, OpenedBy = p.OpenedBy, ClosedAt = p.ClosedAt, ClosedBy = p.ClosedBy,
+        ClosingRemarks = p.ClosingRemarks, Status = p.Status, Version = p.Version,
         CreatedBy = p.CreatedBy, CreatedAt = p.CreatedAt, UpdatedBy = p.UpdatedBy, UpdatedAt = p.UpdatedAt
     };
 }

@@ -15,6 +15,7 @@ public interface ICompanyRepository
     Task<int> InsertAsync(Company company, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> UpdateAsync(Company company, IDbConnection? connection = null, IDbTransaction? transaction = null);
     Task<bool> SoftDeleteAsync(int companyId, int modifiedBy, IDbConnection? connection = null, IDbTransaction? transaction = null);
+    Task<IEnumerable<Company>> GetAccessibleAsync(int userId);
 }
 
 public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
@@ -182,5 +183,14 @@ public class CompanyRepository : TenantRepositoryBase, ICompanyRepository
         {
             if (own) conn.Dispose();
         }
+    }
+
+    public async Task<IEnumerable<Company>> GetAccessibleAsync(int userId)
+    {
+        using var connection = OpenTenant();
+        // Get companies accessible to the user via UserRoles or direct CompanyId
+        // For now, return all active companies (can be enhanced with proper authorization)
+        return await Sql.QueryAsync<Company>(connection,
+            "SELECT * FROM dbo.Companies WHERE IsDeleted = 0 AND IsActive = 1 ORDER BY CompanyName");
     }
 }

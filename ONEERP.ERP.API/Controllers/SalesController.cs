@@ -23,6 +23,7 @@ public class SalesController : BaseController
     private readonly IBranchService _branchService;
     private readonly IWarehouseService _warehouseService;
     private readonly ICompanyService _companyService;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
     public SalesController(
         ISalesService service,
@@ -34,7 +35,8 @@ public class SalesController : BaseController
         IPaymentMethodService paymentMethodService,
         IBranchService branchService,
         IWarehouseService warehouseService,
-        ICompanyService companyService)
+        ICompanyService companyService,
+        IDataScopeResolver dataScopeResolver)
     {
         _service = service;
         _currentUser = currentUser;
@@ -46,6 +48,7 @@ public class SalesController : BaseController
         _branchService = branchService;
         _warehouseService = warehouseService;
         _companyService = companyService;
+        _dataScopeResolver = dataScopeResolver;
     }
 
     [HttpGet]
@@ -60,23 +63,30 @@ public class SalesController : BaseController
     [HttpGet("lookups")]
     [Permission(Permissions.SalesView)]
     [ProducesResponseType(typeof(ApiResponse<object>), 200)]
-    public async Task<IActionResult> Lookups()
+    public async Task<IActionResult> Lookups([FromQuery] int? companyId = null)
     {
-        var customers = (await _businessPartnerService.GetAllAsync(true))
+        var effectiveCompanyId = companyId is > 0 ? companyId.Value : _currentUser.CompanyId;
+        if (!await _dataScopeResolver.CanAccessCompanyAsync(effectiveCompanyId))
+            return StatusCode(StatusCodes.Status403Forbidden,
+                ApiResponse<object>.Fail($"You do not have access to company {effectiveCompanyId}."));
+
+        var customers = (await _businessPartnerService.GetByRoleCodeAsync(effectiveCompanyId, "CUSTOMER", true))
             .Select(p => new LookupItem { Id = p.Id, Code = p.PartnerCode, Name = p.PartnerName }).ToList();
-        var products = (await _productService.GetPagedAsync(_currentUser.CompanyId, 1, 10000, "")).Items
+        var products = (await _productService.GetPagedAsync(effectiveCompanyId, 1, 10000, "")).Items
             .Select(p => new LookupItem { Id = p.Id, Code = p.ProductCode, Name = p.ProductName }).ToList();
-        var units = (await _unitService.GetAllAsync(_currentUser.CompanyId, true))
+        var units = (await _unitService.GetAllAsync(effectiveCompanyId, true))
             .Select(u => new LookupItem { Id = u.Id, Code = u.UnitCode, Name = u.UnitName }).ToList();
         var paymentTypes = (await _paymentTypeService.GetAllAsync(true))
             .Select(t => new LookupItem { Id = t.PaymentTypeId, Code = t.Code, Name = t.Name }).ToList();
         var paymentMethods = (await _paymentMethodService.GetAllAsync(true))
             .Select(m => new LookupItem { Id = m.PaymentMethodId, Code = m.Code, Name = m.Name }).ToList();
-        var branches = (await _branchService.GetPagedAsync(_currentUser.CompanyId, 1, 1000, "")).Items
+        var branches = (await _branchService.GetPagedAsync(effectiveCompanyId, 1, 1000, "")).Items
             .Select(b => new LookupItem { Id = b.Id, Code = b.BranchCode, Name = b.BranchName }).ToList();
         var warehouses = (await _warehouseService.GetAllAsync(true))
             .Select(w => new LookupItem { Id = w.Id, Code = w.WarehouseCode, Name = w.WarehouseName }).ToList();
+        var allowedCompanyIds = await _dataScopeResolver.GetAllowedCompanyIdsAsync();
         var companies = (await _companyService.GetPagedAsync(1, 1000, "")).Items
+            .Where(c => allowedCompanyIds is null || allowedCompanyIds.Contains(c.Id))
             .Select(c => new LookupItem { Id = c.Id, Code = c.CompanyCode, Name = c.CompanyName }).ToList();
         return Ok(ApiResponse<object>.Ok(new
         {
@@ -88,21 +98,37 @@ public class SalesController : BaseController
             Branches = branches,
             Warehouses = warehouses,
             Companies = companies,
-            CurrentCompanyId = _currentUser.CompanyId,
+            CurrentCompanyId = effectiveCompanyId,
         }));
     }
 
     [HttpGet("next-number")]
     [Permission(Permissions.SalesView)]
     [ProducesResponseType(typeof(ApiResponse<string>), 200)]
-    public async Task<IActionResult> NextNumber()
-        => Ok(ApiResponse<string>.Ok(await _service.GetNextSalesNoAsync(_currentUser.CompanyId)));
+    public async Task<IActionResult> NextNumber([FromQuery] long? companyId = null)
+        => Ok(ApiResponse<string>.Ok(await _service.GetNextSalesNoAsync(companyId is > 0 ? companyId.Value : _currentUser.CompanyId)));
+
+    [HttpGet("products/search")]
+    [Permission(Permissions.SalesView)]
+    [ProducesResponseType(typeof(ApiResponse<List<SalesProductSearchDto>>), 200)]
+    public async Task<IActionResult> SearchProducts(
+        [FromQuery] string search = "",
+        [FromQuery] long branchId = 0,
+        [FromQuery] long warehouseId = 0,
+        [FromQuery] long? priceListId = null,
+        [FromQuery] int size = 50,
+        [FromQuery] bool includeOutOfStock = false,
+        [FromQuery] long? companyId = null)
+        => Ok(ApiResponse<List<SalesProductSearchDto>>.Ok(await _service.SearchProductsAsync(
+            companyId is > 0 ? companyId.Value : _currentUser.CompanyId,
+            branchId, warehouseId, priceListId, search, size, includeOutOfStock)));
 
     [HttpGet("products/{productId:long}/stock")]
     [Permission(Permissions.SalesView)]
     [ProducesResponseType(typeof(ApiResponse<List<ProductStockDto>>), 200)]
-    public async Task<IActionResult> GetProductStock(long productId)
-        => Ok(ApiResponse<List<ProductStockDto>>.Ok(await _service.GetStockAvailabilityAsync(_currentUser.CompanyId, productId)));
+    public async Task<IActionResult> GetProductStock(long productId, [FromQuery] long? companyId = null)
+        => Ok(ApiResponse<List<ProductStockDto>>.Ok(await _service.GetStockAvailabilityAsync(
+            companyId is > 0 ? companyId.Value : _currentUser.CompanyId, productId)));
 
     [HttpGet("{id:long}")]
     [Permission(Permissions.SalesView)]
@@ -131,6 +157,18 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse<List<StockTransaction>>), 200)]
     public async Task<IActionResult> GetStock(long id)
         => Ok(ApiResponse<List<StockTransaction>>.Ok(await _service.GetStockTransactionsAsync(id)));
+
+    /// <summary>Read-model for the document-designer print/preview pipeline.
+    /// Returns the invoice with company / customer / items straight from the DB.</summary>
+    [HttpGet("{id:long}/print-data")]
+    [Permission(Permissions.SalesView)]
+    [ProducesResponseType(typeof(ApiResponse<SalesInvoicePrintDto>), 200)]
+    public async Task<IActionResult> GetPrintData(long id)
+    {
+        var result = await _service.GetPrintDataAsync(id);
+        if (result == null) return NotFound(ApiResponse<SalesInvoicePrintDto>.Fail("Sales invoice not found"));
+        return Ok(ApiResponse<SalesInvoicePrintDto>.Ok(result));
+    }
 
     [HttpPost]
     [Permission(Permissions.SalesManage)]

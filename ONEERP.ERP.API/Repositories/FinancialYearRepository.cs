@@ -7,6 +7,7 @@ public interface IFinancialYearRepository
 {
     Task<FinancialYear?> GetByIdAsync(long id);
     Task<FinancialYear?> GetByCodeAsync(int companyId, string code);
+    Task<FinancialYear?> GetForDateAsync(int companyId, DateTime onDate);
     Task<bool> CodeInUseAsync(int companyId, string code);
     Task<IEnumerable<FinancialYear>> GetPagedAsync(int companyId, int pageNumber, int pageSize, string search);
     Task<int> CountAsync(int companyId, string search);
@@ -37,6 +38,18 @@ public class FinancialYearRepository : TenantRepositoryBase, IFinancialYearRepos
         return await Sql.QuerySingleOrDefaultAsync<FinancialYear>(connection,
             "SELECT * FROM dbo.FinancialYear WHERE CompanyId = @companyId AND Code = @code",
             new { companyId, code });
+    }
+
+    public async Task<FinancialYear?> GetForDateAsync(int companyId, DateTime onDate)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<FinancialYear>(connection,
+            @"SELECT TOP 1 * FROM dbo.FinancialYear
+              WHERE CompanyId = @companyId
+                AND StartDate <= @onDate
+                AND EndDate >= @onDate
+              ORDER BY StartDate DESC",
+            new { companyId, onDate = onDate.Date });
     }
 
     public async Task<bool> CodeInUseAsync(int companyId, string code)

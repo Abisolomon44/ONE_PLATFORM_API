@@ -84,33 +84,123 @@ public class POSSessionDto
     public string? StoreName { get; set; }
     public int? CounterId { get; set; }
     public string? CounterName { get; set; }
-    public int? CashierUserId { get; set; }
-    public string? CashierUserName { get; set; }
+    public int? CounterAssignmentId { get; set; }
+    public int? OperatorId { get; set; }
+    public string? OperatorNameSnapshot { get; set; }
     public string SessionNumber { get; set; } = string.Empty;
     public decimal OpeningCash { get; set; }
-    public decimal? ClosingCash { get; set; }
+    public decimal ExpectedClosingCash { get; set; }
+    public decimal ActualClosingCash { get; set; }
+    public decimal CashDifference { get; set; }
     public DateTime OpenedAt { get; set; }
+    public int? OpenedBy { get; set; }
     public DateTime? ClosedAt { get; set; }
+    public int? ClosedBy { get; set; }
+    public string? ClosingRemarks { get; set; }
     public byte Status { get; set; }
+    public byte[]? Version { get; set; }
     public int? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
 
+/// <summary>
+/// Opens a session. Only StoreId, CounterId, OperatorId and OpeningCash come from
+/// the client; CompanyId/BranchId/CounterAssignmentId/SessionNumber/OpenedAt/
+/// OpenedBy are resolved server-side and Status is always forced to Open (1).
+/// </summary>
 public record CreatePOSSessionRequest(
+    int StoreId,
+    int CounterId,
+    int OperatorId,
+    decimal OpeningCash);
+
+/// <summary>
+/// Closes or voids a session. ExpectedClosingCash and CashDifference are computed
+/// server-side; Version carries the optimistic concurrency token.
+/// </summary>
+public record UpdatePOSSessionRequest(
+    decimal? ActualClosingCash,
+    byte Status,
+    string? ClosingRemarks,
+    byte[]? Version);
+
+public class OperatorDto
+{
+    public int OperatorId { get; set; }
+    public int Id => OperatorId;
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int UserId { get; set; }
+    public string? UserName { get; set; }
+    public int? OperatorTypeId { get; set; }
+    public string? OperatorTypeCode { get; set; }
+    public string? OperatorTypeName { get; set; }
+    public string OperatorCode { get; set; } = string.Empty;
+    public string OperatorName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public record CreateOperatorRequest(
     int CompanyId,
+    int? BranchId,
+    int UserId,
+    int? OperatorTypeId,
+    string OperatorCode,
+    string OperatorName,
+    bool IsActive);
+
+public record UpdateOperatorRequest(
+    int? BranchId,
+    int? OperatorTypeId,
+    string? OperatorCode,
+    string? OperatorName,
+    bool IsActive);
+
+public class CounterOperatorAssignmentDto
+{
+    public int AssignmentId { get; set; }
+    public int Id => AssignmentId;
+    public int CompanyId { get; set; }
+    public int? BranchId { get; set; }
+    public int StoreId { get; set; }
+    public string? StoreName { get; set; }
+    public int CounterId { get; set; }
+    public string? CounterCode { get; set; }
+    public string? CounterName { get; set; }
+    public int OperatorId { get; set; }
+    public string? OperatorCode { get; set; }
+    public string? OperatorName { get; set; }
+    public bool IsPrimary { get; set; }
+    public string? ValidFrom { get; set; }
+    public string? ValidTo { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public record CreateCounterAssignmentRequest(
+    int CompanyId,
+    int? BranchId,
+    int StoreId,
+    int CounterId,
+    int OperatorId,
+    bool IsPrimary,
+    string? ValidFrom,
+    string? ValidTo,
+    bool IsActive);
+
+public record UpdateCounterAssignmentRequest(
     int? BranchId,
     int? StoreId,
     int? CounterId,
-    int? CashierUserId,
-    string? CompanyName,
-    string? BranchName,
-    string? StoreName,
-    string? CounterName,
-    string? CashierUserName,
-    decimal OpeningCash);
-
-public record UpdatePOSSessionRequest(
-    decimal? ClosingCash,
-    byte Status);
+    int? OperatorId,
+    bool IsPrimary,
+    string? ValidFrom,
+    string? ValidTo,
+    bool IsActive);
