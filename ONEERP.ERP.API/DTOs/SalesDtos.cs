@@ -185,3 +185,9 @@ public record UpdateSalesRequest(
     long CompanyId = 0,
     long? FinancialYearId = null,
     long? POSSessionId = null);
+
+/// <summary>T035 — replace-the-payments payload for PUT /api/sales/{id}/payment.</summary>
+public class UpdateSalesPaymentRequest
+{
+    public List<CreateSalesPaymentInput> Payments { get; set; } = new();
+}

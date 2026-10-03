@@ -14,6 +14,8 @@ namespace ONEERP.ERP.API.Controllers;
 public class SalesController : BaseController
 {
     private readonly ISalesService _service;
+    private readonly ISalesReturnService _returnService;
+    private readonly IIdempotencyService _idempotency;
     private readonly ICurrentUser _currentUser;
     private readonly IBusinessPartnerService _businessPartnerService;
     private readonly IProductService _productService;
@@ -27,6 +29,8 @@ public class SalesController : BaseController
 
     public SalesController(
         ISalesService service,
+        ISalesReturnService returnService,
+        IIdempotencyService idempotency,
         ICurrentUser currentUser,
         IBusinessPartnerService businessPartnerService,
         IProductService productService,
@@ -39,6 +43,8 @@ public class SalesController : BaseController
         IDataScopeResolver dataScopeResolver)
     {
         _service = service;
+        _returnService = returnService;
+        _idempotency = idempotency;
         _currentUser = currentUser;
         _businessPartnerService = businessPartnerService;
         _productService = productService;
@@ -170,11 +176,31 @@ public class SalesController : BaseController
         return Ok(ApiResponse<SalesInvoicePrintDto>.Ok(result));
     }
 
+    /// <summary>
+    /// T039 — supports an optional X-Idempotency-Key header: a retried POST
+    /// with the same key replays the originally created invoice instead of
+    /// creating a duplicate.
+    /// </summary>
     [HttpPost]
     [Permission(Permissions.SalesManage)]
     [ProducesResponseType(typeof(ApiResponse<SalesInvoiceDto>), 200)]
     public async Task<IActionResult> Create([FromBody] CreateSalesRequest request)
-        => Ok(ApiResponse<SalesInvoiceDto>.Ok(await _service.CreateAsync(_currentUser.CompanyId, _currentUser.UserId, request), "Sales invoice created successfully"));
+    {
+        const string endpoint = "POST /api/sales";
+        var key = Request.Headers["X-Idempotency-Key"].FirstOrDefault();
+        var replay = await _idempotency.TryBeginAsync(_currentUser.CompanyId, endpoint, key ?? string.Empty);
+        if (replay.HasValue)
+        {
+            var existing = await _service.GetByIdAsync(replay.Value);
+            if (existing != null)
+                return Ok(ApiResponse<SalesInvoiceDto>.Ok(existing, "Sales invoice already created (idempotent replay)"));
+        }
+
+        var created = await _service.CreateAsync(_currentUser.CompanyId, _currentUser.UserId, request);
+        if (!string.IsNullOrWhiteSpace(key))
+            await _idempotency.CompleteAsync(_currentUser.CompanyId, endpoint, key, created.SalesInvoiceId);
+        return Ok(ApiResponse<SalesInvoiceDto>.Ok(created, "Sales invoice created successfully"));
+    }
 
     [HttpPut("{id:long}")]
     [Permission(Permissions.SalesManage)]
@@ -188,5 +214,39 @@ public class SalesController : BaseController
     {
         await _service.DeleteAsync(id);
         return Ok(ApiResponse.Ok("Sales invoice deleted successfully"));
+    }
+
+    /// <summary>
+    /// T031 — cancel a posted invoice. Financial history is never physically
+    /// deleted; the invoice is marked CANCELLED and stock is reversed.
+    /// </summary>
+    [HttpPost("{id:long}/cancel")]
+    [Permission(Permissions.SalesManage)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
+    public async Task<IActionResult> Cancel(long id, [FromBody] CancelTransactionRequest request)
+    {
+        await _service.CancelAsync(id, _currentUser.UserId, request.Reason);
+        return Ok(ApiResponse<bool>.Ok(true, "Sales invoice cancelled successfully"));
+    }
+
+    /// <summary>T035 — replace the invoice's payments and re-derive paid/balance.</summary>
+    [HttpPut("{id:long}/payment")]
+    [Permission(Permissions.SalesManage)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
+    public async Task<IActionResult> UpdatePayment(long id, [FromBody] UpdateSalesPaymentRequest request)
+    {
+        await _service.UpdatePaymentsAsync(id, _currentUser.UserId, request.Payments);
+        return Ok(ApiResponse<bool>.Ok(true, "Sales payment updated successfully"));
+    }
+
+    /// <summary>T027 alias — create a return scoped to a specific invoice.</summary>
+    [HttpPost("{salesInvoiceId:long}/return")]
+    [Permission(Permissions.SalesReturnManage)]
+    [ProducesResponseType(typeof(ApiResponse<SalesReturnDto>), 200)]
+    public async Task<IActionResult> CreateReturn(long salesInvoiceId, [FromBody] CreateSalesReturnRequest request)
+    {
+        request.SalesInvoiceId = salesInvoiceId;
+        var result = await _returnService.CreateAsync(_currentUser.CompanyId, _currentUser.UserId, request);
+        return Ok(ApiResponse<SalesReturnDto>.Ok(result, "Sales return created successfully"));
     }
 }

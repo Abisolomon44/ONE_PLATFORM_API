@@ -16,6 +16,10 @@ public interface ISalesRepository
     Task<long> InsertAsync(SalesInvoice entity, List<CreateSalesPaymentInput>? payments);
     Task<bool> UpdateAsync(SalesInvoice entity);
     Task<bool> DeleteAsync(long id);
+    Task<bool> CancelAsync(long id, long userId, string reason);
+    Task<bool> ReplacePaymentsAsync(long id, List<CreateSalesPaymentInput> payments, decimal grandTotal, long userId);
+    Task<long> InsertRefundPaymentAsync(Payment payment);
+    Task<Payment?> GetPaymentByIdAsync(long id);
     Task<List<ProductStockDto>> GetStockAvailabilityAsync(long companyId, long productId);
     Task<List<SalesProductSearchDto>> SearchProductsAsync(long companyId, long branchId, long warehouseId, long? priceListId, string search, int size, bool includeOutOfStock);
     Task<SalesInvoicePrintDto?> GetPrintDataAsync(long salesInvoiceId);
@@ -543,5 +547,203 @@ public class SalesRepository : TenantRepositoryBase, ISalesRepository
               ORDER BY p.ProductName",
             new { companyId, branchId, warehouseId, priceListId, search, sp, size, includeOutOfStock });
         return rows.ToList();
+    }
+
+    /// <summary>
+    /// T031 — cancel a posted invoice: marks InvoiceStatus='CANCELLED' and
+    /// reverses stock with IN transactions (ReferenceType='SALES_CANCEL').
+    /// Financial history is never physically deleted.
+    /// </summary>
+    public async Task<bool> CancelAsync(long id, long userId, string reason)
+    {
+        using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
+        try
+        {
+            var header = await Sql.QuerySingleOrDefaultAsync<SalesInvoice>(
+                connection, "SELECT * FROM dbo.SalesInvoice WHERE SalesInvoiceId = @id", new { id }, tx);
+            if (header == null) return false;
+            if (!string.Equals(header.InvoiceStatus, "POSTED", StringComparison.OrdinalIgnoreCase))
+                throw new DomainException($"Only posted invoices can be cancelled (current status: {header.InvoiceStatus}).");
+
+            var items = await GetItemsAsync(id);
+            foreach (var item in items)
+            {
+                await Sql.ExecuteAsync(connection,
+                    @"INSERT INTO dbo.StockTransaction
+                      (CompanyId, BranchId, WarehouseId, ProductId, UnitId, TransactionType, ReferenceType,
+                       ReferenceId, QuantityIn, QuantityOut, Rate, BalanceQuantity, TransactionDate, Remarks, CreatedByUserID)
+                      VALUES (@CompanyId, @BranchId, @WarehouseId, @ProductId, @UnitID, 'IN', 'SALES_CANCEL',
+                       @ReferenceId, @QuantityIn, 0, @Rate,
+                       (SELECT ISNULL(Quantity,0) FROM dbo.Stock WHERE CompanyId=@CompanyId AND BranchId=@BranchId
+                         AND WarehouseId=@WarehouseId AND ProductId=@ProductId AND UnitId=@UnitID),
+                       SYSUTCDATETIME(), @Remarks, @userId)",
+                    new
+                    {
+                        header.CompanyId,
+                        header.BranchId,
+                        header.WarehouseId,
+                        item.ProductId,
+                        item.UnitID,
+                        ReferenceId = id,
+                        QuantityIn = item.Quantity,
+                        Rate = item.Rate,
+                        Remarks = $"Sales cancel {header.SalesInvoiceNo}",
+                        userId
+                    }, tx);
+
+                await Sql.ExecuteAsync(connection,
+                    @"UPDATE dbo.Stock SET Quantity = Quantity + @qty, AvailableQuantity = AvailableQuantity + @qty,
+                      UpdatedAt = SYSUTCDATETIME()
+                      WHERE CompanyId=@CompanyId AND BranchId=@BranchId AND WarehouseId=@WarehouseId
+                        AND ProductId=@ProductId AND UnitId=@UnitID",
+                    new { header.CompanyId, header.BranchId, header.WarehouseId, item.ProductId, item.UnitID, qty = item.Quantity }, tx);
+            }
+
+            await Sql.ExecuteAsync(connection,
+                @"UPDATE dbo.SalesInvoice SET InvoiceStatus = 'CANCELLED', Remarks = COALESCE(NULLIF(@reason, ''), Remarks),
+                  UpdatedByUserID = @userId, UpdatedAt = SYSUTCDATETIME()
+                  WHERE SalesInvoiceId = @id",
+                new { id, reason, userId }, tx);
+
+            tx.Commit();
+            return true;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// T035 — replace the invoice's SALES payments atomically: existing
+    /// PaymentAllocation + Payment rows (ReferenceType='SALES') are removed and
+    /// the new set inserted, then PaidAmount/BalanceAmount are re-derived from
+    /// GrandTotal so the invoice reconciliation always holds.
+    /// </summary>
+    public async Task<bool> ReplacePaymentsAsync(long id, List<CreateSalesPaymentInput> payments, decimal grandTotal, long userId)
+    {
+        using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
+        try
+        {
+            var applied = payments.Where(p => p.Amount > 0).ToList();
+            var totalPaid = applied.Sum(p => p.Amount);
+            if (totalPaid > grandTotal)
+                throw new DomainException($"Payment total {totalPaid:N2} exceeds the invoice total {grandTotal:N2}.");
+
+            var header = await Sql.QuerySingleOrDefaultAsync<SalesInvoice>(
+                connection, "SELECT * FROM dbo.SalesInvoice WHERE SalesInvoiceId = @id", new { id }, tx)
+                ?? throw new DomainException($"Sales invoice '{id}' was not found.");
+
+            await Sql.ExecuteAsync(connection,
+                "DELETE FROM dbo.PaymentAllocation WHERE ReferenceType = 'SALES' AND ReferenceId = @id",
+                new { id }, tx);
+            await Sql.ExecuteAsync(connection,
+                "DELETE FROM dbo.Payment WHERE ReferenceType = 'SALES' AND ReferenceId = @id",
+                new { id }, tx);
+
+            var seq = 0;
+            foreach (var payment in applied)
+            {
+                seq++;
+                const string sqlP = @"
+                    INSERT INTO dbo.Payment
+                    (
+                        CompanyId, PaymentNo, PaymentDate, PaymentTypeID, PaymentMethodID, ReferenceType,
+                        ReferenceId, BusinessPartnerId, Amount, ReferenceNo, Remarks, StatusID, CreatedByUserID
+                    )
+                    VALUES
+                    (
+                        @CompanyId, @PaymentNo, @PaymentDate, @PaymentTypeID, @PaymentMethodID, 'SALES',
+                        @ReferenceId, @BusinessPartnerId, @Amount, @ReferenceNo, @Remarks, @StatusID, @CreatedByUserID
+                    );
+                    SELECT CAST(SCOPE_IDENTITY() AS bigint);";
+                const string sqlA = @"
+                    INSERT INTO dbo.PaymentAllocation (PaymentId, ReferenceType, ReferenceId, AllocatedAmount, CreatedAt)
+                    VALUES (@PaymentId, 'SALES', @ReferenceId, @AllocatedAmount, SYSUTCDATETIME());";
+
+                var pay = new
+                {
+                    header.CompanyId,
+                    PaymentNo = $"SPAY-{DateTime.UtcNow:yyyyMMdd}-{id}-{seq}",
+                    PaymentDate = DateTime.UtcNow,
+                    payment.PaymentTypeID,
+                    payment.PaymentMethodID,
+                    ReferenceId = id,
+                    BusinessPartnerId = header.CustomerId,
+                    payment.Amount,
+                    payment.ReferenceNo,
+                    payment.Remarks,
+                    StatusID = 4L,
+                    CreatedByUserID = userId
+                };
+                var paymentId = await Sql.QuerySingleOrDefaultAsync<long>(connection, sqlP, pay, tx);
+                await Sql.ExecuteAsync(connection, sqlA,
+                    new { PaymentId = paymentId, ReferenceId = id, AllocatedAmount = payment.Amount }, tx);
+            }
+
+            await Sql.ExecuteAsync(connection,
+                "UPDATE dbo.SalesInvoice SET PaidAmount = @paid, BalanceAmount = @bal, UpdatedByUserID = @userId, UpdatedAt = SYSUTCDATETIME() WHERE SalesInvoiceId = @id",
+                new { paid = totalPaid, bal = grandTotal - totalPaid, userId, id }, tx);
+
+            tx.Commit();
+            return true;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
+    /// <summary>T030 — refund payment against a sales return (ReferenceType='SALES_RETURN').</summary>
+    public async Task<long> InsertRefundPaymentAsync(Payment payment)
+    {
+        using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
+        try
+        {
+            const string sqlP = @"
+                INSERT INTO dbo.Payment
+                (
+                    CompanyId, PaymentNo, PaymentDate, PaymentTypeID, PaymentMethodID, ReferenceType,
+                    ReferenceId, BusinessPartnerId, Amount, ReferenceNo, Remarks, StatusID, CreatedByUserID
+                )
+                VALUES
+                (
+                    @CompanyId, @PaymentNo, @PaymentDate, @PaymentTypeID, @PaymentMethodID, @ReferenceType,
+                    @ReferenceId, @BusinessPartnerId, @Amount, @ReferenceNo, @Remarks, @StatusID, @CreatedByUserID
+                );
+                SELECT CAST(SCOPE_IDENTITY() AS bigint);";
+            var paymentId = await Sql.QuerySingleOrDefaultAsync<long>(connection, sqlP, payment, tx);
+
+            const string sqlA = @"
+                INSERT INTO dbo.PaymentAllocation (PaymentId, ReferenceType, ReferenceId, AllocatedAmount, CreatedAt)
+                VALUES (@PaymentId, @ReferenceType, @ReferenceId, @AllocatedAmount, SYSUTCDATETIME());";
+            await Sql.ExecuteAsync(connection, sqlA, new
+            {
+                PaymentId = paymentId,
+                payment.ReferenceType,
+                payment.ReferenceId,
+                AllocatedAmount = payment.Amount
+            }, tx);
+
+            tx.Commit();
+            return paymentId;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
+    public async Task<Payment?> GetPaymentByIdAsync(long id)
+    {
+        using var connection = OpenTenant();
+        return await Sql.QuerySingleOrDefaultAsync<Payment>(connection,
+            "SELECT * FROM dbo.Payment WHERE PaymentId = @id", new { id });
     }
 }

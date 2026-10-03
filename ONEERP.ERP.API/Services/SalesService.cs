@@ -20,6 +20,8 @@ public interface ISalesService
     Task<SalesInvoiceDto> CreateAsync(long companyId, long userId, CreateSalesRequest request);
     Task<SalesInvoiceDto> UpdateAsync(long id, long userId, UpdateSalesRequest request);
     Task DeleteAsync(long id);
+    Task CancelAsync(long id, long userId, string reason);
+    Task UpdatePaymentsAsync(long id, long userId, List<CreateSalesPaymentInput> payments);
 }
 
 public class SalesService : ISalesService
@@ -167,7 +169,30 @@ public class SalesService : ISalesService
     public async Task DeleteAsync(long id)
     {
         var existing = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Sales invoice '{id}' was not found.");
+        // T031 audit — posted financial history must never be physically deleted.
+        if (string.Equals(existing.InvoiceStatus, "POSTED", StringComparison.OrdinalIgnoreCase))
+            throw new DomainException("Posted sales invoices cannot be deleted. Cancel the invoice instead.");
         await _repo.DeleteAsync(id);
+    }
+
+    /// <summary>T031 — cancel a posted invoice; stock is reversed, history is kept.</summary>
+    public async Task CancelAsync(long id, long userId, string reason)
+    {
+        var existing = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Sales invoice '{id}' was not found.");
+        if (string.Equals(existing.InvoiceStatus, "CANCELLED", StringComparison.OrdinalIgnoreCase))
+            throw new DomainException("Sales invoice is already cancelled.");
+        await _repo.CancelAsync(id, userId, reason);
+    }
+
+    /// <summary>T035 — replace an invoice's payments; paid/balance re-derived from GrandTotal.</summary>
+    public async Task UpdatePaymentsAsync(long id, long userId, List<CreateSalesPaymentInput> payments)
+    {
+        var existing = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Sales invoice '{id}' was not found.");
+        if (string.Equals(existing.InvoiceStatus, "CANCELLED", StringComparison.OrdinalIgnoreCase))
+            throw new DomainException("Cannot update payments on a cancelled invoice.");
+        if (payments == null || payments.Count == 0)
+            throw new DomainException("Provide at least one payment.");
+        await _repo.ReplacePaymentsAsync(id, payments, existing.GrandTotal, userId);
     }
 
     private async Task<SalesInvoice> BuildAsync(
