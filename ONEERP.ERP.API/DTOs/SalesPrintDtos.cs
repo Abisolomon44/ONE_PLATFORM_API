@@ -39,6 +39,9 @@ public class SalesInvoicePrintDto
     public decimal TotalSGSTAmount { get; set; }
     public decimal TotalIGSTAmount { get; set; }
     public decimal TotalCESSAmount { get; set; }
+    // Purchase and return headers store tax as one total rather than GST components.
+    public decimal TotalTaxAmount { get; set; }
+    public string InvoiceTypeName { get; set; } = "Sales Invoice";
     public decimal TotalRoundOff { get; set; }
     public decimal GrandTotal { get; set; }
     public decimal PaidAmount { get; set; }

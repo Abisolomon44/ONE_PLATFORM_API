@@ -32,6 +32,7 @@ public class PaymentTypeService : IPaymentTypeService
 
     public async Task<PaymentTypeDto> CreateAsync(CreatePaymentTypeRequest r)
     {
+        ValidatePaymentType(r.Code, r.Name, r.DisplayOrder);
         var code = r.Code.Trim();
         if (await _repo.GetByCodeAsync(code) is not null)
             throw new DomainException($"A payment type with code '{code}' already exists.");
@@ -42,6 +43,7 @@ public class PaymentTypeService : IPaymentTypeService
 
     public async Task<PaymentTypeDto> UpdateAsync(long id, UpdatePaymentTypeRequest r)
     {
+        ValidatePaymentType(r.Code, r.Name, r.DisplayOrder);
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment type '{id}' was not found.");
         var code = r.Code.Trim();
         var dup = await _repo.GetByCodeAsync(code);
@@ -59,6 +61,16 @@ public class PaymentTypeService : IPaymentTypeService
     {
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment type '{id}' was not found.");
         return await _repo.DeleteAsync(id);
+    }
+
+    private static void ValidatePaymentType(string? code, string? name, int displayOrder)
+    {
+        if (string.IsNullOrWhiteSpace(code) || code.Trim().Length > 30)
+            throw new DomainException("Payment type code is required and must be at most 30 characters.", 400);
+        if (string.IsNullOrWhiteSpace(name) || name.Trim().Length > 100)
+            throw new DomainException("Payment type name is required and must be at most 100 characters.", 400);
+        if (displayOrder < 0)
+            throw new DomainException("Display order cannot be negative.", 400);
     }
 
     private static PaymentTypeDto Map(PaymentType e) => new()
@@ -97,6 +109,7 @@ public class PaymentMethodService : IPaymentMethodService
 
     public async Task<PaymentMethodDto> CreateAsync(CreatePaymentMethodRequest r)
     {
+        ValidatePaymentMethod(r.Code, r.Name, r.PaymentCategory, r.DisplayOrder);
         var code = r.Code.Trim();
         if (await _repo.GetByCodeAsync(code) is not null)
             throw new DomainException($"A payment method with code '{code}' already exists.");
@@ -117,6 +130,7 @@ public class PaymentMethodService : IPaymentMethodService
 
     public async Task<PaymentMethodDto> UpdateAsync(long id, UpdatePaymentMethodRequest r)
     {
+        ValidatePaymentMethod(r.Code, r.Name, r.PaymentCategory, r.DisplayOrder);
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method '{id}' was not found.");
         var code = r.Code.Trim();
         var dup = await _repo.GetByCodeAsync(code);
@@ -138,6 +152,18 @@ public class PaymentMethodService : IPaymentMethodService
     {
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method '{id}' was not found.");
         return await _repo.DeleteAsync(id);
+    }
+
+    private static void ValidatePaymentMethod(string? code, string? name, string? category, int displayOrder)
+    {
+        if (string.IsNullOrWhiteSpace(code) || code.Trim().Length > 30)
+            throw new DomainException("Payment method code is required and must be at most 30 characters.", 400);
+        if (string.IsNullOrWhiteSpace(name) || name.Trim().Length > 100)
+            throw new DomainException("Payment method name is required and must be at most 100 characters.", 400);
+        if (string.IsNullOrWhiteSpace(category) || category.Trim().Length > 50)
+            throw new DomainException("Payment category is required and must be at most 50 characters.", 400);
+        if (displayOrder < 0)
+            throw new DomainException("Display order cannot be negative.", 400);
     }
 
     private static PaymentMethodDto Map(PaymentMethod e) => new()
@@ -194,10 +220,8 @@ public class PaymentMethodDetailService : IPaymentMethodDetailService
             ?? throw new NotFoundException($"Payment method '{r.PaymentMethodId}' was not found.");
 
         var code = r.Code?.Trim() ?? string.Empty;
-        if (code.Length == 0)
-            throw new DomainException("Code is required.");
-        if (string.IsNullOrWhiteSpace(r.Name))
-            throw new DomainException("Name is required.");
+        ValidateMethodDetail(code, r.Name, r.DisplayOrder, r.DisplayName, r.UPIId, r.BankName, r.AccountNumber,
+            r.IFSCCode, r.TerminalName, r.CashCounterName, r.ReferenceValue);
         if (await _repo.GetByCodeAsync(r.PaymentMethodId, code) is not null)
             throw new DomainException($"A payment method detail with code '{code}' already exists for this payment method.");
 
@@ -232,10 +256,8 @@ public class PaymentMethodDetailService : IPaymentMethodDetailService
         var method = await _paymentMethodService.GetByIdAsync(e.PaymentMethodId);
 
         var code = r.Code?.Trim() ?? string.Empty;
-        if (code.Length == 0)
-            throw new DomainException("Code is required.");
-        if (string.IsNullOrWhiteSpace(r.Name))
-            throw new DomainException("Name is required.");
+        ValidateMethodDetail(code, r.Name, r.DisplayOrder, r.DisplayName, r.UPIId, r.BankName, r.AccountNumber,
+            r.IFSCCode, r.TerminalName, r.CashCounterName, r.ReferenceValue);
         var dup = await _repo.GetByCodeAsync(e.PaymentMethodId, code);
         if (dup is not null && dup.PaymentMethodDetailId != id)
             throw new DomainException($"A payment method detail with code '{code}' already exists for this payment method.");
@@ -265,6 +287,21 @@ public class PaymentMethodDetailService : IPaymentMethodDetailService
     {
         var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment method detail '{id}' was not found.");
         return await _repo.DeleteAsync(id);
+    }
+
+    private static void ValidateMethodDetail(string? code, string? name, int displayOrder, string? displayName,
+        string? upiId, string? bankName, string? accountNumber, string? ifscCode, string? terminalName,
+        string? cashCounterName, string? referenceValue)
+    {
+        if (string.IsNullOrWhiteSpace(code) || code.Trim().Length > 50)
+            throw new DomainException("Payment method detail code is required and must be at most 50 characters.", 400);
+        if (string.IsNullOrWhiteSpace(name) || name.Trim().Length > 100)
+            throw new DomainException("Payment method detail name is required and must be at most 100 characters.", 400);
+        if (displayName?.Length > 150 || upiId?.Length > 150 || bankName?.Length > 150 || accountNumber?.Length > 100 ||
+            ifscCode?.Length > 20 || terminalName?.Length > 100 || cashCounterName?.Length > 100 || referenceValue?.Length > 200)
+            throw new DomainException("A payment method detail field exceeds its maximum length.", 400);
+        if (displayOrder < 0)
+            throw new DomainException("Display order cannot be negative.", 400);
     }
 
     private static PaymentMethodDetailDto Map(PaymentMethodDetail e, PaymentMethodDto method) => new()
@@ -297,11 +334,11 @@ public class PaymentMethodDetailService : IPaymentMethodDetailService
 public interface IPaymentService
 {
     Task<PaginatedResult<PaymentDto>> GetPagedAsync(long companyId, int page, int size, string search);
-    Task<PaymentDto?> GetByIdAsync(long id);
+    Task<PaymentDto?> GetByIdAsync(long companyId, long id);
     Task<string> GetNextPaymentNoAsync(long companyId);
     Task<PaymentDto> CreateAsync(long companyId, long userId, CreatePaymentRequest request);
-    Task<PaymentDto> UpdateAsync(long id, long userId, UpdatePaymentRequest request);
-    Task DeleteAsync(long id);
+    Task<PaymentDto> UpdateAsync(long companyId, long id, long userId, UpdatePaymentRequest request);
+    Task DeleteAsync(long companyId, long id);
     Task<PaymentLookupsDto> GetLookupsAsync(long companyId);
 }
 
@@ -357,9 +394,9 @@ public class PaymentService : IPaymentService
         };
     }
 
-    public async Task<PaymentDto?> GetByIdAsync(long id)
+    public async Task<PaymentDto?> GetByIdAsync(long companyId, long id)
     {
-        var e = await _repo.GetByIdAsync(id);
+        var e = await _repo.GetByIdAsync(companyId, id);
         return e == null ? null : Map(e);
     }
 
@@ -367,6 +404,7 @@ public class PaymentService : IPaymentService
 
     public async Task<PaymentDto> CreateAsync(long companyId, long userId, CreatePaymentRequest r)
     {
+        Validate(r.PaymentNo, r.PaymentDate, r.PaymentTypeID, r.PaymentMethodID, r.ReferenceType, r.ReferenceId, r.Amount);
         var e = new Payment
         {
             CompanyId = companyId,
@@ -387,9 +425,10 @@ public class PaymentService : IPaymentService
         return Map(e);
     }
 
-    public async Task<PaymentDto> UpdateAsync(long id, long userId, UpdatePaymentRequest r)
+    public async Task<PaymentDto> UpdateAsync(long companyId, long id, long userId, UpdatePaymentRequest r)
     {
-        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment '{id}' was not found.");
+        Validate(r.PaymentNo, r.PaymentDate, r.PaymentTypeID, r.PaymentMethodID, r.ReferenceType, r.ReferenceId, r.Amount);
+        var e = await _repo.GetByIdAsync(companyId, id) ?? throw new NotFoundException($"Payment '{id}' was not found.");
         e.PaymentNo = r.PaymentNo?.Trim() ?? e.PaymentNo;
         e.PaymentDate = DateTime.Parse(r.PaymentDate);
         e.PaymentTypeID = r.PaymentTypeID;
@@ -406,10 +445,25 @@ public class PaymentService : IPaymentService
         return Map(e);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(long companyId, long id)
     {
-        var e = await _repo.GetByIdAsync(id) ?? throw new NotFoundException($"Payment '{id}' was not found.");
-        await _repo.DeleteAsync(id);
+        var e = await _repo.GetByIdAsync(companyId, id) ?? throw new NotFoundException($"Payment '{id}' was not found.");
+        await _repo.DeleteAsync(companyId, id);
+    }
+
+    private static void Validate(string? paymentNo, string? paymentDate, long paymentTypeId, long paymentMethodId,
+        string? referenceType, long referenceId, decimal amount)
+    {
+        if (string.IsNullOrWhiteSpace(paymentNo) || paymentNo.Trim().Length > 30)
+            throw new DomainException("Payment number is required and must be at most 30 characters.", 400);
+        if (!DateTime.TryParse(paymentDate, out _))
+            throw new DomainException("Payment date is invalid.", 400);
+        if (paymentTypeId <= 0 || paymentMethodId <= 0)
+            throw new DomainException("Payment type and method are required.", 400);
+        if (string.IsNullOrWhiteSpace(referenceType) || referenceType.Trim().Length > 30 || referenceId <= 0)
+            throw new DomainException("A valid reference type and reference ID are required.", 400);
+        if (amount <= 0)
+            throw new DomainException("Payment amount must be greater than zero.", 400);
     }
 
     public async Task<PaymentLookupsDto> GetLookupsAsync(long companyId)

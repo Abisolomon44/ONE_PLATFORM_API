@@ -47,7 +47,7 @@ public class PaymentsController : BaseController
     [ProducesResponseType(typeof(ApiResponse<PaymentDto>), 200)]
     public async Task<IActionResult> GetById(long id)
     {
-        var result = await _service.GetByIdAsync(id);
+        var result = await _service.GetByIdAsync(_currentUser.CompanyId, id);
         if (result == null) return NotFound(ApiResponse<PaymentDto>.Fail("Payment not found"));
         return Ok(ApiResponse<PaymentDto>.Ok(result));
     }
@@ -62,13 +62,13 @@ public class PaymentsController : BaseController
     [Permission(Permissions.PaymentsManage)]
     [ProducesResponseType(typeof(ApiResponse<PaymentDto>), 200)]
     public async Task<IActionResult> Update(long id, [FromBody] UpdatePaymentRequest request)
-        => Ok(ApiResponse<PaymentDto>.Ok(await _service.UpdateAsync(id, _currentUser.UserId, request), "Payment updated successfully"));
+        => Ok(ApiResponse<PaymentDto>.Ok(await _service.UpdateAsync(_currentUser.CompanyId, id, _currentUser.UserId, request), "Payment updated successfully"));
 
     [HttpDelete("{id:long}")]
     [Permission(Permissions.PaymentsManage)]
     public async Task<IActionResult> Delete(long id)
     {
-        await _service.DeleteAsync(id);
+        await _service.DeleteAsync(_currentUser.CompanyId, id);
         return Ok(ApiResponse.Ok("Payment deleted successfully"));
     }
 }

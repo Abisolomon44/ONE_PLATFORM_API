@@ -1,6 +1,8 @@
 ﻿/* =============================================================================
    ONE ERP - ERP Combined Schema + Seed (single batch)
    Combines erp_schema.sql + erp_seed.sql into one provision file.
+   Per-migration files (007b, 008 Sales Lifecycle, 009 POS Operations,
+   010 Inventory) are consolidated into this file as idempotent sections.
    Executed automatically by ONEERP.Platform.API when provisioning a new
    tenant database (database-per-tenant architecture).
    NO GO statements here: the whole batch is executed with Dapper.
@@ -3597,6 +3599,7 @@ BEGIN
         PurchaseTypeId        BIGINT        NULL,
         AccountingYearId      BIGINT        NULL,
         TaxId                 BIGINT        NULL,
+        PriceListId           BIGINT        NULL,
         IsGSTInclusive        BIT           NULL,
         CancelledByUserID     BIGINT        NULL,
         CancelledAt           DATETIME2     NULL,
@@ -3604,6 +3607,7 @@ BEGIN
 
         CONSTRAINT UQ_Purchase_No UNIQUE (CompanyId, PurchaseNumber),
         CONSTRAINT FK_Purchase_Taxes FOREIGN KEY (TaxId) REFERENCES dbo.Taxes(Id),
+        CONSTRAINT FK_Purchase_PriceList FOREIGN KEY (PriceListId) REFERENCES dbo.PriceLists(PriceListId),
         CONSTRAINT FK_Purchase_FinancialYear FOREIGN KEY (AccountingYearId) REFERENCES dbo.FinancialYear(FinancialYearId)
     );
 
@@ -6595,3 +6599,389 @@ END
 ;
 
 PRINT 'Invoice Template Design module added.';
+/* =============================================================================
+   Consolidated per-migration sections (007b, 008, 009, 010).
+   The standalone migration files were merged into this provision file so the
+   tenant schema is a single batch. Every section is idempotent (IF NOT EXISTS
+   guards), matching the style of the rest of this file.
+   ============================================================================= */
+
+/* =============================================================================
+   ONE ERP - Migration 007b: Add PriceTypeIds CSV to PriceLists
+   Alternative approach: Store multiple price types as comma-separated VARCHAR
+   ============================================================================= */
+
+-- 1. Add PriceTypeIds column (VARCHAR for comma-separated IDs)
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.PriceLists') AND name = 'PriceTypeIds')
+BEGIN
+    ALTER TABLE dbo.PriceLists 
+    ADD PriceTypeIds VARCHAR(500) NULL;
+END
+;
+
+-- 2. Backfill from existing PriceTypeId (single value as CSV)
+UPDATE dbo.PriceLists
+SET PriceTypeIds = CAST(PriceTypeId AS VARCHAR(10))
+WHERE PriceTypeIds IS NULL
+  AND PriceTypeId IS NOT NULL
+;
+
+-- 3. Optional: Keep PriceTypeId as primary/first price type for backward compat
+-- PriceTypeId remains NOT NULL FK to PriceTypes
+-- PriceTypeIds stores ALL price types as CSV (e.g., '1,2,3,4')
+
+-- 4. Add index for searching (optional, limited utility for CSV)
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PriceLists_PriceTypeIds' AND object_id = OBJECT_ID(N'dbo.PriceLists'))
+BEGIN
+    CREATE INDEX IX_PriceLists_PriceTypeIds ON dbo.PriceLists (PriceTypeIds);
+END
+;
+
+-- Helper function to split CSV (for querying)
+-- Usage: SELECT * FROM dbo.PriceLists WHERE ',' + PriceTypeIds + ',' LIKE '%,' + CAST(@PriceTypeId AS VARCHAR) + ',%'
+-- Or use STRING_SPLIT (SQL Server 2016+): SELECT * FROM dbo.PriceLists CROSS APPLY STRING_SPLIT(PriceTypeIds, ',') WHERE value = @PriceTypeId
+
+-- Example queries:
+-- Find price lists containing price type 3:
+-- SELECT * FROM dbo.PriceLists WHERE ',' + PriceTypeIds + ',' LIKE '%,3,%'
+
+-- Get all price types for a price list:
+-- SELECT pt.* FROM dbo.PriceTypes pt
+-- JOIN dbo.PriceLists pl ON ',' + pl.PriceTypeIds + ',' LIKE '%,' + CAST(pt.PriceTypeId AS VARCHAR) + ',%'
+-- WHERE pl.PriceListId = @PriceListId
+/* ============================================================================
+   ONE ERP — Stage 2 Sales Lifecycle migration
+   T027/T028: SalesReturn + SalesReturnItem (mirrors PurchaseReturn DDL)
+   T039:      ApiIdempotency (duplicate-save guard; no existing mechanism found)
+   Idempotent: safe to run repeatedly.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   SalesReturn
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesReturn]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesReturn (
+        SalesReturnId         BIGINT IDENTITY(1,1) CONSTRAINT PK_SalesReturn PRIMARY KEY,
+        SalesInvoiceId        BIGINT        NOT NULL,
+        CompanyId             BIGINT        NOT NULL,
+        CompanyNameSnapshot   NVARCHAR(200) NULL,
+        BranchId              BIGINT        NOT NULL,
+        BranchNameSnapshot    NVARCHAR(200) NULL,
+        WarehouseId           BIGINT        NOT NULL,
+        CustomerId            BIGINT        NOT NULL,
+        CustomerNameSnapshot  NVARCHAR(200) NULL,
+        ReturnNumber          NVARCHAR(30)  NOT NULL,
+        ReturnDate            DATETIME2     NOT NULL,
+        TotalGrossAmount      DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_Gross DEFAULT 0,
+        TotalDiscountAmount   DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_Disc DEFAULT 0,
+        TotalTaxableAmount    DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_Taxable DEFAULT 0,
+        TotalCGSTAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_CGST DEFAULT 0,
+        TotalSGSTAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_SGST DEFAULT 0,
+        TotalIGSTAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_IGST DEFAULT 0,
+        TotalCESSAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_CESS DEFAULT 0,
+        TotalRoundOff         DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_RoundOff DEFAULT 0,
+        GrandTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_Grand DEFAULT 0,
+        StatusID              BIGINT        NOT NULL CONSTRAINT DF_SalesReturn_Status DEFAULT 1,
+        Reason                NVARCHAR(500) NULL,
+        Remarks               NVARCHAR(500) NULL,
+        PaymentTypeId         BIGINT        NULL,
+        PaymentMethodId       BIGINT        NULL,
+        RefundAmount          DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturn_Refund DEFAULT 0,
+        CreatedByUserID       BIGINT        NOT NULL,
+        CreatedAt             DATETIME2     NOT NULL CONSTRAINT DF_SalesReturn_CreatedAt DEFAULT SYSUTCDATETIME(),
+        UpdatedByUserID       BIGINT        NULL,
+        UpdatedAt             DATETIME2     NULL,
+        CancelledByUserID     BIGINT        NULL,
+        CancelledAt           DATETIME2     NULL,
+        CancellationReason    NVARCHAR(500) NULL,
+
+        CONSTRAINT UQ_SalesReturn_No UNIQUE (CompanyId, ReturnNumber)
+    );
+
+    CREATE INDEX IX_SalesReturn_Company_Date ON dbo.SalesReturn (CompanyId, ReturnDate);
+    CREATE INDEX IX_SalesReturn_Invoice ON dbo.SalesReturn (SalesInvoiceId);
+    CREATE INDEX IX_SalesReturn_Customer ON dbo.SalesReturn (CustomerId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   SalesReturnItem
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SalesReturnItem]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.SalesReturnItem (
+        SalesReturnItemId    BIGINT IDENTITY(1,1) CONSTRAINT PK_SalesReturnItem PRIMARY KEY,
+        SalesReturnId        BIGINT        NOT NULL,
+        SalesInvoiceItemId   BIGINT        NOT NULL,
+        ProductId            BIGINT        NOT NULL,
+        ProductCodeSnapshot  NVARCHAR(100) NULL,
+        ProductNameSnapshot  NVARCHAR(200) NULL,
+        UnitID               BIGINT        NOT NULL,
+        UnitNameSnapshot     NVARCHAR(100) NULL,
+        HSNID                BIGINT        NULL,
+        HSNCodeSnapshot      NVARCHAR(100) NULL,
+        BarcodeSnapshot      NVARCHAR(100) NULL,
+        BatchId              BIGINT        NULL,
+        ReturnQuantity       DECIMAL(18,3) NOT NULL CONSTRAINT DF_SalesReturnItem_Qty DEFAULT 0,
+        FreeQuantity         DECIMAL(18,3) NOT NULL CONSTRAINT DF_SalesReturnItem_FreeQty DEFAULT 0,
+        Rate                 DECIMAL(18,4) NOT NULL CONSTRAINT DF_SalesReturnItem_Rate DEFAULT 0,
+        DiscountAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_Disc DEFAULT 0,
+        TaxableAmount        DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_Taxable DEFAULT 0,
+        GSTPercent           DECIMAL(8,3)  NOT NULL CONSTRAINT DF_SalesReturnItem_GST DEFAULT 0,
+        CGSTPercent          DECIMAL(8,3)  NOT NULL CONSTRAINT DF_SalesReturnItem_CGSTP DEFAULT 0,
+        SGSTPercent          DECIMAL(8,3)  NOT NULL CONSTRAINT DF_SalesReturnItem_SGSTP DEFAULT 0,
+        IGSTPercent          DECIMAL(8,3)  NOT NULL CONSTRAINT DF_SalesReturnItem_IGSTP DEFAULT 0,
+        CESSPercent          DECIMAL(8,3)  NOT NULL CONSTRAINT DF_SalesReturnItem_CESSP DEFAULT 0,
+        CGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_CGSTA DEFAULT 0,
+        SGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_SGSTA DEFAULT 0,
+        IGSTAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_IGSTA DEFAULT 0,
+        CESSAmount           DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_CESSA DEFAULT 0,
+        LineTotal            DECIMAL(18,2) NOT NULL CONSTRAINT DF_SalesReturnItem_Line DEFAULT 0,
+
+        CONSTRAINT FK_SalesReturnItem_Return FOREIGN KEY (SalesReturnId) REFERENCES dbo.SalesReturn(SalesReturnId)
+    );
+
+    CREATE INDEX IX_SalesReturnItem_ReturnId ON dbo.SalesReturnItem (SalesReturnId);
+    CREATE INDEX IX_SalesReturnItem_ProductId ON dbo.SalesReturnItem (ProductId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   ApiIdempotency (T039) — duplicate-save guard for money/stock-changing POSTs.
+   Stores the created resource id so a retried POST can replay the result.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ApiIdempotency]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.ApiIdempotency (
+        IdempotencyKey   NVARCHAR(128) NOT NULL,
+        CompanyId        BIGINT        NOT NULL,
+        Endpoint         NVARCHAR(200) NOT NULL,
+        ReferenceId      BIGINT        NULL,
+        ResponseJson     NVARCHAR(MAX) NULL,
+        CreatedAt        DATETIME2     NOT NULL CONSTRAINT DF_ApiIdempotency_CreatedAt DEFAULT SYSUTCDATETIME(),
+
+        CONSTRAINT PK_ApiIdempotency PRIMARY KEY (CompanyId, Endpoint, IdempotencyKey)
+    );
+END
+;
+
+/* ============================================================================
+   ONE ERP — Stage 3 POS Operations migration
+   T049/T050: POSCashMovement (Cash In / Cash Out per OPEN session)
+   T047/T048: POSHoldBill (persistent hold/recall; cart stored as JSON so no
+              itemized structure is invented — smallest required schema)
+   T054:      no schema change — POSSessions already has ExpectedClosingCash /
+              ActualClosingCash / CashDifference.
+   Idempotent: safe to run repeatedly.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   POSCashMovement
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[POSCashMovement]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.POSCashMovement (
+        POSCashMovementId BIGINT IDENTITY(1,1) CONSTRAINT PK_POSCashMovement PRIMARY KEY,
+        POSSessionId      BIGINT        NOT NULL,
+        CompanyId         BIGINT        NOT NULL,
+        BranchId          BIGINT        NOT NULL,
+        Direction         NVARCHAR(10)  NOT NULL,           -- 'IN' | 'OUT'
+        Amount            DECIMAL(18,2) NOT NULL,
+        Reason            NVARCHAR(300) NULL,
+        ReferenceNo       NVARCHAR(50)  NULL,
+        MovementDate      DATETIME2     NOT NULL CONSTRAINT DF_POSCashMovement_Date DEFAULT SYSUTCDATETIME(),
+        CreatedByUserID   BIGINT        NOT NULL,
+        CreatedAt         DATETIME2     NOT NULL CONSTRAINT DF_POSCashMovement_CreatedAt DEFAULT SYSUTCDATETIME(),
+
+        CONSTRAINT CK_POSCashMovement_Direction CHECK (Direction IN ('IN', 'OUT')),
+        CONSTRAINT CK_POSCashMovement_Amount CHECK (Amount > 0)
+    );
+
+    CREATE INDEX IX_POSCashMovement_Session ON dbo.POSCashMovement (POSSessionId);
+    CREATE INDEX IX_POSCashMovement_Company_Date ON dbo.POSCashMovement (CompanyId, MovementDate);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   POSHoldBill — persistent held POS carts
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[POSHoldBill]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.POSHoldBill (
+        POSHoldBillId     BIGINT IDENTITY(1,1) CONSTRAINT PK_POSHoldBill PRIMARY KEY,
+        CompanyId         BIGINT        NOT NULL,
+        BranchId          BIGINT        NOT NULL,
+        StoreId           BIGINT        NULL,
+        CounterId         BIGINT        NULL,
+        HoldNumber        NVARCHAR(30)  NOT NULL,
+        HoldDate          DATETIME2     NOT NULL CONSTRAINT DF_POSHoldBill_Date DEFAULT SYSUTCDATETIME(),
+        CustomerId        BIGINT        NULL,
+        CustomerName      NVARCHAR(200) NULL,
+        ItemCount         INT           NOT NULL CONSTRAINT DF_POSHoldBill_Items DEFAULT 0,
+        TotalAmount       DECIMAL(18,2) NOT NULL CONSTRAINT DF_POSHoldBill_Total DEFAULT 0,
+        CartJson          NVARCHAR(MAX) NOT NULL,
+        Status            NVARCHAR(20)  NOT NULL CONSTRAINT DF_POSHoldBill_Status DEFAULT 'HELD', -- HELD | RECALLED | CANCELLED
+        CreatedByUserID   BIGINT        NOT NULL,
+        CreatedAt         DATETIME2     NOT NULL CONSTRAINT DF_POSHoldBill_CreatedAt DEFAULT SYSUTCDATETIME(),
+        RecalledByUserID  BIGINT        NULL,
+        RecalledAt        DATETIME2     NULL,
+        CancelledByUserID BIGINT        NULL,
+        CancelledAt       DATETIME2     NULL,
+
+        CONSTRAINT UQ_POSHoldBill_No UNIQUE (CompanyId, HoldNumber)
+    );
+
+    CREATE INDEX IX_POSHoldBill_Scope ON dbo.POSHoldBill (CompanyId, BranchId, Status);
+    CREATE INDEX IX_POSHoldBill_Counter ON dbo.POSHoldBill (CounterId, Status);
+END
+;
+
+/* ============================================================================
+   ONE ERP — Stage 5 Inventory migration (T074–T085)
+   T079: StockAdjustment + StockAdjustmentItem
+   T080/T081: StockTransfer + StockTransferItem
+   T082: StockCount + StockCountItem
+   T085: Products.ReorderLevel (real schema gap — no threshold column existed)
+   T076/T077/T078/T083/T084 need NO new tables (Stock / StockTransaction
+   already exist and are reused as the ledger + valuation source).
+   Idempotent: safe to run repeatedly.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   T079 — StockAdjustment
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockAdjustment]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StockAdjustment (
+        StockAdjustmentId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockAdjustment PRIMARY KEY,
+        AdjustmentNumber  NVARCHAR(30)  NOT NULL,
+        CompanyId         BIGINT        NOT NULL,
+        BranchId          BIGINT        NOT NULL,
+        WarehouseId       BIGINT        NOT NULL,
+        AdjustmentDate    DATETIME2     NOT NULL,
+        Reason            NVARCHAR(500) NULL,
+        Remarks           NVARCHAR(500) NULL,
+        Status            NVARCHAR(20)  NOT NULL CONSTRAINT DF_StockAdjustment_Status DEFAULT 'DRAFT', -- DRAFT | POSTED | CANCELLED
+        CreatedByUserID   BIGINT        NOT NULL,
+        CreatedAt         DATETIME2     NOT NULL CONSTRAINT DF_StockAdjustment_CreatedAt DEFAULT SYSUTCDATETIME(),
+        PostedByUserID    BIGINT        NULL,
+        PostedAt          DATETIME2     NULL,
+
+        CONSTRAINT UQ_StockAdjustment_No UNIQUE (CompanyId, AdjustmentNumber)
+    );
+
+    CREATE INDEX IX_StockAdjustment_Company_Date ON dbo.StockAdjustment (CompanyId, AdjustmentDate);
+
+    CREATE TABLE dbo.StockAdjustmentItem (
+        StockAdjustmentItemId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockAdjustmentItem PRIMARY KEY,
+        StockAdjustmentId     BIGINT        NOT NULL,
+        ProductId             BIGINT        NOT NULL,
+        UnitId                BIGINT        NOT NULL,
+        QuantityDelta         DECIMAL(18,3) NOT NULL,  -- + increase / - decrease
+        Rate                  DECIMAL(18,4) NOT NULL CONSTRAINT DF_StockAdjustmentItem_Rate DEFAULT 0,
+        Reason                NVARCHAR(300) NULL,
+
+        CONSTRAINT FK_StockAdjustmentItem_Header FOREIGN KEY (StockAdjustmentId) REFERENCES dbo.StockAdjustment(StockAdjustmentId)
+    );
+
+    CREATE INDEX IX_StockAdjustmentItem_Header ON dbo.StockAdjustmentItem (StockAdjustmentId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   T080/T081 — StockTransfer
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockTransfer]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StockTransfer (
+        StockTransferId    BIGINT IDENTITY(1,1) CONSTRAINT PK_StockTransfer PRIMARY KEY,
+        TransferNumber     NVARCHAR(30)  NOT NULL,
+        CompanyId          BIGINT        NOT NULL,
+        BranchId           BIGINT        NOT NULL,
+        FromWarehouseId    BIGINT        NOT NULL,
+        ToWarehouseId      BIGINT        NOT NULL,
+        TransferDate       DATETIME2     NOT NULL,
+        Remarks            NVARCHAR(500) NULL,
+        Status             NVARCHAR(20)  NOT NULL CONSTRAINT DF_StockTransfer_Status DEFAULT 'DRAFT', -- DRAFT | POSTED | CANCELLED
+        CreatedByUserID    BIGINT        NOT NULL,
+        CreatedAt          DATETIME2     NOT NULL CONSTRAINT DF_StockTransfer_CreatedAt DEFAULT SYSUTCDATETIME(),
+        PostedByUserID     BIGINT        NULL,
+        PostedAt           DATETIME2     NULL,
+
+        CONSTRAINT UQ_StockTransfer_No UNIQUE (CompanyId, TransferNumber),
+        CONSTRAINT CK_StockTransfer_Warehouses CHECK (FromWarehouseId <> ToWarehouseId)
+    );
+
+    CREATE INDEX IX_StockTransfer_Company_Date ON dbo.StockTransfer (CompanyId, TransferDate);
+
+    CREATE TABLE dbo.StockTransferItem (
+        StockTransferItemId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockTransferItem PRIMARY KEY,
+        StockTransferId     BIGINT        NOT NULL,
+        ProductId           BIGINT        NOT NULL,
+        UnitId              BIGINT        NOT NULL,
+        Quantity            DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockTransferItem_Qty CHECK (Quantity > 0),
+        Rate                DECIMAL(18,4) NOT NULL CONSTRAINT DF_StockTransferItem_Rate DEFAULT 0,
+        Remarks             NVARCHAR(300) NULL,
+
+        CONSTRAINT FK_StockTransferItem_Header FOREIGN KEY (StockTransferId) REFERENCES dbo.StockTransfer(StockTransferId)
+    );
+
+    CREATE INDEX IX_StockTransferItem_Header ON dbo.StockTransferItem (StockTransferId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   T082 — StockCount
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockCount]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.StockCount (
+        StockCountId     BIGINT IDENTITY(1,1) CONSTRAINT PK_StockCount PRIMARY KEY,
+        CountNumber      NVARCHAR(30)  NOT NULL,
+        CompanyId        BIGINT        NOT NULL,
+        BranchId         BIGINT        NOT NULL,
+        WarehouseId      BIGINT        NOT NULL,
+        CountDate        DATETIME2     NOT NULL,
+        Remarks          NVARCHAR(500) NULL,
+        Status           NVARCHAR(20)  NOT NULL CONSTRAINT DF_StockCount_Status DEFAULT 'DRAFT', -- DRAFT | POSTED | CANCELLED
+        CreatedByUserID  BIGINT        NOT NULL,
+        CreatedAt        DATETIME2     NOT NULL CONSTRAINT DF_StockCount_CreatedAt DEFAULT SYSUTCDATETIME(),
+        PostedByUserID   BIGINT        NULL,
+        PostedAt         DATETIME2     NULL,
+
+        CONSTRAINT UQ_StockCount_No UNIQUE (CompanyId, CountNumber)
+    );
+
+    CREATE INDEX IX_StockCount_Company_Date ON dbo.StockCount (CompanyId, CountDate);
+
+    CREATE TABLE dbo.StockCountItem (
+        StockCountItemId BIGINT IDENTITY(1,1) CONSTRAINT PK_StockCountItem PRIMARY KEY,
+        StockCountId     BIGINT        NOT NULL,
+        ProductId        BIGINT        NOT NULL,
+        UnitId           BIGINT        NOT NULL,
+        BookQuantity     DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockCountItem_Book DEFAULT 0,  -- book qty at count time
+        CountedQuantity  DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockCountItem_Counted DEFAULT 0,
+        Variance         DECIMAL(18,3) NOT NULL CONSTRAINT DF_StockCountItem_Variance DEFAULT 0, -- counted - book
+        Rate             DECIMAL(18,4) NOT NULL CONSTRAINT DF_StockCountItem_Rate DEFAULT 0,
+
+        CONSTRAINT FK_StockCountItem_Header FOREIGN KEY (StockCountId) REFERENCES dbo.StockCount(StockCountId)
+    );
+
+    CREATE INDEX IX_StockCountItem_Header ON dbo.StockCountItem (StockCountId);
+END
+;
+
+/* ---------------------------------------------------------------------------
+   T085 — Products.ReorderLevel: low-stock threshold. The column does not
+   exist anywhere in the schema; the feature has no threshold without it.
+   NULL = product is not managed by reorder level.
+   --------------------------------------------------------------------------- */
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns
+    WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = 'ReorderLevel'
+)
+BEGIN
+    ALTER TABLE dbo.Products ADD ReorderLevel DECIMAL(18,3) NULL;
+END
+;

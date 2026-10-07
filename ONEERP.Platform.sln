@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEERP.Shared", "ONEERP.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEERP.Platform.API", "ONEERP.Platform.API\ONEERP.Platform.API.csproj", "{3858FAC2-055F-4F30-BDF5-79F8AA96323F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEERP.Platform.API.Tests", "ONEERP.Platform.API.Tests\ONEERP.Platform.API.Tests.csproj", "{39AC19B9-0DFB-432D-9DFC-F530590AEA75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{3858FAC2-055F-4F30-BDF5-79F8AA96323F}.Release|x64.Build.0 = Release|Any CPU
 		{3858FAC2-055F-4F30-BDF5-79F8AA96323F}.Release|x86.ActiveCfg = Release|Any CPU
 		{3858FAC2-055F-4F30-BDF5-79F8AA96323F}.Release|x86.Build.0 = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|x64.Build.0 = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Debug|x86.Build.0 = Debug|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|x64.ActiveCfg = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|x64.Build.0 = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|x86.ActiveCfg = Release|Any CPU
+		{39AC19B9-0DFB-432D-9DFC-F530590AEA75}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

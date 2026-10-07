@@ -579,15 +579,16 @@ public class DocumentTemplatesController : ControllerBase
         return Ok(ApiResponse.Ok("Design saved."));
     }
 
-    /// <summary>GET preview of the saved designer version. Pass ?salesInvoiceId=
-    /// to render real invoice data (Sales Invoice preview/print); omit it for a
-    /// sample-data designer preview.</summary>
+    /// <summary>GET preview of the saved designer version with sales, purchase, purchase-return, or debit-note data.</summary>
     [HttpGet("versions/{versionId:long}/preview")]
     [Permission(Permissions.InvoiceTemplatesPreview)]
     [ProducesResponseType(typeof(string), 200)]
-    public async Task<ActionResult<string>> Preview(long versionId, [FromQuery] long? salesInvoiceId = null)
+    public async Task<ActionResult<string>> Preview(long versionId, [FromQuery] long? salesInvoiceId = null,
+        [FromQuery] long? purchaseId = null, [FromQuery] long? purchaseReturnId = null, [FromQuery] bool debitNote = false)
     {
-        var html = await _design.RenderPreviewAsync(versionId, salesInvoiceId);
+        if ((salesInvoiceId.HasValue ? 1 : 0) + (purchaseId.HasValue ? 1 : 0) + (purchaseReturnId.HasValue ? 1 : 0) > 1)
+            return BadRequest(ApiResponse<string>.Fail("Specify only one transaction to preview."));
+        var html = await _design.RenderPreviewAsync(versionId, salesInvoiceId, purchaseId, purchaseReturnId, debitNote);
         return Ok(ApiResponse<string>.Ok(html));
     }
 

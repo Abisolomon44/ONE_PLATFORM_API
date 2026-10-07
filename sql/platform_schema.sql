@@ -307,6 +307,177 @@ END
 GO
 
 /* ---------------------------------------------------------------------------
+   Migrations (tenant database migration definitions registered by the DBA;
+   mapped 1:1 to embedded sql/erp_migration_*.sql scripts. Version 1 is
+   reserved for sql/erp_full.sql, so incremental migrations start at 2.)
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Migrations]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.Migrations (
+        MigrationId   INT IDENTITY(1,1)  NOT NULL CONSTRAINT PK_Migrations PRIMARY KEY,
+        Version       INT                NOT NULL CONSTRAINT UQ_Migrations_Version UNIQUE,
+        MigrationCode NVARCHAR(50)       NOT NULL CONSTRAINT UQ_Migrations_MigrationCode UNIQUE,
+        MigrationName NVARCHAR(200)      NOT NULL,
+        ScriptName    NVARCHAR(200)      NOT NULL,
+        Checksum      NVARCHAR(128)      NULL,
+        [Description] NVARCHAR(500)      NULL,
+        IsActive      BIT                NOT NULL CONSTRAINT DF_Migrations_IsActive DEFAULT 1,
+        CreatedBy     NVARCHAR(100)      NULL,
+        CreatedDate   DATETIME2          NOT NULL CONSTRAINT DF_Migrations_CreatedDate DEFAULT SYSUTCDATETIME(),
+        ModifiedBy    NVARCHAR(100)      NULL,
+        ModifiedDate  DATETIME2          NOT NULL CONSTRAINT DF_Migrations_ModifiedDate DEFAULT SYSUTCDATETIME(),
+        IsDeleted     BIT                NOT NULL CONSTRAINT DF_Migrations_IsDeleted DEFAULT 0
+    );
+
+    CREATE INDEX IX_Migrations_IsActive ON dbo.Migrations (IsActive) INCLUDE (Version, ScriptName);
+END
+GO
+
+/* ---------------------------------------------------------------------------
+   Tenant migration catalog seed — v2, Products.ReorderLevel
+   --------------------------------------------------------------------------- */
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE Version = 2 AND MigrationCode <> N'ERP-002-REORDER-LEVEL'
+)
+    THROW 51020, 'Tenant migration version 2 is already assigned to another migration.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE MigrationCode = N'ERP-002-REORDER-LEVEL'
+      AND (Version <> 2 OR ScriptName <> N'erp_migration_002_products_reorder_level.sql')
+)
+    THROW 51021, 'ERP-002-REORDER-LEVEL is registered with unexpected metadata.', 1;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Migrations WHERE MigrationCode = N'ERP-002-REORDER-LEVEL')
+BEGIN
+    INSERT INTO dbo.Migrations
+        (Version, MigrationCode, MigrationName, ScriptName, [Description], IsActive, CreatedBy)
+    VALUES
+        (2, N'ERP-002-REORDER-LEVEL', N'Add product reorder level',
+         N'erp_migration_002_products_reorder_level.sql',
+         N'Adds nullable Products.ReorderLevel for the tenant low-stock inventory report.',
+         1, N'system');
+END
+GO
+
+/* ---------------------------------------------------------------------------
+   Tenant migration catalog seed — v3, inventory document tables
+   --------------------------------------------------------------------------- */
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE Version = 3 AND MigrationCode <> N'ERP-003-INVENTORY-DOCUMENTS'
+)
+    THROW 51022, 'Tenant migration version 3 is already assigned to another migration.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE MigrationCode = N'ERP-003-INVENTORY-DOCUMENTS'
+      AND (Version <> 3 OR ScriptName <> N'erp_migration_003_inventory_documents.sql')
+)
+    THROW 51023, 'ERP-003-INVENTORY-DOCUMENTS is registered with unexpected metadata.', 1;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Migrations WHERE MigrationCode = N'ERP-003-INVENTORY-DOCUMENTS')
+BEGIN
+    INSERT INTO dbo.Migrations
+        (Version, MigrationCode, MigrationName, ScriptName, [Description], IsActive, CreatedBy)
+    VALUES
+        (3, N'ERP-003-INVENTORY-DOCUMENTS', N'Create inventory adjustment, transfer, and count tables',
+         N'erp_migration_003_inventory_documents.sql',
+         N'Creates the tenant stock adjustment, warehouse transfer, and stock count document tables.',
+         1, N'system');
+END
+GO
+
+/* Tenant migration catalog seed — v4, payment master code uniqueness */
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE Version = 4 AND MigrationCode <> N'ERP-004-PAYMENT-MASTER-CODES'
+)
+    THROW 51024, 'Tenant migration version 4 is already assigned to another migration.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE MigrationCode = N'ERP-004-PAYMENT-MASTER-CODES'
+      AND (Version <> 4 OR ScriptName <> N'erp_migration_004_payment_master_unique_codes.sql')
+)
+    THROW 51025, 'ERP-004-PAYMENT-MASTER-CODES is registered with unexpected metadata.', 1;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Migrations WHERE MigrationCode = N'ERP-004-PAYMENT-MASTER-CODES')
+BEGIN
+    INSERT INTO dbo.Migrations
+        (Version, MigrationCode, MigrationName, ScriptName, [Description], IsActive, CreatedBy)
+    VALUES
+        (4, N'ERP-004-PAYMENT-MASTER-CODES', N'Enforce unique payment master codes',
+         N'erp_migration_004_payment_master_unique_codes.sql',
+         N'Adds unique code indexes to payment types and payment methods after checking for duplicate data.',
+         1, N'system');
+END
+GO
+
+/* Tenant migration catalog seed — v4, payment master code uniqueness */
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE Version = 4 AND MigrationCode <> N'ERP-004-PAYMENT-MASTER-CODES'
+)
+    THROW 51024, 'Tenant migration version 4 is already assigned to another migration.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.Migrations
+    WHERE MigrationCode = N'ERP-004-PAYMENT-MASTER-CODES'
+      AND (Version <> 4 OR ScriptName <> N'erp_migration_004_payment_master_unique_codes.sql')
+)
+    THROW 51025, 'ERP-004-PAYMENT-MASTER-CODES is registered with unexpected metadata.', 1;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Migrations WHERE MigrationCode = N'ERP-004-PAYMENT-MASTER-CODES')
+BEGIN
+    INSERT INTO dbo.Migrations
+        (Version, MigrationCode, MigrationName, ScriptName, [Description], IsActive, CreatedBy)
+    VALUES
+        (4, N'ERP-004-PAYMENT-MASTER-CODES', N'Enforce unique payment master codes',
+         N'erp_migration_004_payment_master_unique_codes.sql',
+         N'Adds unique code indexes to payment types and payment methods after checking for duplicate data.',
+         1, N'system');
+END
+GO
+
+/* ---------------------------------------------------------------------------
+   TenantMigrationHistory (one migration execution attempt per row; written
+   RUNNING before the SQL executes, then updated to SUCCESS or FAILED).
+   UQ_TenantMigrationHistory_TenantRunning keeps at most one RUNNING row per
+   tenant; FailOrphanedRunningAsync clears crashed RUNNING rows on retry.
+--------------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TenantMigrationHistory]') AND type = N'U')
+BEGIN
+    CREATE TABLE dbo.TenantMigrationHistory (
+        TenantMigrationHistoryId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_TenantMigrationHistory PRIMARY KEY,
+        TenantId                 INT                  NOT NULL,
+        MigrationId              INT                  NULL,
+        ExecutionId              UNIQUEIDENTIFIER     NOT NULL,
+        Version                  INT                  NOT NULL,
+        MigrationCode            NVARCHAR(50)         NOT NULL,
+        MigrationName            NVARCHAR(200)        NOT NULL,
+        Status                   NVARCHAR(20)         NOT NULL,
+        Checksum                 NVARCHAR(128)        NULL,
+        StartedAt                DATETIME2            NOT NULL CONSTRAINT DF_TenantMigrationHistory_StartedAt DEFAULT SYSUTCDATETIME(),
+        CompletedAt              DATETIME2            NULL,
+        DurationMs               INT                  NULL,
+        ExecutedBy               NVARCHAR(100)        NULL,
+        ErrorMessage             NVARCHAR(MAX)        NULL,
+        CreatedDate              DATETIME2            NOT NULL CONSTRAINT DF_TenantMigrationHistory_CreatedDate DEFAULT SYSUTCDATETIME()
+    );
+
+    CREATE INDEX IX_TenantMigrationHistory_TenantId
+        ON dbo.TenantMigrationHistory (TenantId, TenantMigrationHistoryId DESC);
+    CREATE INDEX IX_TenantMigrationHistory_ExecutionId
+        ON dbo.TenantMigrationHistory (ExecutionId);
+    CREATE UNIQUE INDEX UQ_TenantMigrationHistory_TenantRunning
+        ON dbo.TenantMigrationHistory (TenantId)
+        WHERE Status = 'RUNNING';
+END
+GO
+
+/* ---------------------------------------------------------------------------
    Settings
 --------------------------------------------------------------------------- */
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Settings]') AND type = N'U')

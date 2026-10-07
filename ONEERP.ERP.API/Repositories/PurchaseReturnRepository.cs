@@ -1,4 +1,5 @@
 using ONEERP.ERP.API.Models;
+using ONEERP.ERP.API.DTOs;
 
 namespace ONEERP.ERP.API.Repositories;
 
@@ -14,6 +15,7 @@ public interface IPurchaseReturnRepository
     Task<string?> GetStatusCodeAsync(long id);
     Task<Dictionary<long, decimal>> GetReturnedQtyByPurchaseAsync(long purchaseId, long excludeReturnId = 0);
     Task<int> CountStockTransactionsAsync(long id);
+    Task<SalesInvoicePrintDto?> GetPrintDataAsync(long purchaseReturnId, string invoiceTypeName);
 }
 
 public class PurchaseReturnRepository : TenantRepositoryBase, IPurchaseReturnRepository
@@ -52,6 +54,48 @@ public class PurchaseReturnRepository : TenantRepositoryBase, IPurchaseReturnRep
             "SELECT * FROM dbo.PurchaseReturnItem WHERE PurchaseReturnId = @id ORDER BY PurchaseReturnItemId", new { id });
         header.Items = items.ToList();
         return header;
+    }
+
+    public async Task<SalesInvoicePrintDto?> GetPrintDataAsync(long purchaseReturnId, string invoiceTypeName)
+    {
+        using var connection = OpenTenant();
+        var data = (await Sql.QueryAsync<SalesInvoicePrintDto>(connection, @"
+            SELECT TOP 1 r.PurchaseReturnId AS SalesInvoiceId, r.ReturnNumber AS SalesInvoiceNo,
+                   r.ReturnDate AS InvoiceDate, r.CompanyId,
+                   c.CompanyName, c.GSTNumber AS CompanyGstin,
+                   ISNULL(a1.AddressLine1, '') AS CompanyAddress, c.Phone AS CompanyPhone,
+                   c.Email AS CompanyEmail, c.LogoUrl AS CompanyLogoUrl,
+                   r.SupplierId AS CustomerId, r.SupplierNameSnapshot AS CustomerName,
+                   bp.TaxRegistrationNo AS CustomerGstin, ISNULL(a2.AddressLine1, '') AS CustomerAddress,
+                   bp.MobileNo AS CustomerPhone, r.BranchId, br.BranchName, r.WarehouseId, w.WarehouseName,
+                   r.TotalGrossAmount, r.TotalDiscountAmount, r.TotalTaxableAmount,
+                   CAST(0 AS DECIMAL(18,2)) AS TotalCGSTAmount, CAST(0 AS DECIMAL(18,2)) AS TotalSGSTAmount,
+                   CAST(0 AS DECIMAL(18,2)) AS TotalIGSTAmount, r.TotalCessAmount AS TotalCESSAmount,
+                   r.TotalTaxAmount, r.TotalRoundOff, r.GrandTotal, CAST(0 AS DECIMAL(18,2)) AS PaidAmount,
+                   r.GrandTotal AS BalanceAmount, CAST(NULL AS NVARCHAR(100)) AS PaymentMode,
+                   r.Remarks, @invoiceTypeName AS InvoiceTypeName
+            FROM dbo.PurchaseReturn r
+            LEFT JOIN dbo.Companies c ON c.Id = r.CompanyId
+            LEFT JOIN dbo.BusinessPartners bp ON bp.Id = r.SupplierId
+            LEFT JOIN dbo.Branches br ON br.Id = r.BranchId
+            LEFT JOIN dbo.Warehouses w ON w.Id = r.WarehouseId
+            LEFT JOIN dbo.EntityAddress ea1 ON ea1.EntityId = c.EntityId AND ea1.IsPrimary = 1 AND ea1.IsActive = 1
+            LEFT JOIN dbo.Address a1 ON a1.AddressId = ea1.AddressId
+            LEFT JOIN dbo.EntityAddress ea2 ON ea2.EntityId = bp.EntityId AND ea2.IsPrimary = 1 AND ea2.IsActive = 1
+            LEFT JOIN dbo.Address a2 ON a2.AddressId = ea2.AddressId
+            WHERE r.PurchaseReturnId = @purchaseReturnId", new { purchaseReturnId, invoiceTypeName })).FirstOrDefault();
+        if (data is null) return null;
+        data.Items = (await Sql.QueryAsync<SalesInvoicePrintItemDto>(connection, @"
+            SELECT ri.PurchaseReturnItemId AS SalesInvoiceItemId,
+                   ROW_NUMBER() OVER (ORDER BY ri.PurchaseReturnItemId) AS SlNo,
+                   ri.ProductCodeSnapshot AS ProductCode, ri.ProductNameSnapshot AS ProductName,
+                   ri.HSNCodeSnapshot AS HsnCode, ri.UnitNameSnapshot AS UnitName,
+                   ri.ReturnQuantity AS Quantity, ri.PurchaseRate AS Rate, ri.DiscountAmount,
+                   ri.TaxableValue AS TaxableAmount, ri.GSTRate AS TaxPercent, ri.GSTAmount AS TaxAmount,
+                   ri.LineTotal
+            FROM dbo.PurchaseReturnItem ri WHERE ri.PurchaseReturnId = @purchaseReturnId ORDER BY ri.PurchaseReturnItemId",
+            new { purchaseReturnId })).ToList();
+        return data;
     }
 
     public async Task<string> GetNextReturnNoAsync(long companyId)

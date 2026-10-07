@@ -91,6 +91,7 @@ public class PurchaseDto
     public long? AccountingYearId { get; set; }
     public long? TaxId { get; set; }
     public bool? IsGSTInclusive { get; set; }
+    public long? PriceListId { get; set; }
     public long? CancelledByUserID { get; set; }
     public DateTime? CancelledAt { get; set; }
     public string? CancellationReason { get; set; }
@@ -167,7 +168,8 @@ public record CreatePurchaseRequest(
     decimal BalanceAmount = 0,
     string? Remarks = null,
     CreatePurchasePaymentInput? Payment = null,
-    long CompanyId = 0);
+    long CompanyId = 0,
+    long? PriceListId = null);
 
 public record UpdatePurchaseRequest(
     long BranchId,
@@ -190,7 +192,8 @@ public record UpdatePurchaseRequest(
     long? PurchaseTypeId = null,
     long? AccountingYearId = null,
     long? TaxId = null,
-    bool? IsGSTInclusive = null);
+    bool? IsGSTInclusive = null,
+    long? PriceListId = null);
 
 /* ---------------- Stock ---------------- */
 

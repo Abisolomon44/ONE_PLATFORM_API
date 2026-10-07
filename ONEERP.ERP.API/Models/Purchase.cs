@@ -38,6 +38,7 @@ public class Purchase
     public long? PurchaseTypeId { get; set; }
     public long? AccountingYearId { get; set; }
     public long? TaxId { get; set; }
+    public long? PriceListId { get; set; }
     public bool? IsGSTInclusive { get; set; }
     public long? CancelledByUserID { get; set; }
     public DateTime? CancelledAt { get; set; }

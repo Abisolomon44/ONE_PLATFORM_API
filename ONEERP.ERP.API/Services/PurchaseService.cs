@@ -30,6 +30,7 @@ public class PurchaseService : IPurchaseService
     private readonly IBusinessPartnerService _businessPartnerService;
     private readonly ICompanyService _companyService;
     private readonly IPaymentTypeService _paymentTypeService;
+    private readonly IDataScopeResolver _dataScopeResolver;
 
     public PurchaseService(
         IPurchaseRepository repo,
@@ -38,7 +39,8 @@ public class PurchaseService : IPurchaseService
         IProductUnitService unitService,
         IBusinessPartnerService businessPartnerService,
         ICompanyService companyService,
-        IPaymentTypeService paymentTypeService)
+        IPaymentTypeService paymentTypeService,
+        IDataScopeResolver dataScopeResolver)
     {
         _repo = repo;
         _statusRepo = statusRepo;
@@ -47,6 +49,19 @@ public class PurchaseService : IPurchaseService
         _businessPartnerService = businessPartnerService;
         _companyService = companyService;
         _paymentTypeService = paymentTypeService;
+        _dataScopeResolver = dataScopeResolver;
+    }
+
+    /// <summary>
+    /// T060 — server-authoritative context scope. The caller may record a purchase
+    /// for any company in their data scope; anything outside it is rejected with 403.
+    /// </summary>
+    private async Task<long> ResolveCompanyScopeAsync(long requestedCompanyId, long fallbackCompanyId)
+    {
+        var effectiveCompanyId = requestedCompanyId > 0 ? requestedCompanyId : fallbackCompanyId;
+        if (effectiveCompanyId <= 0 || !await _dataScopeResolver.CanAccessCompanyAsync((int)effectiveCompanyId))
+            throw new DomainException($"You do not have access to company {effectiveCompanyId}.", 403);
+        return effectiveCompanyId;
     }
 
     public async Task<PaginatedResult<PurchaseDto>> GetPagedAsync(long companyId, int page, int size, string search)
@@ -78,7 +93,7 @@ public class PurchaseService : IPurchaseService
 
     public async Task<PurchaseDto> CreateAsync(long companyId, long userId, CreatePurchaseRequest r)
     {
-        var effectiveCompanyId = r.CompanyId > 0 ? r.CompanyId : companyId;
+        var effectiveCompanyId = await ResolveCompanyScopeAsync(r.CompanyId, companyId);
          var (entity, payment) = await BuildAsync(effectiveCompanyId, userId, r.BranchId, r.WarehouseId, r.SupplierId,
              r.PurchaseNumber, r.PurchaseDate, r.SupplierInvoiceNumber, r.SupplierInvoiceDate,
              r.SupplierPONumber, r.ReferenceNumber, r.CurrencyId, r.PurchaseTypeId,
@@ -86,6 +101,7 @@ public class PurchaseService : IPurchaseService
              r.PaymentTypeID, r.PaymentMethodID, r.Remarks,
              r.Items, "POSTED", r.Payment, r.PaidAmount, r.BalanceAmount);
         entity.CompanyNameSnapshot = await GetCompanyNameAsync(effectiveCompanyId);
+        entity.PriceListId = r.PriceListId;
         await _repo.InsertAsync(entity, payment);
         return Map(await _repo.GetByIdAsync(entity.PurchaseId) ?? entity);
     }
@@ -141,7 +157,7 @@ public class PurchaseService : IPurchaseService
             throw new DomainException("Cannot edit: payments are allocated to this purchase.");
         if (await _repo.CountReturnsAsync(id) > 0)
             throw new DomainException("Cannot edit: purchase returns reference this purchase.");
-        var effectiveCompanyId = r.CompanyId > 0 ? r.CompanyId : existing.CompanyId;
+        var effectiveCompanyId = await ResolveCompanyScopeAsync(r.CompanyId, existing.CompanyId);
          var (entity, _) = await BuildAsync(effectiveCompanyId, userId, r.BranchId, r.WarehouseId, r.SupplierId,
              r.PurchaseNumber, r.PurchaseDate, r.SupplierInvoiceNumber, r.SupplierInvoiceDate,
              r.SupplierPONumber, r.ReferenceNumber, r.CurrencyId, r.PurchaseTypeId,
@@ -151,6 +167,7 @@ public class PurchaseService : IPurchaseService
         entity.PurchaseId = id;
         entity.CompanyId = effectiveCompanyId;
         entity.CompanyNameSnapshot = await GetCompanyNameAsync(effectiveCompanyId);
+        entity.PriceListId = r.PriceListId;
         entity.CreatedByUserID = existing.CreatedByUserID;
         entity.CreatedAt = existing.CreatedAt;
         entity.UpdatedByUserID = userId;
@@ -192,7 +209,15 @@ public class PurchaseService : IPurchaseService
     {
         var products = (await _productService.GetPagedAsync(companyId, 1, 10000, "")).Items.ToDictionary(p => p.Id);
         var units = (await _unitService.GetAllAsync(companyId, true)).ToDictionary(u => u.Id);
-        var partners = (await _businessPartnerService.GetAllAsync(true)).ToDictionary(p => p.Id);
+        // T060 — company-scoped VENDOR lookup; doubles as proof the supplier belongs to this company.
+        var partners = (await _businessPartnerService.GetByRoleCodeAsync(companyId, "VENDOR", true)).ToDictionary(p => p.Id);
+
+        if (branchId > 0 && !await _dataScopeResolver.CanAccessBranchAsync((int)branchId))
+            throw new DomainException("Branch is not within your data scope.", 403);
+        if (warehouseId > 0 && !await _dataScopeResolver.CanAccessWarehouseAsync((int)warehouseId))
+            throw new DomainException("Warehouse is not within your data scope.", 403);
+        if (supplierId <= 0)
+            throw new DomainException("Supplier is required.");
 
         if (!products.Any())
             throw new DomainException("No products found for the company.");
@@ -202,6 +227,11 @@ public class PurchaseService : IPurchaseService
             throw new DomainException("Supplier Invoice Date is required.");
         if (paymentTypeID == null || paymentTypeID <= 0)
             throw new DomainException("Payment Type is required.");
+        // T061 — parse dates authoritatively; never let a bad date surface as a 500.
+        if (!DateTime.TryParse(purchaseDate, out var parsedPurchaseDate))
+            throw new DomainException("Purchase Date is required.");
+        if (!DateTime.TryParse(supplierInvoiceDate, out var parsedInvoiceDate))
+            throw new DomainException("Supplier Invoice Date is invalid.");
         // Cash / partial pay needs a method; pure credit (paid 0, no payment obj) does not.
         var hasPay = paidAmount > 0 || (payment != null && payment.Amount > 0);
         if (hasPay && (paymentMethodID == null || paymentMethodID <= 0)
@@ -226,7 +256,8 @@ public class PurchaseService : IPurchaseService
             if (!(effectivePaid > 0))
                 throw new DomainException("Paid Amount must be greater than 0 for Cash payment.");
         }
-        var supplier = partners.GetValueOrDefault(supplierId);
+        var supplier = partners.GetValueOrDefault(supplierId)
+            ?? throw new DomainException($"Supplier '{supplierId}' was not found for this company.");
 
         var statusId = await _statusRepo.GetIdByCodeAsync(statusCode);
         if (statusId == 0) statusId = await _statusRepo.GetIdByCodeAsync("POSTED");
@@ -239,9 +270,9 @@ public class PurchaseService : IPurchaseService
             SupplierId = supplierId,
             SupplierNameSnapshot = supplier?.PartnerName,
             PurchaseNumber = purchaseNumber?.Trim() ?? string.Empty,
-            PurchaseDate = DateTime.Parse(purchaseDate),
+            PurchaseDate = parsedPurchaseDate,
             SupplierInvoiceNumber = supplierInvoiceNumber?.Trim(),
-            SupplierInvoiceDate = string.IsNullOrWhiteSpace(supplierInvoiceDate) ? null : DateTime.Parse(supplierInvoiceDate),
+            SupplierInvoiceDate = parsedInvoiceDate,
             SupplierPONumber = supplierPoNumber?.Trim(),
             ReferenceNumber = referenceNumber?.Trim(),
             CurrencyId = currencyId,
@@ -421,6 +452,7 @@ public class PurchaseService : IPurchaseService
         PurchaseTypeId = e.PurchaseTypeId,
         AccountingYearId = e.AccountingYearId,
         TaxId = e.TaxId,
+        PriceListId = e.PriceListId,
         IsGSTInclusive = e.IsGSTInclusive,
         CancelledByUserID = e.CancelledByUserID,
         CancelledAt = e.CancelledAt,

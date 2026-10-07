@@ -14,11 +14,13 @@ public class PurchaseReturnsController : BaseController
 {
     private readonly IPurchaseReturnService _service;
     private readonly ICurrentUser _currentUser;
+    private readonly IIdempotencyService _idempotency;
 
-    public PurchaseReturnsController(IPurchaseReturnService service, ICurrentUser currentUser)
+    public PurchaseReturnsController(IPurchaseReturnService service, ICurrentUser currentUser, IIdempotencyService idempotency)
     {
         _service = service;
         _currentUser = currentUser;
+        _idempotency = idempotency;
     }
 
     [HttpGet]
@@ -62,8 +64,32 @@ public class PurchaseReturnsController : BaseController
     [HttpPost]
     [Permission(Permissions.PurchasesReturnManage, Permissions.PurchaseReturnCreate)]
     [ProducesResponseType(typeof(ApiResponse<PurchaseReturnDto>), 200)]
-    public async Task<IActionResult> Create([FromBody] CreatePurchaseReturnRequest request)
-        => Ok(ApiResponse<PurchaseReturnDto>.Ok(await _service.CreateAsync(_currentUser.CompanyId, _currentUser.UserId, request), "Purchase return created successfully"));
+    public async Task<IActionResult> Create([FromBody] CreatePurchaseReturnRequest request,
+        [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey = null)
+    {
+        const string endpoint = "POST:/api/purchase-returns";
+        var begin = await _idempotency.TryBeginCreateAsync(_currentUser.CompanyId, endpoint, idempotencyKey);
+        if (begin.InProgress)
+            return Conflict(ApiResponse<PurchaseReturnDto>.Fail("A request with this Idempotency-Key is still processing. Retry shortly."));
+        if (begin.ReferenceId is long priorId)
+        {
+            var prior = await _service.GetByIdAsync(priorId);
+            if (prior is null || prior.CompanyId != _currentUser.CompanyId)
+                return NotFound(ApiResponse<PurchaseReturnDto>.Fail("The idempotent purchase-return result is not available in this company."));
+            return Ok(ApiResponse<PurchaseReturnDto>.Ok(prior, "Purchase return already created for this request."));
+        }
+        try
+        {
+            var result = await _service.CreateAsync(_currentUser.CompanyId, _currentUser.UserId, request);
+            await _idempotency.CompleteAsync(_currentUser.CompanyId, endpoint, idempotencyKey ?? string.Empty, result.PurchaseReturnId);
+            return Ok(ApiResponse<PurchaseReturnDto>.Ok(result, "Purchase return created successfully"));
+        }
+        catch
+        {
+            await _idempotency.AbandonAsync(_currentUser.CompanyId, endpoint, idempotencyKey);
+            throw;
+        }
+    }
 
     [HttpPut("{id:long}")]
     [Permission(Permissions.PurchasesReturnManage, Permissions.PurchaseReturnEdit)]

@@ -3,6 +3,7 @@ using ONEERP.ERP.API.Models;
 using ONEERP.ERP.API.Repositories;
 using ONEERP.Shared.Exceptions;
 using ONEERP.Shared.Models;
+using ONEERP.Shared.Constants;
 
 namespace ONEERP.ERP.API.Services;
 
@@ -14,7 +15,7 @@ namespace ONEERP.ERP.API.Services;
 
 public interface IDocumentDesignService
 {
-    Task<string> RenderPreviewAsync(long versionId, long? salesInvoiceId);
+    Task<string> RenderPreviewAsync(long versionId, long? salesInvoiceId, long? purchaseId = null, long? purchaseReturnId = null, bool debitNote = false);
     Task<DocumentLookupsDto> GetLookupsAsync(bool includeInactive = false);
     Task<PaginatedResult<DocumentTemplateListItemDto>> GetTemplatesPagedAsync(int page = 1, int size = 50, string search = "");
     Task<DocumentTemplateListItemDto> GetTemplateAsync(long id);
@@ -36,6 +37,8 @@ public interface IDocumentDesignService
 public class DocumentDesignService : IDocumentDesignService
 {
     private readonly ONEERP.ERP.API.Repositories.ISalesRepository _salesRepo;
+    private readonly ONEERP.ERP.API.Repositories.IPurchaseRepository _purchaseRepo;
+    private readonly ONEERP.ERP.API.Repositories.IPurchaseReturnRepository _purchaseReturnRepo;
     private readonly IInvoiceTemplateRepository _templateRepo;
     private readonly IInvoiceTemplateVersionRepository _versionRepo;
     private readonly IDocumentQueryRepository _queryRepo;
@@ -54,11 +57,15 @@ public class DocumentDesignService : IDocumentDesignService
         IDataScopeResolver scopeResolver,
         ICurrentUser user,
         IAuditService audit,
-        ONEERP.ERP.API.Repositories.ISalesRepository salesRepo)
+        ONEERP.ERP.API.Repositories.ISalesRepository salesRepo,
+        ONEERP.ERP.API.Repositories.IPurchaseRepository purchaseRepo,
+        ONEERP.ERP.API.Repositories.IPurchaseReturnRepository purchaseReturnRepo)
     {
         _templateRepo = templateRepo;
         _versionRepo = versionRepo;
         _salesRepo = salesRepo;
+        _purchaseRepo = purchaseRepo;
+        _purchaseReturnRepo = purchaseReturnRepo;
         _queryRepo = queryRepo;
         _lookupRepo = lookupRepo;
         _assignmentRepo = assignmentRepo;
@@ -516,7 +523,7 @@ public class DocumentDesignService : IDocumentDesignService
     /// the real invoice is loaded from the database; otherwise sample data is
     /// used (designer preview mode).
     /// </summary>
-    public async Task<string> RenderPreviewAsync(long versionId, long? salesInvoiceId)
+    public async Task<string> RenderPreviewAsync(long versionId, long? salesInvoiceId, long? purchaseId = null, long? purchaseReturnId = null, bool debitNote = false)
     {
         var version = await _versionRepo.GetByIdAsync(versionId)
             ?? throw new NotFoundException($"Template version '{versionId}' was not found.");
@@ -533,6 +540,25 @@ public class DocumentDesignService : IDocumentDesignService
         {
             printData = await _salesRepo.GetPrintDataAsync(sid)
                 ?? throw new NotFoundException($"Sales invoice '{sid}' was not found.");
+        }
+        else if (purchaseId is long pid && pid > 0)
+        {
+            if (!_user.HasAnyPermission(Permissions.PurchasesView, Permissions.PurchasesManage))
+                throw new DomainException("You do not have permission to view purchases.", 403);
+            printData = await _purchaseRepo.GetPrintDataAsync(pid)
+                ?? throw new NotFoundException($"Purchase '{pid}' was not found.");
+            if (!await _scopeResolver.CanAccessCompanyAsync(checked((int)printData.CompanyId)))
+                throw new DomainException("You do not have permission to print this purchase.", 403);
+        }
+        else if (purchaseReturnId is long rid && rid > 0)
+        {
+            if (!_user.HasAnyPermission(Permissions.PurchasesReturnView, Permissions.PurchasesReturnManage,
+                    Permissions.PurchaseReturnView, Permissions.PurchaseReturnCreate))
+                throw new DomainException("You do not have permission to view purchase returns.", 403);
+            printData = await _purchaseReturnRepo.GetPrintDataAsync(rid, debitNote ? "Debit Note" : "Purchase Return")
+                ?? throw new NotFoundException($"Purchase return '{rid}' was not found.");
+            if (!await _scopeResolver.CanAccessCompanyAsync(checked((int)printData.CompanyId)))
+                throw new DomainException("You do not have permission to print this purchase return.", 403);
         }
         return DocumentPreviewHtml.Render(design, components, w, h, printData);
     }

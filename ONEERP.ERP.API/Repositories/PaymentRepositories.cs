@@ -69,7 +69,7 @@ public class PaymentTypeRepository : TenantRepositoryBase, IPaymentTypeRepositor
     public async Task<bool> DeleteAsync(long id)
     {
         using var connection = OpenTenant();
-        return await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PaymentType WHERE PaymentTypeId = @id", new { id }) > 0;
+        return await Sql.ExecuteAsync(connection, "UPDATE dbo.PaymentType SET IsActive = 0 WHERE PaymentTypeId = @id", new { id }) > 0;
     }
 }
 
@@ -143,7 +143,7 @@ public class PaymentMethodRepository : TenantRepositoryBase, IPaymentMethodRepos
     public async Task<bool> DeleteAsync(long id)
     {
         using var connection = OpenTenant();
-        return await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PaymentMethod WHERE PaymentMethodId = @id", new { id }) > 0;
+        return await Sql.ExecuteAsync(connection, "UPDATE dbo.PaymentMethod SET IsActive = 0 WHERE PaymentMethodId = @id", new { id }) > 0;
     }
 }
 
@@ -250,18 +250,18 @@ public class PaymentMethodDetailRepository : TenantRepositoryBase, IPaymentMetho
     public async Task<bool> DeleteAsync(long id)
     {
         using var connection = OpenTenant();
-        return await Sql.ExecuteAsync(connection, "DELETE FROM dbo.PaymentMethodDetails WHERE PaymentMethodDetailId = @id", new { id }) > 0;
+        return await Sql.ExecuteAsync(connection, "UPDATE dbo.PaymentMethodDetails SET IsActive = 0 WHERE PaymentMethodDetailId = @id", new { id }) > 0;
     }
 }
 
 public interface IPaymentRepository
 {
     Task<(List<Payment> Items, int TotalCount)> GetPagedAsync(long companyId, int pageNumber, int pageSize, string search);
-    Task<Payment?> GetByIdAsync(long id);
+    Task<Payment?> GetByIdAsync(long companyId, long id);
     Task<string> GetNextPaymentNoAsync(long companyId);
     Task<long> InsertAsync(Payment entity);
     Task<bool> UpdateAsync(Payment entity);
-    Task<bool> DeleteAsync(long id);
+    Task<bool> DeleteAsync(long companyId, long id);
 }
 
 public class PaymentRepository : TenantRepositoryBase, IPaymentRepository
@@ -290,11 +290,11 @@ public class PaymentRepository : TenantRepositoryBase, IPaymentRepository
         return (items.ToList(), total);
     }
 
-    public async Task<Payment?> GetByIdAsync(long id)
+    public async Task<Payment?> GetByIdAsync(long companyId, long id)
     {
         using var connection = OpenTenant();
         return await Sql.QuerySingleOrDefaultAsync<Payment>(connection,
-            "SELECT * FROM dbo.Payment WHERE PaymentId = @id", new { id });
+            "SELECT * FROM dbo.Payment WHERE CompanyId = @companyId AND PaymentId = @id", new { companyId, id });
     }
 
     public async Task<string> GetNextPaymentNoAsync(long companyId)
@@ -308,6 +308,7 @@ public class PaymentRepository : TenantRepositoryBase, IPaymentRepository
     public async Task<long> InsertAsync(Payment entity)
     {
         using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
         const string sql = @"
             INSERT INTO dbo.Payment
             (
@@ -320,12 +321,19 @@ public class PaymentRepository : TenantRepositoryBase, IPaymentRepository
                 @BusinessPartnerId, @Amount, @ReferenceNo, @Remarks, @StatusID, @CreatedByUserID
             );
             SELECT CAST(SCOPE_IDENTITY() AS bigint);";
-        return await Sql.QuerySingleOrDefaultAsync<long>(connection, sql, entity);
+        var id = await Sql.QuerySingleOrDefaultAsync<long>(connection, sql, entity, tx);
+        await Sql.ExecuteAsync(connection,
+            @"INSERT INTO dbo.PaymentAllocation (PaymentId, ReferenceType, ReferenceId, AllocatedAmount)
+              VALUES (@PaymentId, @ReferenceType, @ReferenceId, @Amount)",
+            new { PaymentId = id, entity.ReferenceType, entity.ReferenceId, entity.Amount }, tx);
+        tx.Commit();
+        return id;
     }
 
     public async Task<bool> UpdateAsync(Payment entity)
     {
         using var connection = OpenTenant();
+        using var tx = connection.BeginTransaction();
         const string sql = @"
             UPDATE dbo.Payment SET
                 PaymentNo = @PaymentNo,
@@ -341,13 +349,30 @@ public class PaymentRepository : TenantRepositoryBase, IPaymentRepository
                 StatusID = @StatusID,
                 UpdatedByUserID = @UpdatedByUserID,
                 UpdatedAt = SYSUTCDATETIME()
-            WHERE PaymentId = @PaymentId;";
-        return await Sql.ExecuteAsync(connection, sql, entity) > 0;
+            WHERE CompanyId = @CompanyId AND PaymentId = @PaymentId;";
+        var updated = await Sql.ExecuteAsync(connection, sql, entity, tx);
+        if (updated > 0)
+        {
+            await Sql.ExecuteAsync(connection,
+                @"IF EXISTS (SELECT 1 FROM dbo.PaymentAllocation WHERE PaymentId = @PaymentId)
+                    UPDATE dbo.PaymentAllocation SET ReferenceType = @ReferenceType, ReferenceId = @ReferenceId, AllocatedAmount = @Amount WHERE PaymentId = @PaymentId;
+                  ELSE
+                    INSERT INTO dbo.PaymentAllocation (PaymentId, ReferenceType, ReferenceId, AllocatedAmount) VALUES (@PaymentId, @ReferenceType, @ReferenceId, @Amount);",
+                entity, tx);
+        }
+        tx.Commit();
+        return updated > 0;
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<bool> DeleteAsync(long companyId, long id)
     {
         using var connection = OpenTenant();
-        return await Sql.ExecuteAsync(connection, "DELETE FROM dbo.Payment WHERE PaymentId = @id", new { id }) > 0;
+        using var tx = connection.BeginTransaction();
+        await Sql.ExecuteAsync(connection,
+            @"DELETE pa FROM dbo.PaymentAllocation pa INNER JOIN dbo.Payment p ON p.PaymentId = pa.PaymentId
+              WHERE p.CompanyId = @companyId AND p.PaymentId = @id", new { companyId, id }, tx);
+        var deleted = await Sql.ExecuteAsync(connection, "DELETE FROM dbo.Payment WHERE CompanyId = @companyId AND PaymentId = @id", new { companyId, id }, tx);
+        tx.Commit();
+        return deleted > 0;
     }
 }

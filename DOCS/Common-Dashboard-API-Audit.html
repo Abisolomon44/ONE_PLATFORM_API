@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<title>ONE ERP - Common Dashboard API Audit</title>
+<style>
+  html { color-scheme: light; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 1200px; margin: 24px auto; padding: 0 16px; color: #1f2328; background: #ffffff; line-height: 1.55; }
+  h1 { border-bottom: 2px solid #0d6efd; padding-bottom: 8px; }
+  h2 { border-bottom: 1px solid #d0d7de; padding-bottom: 4px; margin-top: 32px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; position: sticky; top: 0; }
+  tr:nth-child(even) { background: #fafbfc; }
+  code { background: #f6f8fa; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; font-size: 0.92em; }
+  pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow-x: auto; }
+  blockquote { border-left: 4px solid #0d6efd; margin: 12px 0; padding: 4px 16px; color: #57606a; background: #f6f8fa; }
+  hr { border: none; border-top: 1px solid #d0d7de; margin: 24px 0; }
+  li { margin: 3px 0; }
+</style>
+</head>
+<body>
+<h1>ONE ERP – Common Dashboard API Inspection &amp; Gap Analysis</h1>
+<p><strong>Scope:</strong> Audit only. No code modified, no APIs created. All findings verified against actual source: controllers, services, repositories, DTOs, and Angular dashboard page.
+<strong>Verdict:</strong> <strong>PARTIALLY</strong> – see §12.</p>
+<hr />
+<h2>1. EXISTING DASHBOARD STATUS</h2>
+<p><strong>Answer: C – should be rebuilt (content-wise), D – business dashboard API missing.</strong></p>
+<ul>
+<li><code>GET /api/dashboard</code> (<code>DashboardController</code> → <code>DashboardService.GetAsync</code>) returns <strong>admin/platform info</strong> (company, user, tenant, roles) — <strong>zero business KPIs</strong>.</li>
+<li>UI (<code>ONEERP.ERP.UI/src/app/pages/dashboard/dashboard.ts</code>) calls only <code>/api/dashboard</code>.</li>
+<li>⚠️ Security: <code>/api/dashboard</code> has <code>[Authorize]</code> only, <strong>no <code>[Permission]</code> attribute</strong> — inconsistent with every other controller.</li>
+</ul>
+<h2>2. COMPLETE RELEVANT API INVENTORY</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Module</th>
+<th>Controller</th>
+<th>Method</th>
+<th>Route</th>
+<th>Auth</th>
+<th>Dashboard suitability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Dashboard</td>
+<td>DashboardController</td>
+<td>GET</td>
+<td><code>/api/dashboard</code></td>
+<td>JWT, no Permission</td>
+<td>NOT SUITABLE (admin info)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Sales Reports</td>
+<td>SalesReportsController</td>
+<td>GET</td>
+<td><code>/api/sales-reports?Report=…</code></td>
+<td><code>[Permission(SalesView)]</code></td>
+<td>PRIMARY REUSE</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Purchase Reports</td>
+<td>PurchaseReportsController</td>
+<td>GET</td>
+<td><code>/api/purchase-reports?Report=…</code></td>
+<td><code>[Permission(PurchasesView/PurchaseReturnView)]</code></td>
+<td>OPTIONAL (V1)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Inventory</td>
+<td>InventoryController</td>
+<td>GET</td>
+<td><code>/api/inventory/dashboard</code></td>
+<td><code>[Permission(StockView)]</code></td>
+<td>REUSE</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Inventory</td>
+<td>InventoryController</td>
+<td>GET</td>
+<td><code>/api/inventory/valuation</code></td>
+<td><code>[Permission(StockView)]</code></td>
+<td>REUSE (paginated)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Inventory</td>
+<td>InventoryController</td>
+<td>GET</td>
+<td><code>/api/inventory/low-stock</code></td>
+<td><code>[Permission(StockView)]</code></td>
+<td>REUSE</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Payments</td>
+<td>PaymentsController</td>
+<td>GET</td>
+<td><code>/api/payments</code> (page,size,search)</td>
+<td><code>[Permission(PaymentsView)]</code></td>
+<td>PARTIAL – row-level only, no date/method aggregation</td>
+</tr>
+<tr>
+<td>8</td>
+<td>POS</td>
+<td>POSOperationsController</td>
+<td>GET</td>
+<td><code>/api/pos/dashboard</code></td>
+<td>JWT</td>
+<td>REUSE (POS section)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Sales</td>
+<td>SalesController</td>
+<td>GET</td>
+<td><code>/api/sales</code> (paged, search)</td>
+<td>JWT</td>
+<td>REUSE (Recent Sales)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Master Data</td>
+<td>MasterDataController</td>
+<td>GET</td>
+<td><code>/api/business-partners</code></td>
+<td>JWT</td>
+<td>NOT SUITABLE for outstanding (no balance field)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sales report keys</strong> (verified in <code>SalesReportRepository.cs</code> switch): <code>overview, register, detail, product, customer, daily, monthly, tax, hsn, payments, outstanding, pos, price-list, allocation</code>.
+<strong>Purchase report keys:</strong> <code>dashboard, register, items, supplier, product-price, quantity, tax, payment, returns, reconciliation</code>.
+<strong>Filter:</strong> <code>SalesReportFilter</code> (Report, DateFrom/To, BranchId, WarehouseId, CustomerId, ProductId, SalesTypeId, PriceListId, PaymentTypeID, PaymentMethodID, HsnId, GstRate, Search). CompanyId is resolved server-side from <code>ICurrentUser</code>.</p>
+<h2>3. DASHBOARD WIDGET → API MAPPING</h2>
+<table>
+<thead>
+<tr>
+<th>Widget</th>
+<th>Required Data</th>
+<th>Existing API</th>
+<th>Status</th>
+<th>DB Tables</th>
+<th>Missing Data</th>
+<th>Reuse / New</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sales Today</td>
+<td>SUM GrandTotal (today)</td>
+<td><code>/api/sales-reports?Report=overview&amp;DateFrom=&lt;today&gt;&amp;DateTo=&lt;today&gt;</code></td>
+<td>EXISTS</td>
+<td>SalesInvoice</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Sales Trend 7d/30d/month</td>
+<td>daily / monthly totals</td>
+<td><code>Report=daily</code> / <code>Report=monthly</code></td>
+<td>EXISTS</td>
+<td>SalesInvoice</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Collection Today</td>
+<td>payment totals today</td>
+<td><code>Report=payments&amp;DateFrom=&lt;today&gt;&amp;DateTo=&lt;today&gt;</code></td>
+<td>PARTIAL</td>
+<td>Payment + PaymentType/PaymentMethod</td>
+<td>grouped-by-method total</td>
+<td>Reuse + client group (V1) / PROPOSED 1</td>
+</tr>
+<tr>
+<td>Payment Summary (Cash/UPI/Card/Bank/Credit)</td>
+<td>total per method</td>
+<td><code>Report=payments</code> rows</td>
+<td>PARTIAL</td>
+<td>Payment, PaymentMethod</td>
+<td>server-side GROUP BY</td>
+<td>Reuse + client group (V1) / PROPOSED 1</td>
+</tr>
+<tr>
+<td>Outstanding (total)</td>
+<td>SUM BalanceAmount</td>
+<td><code>Report=outstanding</code></td>
+<td>EXISTS</td>
+<td>SalesInvoice + PaymentAllocation agg</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Customer Outstanding</td>
+<td>balance per customer</td>
+<td><code>Report=outstanding</code> per-invoice rows</td>
+<td>PARTIAL</td>
+<td>SalesInvoice</td>
+<td>GROUP BY CustomerId</td>
+<td>Reuse + client group (V1) / PROPOSED 2</td>
+</tr>
+<tr>
+<td>Stock Value</td>
+<td>total valuation</td>
+<td><code>/api/inventory/dashboard</code> (<code>InventoryDashboardDto.StockValue</code> + OutOfStock/LowStock counts)</td>
+<td>EXISTS</td>
+<td>Stock / valuation query</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Top Selling Products</td>
+<td>qty + amount per product</td>
+<td><code>Report=product</code></td>
+<td>EXISTS</td>
+<td>SalesInvoiceItem</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Low Stock Alerts</td>
+<td>current stock vs threshold</td>
+<td><code>/api/inventory/low-stock</code> (paginated; uses real <code>Products.ReorderLevel</code>)</td>
+<td>EXISTS</td>
+<td>Stock, Products</td>
+<td>—</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Recent Sales</td>
+<td>last N invoices</td>
+<td><code>/api/sales?page=1&amp;pageSize=10</code> (SalesInvoiceId DESC)</td>
+<td>EXISTS</td>
+<td>SalesInvoice</td>
+<td>PaymentStatus per row via report only – acceptable</td>
+<td>Reuse</td>
+</tr>
+<tr>
+<td>Quick Actions</td>
+<td>—</td>
+<td>UI-only router links</td>
+<td>N/A</td>
+<td>—</td>
+<td>—</td>
+<td>No API</td>
+</tr>
+<tr>
+<td>Purchase KPI</td>
+<td>purchase totals</td>
+<td><code>/api/purchase-reports?Report=dashboard</code></td>
+<td>EXISTS</td>
+<td>PurchaseInvoice</td>
+<td>—</td>
+<td>OPTIONAL for V1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Payment method seed values (verified in <code>sql/erp_full.sql</code>, not assumed):</strong> PAYMETHOD-001 Cash/CASH, 002 UPI/DIGITAL, 003 Credit Card/CARD, 004 Debit Card/CARD, 005 Bank Transfer/BANK, 006 Cheque/BANK, 007 Credit Account/CREDIT, 008 Wallet/DIGITAL, 009 Other/OTHER.</p>
+<h2>4. EXISTING API REUSE LIST (A)</h2>
+<ul>
+<li><code>/api/sales-reports?Report=overview|daily|monthly|product|payments|outstanding</code></li>
+<li><code>/api/inventory/dashboard</code>, <code>/api/inventory/low-stock</code>, <code>/api/inventory/valuation</code></li>
+<li><code>/api/pos/dashboard</code></li>
+<li><code>/api/sales</code> (paged, for Recent Sales)</li>
+<li><code>/api/purchase-reports?Report=dashboard</code> (optional)</li>
+</ul>
+<h2>5. MISSING API LIST (C) – PROPOSED ONLY, NOT IMPLEMENTED</h2>
+<p><strong>PROPOSED 1 – collection summary</strong>
+- Endpoint: <code>GET /api/sales-reports?Report=collection-summary&amp;DateFrom&amp;DateTo</code>
+- Purpose: payments grouped by payment method.
+- Response: <code>[{ methodCode, methodName, total, count }]</code>
+- Tables: Payment, PaymentMethod. Aggregation: SQL GROUP BY PaymentMethodID, <code>ReferenceType='SALES'</code>, date range.
+- Security: <code>[Permission(SalesView)]</code>, CompanyId server-side.</p>
+<p><strong>PROPOSED 2 – customer outstanding grouping</strong>
+- Endpoint: <code>GET /api/sales-reports?Report=outstanding&amp;GroupBy=customer</code>
+- Purpose: outstanding grouped by customer.
+- Response: <code>[{ customerId, customerName, balance }]</code>
+- Tables: SalesInvoice. Aggregation: SQL GROUP BY CustomerId over unpaid invoices.</p>
+<p><strong>B – existing APIs needing small response extension:</strong> none strictly required; <code>InventoryDashboardDto</code> already covers Stock Value + low-stock counts in one call.</p>
+<h2>6. BROKEN / DUPLICATE API LIST</h2>
+<ul>
+<li>NOT SUITABLE: <code>/api/dashboard</code> (admin info; no <code>[Permission]</code>).</li>
+<li>NOT SUITABLE: <code>/api/business-partners</code> for outstanding (BusinessPartnerDto has CreditLimit but no balance/outstanding field).</li>
+<li>PARTIAL: <code>/api/payments</code> (no date/method aggregation endpoint).</li>
+<li>No BROKEN or DUPLICATE endpoints among the relevant set.</li>
+<li>Known unrelated issue (T072 audit): some GetByIdAsync repositories filter by id only, not CompanyId — cross-tenant hole, separate fix.</li>
+</ul>
+<h2>7. DATABASE TABLE → DASHBOARD MAPPING</h2>
+<table>
+<thead>
+<tr>
+<th>Widget</th>
+<th>Table(s)</th>
+<th>Key columns (verified)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sales Today / Trend</td>
+<td>SalesInvoice</td>
+<td>InvoiceDate, GrandTotal, PaidAmount, BalanceAmount</td>
+</tr>
+<tr>
+<td>Top Products</td>
+<td>SalesInvoiceItem</td>
+<td>ProductId, Quantity, Amount</td>
+</tr>
+<tr>
+<td>Collection / Payment Summary</td>
+<td>Payment (+PaymentMethod)</td>
+<td>ReferenceType='SALES', PaymentMethodID, Amount</td>
+</tr>
+<tr>
+<td>Outstanding</td>
+<td>SalesInvoice + PaymentAllocation (agg, ReferenceType='SALES')</td>
+<td>BalanceAmount, PaidAmount</td>
+</tr>
+<tr>
+<td>Stock Value / Low Stock</td>
+<td>Stock, Products</td>
+<td>valuation query; Products.ReorderLevel</td>
+</tr>
+</tbody>
+</table>
+<h2>8. SECURITY / COMPANY / BRANCH SCOPE FINDINGS</h2>
+<ul>
+<li>✅ Sales/Purchase/Inventory/POS reports: CompanyId scoped server-side via <code>ICurrentUser</code>; Branch/Warehouse are optional parameters.</li>
+<li>❌ <code>/api/dashboard</code> has no <code>[Permission]</code> — add when rebuilt.</li>
+<li>The dashboard must never rely on Angular-side filtering for company scope (it doesn't need to — reports already scope server-side).</li>
+</ul>
+<h2>9. PERFORMANCE FINDINGS</h2>
+<ul>
+<li>✅ Reports are SQL-side aggregates; inventory valuation/low-stock are paginated.</li>
+<li>❌ Client-side grouping of <code>payments</code> and <code>outstanding</code> pulls all rows for the period — fine for V1 volumes; Proposals 1–2 move it server-side.</li>
+<li>Recommendation: <strong>multiple widget calls against existing report APIs</strong> (parallel, per-period caching) rather than one mega summary API. No thousands-of-invoices loads or N+1 patterns found in the report paths.</li>
+</ul>
+<h2>10. FINAL COMMON DASHBOARD API PLAN</h2>
+<ul>
+<li><strong>A. Reuse:</strong> see §4.</li>
+<li><strong>B. Small extensions:</strong> none required.</li>
+<li><strong>C. New (PROPOSED ONLY):</strong> PROPOSED 1, PROPOSED 2 (§5).</li>
+<li><strong>D. Not required:</strong> <code>/api/dashboard</code> (rebuild later with <code>[Permission]</code>), <code>/api/business-partners</code> for outstanding, <code>/api/payments</code> for aggregation.</li>
+</ul>
+<h2>11. IMPLEMENTATION ORDER</h2>
+<ul>
+<li><strong>P0:</strong> Wire dashboard to existing APIs (overview, daily/monthly, payments, outstanding, inventory/dashboard, low-stock, sales paged). Zero new backend work.</li>
+<li><strong>P1:</strong> PROPOSED 1 + PROPOSED 2; add <code>[Permission]</code> to dashboard endpoints.</li>
+<li><strong>P2:</strong> Purchase KPI widget, POS section deepening.</li>
+</ul>
+<h2>12. FINAL ANSWER</h2>
+<p><strong>"Can the current APIs fully support the Common Dashboard?" → PARTIALLY.</strong></p>
+<p>Every widget except two has an existing, company-scoped, SQL-aggregated API. <strong>Collection-by-method totals</strong> and <strong>customer-grouped outstanding</strong> are only available as row-level data (groupable client-side for V1, or via the two proposed report keys). The current <code>/api/dashboard</code> is irrelevant to business KPIs and unguarded by permissions. Strictly for V1, <strong>zero new APIs are mandatory</strong> — the dashboard can be built entirely on reuse, with the two proposals as P1 optimizations.</p>
+</body>
+</html>

@@ -14,6 +14,14 @@ public class ProductLookupItem : LookupItem
     public string? HsnCode { get; set; }
     public decimal? GstRate { get; set; }
     public string? Barcode { get; set; }
+    public decimal? PurchasePrice { get; set; }
+    public decimal? SalesPrice { get; set; }
+}
+
+// T062 — supplier-specific pricing: carries the supplier's default price list.
+public class SupplierLookupItem : LookupItem
+{
+    public long? PriceListId { get; set; }
 }
 
 public class PurchaseLookupsDto

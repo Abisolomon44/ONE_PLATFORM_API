@@ -20,6 +20,7 @@ public interface IPurchaseRepository
     Task<int> CountStockTransactionsAsync(long id);
     Task<int> CountReturnsAsync(long id);
     Task<bool> CancelAsync(long id, long userId, string reason);
+    Task<SalesInvoicePrintDto?> GetPrintDataAsync(long purchaseId);
 }
 
 public class PurchasePaymentInput
@@ -65,6 +66,46 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
         if (header == null) return null;
         header.Items = (await GetItemsAsync(id)).ToList();
         return header;
+    }
+
+    public async Task<SalesInvoicePrintDto?> GetPrintDataAsync(long purchaseId)
+    {
+        using var connection = OpenTenant();
+        var data = (await Sql.QueryAsync<SalesInvoicePrintDto>(connection, @"
+            SELECT TOP 1 p.PurchaseId AS SalesInvoiceId, p.PurchaseNumber AS SalesInvoiceNo,
+                   p.PurchaseDate AS InvoiceDate, p.CompanyId,
+                   c.CompanyName, c.GSTNumber AS CompanyGstin,
+                   ISNULL(a1.AddressLine1, '') AS CompanyAddress, c.Phone AS CompanyPhone,
+                   c.Email AS CompanyEmail, c.LogoUrl AS CompanyLogoUrl,
+                   p.SupplierId AS CustomerId, p.SupplierNameSnapshot AS CustomerName,
+                   bp.TaxRegistrationNo AS CustomerGstin, ISNULL(a2.AddressLine1, '') AS CustomerAddress,
+                   bp.MobileNo AS CustomerPhone, p.BranchId, br.BranchName, p.WarehouseId, w.WarehouseName,
+                   p.TotalGrossAmount, p.TotalDiscountAmount, p.TotalTaxableAmount,
+                   CAST(0 AS DECIMAL(18,2)) AS TotalCGSTAmount, CAST(0 AS DECIMAL(18,2)) AS TotalSGSTAmount,
+                   CAST(0 AS DECIMAL(18,2)) AS TotalIGSTAmount, p.TotalCessAmount AS TotalCESSAmount,
+                   p.TotalTaxAmount, p.TotalRoundOff, p.GrandTotal, p.PaidAmount, p.BalanceAmount,
+                   pm.[Name] AS PaymentMode, p.Remarks, 'Purchase Invoice' AS InvoiceTypeName
+            FROM dbo.Purchase p
+            LEFT JOIN dbo.Companies c ON c.Id = p.CompanyId
+            LEFT JOIN dbo.BusinessPartners bp ON bp.Id = p.SupplierId
+            LEFT JOIN dbo.Branches br ON br.Id = p.BranchId
+            LEFT JOIN dbo.Warehouses w ON w.Id = p.WarehouseId
+            LEFT JOIN dbo.PaymentMethod pm ON pm.PaymentMethodId = p.PaymentMethodID
+            LEFT JOIN dbo.EntityAddress ea1 ON ea1.EntityId = c.EntityId AND ea1.IsPrimary = 1 AND ea1.IsActive = 1
+            LEFT JOIN dbo.Address a1 ON a1.AddressId = ea1.AddressId
+            LEFT JOIN dbo.EntityAddress ea2 ON ea2.EntityId = bp.EntityId AND ea2.IsPrimary = 1 AND ea2.IsActive = 1
+            LEFT JOIN dbo.Address a2 ON a2.AddressId = ea2.AddressId
+            WHERE p.PurchaseId = @purchaseId", new { purchaseId })).FirstOrDefault();
+        if (data is null) return null;
+        data.Items = (await Sql.QueryAsync<SalesInvoicePrintItemDto>(connection, @"
+            SELECT pi.PurchaseItemId AS SalesInvoiceItemId,
+                   ROW_NUMBER() OVER (ORDER BY pi.PurchaseItemId) AS SlNo,
+                   pi.ProductCodeSnapshot AS ProductCode, pi.ProductNameSnapshot AS ProductName,
+                   pi.HSNCodeSnapshot AS HsnCode, pi.UnitNameSnapshot AS UnitName,
+                   pi.Quantity, pi.PurchaseRate AS Rate, pi.DiscountAmount, pi.TaxableValue AS TaxableAmount,
+                   pi.GSTRate AS TaxPercent, pi.GSTAmount AS TaxAmount, pi.LineTotal
+            FROM dbo.PurchaseItem pi WHERE pi.PurchaseId = @purchaseId ORDER BY pi.PurchaseItemId", new { purchaseId })).ToList();
+        return data;
     }
 
     public async Task<List<PurchaseItem>> GetItemsAsync(long purchaseId)
@@ -114,7 +155,7 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                 (
                     CompanyId, BranchId, WarehouseId, SupplierId, PurchaseNumber, PurchaseDate,
                     SupplierInvoiceNumber, SupplierInvoiceDate, SupplierPONumber, ReferenceNumber,
-                    CurrencyId, PurchaseTypeId, AccountingYearId, TaxId, IsGSTInclusive,
+                    CurrencyId, PurchaseTypeId, AccountingYearId, TaxId, PriceListId, IsGSTInclusive,
                     TotalGrossAmount, TotalDiscountAmount, TotalTaxableAmount, TotalTaxAmount,
                     TotalCessAmount, TotalRoundOff, GrandTotal, PaidAmount, BalanceAmount,
                     PaymentTypeID, PaymentMethodID, StatusID, Remarks, IsActive, CreatedByUserID, CreatedAt
@@ -123,7 +164,7 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                 (
                     @CompanyId, @BranchId, @WarehouseId, @SupplierId, @PurchaseNumber, @PurchaseDate,
                     @SupplierInvoiceNumber, @SupplierInvoiceDate, @SupplierPONumber, @ReferenceNumber,
-                    @CurrencyId, @PurchaseTypeId, @AccountingYearId, @TaxId, @IsGSTInclusive,
+                    @CurrencyId, @PurchaseTypeId, @AccountingYearId, @TaxId, @PriceListId, @IsGSTInclusive,
                     @TotalGrossAmount, @TotalDiscountAmount, @TotalTaxableAmount, @TotalTaxAmount,
                     @TotalCessAmount, @TotalRoundOff, @GrandTotal, @PaidAmount, @BalanceAmount,
                     @PaymentTypeID, @PaymentMethodID, @StatusID, @Remarks,
@@ -397,7 +438,7 @@ public class PurchaseRepository : TenantRepositoryBase, IPurchaseRepository
                     SupplierInvoiceNumber = @SupplierInvoiceNumber, SupplierInvoiceDate = @SupplierInvoiceDate,
                     SupplierPONumber = @SupplierPONumber, ReferenceNumber = @ReferenceNumber,
                     CurrencyId = @CurrencyId, PurchaseTypeId = @PurchaseTypeId,
-                    AccountingYearId = @AccountingYearId, TaxId = @TaxId, IsGSTInclusive = @IsGSTInclusive,
+                    AccountingYearId = @AccountingYearId, TaxId = @TaxId, PriceListId = @PriceListId, IsGSTInclusive = @IsGSTInclusive,
                     TotalGrossAmount = @TotalGrossAmount, TotalDiscountAmount = @TotalDiscountAmount,
                     TotalTaxableAmount = @TotalTaxableAmount, TotalTaxAmount = @TotalTaxAmount,
                     TotalCessAmount = @TotalCessAmount, TotalRoundOff = @TotalRoundOff,

@@ -103,10 +103,6 @@ public class InventoryRepository : TenantRepositoryBase, IInventoryRepository
             @"SELECT
                 (SELECT COUNT(*) FROM dbo.Stock WHERE CompanyId = @companyId) AS ProductsWithStock,
                 (SELECT COUNT(*) FROM dbo.Stock WHERE CompanyId = @companyId AND AvailableQuantity <= 0) AS OutOfStockCount,
-                (SELECT COUNT(*) FROM dbo.Products p
-                  WHERE p.CompanyId = @companyId AND p.IsActive = 1 AND p.ReorderLevel IS NOT NULL
-                    AND ISNULL((SELECT SUM(s.AvailableQuantity) FROM dbo.Stock s
-                                WHERE s.CompanyId = p.CompanyId AND s.ProductId = p.Id), 0) <= p.ReorderLevel) AS LowStockCount,
                 (SELECT ISNULL(SUM(QuantityIn), 0) FROM dbo.StockTransaction
                   WHERE CompanyId = @companyId AND CAST(TransactionDate AS date) = CAST(SYSUTCDATETIME() AS date)) AS QtyInToday,
                 (SELECT ISNULL(SUM(QuantityOut), 0) FROM dbo.StockTransaction
@@ -116,6 +112,20 @@ public class InventoryRepository : TenantRepositoryBase, IInventoryRepository
             new { companyId });
         var d = (IDictionary<string, object>)row!;
 
+        // ReorderLevel is introduced by T085. T074 must remain usable before
+        // that later migration is applied, so only compile the column query
+        // after checking the tenant schema.
+        var hasReorderLevel = await Sql.QuerySingleOrDefaultAsync<bool>(conn,
+            "SELECT CASE WHEN COL_LENGTH(N'dbo.Products', N'ReorderLevel') IS NULL THEN CAST(0 AS bit) ELSE CAST(1 AS bit) END");
+        var lowStockCount = hasReorderLevel
+            ? await Sql.QuerySingleOrDefaultAsync<int>(conn,
+                @"SELECT COUNT(*) FROM dbo.Products p
+                  WHERE p.CompanyId = @companyId AND p.IsActive = 1 AND p.ReorderLevel IS NOT NULL
+                    AND ISNULL((SELECT SUM(s.AvailableQuantity) FROM dbo.Stock s
+                                WHERE s.CompanyId = p.CompanyId AND s.ProductId = p.Id), 0) <= p.ReorderLevel",
+                new { companyId })
+            : 0;
+
         // T084 valuation cost basis reused for the dashboard value.
         var valuation = await GetValuationAsync(companyId, null, 1, 1);
         return new InventoryDashboardDto
@@ -123,7 +133,7 @@ public class InventoryRepository : TenantRepositoryBase, IInventoryRepository
             StockValue = valuation.TotalValue,
             ProductsWithStock = Convert.ToInt32(d["ProductsWithStock"]),
             OutOfStockCount = Convert.ToInt32(d["OutOfStockCount"]),
-            LowStockCount = Convert.ToInt32(d["LowStockCount"]),
+            LowStockCount = lowStockCount,
             QtyInToday = Convert.ToDecimal(d["QtyInToday"]),
             QtyOutToday = Convert.ToDecimal(d["QtyOutToday"]),
             TransactionsToday = Convert.ToInt32(d["TransactionsToday"]),
