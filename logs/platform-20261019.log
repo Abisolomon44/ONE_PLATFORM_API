@@ -1,0 +1,826 @@
+2026-10-19 08:33:15.194 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:33:17.659 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:33:20.619 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 16.3899 ms
+2026-10-19 08:33:28.922 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 8099.6341 ms
+2026-10-19 08:33:29.706 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 478.2718 ms
+2026-10-19 08:33:29.859 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.5680 ms
+2026-10-19 08:33:30.403 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.4412 ms
+2026-10-19 08:33:31.469 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 843.3736 ms
+2026-10-19 08:33:34.692 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 142.6495 ms
+2026-10-19 08:33:37.216 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.5317 ms
+2026-10-19 08:33:37.220 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1284 ms
+2026-10-19 08:33:37.462 +05:30 [INF] HTTP GET /api/tenants responded 200 in 208.6115 ms
+2026-10-19 08:33:37.462 +05:30 [INF] HTTP GET /api/plans responded 200 in 221.0579 ms
+2026-10-19 08:34:17.425 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.7284 ms
+2026-10-19 08:34:17.703 +05:30 [INF] HTTP GET /api/tenants responded 200 in 108.4059 ms
+2026-10-19 08:34:20.099 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1175 ms
+2026-10-19 08:34:20.099 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1494 ms
+2026-10-19 08:34:20.435 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 278.3828 ms
+2026-10-19 08:34:22.196 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 2047.0143 ms
+2026-10-19 08:34:29.173 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1201 ms
+2026-10-19 08:34:42.991 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'ScreenStatus'.
+Invalid column name 'ScreenStatus'.
+Invalid column name 'ScreenStatus'.
+Invalid column name 'ScreenStatus'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:a6be4474-b71e-4c9d-b9cc-235d0504ace0
+Error Number:207,State:1,Class:16
+2026-10-19 08:36:57.385 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:36:57.848 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:37:00.098 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.1892 ms
+2026-10-19 08:37:00.081 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 242.6572 ms
+2026-10-19 08:37:00.634 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 232.8238 ms
+2026-10-19 08:37:06.118 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 7.6593 ms
+2026-10-19 08:37:06.118 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 7.6619 ms
+2026-10-19 08:37:06.820 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 656.9288 ms
+2026-10-19 08:37:07.044 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 886.0633 ms
+2026-10-19 08:37:15.611 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.6295 ms
+2026-10-19 08:37:20.753 +05:30 [INF] HTTP POST /api/tenants/1116/migration/sql-file/run responded 200 in 5119.8279 ms
+2026-10-19 08:37:20.762 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1414 ms
+2026-10-19 08:37:20.762 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0896 ms
+2026-10-19 08:37:20.803 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 29.8928 ms
+2026-10-19 08:37:20.860 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 90.8441 ms
+2026-10-19 08:45:20.825 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:45:21.502 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:45:23.526 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 154.8974 ms
+2026-10-19 08:45:23.536 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 7.2639 ms
+2026-10-19 08:45:23.999 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 188.2227 ms
+2026-10-19 08:45:32.276 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.5914 ms
+2026-10-19 08:45:35.422 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3133.7894 ms
+2026-10-19 08:45:37.030 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2297 ms
+2026-10-19 08:45:37.031 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.3315 ms
+2026-10-19 08:45:37.264 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 224.2914 ms
+2026-10-19 08:45:37.459 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 419.3162 ms
+2026-10-19 08:45:42.951 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1067 ms
+2026-10-19 08:45:49.397 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:29facff7-6fae-47d2-b202-082ba76f5c25
+Error Number:2627,State:1,Class:14
+2026-10-19 08:47:06.619 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:47:07.022 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:47:08.565 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 9.3523 ms
+2026-10-19 08:47:08.664 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 241.9182 ms
+2026-10-19 08:47:08.716 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 8.5865 ms
+2026-10-19 08:47:09.308 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 166.5684 ms
+2026-10-19 08:47:09.668 +05:30 [INF] HTTP GET /api/tenants responded 200 in 950.3648 ms
+2026-10-19 08:47:10.999 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2938 ms
+2026-10-19 08:47:11.003 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1942 ms
+2026-10-19 08:47:11.272 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 256.4020 ms
+2026-10-19 08:47:11.427 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 411.5456 ms
+2026-10-19 08:47:20.903 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1277 ms
+2026-10-19 08:47:25.948 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:66b9bcb4-7393-4fdd-bb71-aec6bf578e44
+Error Number:2627,State:1,Class:14
+2026-10-19 08:47:45.121 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:47:45.341 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:47:46.462 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 113.1902 ms
+2026-10-19 08:47:46.471 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.0306 ms
+2026-10-19 08:47:46.886 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 272.0407 ms
+2026-10-19 08:47:54.515 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 5.8612 ms
+2026-10-19 08:47:55.188 +05:30 [INF] HTTP GET /api/tenants responded 200 in 655.7452 ms
+2026-10-19 08:47:56.783 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1901 ms
+2026-10-19 08:47:56.783 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.3069 ms
+2026-10-19 08:47:56.966 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 165.5953 ms
+2026-10-19 08:47:57.162 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 362.1508 ms
+2026-10-19 08:48:02.843 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1885 ms
+2026-10-19 08:48:07.798 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:0781eeed-1abc-4c31-8e74-9a670a8a2881
+Error Number:2627,State:1,Class:14
+2026-10-19 08:48:51.363 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:48:51.648 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:48:52.559 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 12.6779 ms
+2026-10-19 08:48:53.237 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 224.9000 ms
+2026-10-19 08:48:53.259 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.6618 ms
+2026-10-19 08:48:53.855 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 185.9785 ms
+2026-10-19 08:48:54.138 +05:30 [INF] HTTP GET /api/tenants responded 200 in 1507.3599 ms
+2026-10-19 08:48:57.244 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2685 ms
+2026-10-19 08:48:57.248 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1675 ms
+2026-10-19 08:48:57.502 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 240.1413 ms
+2026-10-19 08:48:57.706 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 450.1149 ms
+2026-10-19 08:49:03.450 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1619 ms
+2026-10-19 08:49:08.507 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:7bed83f0-f2d7-49c9-bc7c-037e01f01ea1
+Error Number:2627,State:1,Class:14
+2026-10-19 08:49:33.125 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0973 ms
+2026-10-19 08:49:33.157 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 29706.7789 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-19 08:49:33.393 +05:30 [WRN] Domain error 500: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+2026-10-19 08:49:33.396 +05:30 [INF] HTTP GET /api/tenants responded 401 in 232.1071 ms
+2026-10-19 08:49:33.408 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.3530 ms
+2026-10-19 08:49:33.539 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 122.7968 ms
+2026-10-19 08:49:33.588 +05:30 [INF] HTTP GET /api/tenants responded 200 in 40.2394 ms
+2026-10-19 08:49:36.520 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.5428 ms
+2026-10-19 08:49:36.521 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0985 ms
+2026-10-19 08:49:36.562 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 31.9543 ms
+2026-10-19 08:49:36.706 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 176.7960 ms
+2026-10-19 08:49:41.758 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.2382 ms
+2026-10-19 08:49:46.396 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:7bed83f0-f2d7-49c9-bc7c-037e01f01ea1
+Error Number:2627,State:1,Class:14
+2026-10-19 08:51:15.898 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:51:16.550 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:51:18.405 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 276.1381 ms
+2026-10-19 08:51:18.519 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 4.6332 ms
+2026-10-19 08:51:19.477 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 102.1793 ms
+2026-10-19 08:51:20.527 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 14.2874 ms
+2026-10-19 08:51:23.741 +05:30 [INF] HTTP GET /api/tenants responded 200 in 3118.3078 ms
+2026-10-19 08:51:27.154 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2341 ms
+2026-10-19 08:51:27.157 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1580 ms
+2026-10-19 08:51:27.380 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 201.7643 ms
+2026-10-19 08:51:27.570 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 393.6199 ms
+2026-10-19 08:51:32.761 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1166 ms
+2026-10-19 08:51:37.694 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:35029548-2f35-46a6-a68d-a8cc67eeb6c2
+Error Number:2627,State:1,Class:14
+2026-10-19 08:53:10.166 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 08:53:10.450 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 08:53:12.037 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 346.4145 ms
+2026-10-19 08:53:12.386 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 9.5849 ms
+2026-10-19 08:53:12.219 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.5669 ms
+2026-10-19 08:53:13.002 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 153.1194 ms
+2026-10-19 08:53:13.361 +05:30 [INF] HTTP GET /api/tenants responded 200 in 699.2527 ms
+2026-10-19 08:53:15.417 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.3406 ms
+2026-10-19 08:53:15.419 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1189 ms
+2026-10-19 08:53:15.586 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 155.8369 ms
+2026-10-19 08:53:16.475 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 1051.9368 ms
+2026-10-19 08:53:22.577 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1277 ms
+2026-10-19 08:53:26.547 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:4e6df340-2c0b-4828-b495-c9bb701281a5
+Error Number:2627,State:1,Class:14
+2026-10-19 08:53:30.494 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 7912.8781 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-19 08:53:30.676 +05:30 [WRN] Domain error 500: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (10, COUNTER_ASSIGN_MASTER).
+2026-10-19 08:53:30.691 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1697 ms
+2026-10-19 08:53:30.694 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1094 ms
+2026-10-19 08:53:30.727 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 26.6629 ms
+2026-10-19 08:53:30.807 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 108.8256 ms
+2026-10-19 08:53:34.342 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1043 ms
+2026-10-19 08:53:34.348 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0897 ms
+2026-10-19 08:53:34.414 +05:30 [INF] HTTP GET /api/tenants responded 200 in 40.8846 ms
+2026-10-19 08:53:34.450 +05:30 [INF] HTTP GET /api/plans responded 200 in 86.8971 ms
+2026-10-19 08:53:38.127 +05:30 [INF] HTTP OPTIONS /api/tenants/1116 responded 204 in 0.3149 ms
+2026-10-19 08:53:41.296 +05:30 [WRN] Dropped tenant database ERPKUMAR (cleanup after failed provisioning)
+2026-10-19 08:53:41.322 +05:30 [INF] HTTP DELETE /api/tenants/1116 responded 200 in 3173.3245 ms
+2026-10-19 08:53:41.328 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1564 ms
+2026-10-19 08:53:41.360 +05:30 [INF] HTTP GET /api/tenants responded 200 in 28.0695 ms
+2026-10-19 08:54:55.746 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4845 ms
+2026-10-19 08:54:56.921 +05:30 [INF] Created tenant database ERPRAJ
+2026-10-19 08:55:03.199 +05:30 [INF] Provisioned tenant schema and seed data for ERPRAJ
+2026-10-19 08:55:03.235 +05:30 [INF] HTTP POST /api/tenants responded 200 in 7473.7877 ms
+2026-10-19 08:55:03.247 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0980 ms
+2026-10-19 08:55:03.295 +05:30 [INF] HTTP GET /api/tenants responded 200 in 42.2104 ms
+2026-10-19 08:55:24.283 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1188 ms
+2026-10-19 08:55:24.376 +05:30 [INF] HTTP GET /api/tenants responded 200 in 62.1710 ms
+2026-10-19 08:55:26.726 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 9.2942 ms
+2026-10-19 08:55:26.726 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.0662 ms
+2026-10-19 08:55:26.794 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 58.9064 ms
+2026-10-19 08:55:26.922 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 152.7544 ms
+2026-10-19 08:55:31.372 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/run responded 204 in 0.0812 ms
+2026-10-19 08:55:31.589 +05:30 [INF] Applied migration ERP-002-REORDER-LEVEL (v2) to tenant 1117.
+2026-10-19 08:55:31.684 +05:30 [INF] Applied migration ERP-003-INVENTORY-DOCUMENTS (v3) to tenant 1117.
+2026-10-19 08:55:31.760 +05:30 [INF] Applied migration ERP-004-PAYMENT-MASTER-CODES (v4) to tenant 1117.
+2026-10-19 08:55:31.891 +05:30 [INF] Applied migration ERP-005-BATCH-A-PRODUCT-FOUNDATION (v5) to tenant 1117.
+2026-10-19 08:55:31.906 +05:30 [INF] Applied migration ERP-006-BATCH-B-CUSTOMER-PRICING-LOYALTY (v6) to tenant 1117.
+2026-10-19 08:55:31.978 +05:30 [INF] Applied migration ERP-007-COMPANY-ROWVERSION-CONCURRENCY (v7) to tenant 1117.
+2026-10-19 08:55:32.083 +05:30 [INF] Applied migration ERP-008-PURCHASE-WORKFLOW (v8) to tenant 1117.
+2026-10-19 08:55:32.160 +05:30 [INF] Applied migration ERP-009-ATOMIC-IDEMPOTENCY (v9) to tenant 1117.
+2026-10-19 08:55:32.220 +05:30 [INF] Applied migration ERP-010-STOCK-POSTING-IDENTITY (v10) to tenant 1117.
+2026-10-19 08:55:32.261 +05:30 [INF] HTTP POST /api/tenants/1117/migration/run responded 200 in 885.0199 ms
+2026-10-19 08:55:32.270 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 0.1002 ms
+2026-10-19 08:55:32.270 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.1110 ms
+2026-10-19 08:55:32.293 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 16.6626 ms
+2026-10-19 08:55:32.378 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 99.4508 ms
+2026-10-19 08:55:49.867 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/sql-file/run responded 204 in 0.2079 ms
+2026-10-19 08:55:50.054 +05:30 [INF] HTTP POST /api/tenants/1117/migration/sql-file/run responded 200 in 181.7095 ms
+2026-10-19 08:55:50.059 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.0642 ms
+2026-10-19 08:55:50.059 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 0.0176 ms
+2026-10-19 08:55:50.073 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 5.6352 ms
+2026-10-19 08:55:50.118 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 52.6969 ms
+2026-10-19 08:56:01.266 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/sql-file/run responded 204 in 0.0602 ms
+2026-10-19 08:56:01.620 +05:30 [INF] HTTP POST /api/tenants/1117/migration/sql-file/run responded 200 in 349.4256 ms
+2026-10-19 08:56:01.626 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.0618 ms
+2026-10-19 08:56:01.627 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 0.0271 ms
+2026-10-19 08:56:01.649 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 14.9670 ms
+2026-10-19 08:56:01.734 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 101.3505 ms
+2026-10-19 08:56:06.317 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/sql-file/run responded 204 in 0.0659 ms
+2026-10-19 08:56:06.587 +05:30 [INF] HTTP POST /api/tenants/1117/migration/sql-file/run responded 200 in 265.5146 ms
+2026-10-19 08:56:06.599 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 6.3958 ms
+2026-10-19 08:56:06.613 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 20.2423 ms
+2026-10-19 09:01:47.607 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0706 ms
+2026-10-19 09:01:47.617 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0726 ms
+2026-10-19 09:01:47.672 +05:30 [INF] HTTP GET /api/plans responded 200 in 50.0100 ms
+2026-10-19 09:01:47.695 +05:30 [INF] HTTP GET /api/tenants responded 200 in 57.9791 ms
+2026-10-19 19:31:59.213 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0871 ms
+2026-10-19 19:31:59.230 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0639 ms
+2026-10-19 19:31:59.279 +05:30 [INF] HTTP GET /api/plans responded 401 in 18.3619 ms
+2026-10-19 19:31:59.280 +05:30 [INF] HTTP GET /api/tenants responded 401 in 23.1827 ms
+2026-10-19 19:31:59.363 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0524 ms
+2026-10-19 19:31:59.419 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1140 ms
+2026-10-19 19:31:59.633 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 205.4179 ms
+2026-10-19 19:31:59.633 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 208.8063 ms
+2026-10-19 19:31:59.671 +05:30 [INF] HTTP GET /api/plans responded 200 in 19.0320 ms
+2026-10-19 19:31:59.691 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.0373 ms
+2026-10-19 19:34:07.664 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1385 ms
+2026-10-19 19:34:07.763 +05:30 [INF] HTTP GET /api/tenants responded 200 in 54.9847 ms
+2026-10-19 19:34:09.883 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.0372 ms
+2026-10-19 19:34:09.884 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 0.0525 ms
+2026-10-19 19:34:09.958 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 42.9201 ms
+2026-10-19 19:34:10.119 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 214.5656 ms
+2026-10-19 19:34:24.279 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/sql-file/run responded 204 in 0.0658 ms
+2026-10-19 19:34:28.890 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1117.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:771918de-5b1b-45ad-bf19-b844fa4bb955
+Error Number:2627,State:1,Class:14
+2026-10-19 19:34:34.197 +05:30 [ERR] HTTP POST /api/tenants/1117/migration/sql-file/run responded 500 in 9912.1462 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-19 19:34:34.491 +05:30 [WRN] Domain error 500: SQL file 'erp_full.sql' failed: SQL error 2627: Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+2026-10-19 19:34:34.502 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration-status responded 204 in 0.0486 ms
+2026-10-19 19:34:34.503 +05:30 [INF] HTTP OPTIONS /api/tenants/1117/migration/history responded 204 in 0.0393 ms
+2026-10-19 19:34:34.532 +05:30 [INF] HTTP GET /api/tenants/1117/migration/history responded 200 in 20.7019 ms
+2026-10-19 19:34:34.594 +05:30 [INF] HTTP GET /api/tenants/1117/migration-status responded 200 in 84.8984 ms
+2026-10-19 19:36:10.913 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.0548 ms
+2026-10-19 19:36:11.190 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 255.8457 ms
+2026-10-19 19:36:14.091 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0396 ms
+2026-10-19 19:36:14.135 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0692 ms
+2026-10-19 19:36:14.097 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0371 ms
+2026-10-19 19:36:14.191 +05:30 [INF] HTTP GET /api/plans responded 200 in 18.0661 ms
+2026-10-19 19:36:14.206 +05:30 [INF] HTTP GET /api/tenants responded 200 in 49.4435 ms
+2026-10-19 19:36:14.248 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 82.2583 ms
+2026-10-19 19:36:16.473 +05:30 [INF] HTTP GET /api/plans responded 200 in 37.7365 ms
+2026-10-19 19:36:16.478 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.0474 ms
+2026-10-19 19:36:16.520 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 79.8248 ms
+2026-10-19 19:36:19.487 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 1.7859 ms
+2026-10-19 19:36:19.490 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0478 ms
+2026-10-19 19:36:19.555 +05:30 [INF] HTTP GET /api/plans responded 200 in 36.6914 ms
+2026-10-19 19:36:19.584 +05:30 [INF] HTTP GET /api/tenants responded 200 in 55.7451 ms
+2026-10-19 19:36:23.277 +05:30 [INF] HTTP OPTIONS /api/tenants/1117 responded 204 in 0.0500 ms
+2026-10-19 19:36:26.542 +05:30 [WRN] Dropped tenant database ERPRAJ (cleanup after failed provisioning)
+2026-10-19 19:36:26.583 +05:30 [INF] HTTP DELETE /api/tenants/1117 responded 200 in 3297.3890 ms
+2026-10-19 19:36:26.602 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0371 ms
+2026-10-19 19:36:26.633 +05:30 [INF] HTTP GET /api/tenants responded 200 in 25.3687 ms
+2026-10-19 19:37:23.046 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0851 ms
+2026-10-19 19:37:24.124 +05:30 [INF] Created tenant database JIOMART
+2026-10-19 19:37:32.563 +05:30 [INF] Provisioned tenant schema and seed data for JIOMART
+2026-10-19 19:37:32.603 +05:30 [INF] HTTP POST /api/tenants responded 200 in 9538.6811 ms
+2026-10-19 19:37:32.611 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0432 ms
+2026-10-19 19:37:32.655 +05:30 [INF] HTTP GET /api/tenants responded 200 in 35.4103 ms
+2026-10-19 19:39:38.798 +05:30 [INF] HTTP OPTIONS /api/tenants/1118 responded 204 in 0.0600 ms
+2026-10-19 19:39:41.990 +05:30 [WRN] Dropped tenant database JIOMART (cleanup after failed provisioning)
+2026-10-19 19:39:42.010 +05:30 [INF] HTTP DELETE /api/tenants/1118 responded 200 in 3200.6795 ms
+2026-10-19 19:39:42.022 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0856 ms
+2026-10-19 19:39:42.070 +05:30 [INF] HTTP GET /api/tenants responded 200 in 40.0984 ms
+2026-10-19 19:43:45.818 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 19:43:46.452 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 19:43:49.556 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 330.5875 ms
+2026-10-19 19:43:49.652 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.6875 ms
+2026-10-19 19:43:50.118 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 124.3093 ms
+2026-10-19 19:43:51.721 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 10.7247 ms
+2026-10-19 19:43:51.728 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.5069 ms
+2026-10-19 19:43:54.747 +05:30 [INF] HTTP GET /api/tenants responded 200 in 2875.6268 ms
+2026-10-19 19:43:54.762 +05:30 [INF] HTTP GET /api/plans responded 200 in 2918.0703 ms
+2026-10-19 19:45:12.634 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.3473 ms
+2026-10-19 19:45:15.041 +05:30 [INF] Created tenant database JIOMART
+2026-10-19 19:45:22.794 +05:30 [INF] Provisioned tenant schema and seed data for JIOMART
+2026-10-19 19:45:22.901 +05:30 [INF] HTTP POST /api/tenants responded 200 in 10250.0147 ms
+2026-10-19 19:45:22.910 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0930 ms
+2026-10-19 19:45:22.986 +05:30 [INF] HTTP GET /api/tenants responded 200 in 67.6315 ms
+2026-10-19 19:45:26.336 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1403 ms
+2026-10-19 19:45:26.443 +05:30 [INF] HTTP GET /api/tenants responded 200 in 77.9496 ms
+2026-10-19 19:45:28.224 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0918 ms
+2026-10-19 19:45:28.282 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0750 ms
+2026-10-19 19:45:28.392 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 100.9373 ms
+2026-10-19 19:45:28.653 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 370.8578 ms
+2026-10-19 19:45:32.433 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/run responded 204 in 0.0923 ms
+2026-10-19 19:45:32.822 +05:30 [INF] Applied migration ERP-002-REORDER-LEVEL (v2) to tenant 1119.
+2026-10-19 19:45:32.959 +05:30 [INF] Applied migration ERP-003-INVENTORY-DOCUMENTS (v3) to tenant 1119.
+2026-10-19 19:45:33.178 +05:30 [INF] Applied migration ERP-004-PAYMENT-MASTER-CODES (v4) to tenant 1119.
+2026-10-19 19:45:33.313 +05:30 [INF] Applied migration ERP-005-BATCH-A-PRODUCT-FOUNDATION (v5) to tenant 1119.
+2026-10-19 19:45:33.351 +05:30 [INF] Applied migration ERP-006-BATCH-B-CUSTOMER-PRICING-LOYALTY (v6) to tenant 1119.
+2026-10-19 19:45:33.494 +05:30 [INF] Applied migration ERP-007-COMPANY-ROWVERSION-CONCURRENCY (v7) to tenant 1119.
+2026-10-19 19:45:33.640 +05:30 [INF] Applied migration ERP-008-PURCHASE-WORKFLOW (v8) to tenant 1119.
+2026-10-19 19:45:33.785 +05:30 [INF] Applied migration ERP-009-ATOMIC-IDEMPOTENCY (v9) to tenant 1119.
+2026-10-19 19:45:33.880 +05:30 [INF] Applied migration ERP-010-STOCK-POSTING-IDENTITY (v10) to tenant 1119.
+2026-10-19 19:45:33.933 +05:30 [INF] HTTP POST /api/tenants/1119/migration/run responded 200 in 1495.7431 ms
+2026-10-19 19:45:33.940 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0869 ms
+2026-10-19 19:45:33.940 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0767 ms
+2026-10-19 19:45:33.984 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 32.7205 ms
+2026-10-19 19:45:34.061 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 113.6261 ms
+2026-10-19 19:45:40.469 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 1.2916 ms
+2026-10-19 19:45:40.885 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 408.2829 ms
+2026-10-19 19:45:40.894 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0904 ms
+2026-10-19 19:45:40.894 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1001 ms
+2026-10-19 19:45:40.928 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 22.5103 ms
+2026-10-19 19:45:41.046 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 143.9805 ms
+2026-10-19 19:45:49.902 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.1236 ms
+2026-10-19 19:45:50.635 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 726.9526 ms
+2026-10-19 19:45:50.651 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.1082 ms
+2026-10-19 19:45:50.651 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1442 ms
+2026-10-19 19:45:50.742 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 26.1410 ms
+2026-10-19 19:45:50.838 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 163.0550 ms
+2026-10-19 19:45:53.685 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 198.9487 ms
+2026-10-19 19:45:53.735 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 35.2014 ms
+2026-10-19 19:45:53.763 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 63.4638 ms
+2026-10-19 19:45:59.337 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.2551 ms
+2026-10-19 19:45:59.733 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 388.4837 ms
+2026-10-19 19:45:59.743 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.2104 ms
+2026-10-19 19:45:59.744 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0688 ms
+2026-10-19 19:45:59.764 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 8.4324 ms
+2026-10-19 19:45:59.791 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 35.1303 ms
+2026-10-19 19:46:12.783 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.7516 ms
+2026-10-19 19:46:41.711 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 28899.8074 ms
+2026-10-19 19:46:41.721 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0658 ms
+2026-10-19 19:46:41.722 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.2044 ms
+2026-10-19 19:46:41.815 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 70.5489 ms
+2026-10-19 19:46:41.934 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 193.5364 ms
+2026-10-19 19:46:52.961 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0766 ms
+2026-10-19 19:46:52.969 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.0710 ms
+2026-10-19 19:46:52.979 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.0890 ms
+2026-10-19 19:46:53.041 +05:30 [INF] HTTP GET /api/plans responded 200 in 18.7221 ms
+2026-10-19 19:46:53.054 +05:30 [INF] HTTP GET /api/tenants responded 200 in 55.9985 ms
+2026-10-19 19:46:53.111 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 82.3567 ms
+2026-10-19 20:29:20.070 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 20:29:20.722 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 20:29:23.993 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 284.8284 ms
+2026-10-19 20:29:24.135 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.4392 ms
+2026-10-19 20:29:24.888 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 133.7043 ms
+2026-10-19 21:48:01.261 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 55.2108 ms
+2026-10-19 21:48:01.876 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 570.3615 ms
+2026-10-19 21:48:01.919 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2083 ms
+2026-10-19 21:48:03.136 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1199.7768 ms
+2026-10-19 21:48:03.256 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1434 ms
+2026-10-19 21:48:03.291 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1113 ms
+2026-10-19 21:48:03.724 +05:30 [INF] HTTP GET /api/plans responded 200 in 270.8337 ms
+2026-10-19 21:48:03.739 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 590.2325 ms
+2026-10-19 21:48:03.748 +05:30 [INF] HTTP GET /api/tenants responded 200 in 280.5350 ms
+2026-10-19 21:48:04.572 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1203 ms
+2026-10-19 21:48:04.575 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1140 ms
+2026-10-19 21:48:04.616 +05:30 [INF] HTTP GET /api/plans responded 200 in 35.3436 ms
+2026-10-19 21:48:04.695 +05:30 [INF] HTTP GET /api/tenants responded 200 in 69.7819 ms
+2026-10-19 21:48:04.833 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 179.8966 ms
+2026-10-19 21:48:09.290 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1177 ms
+2026-10-19 21:48:09.353 +05:30 [INF] HTTP GET /api/plans responded 200 in 45.2092 ms
+2026-10-19 21:48:52.697 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1682 ms
+2026-10-19 21:48:52.750 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.3792 ms
+2026-10-19 21:48:52.787 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.3672 ms
+2026-10-19 21:48:52.867 +05:30 [INF] HTTP GET /api/plans responded 200 in 36.3974 ms
+2026-10-19 21:48:52.888 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 50.3498 ms
+2026-10-19 21:48:52.888 +05:30 [INF] HTTP GET /api/tenants responded 200 in 74.2397 ms
+2026-10-19 21:48:53.636 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.7611 ms
+2026-10-19 21:48:53.681 +05:30 [INF] HTTP GET /api/tenants responded 200 in 9.6498 ms
+2026-10-19 21:48:55.073 +05:30 [INF] HTTP GET /api/plans responded 200 in 31.2059 ms
+2026-10-19 21:48:55.073 +05:30 [INF] HTTP GET /api/tenants responded 200 in 35.2377 ms
+2026-10-19 21:48:55.073 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 26.4686 ms
+2026-10-19 22:02:29.264 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1203 ms
+2026-10-19 22:02:29.426 +05:30 [INF] HTTP GET /api/tenants responded 200 in 148.3444 ms
+2026-10-19 22:02:31.272 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.1695 ms
+2026-10-19 22:02:31.310 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1765 ms
+2026-10-19 22:02:31.660 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 329.9782 ms
+2026-10-19 22:02:31.951 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 628.7878 ms
+2026-10-19 22:11:34.089 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 28.7769 ms
+2026-10-19 22:11:34.540 +05:30 [INF] HTTP GET /api/tenants responded 401 in 1.9404 ms
+2026-10-19 22:11:34.588 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1102 ms
+2026-10-19 22:11:34.769 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 169.3745 ms
+2026-10-19 22:11:34.883 +05:30 [INF] HTTP GET /api/tenants responded 200 in 104.2821 ms
+2026-10-19 22:11:36.812 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0733 ms
+2026-10-19 22:11:36.815 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0738 ms
+2026-10-19 22:11:36.929 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 92.6188 ms
+2026-10-19 22:11:37.248 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 421.2994 ms
+2026-10-19 22:14:47.450 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 22:14:48.724 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 22:14:51.803 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 392.6365 ms
+2026-10-19 22:14:51.892 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 23.7844 ms
+2026-10-19 22:14:52.618 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 160.3531 ms
+2026-10-19 22:15:01.377 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 9.2910 ms
+2026-10-19 22:15:02.651 +05:30 [INF] HTTP GET /api/tenants responded 200 in 1228.4650 ms
+2026-10-19 22:15:03.868 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.2488 ms
+2026-10-19 22:15:03.870 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1213 ms
+2026-10-19 22:15:04.186 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 297.2768 ms
+2026-10-19 22:15:04.404 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 520.4077 ms
+2026-10-19 22:15:10.802 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.1696 ms
+2026-10-19 22:15:48.092 +05:30 [ERR] SQL file erp_full.sql failed for tenant 1119.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (59, SERVICE-CATEGORIES).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (7, HSN-SACS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (14, PURCHASE_REPORTS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (41, PURCHASE_SETTINGS).
+Violation of UNIQUE KEY constraint 'UQ_Screens_SubModule_Code'. Cannot insert duplicate key in object 'dbo.Screens'. The duplicate key value is (12, BARCODES).
+ERP full schema complete: product masters, taxes, import logs.
+ERP full schema complete: sales module added.
+ERP module configuration seed complete.
+Universal Entity layer added.
+Invoice Template Design module added.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+ERP-007 applied: dbo.Companies.ConcurrencyVersion (rowversion) added if missing.
+ERP-008 applied: purchase settings/approval/PO/GRN/sequence structures created if missing.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:5020930c-9f6c-4153-8f2f-430a1651ed58
+Error Number:2627,State:1,Class:14
+2026-10-19 22:24:08.240 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 22:24:08.592 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 22:24:10.487 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 13.2290 ms
+2026-10-19 22:24:10.904 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 184.4502 ms
+2026-10-19 22:24:10.926 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.8991 ms
+2026-10-19 22:24:11.457 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 213.1234 ms
+2026-10-19 22:24:11.543 +05:30 [INF] HTTP GET /api/tenants responded 200 in 835.4852 ms
+2026-10-19 22:24:13.421 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.2862 ms
+2026-10-19 22:24:13.424 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1254 ms
+2026-10-19 22:24:13.593 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 158.8474 ms
+2026-10-19 22:24:13.737 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 306.8607 ms
+2026-10-19 22:24:20.067 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.3954 ms
+2026-10-19 22:24:26.045 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 5947.4841 ms
+2026-10-19 22:24:26.055 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.0994 ms
+2026-10-19 22:24:26.055 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0842 ms
+2026-10-19 22:24:26.092 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 28.8824 ms
+2026-10-19 22:24:26.189 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 128.2486 ms
+2026-10-19 22:29:38.817 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.5832 ms
+2026-10-19 22:29:38.950 +05:30 [INF] HTTP GET /api/tenants responded 401 in 27.9594 ms
+2026-10-19 22:29:39.010 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0921 ms
+2026-10-19 22:29:39.615 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 234.6538 ms
+2026-10-19 22:29:39.799 +05:30 [INF] HTTP GET /api/tenants responded 200 in 107.5826 ms
+2026-10-19 22:29:41.019 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.7995 ms
+2026-10-19 22:29:41.020 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1074 ms
+2026-10-19 22:29:41.056 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 22.3031 ms
+2026-10-19 22:29:41.146 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 116.7480 ms
+2026-10-19 22:33:21.144 +05:30 [INF] Tenant migration catalog is ready
+2026-10-19 22:33:21.545 +05:30 [INF] ONE ERP Platform API starting
+2026-10-19 22:33:23.948 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 160.0925 ms
+2026-10-19 22:33:23.994 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 42.8811 ms
+2026-10-19 22:33:24.322 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 150.9010 ms
+2026-10-19 22:33:33.238 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 11.0605 ms
+2026-10-19 22:33:34.183 +05:30 [INF] HTTP GET /api/tenants responded 200 in 915.9529 ms
+2026-10-19 22:33:35.119 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1020 ms
+2026-10-19 22:33:35.119 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.1391 ms
+2026-10-19 22:33:35.333 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 199.4316 ms
+2026-10-19 22:33:35.580 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 445.8378 ms
+2026-10-19 22:33:39.119 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.3035 ms
+2026-10-19 22:33:45.798 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 6666.9063 ms
+2026-10-19 22:33:45.809 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.1023 ms
+2026-10-19 22:33:45.809 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0874 ms
+2026-10-19 22:33:45.839 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 21.5821 ms
+2026-10-19 22:33:45.926 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 111.0032 ms
+2026-10-19 22:34:18.301 +05:30 [INF] HTTP OPTIONS /api/db-health/summary responded 204 in 0.2148 ms
+2026-10-19 22:34:18.302 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants responded 204 in 0.2144 ms
+2026-10-19 22:34:19.744 +05:30 [WRN] Health check failed for tenant 1119 database JIOMART
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'CompanyId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Services.TenantDatabaseHealthService.GetAllHealthAsync(CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantDatabaseHealthService.cs:line 205
+   at ONEERP.Platform.API.Services.TenantDatabaseHealthService.GetAllHealthAsync(CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantDatabaseHealthService.cs:line 238
+ClientConnectionId:2e231cb2-9547-4b71-b513-c183be5aa688
+Error Number:207,State:1,Class:16
+2026-10-19 22:34:19.744 +05:30 [WRN] Health check failed for tenant 1119 database JIOMART
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'CompanyId'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at ONEERP.Platform.API.Services.TenantDatabaseHealthService.GetAllHealthAsync(CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantDatabaseHealthService.cs:line 205
+   at ONEERP.Platform.API.Services.TenantDatabaseHealthService.GetAllHealthAsync(CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantDatabaseHealthService.cs:line 238
+ClientConnectionId:fe721545-0498-4eb5-a6fc-9019505495dc
+Error Number:207,State:1,Class:16
+2026-10-19 22:34:19.933 +05:30 [INF] HTTP GET /api/db-health/tenants responded 200 in 1309.7910 ms
+2026-10-19 22:34:19.940 +05:30 [INF] HTTP GET /api/db-health/summary responded 200 in 1387.8371 ms
+2026-10-19 22:34:23.020 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2234 ms
+2026-10-19 22:34:23.111 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.5563 ms
+2026-10-19 22:35:24.116 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.4773 ms
+2026-10-19 22:35:24.118 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.7318 ms
+2026-10-19 22:35:24.209 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 69.6090 ms
+2026-10-19 22:35:24.274 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 122.2649 ms

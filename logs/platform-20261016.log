@@ -1,0 +1,27 @@
+2026-10-16 00:04:08.182 +05:30 [INF] Tenant migration catalog is ready
+2026-10-16 00:04:08.718 +05:30 [INF] ONE ERP Platform API starting
+2026-10-16 00:04:10.823 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.2934 ms
+2026-10-16 00:04:10.820 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 152.1151 ms
+2026-10-16 00:04:11.218 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 173.8960 ms
+2026-10-16 00:04:14.473 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.2637 ms
+2026-10-16 00:04:15.429 +05:30 [INF] HTTP GET /api/tenants responded 200 in 922.0586 ms
+2026-10-16 00:04:17.673 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1002 ms
+2026-10-16 00:04:17.673 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2669 ms
+2026-10-16 00:04:17.873 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 184.5562 ms
+2026-10-16 00:04:18.108 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 422.0949 ms
+2026-10-16 00:04:30.652 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/sql-file/run responded 204 in 0.1407 ms
+2026-10-16 00:04:31.466 +05:30 [INF] HTTP POST /api/tenants/1115/migration/sql-file/run responded 200 in 805.5822 ms
+2026-10-16 00:04:31.476 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0415 ms
+2026-10-16 00:04:31.476 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1079 ms
+2026-10-16 00:04:31.507 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 22.4230 ms
+2026-10-16 00:04:31.776 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 288.9244 ms
+2026-10-16 00:45:03.551 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 10.6301 ms
+2026-10-16 00:45:03.867 +05:30 [INF] HTTP GET /api/tenants responded 401 in 202.0270 ms
+2026-10-16 00:45:03.885 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.5153 ms
+2026-10-16 00:45:04.576 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 618.3377 ms
+2026-10-16 00:45:04.654 +05:30 [INF] HTTP GET /api/tenants responded 200 in 66.9102 ms
+2026-10-16 09:33:43.491 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 90.6116 ms
+2026-10-16 09:33:44.286 +05:30 [INF] HTTP GET /api/tenants responded 401 in 328.7687 ms
+2026-10-16 09:33:44.348 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.5016 ms
+2026-10-16 09:33:45.517 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1134.0426 ms
+2026-10-16 09:33:45.662 +05:30 [INF] HTTP GET /api/tenants responded 200 in 131.2310 ms

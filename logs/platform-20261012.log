@@ -1,0 +1,358 @@
+2026-10-12 00:09:37.035 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.3378 ms
+2026-10-12 00:09:37.035 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.5987 ms
+2026-10-12 00:09:37.422 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 267.9701 ms
+2026-10-12 00:09:38.086 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 932.2244 ms
+2026-10-12 00:16:14.649 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 59.3062 ms
+2026-10-12 00:16:14.773 +05:30 [INF] HTTP GET /api/tenants responded 401 in 8.6758 ms
+2026-10-12 00:16:14.827 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1423 ms
+2026-10-12 00:16:15.051 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 215.9689 ms
+2026-10-12 00:16:15.201 +05:30 [INF] HTTP GET /api/tenants responded 200 in 139.8158 ms
+2026-10-12 00:16:16.723 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1415 ms
+2026-10-12 00:16:16.723 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1416 ms
+2026-10-12 00:16:16.780 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 42.7491 ms
+2026-10-12 00:16:16.984 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 253.3327 ms
+2026-10-12 00:17:30.720 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 00:17:32.454 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 00:17:36.247 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 17.9905 ms
+2026-10-12 00:17:39.011 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 615.2721 ms
+2026-10-12 00:17:39.094 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.4141 ms
+2026-10-12 00:17:40.637 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 160.6881 ms
+2026-10-12 00:17:40.927 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4592.7209 ms
+2026-10-12 00:17:42.955 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.3090 ms
+2026-10-12 00:17:42.964 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1761 ms
+2026-10-12 00:17:43.214 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 211.2650 ms
+2026-10-12 00:17:43.446 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 460.2912 ms
+2026-10-12 00:20:36.485 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 1.8693 ms
+2026-10-12 00:20:36.695 +05:30 [INF] HTTP GET /api/tenants responded 200 in 137.8762 ms
+2026-10-12 00:20:38.903 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.3135 ms
+2026-10-12 00:20:38.903 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0967 ms
+2026-10-12 00:20:39.061 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 132.9949 ms
+2026-10-12 00:20:39.305 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 366.7162 ms
+2026-10-12 00:21:20.775 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1409 ms
+2026-10-12 00:21:20.953 +05:30 [INF] HTTP GET /api/tenants responded 200 in 116.2260 ms
+2026-10-12 00:21:22.796 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1415 ms
+2026-10-12 00:21:22.796 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1156 ms
+2026-10-12 00:21:22.908 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 46.6799 ms
+2026-10-12 00:21:23.104 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 227.2233 ms
+2026-10-12 00:22:40.592 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2503 ms
+2026-10-12 00:22:40.840 +05:30 [INF] HTTP GET /api/tenants responded 200 in 77.2324 ms
+2026-10-12 00:22:43.182 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 2.3001 ms
+2026-10-12 00:22:43.197 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1007 ms
+2026-10-12 00:22:43.382 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 38.2096 ms
+2026-10-12 00:22:43.511 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 201.6982 ms
+2026-10-12 00:23:03.646 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 67.0188 ms
+2026-10-12 00:23:03.757 +05:30 [INF] HTTP GET /api/tenants responded 200 in 93.2665 ms
+2026-10-12 00:23:12.300 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 51.6237 ms
+2026-10-12 00:23:12.420 +05:30 [INF] HTTP GET /api/tenants responded 200 in 51.8680 ms
+2026-10-12 00:23:14.959 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.9970 ms
+2026-10-12 00:23:14.961 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2067 ms
+2026-10-12 00:23:15.123 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 89.7079 ms
+2026-10-12 00:23:15.228 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 202.0889 ms
+2026-10-12 00:23:52.707 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 00:23:53.547 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 00:23:56.742 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 271.4998 ms
+2026-10-12 00:23:56.819 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.3863 ms
+2026-10-12 00:23:57.451 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 254.3873 ms
+2026-10-12 00:24:01.412 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 10.0156 ms
+2026-10-12 00:24:03.052 +05:30 [INF] HTTP GET /api/tenants responded 200 in 1617.6852 ms
+2026-10-12 00:24:04.690 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1989 ms
+2026-10-12 00:24:04.690 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2000 ms
+2026-10-12 00:24:04.976 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 256.0610 ms
+2026-10-12 00:24:05.260 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 551.2524 ms
+2026-10-12 00:24:10.731 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-demo responded 204 in 0.1998 ms
+2026-10-12 00:24:42.042 +05:30 [ERR] HTTP POST /api/db-health/tenants/1115/seed-purchase-demo responded 500 in 31292.5472 ms
+ONEERP.Shared.Exceptions.DomainException: Purchase demo seeding failed: SQL error 121: The select list for the INSERT statement contains more items than the insert list. The number of SELECT values must match the number of INSERT columns.
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Controllers.DatabaseHealthController.SeedPurchaseDemo(Int32 tenantId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\DatabaseHealthController.cs:line 69
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-12 00:24:43.846 +05:30 [WRN] Domain error 500: Purchase demo seeding failed: SQL error 121: The select list for the INSERT statement contains more items than the insert list. The number of SELECT values must match the number of INSERT columns.
+2026-10-12 00:24:43.865 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1104 ms
+2026-10-12 00:24:43.865 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2184 ms
+2026-10-12 00:24:43.933 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 48.2331 ms
+2026-10-12 00:24:44.056 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 176.5411 ms
+2026-10-12 00:25:38.136 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 00:25:38.519 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 00:25:40.457 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 210.2179 ms
+2026-10-12 00:25:40.481 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.9786 ms
+2026-10-12 00:25:40.821 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 132.3236 ms
+2026-10-12 00:25:46.782 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.6752 ms
+2026-10-12 00:25:47.690 +05:30 [INF] HTTP GET /api/tenants responded 200 in 888.3869 ms
+2026-10-12 00:25:49.173 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.3919 ms
+2026-10-12 00:25:49.173 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.9590 ms
+2026-10-12 00:25:49.393 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 201.1259 ms
+2026-10-12 00:25:49.710 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 499.1730 ms
+2026-10-12 00:25:54.155 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-demo responded 204 in 0.2032 ms
+2026-10-12 00:26:15.555 +05:30 [ERR] HTTP POST /api/db-health/tenants/1115/seed-purchase-demo responded 500 in 21382.7984 ms
+ONEERP.Shared.Exceptions.DomainException: Purchase demo seeding failed: SQL error 121: The select list for the INSERT statement contains more items than the insert list. The number of SELECT values must match the number of INSERT columns.
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Services.PurchaseDemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\PurchaseDemoDataSeedingService.cs:line 49
+   at ONEERP.Platform.API.Controllers.DatabaseHealthController.SeedPurchaseDemo(Int32 tenantId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\DatabaseHealthController.cs:line 69
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-12 00:26:18.169 +05:30 [WRN] Domain error 500: Purchase demo seeding failed: SQL error 121: The select list for the INSERT statement contains more items than the insert list. The number of SELECT values must match the number of INSERT columns.
+2026-10-12 00:26:18.203 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1866 ms
+2026-10-12 00:26:18.204 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1532 ms
+2026-10-12 00:26:18.680 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 112.6365 ms
+2026-10-12 00:26:18.920 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 452.0873 ms
+2026-10-12 00:27:13.236 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 00:27:14.036 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 00:27:15.506 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 15.0415 ms
+2026-10-12 00:27:19.074 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 915.9451 ms
+2026-10-12 00:27:19.096 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.7751 ms
+2026-10-12 00:27:19.481 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 179.2298 ms
+2026-10-12 00:27:20.250 +05:30 [INF] HTTP GET /api/tenants responded 200 in 4674.7406 ms
+2026-10-12 00:27:25.529 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 1.0705 ms
+2026-10-12 00:27:25.530 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1782 ms
+2026-10-12 00:27:25.881 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 305.6130 ms
+2026-10-12 00:27:26.349 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 802.9975 ms
+2026-10-12 00:27:32.077 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-demo responded 204 in 0.2879 ms
+2026-10-12 00:27:32.601 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-demo responded 200 in 503.3257 ms
+2026-10-12 00:27:32.613 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.6938 ms
+2026-10-12 00:27:32.613 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1115 ms
+2026-10-12 00:27:32.665 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 40.3230 ms
+2026-10-12 00:27:32.770 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 148.9687 ms
+2026-10-12 09:10:07.251 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 13.6652 ms
+2026-10-12 09:10:07.601 +05:30 [INF] HTTP GET /api/tenants responded 401 in 207.0120 ms
+2026-10-12 09:10:07.636 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.3556 ms
+2026-10-12 09:10:08.479 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 782.0334 ms
+2026-10-12 09:10:08.534 +05:30 [INF] HTTP GET /api/tenants responded 200 in 48.5320 ms
+2026-10-12 09:10:09.690 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0981 ms
+2026-10-12 09:10:09.692 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1040 ms
+2026-10-12 09:10:09.836 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 126.4626 ms
+2026-10-12 09:10:10.010 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 300.7469 ms
+2026-10-12 09:10:16.424 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/8/run responded 204 in 0.3145 ms
+2026-10-12 09:10:17.427 +05:30 [ERR] Migration ERP-009-ATOMIC-IDEMPOTENCY (v9) failed for tenant 1115 at version 8.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'RequestHash'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 60
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 86
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 92
+   at ONEERP.Platform.API.Services.TenantMigrationService.RunCoreAsync(Int32 tenantId, Nullable`1 requestedMigrationId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationService.cs:line 378
+ClientConnectionId:c64fdb79-4631-4629-9601-436f2912dda2
+Error Number:207,State:1,Class:16
+2026-10-12 09:10:17.752 +05:30 [INF] HTTP POST /api/tenants/1115/migration/8/run responded 200 in 1305.4340 ms
+2026-10-12 09:10:17.763 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0950 ms
+2026-10-12 09:10:17.763 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0951 ms
+2026-10-12 09:10:17.827 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 48.0979 ms
+2026-10-12 09:10:17.921 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 144.0911 ms
+2026-10-12 09:11:04.165 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/8/run responded 204 in 0.3467 ms
+2026-10-12 09:11:04.577 +05:30 [ERR] Migration ERP-009-ATOMIC-IDEMPOTENCY (v9) failed for tenant 1115 at version 8.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'RequestHash'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 60
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 86
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 92
+   at ONEERP.Platform.API.Services.TenantMigrationService.RunCoreAsync(Int32 tenantId, Nullable`1 requestedMigrationId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationService.cs:line 378
+ClientConnectionId:c64fdb79-4631-4629-9601-436f2912dda2
+Error Number:207,State:1,Class:16
+2026-10-12 09:11:04.607 +05:30 [INF] HTTP POST /api/tenants/1115/migration/8/run responded 200 in 394.8099 ms
+2026-10-12 09:11:04.616 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1544 ms
+2026-10-12 09:11:04.619 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2534 ms
+2026-10-12 09:11:04.694 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 23.7388 ms
+2026-10-12 09:11:04.792 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 126.6786 ms
+2026-10-12 09:12:11.299 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 09:12:11.969 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 09:12:14.500 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 283.3135 ms
+2026-10-12 09:12:14.534 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.2343 ms
+2026-10-12 09:12:15.020 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 140.0981 ms
+2026-10-12 09:12:18.471 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.7315 ms
+2026-10-12 09:12:19.636 +05:30 [INF] HTTP GET /api/tenants responded 200 in 1046.7366 ms
+2026-10-12 09:12:20.788 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.2463 ms
+2026-10-12 09:12:20.791 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1403 ms
+2026-10-12 09:12:21.000 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 187.1359 ms
+2026-10-12 09:12:21.169 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 369.5949 ms
+2026-10-12 09:12:26.628 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/8/run responded 204 in 0.0917 ms
+2026-10-12 09:12:26.878 +05:30 [WRN] Refreshed checksum for migration ERP-009-ATOMIC-IDEMPOTENCY after a failed attempt for tenant 1115; no tenant has successfully applied it.
+2026-10-12 09:12:27.028 +05:30 [INF] Applied migration ERP-009-ATOMIC-IDEMPOTENCY (v9) to tenant 1115.
+2026-10-12 09:12:27.054 +05:30 [INF] HTTP POST /api/tenants/1115/migration/8/run responded 200 in 421.0032 ms
+2026-10-12 09:12:27.061 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0862 ms
+2026-10-12 09:12:27.061 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0876 ms
+2026-10-12 09:12:27.085 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 11.1094 ms
+2026-10-12 09:12:27.117 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 48.7390 ms
+2026-10-12 09:15:59.885 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/9/run responded 204 in 0.0959 ms
+2026-10-12 09:16:00.414 +05:30 [ERR] Migration ERP-010-STOCK-POSTING-IDENTITY (v10) failed for tenant 1115 at version 9.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SourceLineId'.
+Invalid column name 'PostingPurpose'.
+Invalid column name 'PostingGeneration'.
+Invalid column name 'PostingLeg'.
+Invalid column name 'SourceLineId'.
+Invalid column name 'PostingPurpose'.
+Invalid column name 'PostingGeneration'.
+Invalid column name 'PostingLeg'.
+Invalid column name 'SourceLineId'.
+Invalid column name 'ReversalOfStockTransactionId'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 60
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 86
+   at ONEERP.Platform.API.Services.TenantMigrationExecutor.ApplyAsync(DbConnection connection, MigrationDefinition definition, String script, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationExecutor.cs:line 92
+   at ONEERP.Platform.API.Services.TenantMigrationService.RunCoreAsync(Int32 tenantId, Nullable`1 requestedMigrationId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantMigrationService.cs:line 378
+ClientConnectionId:04584257-4830-44cb-bd41-143e34e7417e
+Error Number:207,State:1,Class:16
+2026-10-12 09:16:00.605 +05:30 [INF] HTTP POST /api/tenants/1115/migration/9/run responded 200 in 693.4914 ms
+2026-10-12 09:16:00.610 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0944 ms
+2026-10-12 09:16:00.651 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 38.0214 ms
+2026-10-12 09:16:00.687 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 27.6679 ms
+2026-10-12 09:16:00.764 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 106.5564 ms
+2026-10-12 09:21:08.754 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 09:21:09.242 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 09:21:12.063 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 424.3149 ms
+2026-10-12 09:21:12.065 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 1.8448 ms
+2026-10-12 09:21:13.840 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 181.1313 ms
+2026-10-12 09:21:24.613 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 9.8231 ms
+2026-10-12 09:21:25.510 +05:30 [INF] HTTP GET /api/tenants responded 200 in 881.7972 ms
+2026-10-12 09:21:27.293 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.2589 ms
+2026-10-12 09:21:27.293 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1143 ms
+2026-10-12 09:21:27.511 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 203.3166 ms
+2026-10-12 09:21:27.768 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 461.9434 ms
+2026-10-12 09:21:31.770 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/9/run responded 204 in 0.1087 ms
+2026-10-12 09:21:32.034 +05:30 [WRN] Refreshed checksum for migration ERP-010-STOCK-POSTING-IDENTITY after a failed attempt for tenant 1115; no tenant has successfully applied it.
+2026-10-12 09:21:32.221 +05:30 [INF] Applied migration ERP-010-STOCK-POSTING-IDENTITY (v10) to tenant 1115.
+2026-10-12 09:21:32.255 +05:30 [INF] HTTP POST /api/tenants/1115/migration/9/run responded 200 in 477.7812 ms
+2026-10-12 09:21:32.282 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 19.9433 ms
+2026-10-12 09:21:32.579 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 317.1274 ms
+2026-10-12 09:41:37.265 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1305 ms
+2026-10-12 09:41:37.297 +05:30 [INF] HTTP GET /api/tenants responded 401 in 25.0683 ms
+2026-10-12 09:41:37.307 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1044 ms
+2026-10-12 09:41:37.524 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 210.0044 ms
+2026-10-12 09:41:37.565 +05:30 [INF] HTTP GET /api/tenants responded 200 in 34.5535 ms
+2026-10-12 09:53:13.352 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 1.4690 ms
+2026-10-12 23:00:57.971 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 1.4074 ms
+2026-10-12 23:01:00.303 +05:30 [INF] HTTP GET /api/tenants responded 401 in 50.9068 ms
+2026-10-12 23:16:46.649 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 23:16:47.595 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 23:16:51.269 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 217.6777 ms
+2026-10-12 23:16:51.346 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.6506 ms
+2026-10-12 23:16:51.956 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 155.7543 ms
+2026-10-12 23:16:57.267 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 6.9765 ms
+2026-10-12 23:16:57.819 +05:30 [INF] HTTP GET /api/tenants responded 401 in 527.8526 ms
+2026-10-12 23:16:57.832 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1457 ms
+2026-10-12 23:16:58.527 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 683.3227 ms
+2026-10-12 23:16:58.857 +05:30 [INF] HTTP GET /api/tenants responded 200 in 319.1996 ms
+2026-10-12 23:16:59.411 +05:30 [INF] HTTP GET /api/tenants responded 200 in 108.8033 ms
+2026-10-12 23:17:02.221 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0999 ms
+2026-10-12 23:17:02.225 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1219 ms
+2026-10-12 23:17:02.436 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 164.1701 ms
+2026-10-12 23:17:02.629 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 367.7838 ms
+2026-10-12 23:19:50.600 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1236 ms
+2026-10-12 23:19:51.270 +05:30 [INF] HTTP GET /api/tenants responded 200 in 374.1138 ms
+2026-10-12 23:19:52.774 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 1.0105 ms
+2026-10-12 23:19:52.777 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.7008 ms
+2026-10-12 23:19:52.911 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 61.7065 ms
+2026-10-12 23:19:53.245 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 401.9160 ms
+2026-10-12 23:19:56.005 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1181 ms
+2026-10-12 23:19:56.230 +05:30 [INF] HTTP GET /api/tenants responded 200 in 73.6201 ms
+2026-10-12 23:19:58.200 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0860 ms
+2026-10-12 23:19:58.201 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0955 ms
+2026-10-12 23:19:58.243 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 27.4498 ms
+2026-10-12 23:19:58.382 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 169.7564 ms
+2026-10-12 23:20:08.817 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-demo responded 204 in 0.2973 ms
+2026-10-12 23:20:09.228 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-demo responded 200 in 394.1482 ms
+2026-10-12 23:20:09.240 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0792 ms
+2026-10-12 23:20:09.241 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0821 ms
+2026-10-12 23:20:09.279 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 28.2918 ms
+2026-10-12 23:20:09.405 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 152.2602 ms
+2026-10-12 23:23:01.367 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1519 ms
+2026-10-12 23:23:01.571 +05:30 [INF] HTTP GET /api/tenants responded 200 in 196.3084 ms
+2026-10-12 23:23:03.937 +05:30 [INF] HTTP GET /api/tenants responded 200 in 80.9380 ms
+2026-10-12 23:23:16.525 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1456 ms
+2026-10-12 23:23:16.525 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0698 ms
+2026-10-12 23:23:16.586 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 47.0545 ms
+2026-10-12 23:23:16.753 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 218.0614 ms
+2026-10-12 23:23:23.242 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-screens responded 204 in 0.1918 ms
+2026-10-12 23:23:23.255 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-screens responded 404 in 1.7589 ms
+2026-10-12 23:23:23.294 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1579 ms
+2026-10-12 23:23:23.295 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0746 ms
+2026-10-12 23:23:23.310 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 4.0666 ms
+2026-10-12 23:23:23.323 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 21.5646 ms
+2026-10-12 23:23:28.310 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-screens responded 204 in 0.4219 ms
+2026-10-12 23:23:28.319 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-screens responded 404 in 0.4922 ms
+2026-10-12 23:23:28.355 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0716 ms
+2026-10-12 23:23:28.358 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1332 ms
+2026-10-12 23:23:28.408 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 20.5076 ms
+2026-10-12 23:23:28.414 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 50.7710 ms
+2026-10-12 23:23:37.569 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-screens responded 204 in 0.1120 ms
+2026-10-12 23:23:37.945 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-screens responded 404 in 0.6778 ms
+2026-10-12 23:23:38.020 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.0857 ms
+2026-10-12 23:23:38.021 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0646 ms
+2026-10-12 23:23:38.110 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 52.9755 ms
+2026-10-12 23:23:38.457 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 407.2491 ms
+2026-10-12 23:24:09.035 +05:30 [INF] Tenant migration catalog is ready
+2026-10-12 23:24:09.550 +05:30 [INF] ONE ERP Platform API starting
+2026-10-12 23:24:11.814 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 222.7266 ms
+2026-10-12 23:24:11.882 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.1934 ms
+2026-10-12 23:24:12.444 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 202.9870 ms
+2026-10-12 23:24:58.605 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 42.4685 ms
+2026-10-12 23:24:59.527 +05:30 [INF] HTTP GET /api/tenants responded 200 in 849.3542 ms
+2026-10-12 23:25:00.836 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.9793 ms
+2026-10-12 23:25:00.871 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 29.6356 ms
+2026-10-12 23:25:01.075 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 188.0371 ms
+2026-10-12 23:25:01.448 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 557.6526 ms
+2026-10-12 23:25:07.292 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1115/seed-purchase-screens responded 204 in 0.3162 ms
+2026-10-12 23:25:07.756 +05:30 [INF] HTTP POST /api/db-health/tenants/1115/seed-purchase-screens responded 200 in 450.8494 ms
+2026-10-12 23:25:07.764 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1042 ms
+2026-10-12 23:25:07.765 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0927 ms
+2026-10-12 23:25:07.831 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 53.7939 ms
+2026-10-12 23:25:07.929 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 156.5039 ms
+2026-10-12 23:42:25.420 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 41.8676 ms
+2026-10-12 23:42:26.505 +05:30 [INF] HTTP GET /api/tenants responded 401 in 505.6096 ms
+2026-10-12 23:42:26.540 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.2140 ms
+2026-10-12 23:42:28.054 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1474.3146 ms
+2026-10-12 23:42:28.149 +05:30 [INF] HTTP GET /api/tenants responded 200 in 84.4674 ms

@@ -1,0 +1,34 @@
+2026-10-20 06:56:58.751 +05:30 [INF] Tenant migration catalog is ready
+2026-10-20 06:56:59.393 +05:30 [INF] ONE ERP Platform API starting
+2026-10-20 06:57:06.832 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 126.2057 ms
+2026-10-20 06:57:06.856 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 4.2157 ms
+2026-10-20 06:57:07.123 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 85.2146 ms
+2026-10-20 09:52:27.203 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 86.5676 ms
+2026-10-20 09:52:28.464 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.4331 ms
+2026-10-20 09:52:29.975 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 2667.6502 ms
+2026-10-20 09:52:29.975 +05:30 [INF] HTTP GET /api/tenants responded 401 in 1284.2959 ms
+2026-10-20 09:52:30.043 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1029 ms
+2026-10-20 09:52:30.044 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0616 ms
+2026-10-20 09:52:31.605 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1532.4087 ms
+2026-10-20 09:52:31.605 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 1525.5787 ms
+2026-10-20 09:52:32.247 +05:30 [INF] HTTP GET /api/tenants responded 200 in 556.4372 ms
+2026-10-20 09:52:32.722 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 1056.7616 ms
+2026-10-20 09:52:33.801 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 1.0091 ms
+2026-10-20 09:52:33.830 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1156 ms
+2026-10-20 09:52:34.813 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 317.3662 ms
+2026-10-20 09:52:35.932 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 1435.9267 ms
+2026-10-20 09:52:40.360 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/sql-file/run responded 204 in 0.1182 ms
+2026-10-20 09:52:48.448 +05:30 [INF] HTTP POST /api/tenants/1119/migration/sql-file/run responded 200 in 8083.0022 ms
+2026-10-20 09:52:48.456 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.1695 ms
+2026-10-20 09:52:48.456 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.0809 ms
+2026-10-20 09:52:48.507 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 41.5710 ms
+2026-10-20 09:52:48.600 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 138.1409 ms
+2026-10-20 14:35:12.418 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2355 ms
+2026-10-20 14:35:12.427 +05:30 [INF] HTTP GET /api/tenants responded 401 in 1.6360 ms
+2026-10-20 14:35:12.540 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0998 ms
+2026-10-20 14:35:12.582 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 33.8936 ms
+2026-10-20 14:35:12.638 +05:30 [INF] HTTP GET /api/tenants responded 200 in 43.8665 ms
+2026-10-20 14:37:15.738 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration-status responded 204 in 0.5241 ms
+2026-10-20 14:37:15.778 +05:30 [INF] HTTP OPTIONS /api/tenants/1119/migration/history responded 204 in 0.1838 ms
+2026-10-20 14:37:15.826 +05:30 [INF] HTTP GET /api/tenants/1119/migration/history responded 200 in 31.1715 ms
+2026-10-20 14:37:16.503 +05:30 [INF] HTTP GET /api/tenants/1119/migration-status responded 200 in 715.7465 ms

@@ -18,6 +18,7 @@ public class PlatformAuthService : IPlatformAuthService
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly ITokenService _tokenService;
     private readonly IAuditService _auditService;
+    private readonly IPlatformPermissionResolver _permissionResolver;
     private readonly IConfiguration _configuration;
 
     public PlatformAuthService(
@@ -25,12 +26,14 @@ public class PlatformAuthService : IPlatformAuthService
         IRefreshTokenRepository refreshTokenRepository,
         ITokenService tokenService,
         IAuditService auditService,
+        IPlatformPermissionResolver permissionResolver,
         IConfiguration configuration)
     {
         _userRepository = userRepository;
         _refreshTokenRepository = refreshTokenRepository;
         _tokenService = tokenService;
         _auditService = auditService;
+        _permissionResolver = permissionResolver;
         _configuration = configuration;
     }
 
@@ -90,7 +93,8 @@ public class PlatformAuthService : IPlatformAuthService
                 Username = user.Username,
                 Email = user.Email,
                 FullName = user.FullName,
-                Role = user.Role
+                Role = user.Role,
+                Permissions = _permissionResolver.Resolve(user.Role).ToList()
             }
         };
     }

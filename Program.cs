@@ -3,6 +3,7 @@ using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ONEERP.Platform.API.Controllers;
 using ONEERP.Platform.API.Data;
 using ONEERP.Platform.API.Middleware;
 using ONEERP.Platform.API.Repositories;
@@ -22,7 +23,11 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Server-side authorization for the high-privilege migration endpoints.
+    options.Filters.Add<MigrationAuthorizationFilter>();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -61,8 +66,22 @@ builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+builder.Services.AddSingleton<MigrationCatalogSeeder>();
 builder.Services.AddScoped<ISqlHelper, SqlHelper>();
 builder.Services.AddScoped<IDatabaseProvisioningService, DatabaseProvisioningService>();
+builder.Services.AddSingleton<IMigrationScriptProvider, MigrationScriptProvider>();
+builder.Services.AddScoped<ITenantSchemaVersionStore, TenantSchemaVersionStore>();
+builder.Services.AddSingleton<ITenantMigrationLock, TenantMigrationLock>();
+
+builder.Services.AddScoped<IMigrationRepository, MigrationRepository>();
+builder.Services.AddScoped<ITenantMigrationHistoryRepository, TenantMigrationHistoryRepository>();
+builder.Services.AddScoped<IDemoDataScriptProvider, DemoDataScriptProvider>();
+builder.Services.AddScoped<IPurchaseDemoDataScriptProvider, PurchaseDemoDataScriptProvider>();
+builder.Services.AddScoped<ITenantDatabaseHealthService, TenantDatabaseHealthService>();
+builder.Services.AddScoped<IDemoDataSeedingService, DemoDataSeedingService>();
+builder.Services.AddScoped<IPurchaseDemoDataSeedingService, PurchaseDemoDataSeedingService>();
+builder.Services.AddScoped<IPurchaseScreenSeedService, PurchaseScreenSeedService>();
+builder.Services.AddScoped<IPurchaseReturnScreenSeedService, PurchaseReturnScreenSeedService>();
 
 builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
@@ -74,6 +93,7 @@ builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPlatformPermissionResolver, PlatformPermissionResolver>();
 builder.Services.AddScoped<IPlatformAuthService, PlatformAuthService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
@@ -81,6 +101,10 @@ builder.Services.AddScoped<IPlanService, PlanService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ITenantService, TenantService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ITenantDatabaseResolver, TenantDatabaseResolver>();
+builder.Services.AddScoped<ITenantMigrationExecutor, TenantMigrationExecutor>();
+builder.Services.AddScoped<ITenantMigrationService, TenantMigrationService>();
+builder.Services.AddScoped<ITenantSqlFileExecutionService, TenantSqlFileExecutionService>();
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -117,6 +141,18 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+try
+{
+    await app.Services.GetRequiredService<MigrationCatalogSeeder>().EnsureRegisteredAsync();
+    Log.Information("Tenant migration catalog is ready");
+}
+catch (Exception ex)
+{
+    // Keep the API available when the platform database is temporarily
+    // unavailable. Migration status will report the underlying DB problem.
+    Log.Error(ex, "Could not seed the built-in tenant migration catalog");
+}
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();

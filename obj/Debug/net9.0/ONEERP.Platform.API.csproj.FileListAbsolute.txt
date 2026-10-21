@@ -136,6 +136,164 @@ C:\Users\abiso\AppData\Local\Temp\opencode\pa_build\ONEERP.Platform.API.deps.jso
 C:\Users\abiso\AppData\Local\Temp\opencode\pa_build\ONEERP.Platform.API.runtimeconfig.json
 C:\Users\abiso\AppData\Local\Temp\opencode\pa_build\ONEERP.Platform.API.dll
 C:\Users\abiso\AppData\Local\Temp\opencode\pa_build\ONEERP.Platform.API.pdb
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\appsettings.Development.json
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\appsettings.json
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.staticwebassets.endpoints.json
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.exe
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.deps.json
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.runtimeconfig.json
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Platform.API.pdb
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Azure.Core.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Azure.Identity.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\BCrypt.Net-Next.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Dapper.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\FluentValidation.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\FluentValidation.DependencyInjectionExtensions.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Bcl.Cryptography.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Data.SqlClient.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.Caching.Memory.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.DependencyModel.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.Options.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Extensions.Primitives.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Identity.Client.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.Abstractions.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.Logging.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.Protocols.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.IdentityModel.Tokens.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.OpenApi.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Microsoft.SqlServer.Server.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.AspNetCore.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Extensions.Hosting.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Extensions.Logging.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Formatting.Compact.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Settings.Configuration.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Sinks.Console.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Sinks.Debug.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Serilog.Sinks.File.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Swashbuckle.AspNetCore.Annotations.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Swashbuckle.AspNetCore.Swagger.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.ClientModel.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.Configuration.ConfigurationManager.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.Diagnostics.EventLog.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.IdentityModel.Tokens.Jwt.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.Memory.Data.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.Security.Cryptography.Pkcs.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\System.Security.Cryptography.ProtectedData.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\de\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\es\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\it\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\unix\lib\net9.0\Microsoft.Data.SqlClient.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win\lib\net9.0\Microsoft.Data.SqlClient.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\runtimes\win\lib\net9.0\System.Security.Cryptography.Pkcs.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Shared.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin-verify\ONEERP.Shared.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_build2\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp_plat_tests_build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp_final_check\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-build-check\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.exe
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-migration-build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\appsettings.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.exe
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Temp\oneerp-platform-t090-build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\appsettings.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Packages\sandbox.{3dfe9585-6e13-4f25-8acc-93c6c6d0c48c}\AC\Temp\oneerp-platform-api-build\ONEERP.Platform.API.pdb
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\appsettings.Development.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\appsettings.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\ONEERP.Platform.API.deps.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\ONEERP.Platform.API.dll
+C:\Users\abiso\AppData\Local\Packages\sandbox.{e1e0e0d9-9d18-48f5-a1b8-5d67b5ae496e}\AC\Temp\oneerp-platform-api-build-rerun\ONEERP.Platform.API.pdb
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\appsettings.Development.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\appsettings.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.exe
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.deps.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.dll
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-build\ONEERP.Platform.API.pdb
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\appsettings.Development.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\appsettings.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.staticwebassets.endpoints.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.exe
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.deps.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.runtimeconfig.json
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.dll
+C:\Users\abiso\.codex\visualizations\2026\10\11\01a12b49-7a03-7fb0-ac22-e87e7c94bb04\platform-api-lock-workaround\ONEERP.Platform.API.pdb
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin\Debug\net9.0\appsettings.Development.json
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin\Debug\net9.0\appsettings.json
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\bin\Debug\net9.0\ONEERP.Platform.API.staticwebassets.endpoints.json
@@ -230,10 +388,10 @@ D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.development.json
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ONEERP.P.99BEC2C0.Up2Date
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ONEERP.Platform.API.dll
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\refint\ONEERP.Platform.API.dll
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ONEERP.Platform.API.pdb
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ONEERP.Platform.API.genruntimeconfig.cache
 D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\ref\ONEERP.Platform.API.dll
+D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

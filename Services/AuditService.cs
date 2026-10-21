@@ -5,7 +5,14 @@ namespace ONEERP.Platform.API.Services;
 
 public interface IAuditService
 {
-    Task WriteAsync(string entityName, string? entityId, string action, string? performedBy, int? tenantId = null);
+    Task WriteAsync(
+        string entityName,
+        string? entityId,
+        string action,
+        string? performedBy,
+        int? tenantId = null,
+        string? oldValues = null,
+        string? newValues = null);
 }
 
 public class AuditService : IAuditService
@@ -19,7 +26,14 @@ public class AuditService : IAuditService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task WriteAsync(string entityName, string? entityId, string action, string? performedBy, int? tenantId = null)
+    public Task WriteAsync(
+        string entityName,
+        string? entityId,
+        string action,
+        string? performedBy,
+        int? tenantId = null,
+        string? oldValues = null,
+        string? newValues = null)
     {
         var log = new AuditLog
         {
@@ -28,6 +42,8 @@ public class AuditService : IAuditService
             EntityId = entityId,
             Action = action,
             PerformedBy = performedBy,
+            OldValues = oldValues,
+            NewValues = newValues,
             IpAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString()
         };
         return _repository.InsertAsync(log);

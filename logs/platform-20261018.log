@@ -1,0 +1,398 @@
+2026-10-18 09:20:24.324 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:20:25.600 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:20:30.970 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 389.7759 ms
+2026-10-18 09:20:31.117 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.9248 ms
+2026-10-18 09:20:31.871 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 180.1447 ms
+2026-10-18 09:31:32.294 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 54.4001 ms
+2026-10-18 09:31:32.806 +05:30 [INF] HTTP GET /api/dashboard responded 401 in 385.4056 ms
+2026-10-18 09:31:32.823 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1504 ms
+2026-10-18 09:31:33.539 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 706.2671 ms
+2026-10-18 09:31:33.892 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 342.4012 ms
+2026-10-18 09:31:34.372 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1387 ms
+2026-10-18 09:31:34.382 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1075 ms
+2026-10-18 09:31:34.595 +05:30 [INF] HTTP GET /api/tenants responded 200 in 163.7652 ms
+2026-10-18 09:31:34.595 +05:30 [INF] HTTP GET /api/plans responded 200 in 197.4022 ms
+2026-10-18 09:33:25.187 +05:30 [INF] HTTP OPTIONS /api/tenants/1115 responded 204 in 0.1170 ms
+2026-10-18 09:33:25.865 +05:30 [WRN] Dropped tenant database KUMAR_INDUS (cleanup after failed provisioning)
+2026-10-18 09:33:25.921 +05:30 [INF] HTTP DELETE /api/tenants/1115 responded 200 in 676.6878 ms
+2026-10-18 09:33:25.931 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.0958 ms
+2026-10-18 09:33:25.997 +05:30 [INF] HTTP GET /api/tenants responded 200 in 58.5799 ms
+2026-10-18 09:34:31.120 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1706 ms
+2026-10-18 09:34:32.439 +05:30 [INF] Created tenant database ERPKUMAR
+2026-10-18 09:34:39.264 +05:30 [INF] Provisioned tenant schema and seed data for ERPKUMAR
+2026-10-18 09:34:39.300 +05:30 [INF] HTTP POST /api/tenants responded 200 in 8165.1469 ms
+2026-10-18 09:34:39.308 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1113 ms
+2026-10-18 09:34:39.357 +05:30 [INF] HTTP GET /api/tenants responded 200 in 41.4890 ms
+2026-10-18 09:41:27.144 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.5858 ms
+2026-10-18 09:41:27.256 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.1171 ms
+2026-10-18 09:41:27.264 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.1455 ms
+2026-10-18 09:41:27.571 +05:30 [INF] HTTP GET /api/plans responded 200 in 173.7411 ms
+2026-10-18 09:41:27.595 +05:30 [INF] HTTP GET /api/tenants responded 200 in 211.1008 ms
+2026-10-18 09:41:27.637 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 248.9077 ms
+2026-10-18 09:41:27.930 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.6034 ms
+2026-10-18 09:41:28.035 +05:30 [INF] HTTP GET /api/tenants responded 200 in 70.6536 ms
+2026-10-18 09:41:30.251 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1277 ms
+2026-10-18 09:41:30.251 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0397 ms
+2026-10-18 09:41:30.629 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 365.6065 ms
+2026-10-18 09:41:30.960 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 698.5201 ms
+2026-10-18 09:41:41.264 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.2256 ms
+2026-10-18 09:41:42.319 +05:30 [ERR] SQL file erp_migration_011_audit_log_complete.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Incorrect syntax near 'GO'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:afe5aa8d-0bc6-40ab-a9d9-07752b93fa29
+Error Number:102,State:1,Class:15
+2026-10-18 09:42:20.406 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 39102.6986 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_migration_011_audit_log_complete.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-18 09:42:20.915 +05:30 [WRN] Domain error 500: SQL file 'erp_migration_011_audit_log_complete.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+2026-10-18 09:42:20.932 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2016 ms
+2026-10-18 09:42:20.932 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0582 ms
+2026-10-18 09:42:21.162 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 155.1237 ms
+2026-10-18 09:42:21.326 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 353.3243 ms
+2026-10-18 09:43:10.208 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:43:12.860 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:43:18.102 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 1196.5595 ms
+2026-10-18 09:43:18.180 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.6941 ms
+2026-10-18 09:43:19.472 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 151.7361 ms
+2026-10-18 09:43:23.151 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 8.8885 ms
+2026-10-18 09:43:25.225 +05:30 [ERR] SQL file erp_migration_011_audit_log_complete.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'Outcome'.
+Invalid column name 'Outcome'.
+Invalid column name 'Source'.
+Invalid column name 'Source'.
+Invalid column name 'Source'.
+Invalid column name 'Source'.
+Invalid column name 'RequestId'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:1fe5be51-831d-483d-9424-1b3d679b420c
+Error Number:207,State:1,Class:16
+2026-10-18 09:44:25.560 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:44:26.110 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:44:27.991 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 150.9277 ms
+2026-10-18 09:44:27.991 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 7.2060 ms
+2026-10-18 09:44:28.341 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 192.3967 ms
+2026-10-18 09:44:34.680 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 7.4297 ms
+2026-10-18 09:44:35.490 +05:30 [INF] HTTP GET /api/tenants responded 200 in 783.8405 ms
+2026-10-18 09:44:36.535 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.3382 ms
+2026-10-18 09:44:36.536 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.2573 ms
+2026-10-18 09:44:36.730 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 179.5344 ms
+2026-10-18 09:44:36.887 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 338.9483 ms
+2026-10-18 09:44:43.350 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1975 ms
+2026-10-18 09:44:44.050 +05:30 [INF] HTTP POST /api/tenants/1116/migration/sql-file/run responded 200 in 689.1948 ms
+2026-10-18 09:44:44.058 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0818 ms
+2026-10-18 09:44:44.058 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0894 ms
+2026-10-18 09:44:44.073 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 5.1050 ms
+2026-10-18 09:44:44.084 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 19.0090 ms
+2026-10-18 09:44:48.297 +05:30 [INF] HTTP POST /api/tenants/1116/migration/sql-file/run responded 200 in 78.5653 ms
+2026-10-18 09:44:48.330 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 9.6305 ms
+2026-10-18 09:44:48.346 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 32.7494 ms
+2026-10-18 09:44:51.398 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1107 ms
+2026-10-18 09:44:51.611 +05:30 [ERR] SQL file erp_migration_012_notifications.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Incorrect syntax near 'GO'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:32897548-a7a1-41ae-8aa6-1c0134c3beaa
+Error Number:102,State:1,Class:15
+2026-10-18 09:45:10.129 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 18722.6494 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_migration_012_notifications.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-18 09:45:10.537 +05:30 [WRN] Domain error 500: SQL file 'erp_migration_012_notifications.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+2026-10-18 09:45:10.573 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2376 ms
+2026-10-18 09:45:10.575 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1096 ms
+2026-10-18 09:45:10.633 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 35.4787 ms
+2026-10-18 09:45:10.769 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 182.4785 ms
+2026-10-18 09:45:47.846 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:45:48.506 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:45:50.693 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 239.9633 ms
+2026-10-18 09:45:50.720 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 5.2849 ms
+2026-10-18 09:45:51.206 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 243.7000 ms
+2026-10-18 09:46:01.571 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 8.6779 ms
+2026-10-18 09:46:02.473 +05:30 [INF] HTTP GET /api/tenants responded 200 in 744.6081 ms
+2026-10-18 09:46:03.912 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1400 ms
+2026-10-18 09:46:03.912 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0640 ms
+2026-10-18 09:46:04.156 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 210.9460 ms
+2026-10-18 09:46:04.370 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 430.1200 ms
+2026-10-18 09:46:14.438 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1238 ms
+2026-10-18 09:46:15.091 +05:30 [INF] HTTP POST /api/tenants/1116/migration/sql-file/run responded 200 in 628.8388 ms
+2026-10-18 09:46:15.102 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1422 ms
+2026-10-18 09:46:15.102 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0969 ms
+2026-10-18 09:46:15.161 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 48.8523 ms
+2026-10-18 09:46:15.271 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 162.0007 ms
+2026-10-18 09:47:23.404 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/1/run responded 204 in 0.1418 ms
+2026-10-18 09:47:23.784 +05:30 [INF] Applied migration ERP-002-REORDER-LEVEL (v2) to tenant 1116.
+2026-10-18 09:47:23.851 +05:30 [INF] HTTP POST /api/tenants/1116/migration/1/run responded 200 in 437.6083 ms
+2026-10-18 09:47:23.885 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.2977 ms
+2026-10-18 09:47:23.886 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.7707 ms
+2026-10-18 09:47:24.017 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 67.0618 ms
+2026-10-18 09:47:24.135 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 194.6163 ms
+2026-10-18 09:47:27.726 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/2/run responded 204 in 0.2471 ms
+2026-10-18 09:47:28.203 +05:30 [INF] Applied migration ERP-003-INVENTORY-DOCUMENTS (v3) to tenant 1116.
+2026-10-18 09:47:28.328 +05:30 [INF] HTTP POST /api/tenants/1116/migration/2/run responded 200 in 577.4660 ms
+2026-10-18 09:47:28.643 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 94.9371 ms
+2026-10-18 09:47:28.784 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 237.2697 ms
+2026-10-18 09:47:33.394 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/3/run responded 204 in 0.3293 ms
+2026-10-18 09:47:33.476 +05:30 [INF] HTTP POST /api/tenants/1116/migration/3/run responded 401 in 73.0086 ms
+2026-10-18 09:47:33.491 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1002 ms
+2026-10-18 09:47:33.694 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 192.6731 ms
+2026-10-18 09:47:34.362 +05:30 [INF] Applied migration ERP-004-PAYMENT-MASTER-CODES (v4) to tenant 1116.
+2026-10-18 09:47:34.475 +05:30 [INF] HTTP POST /api/tenants/1116/migration/3/run responded 200 in 698.5261 ms
+2026-10-18 09:47:34.542 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0957 ms
+2026-10-18 09:47:34.543 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1076 ms
+2026-10-18 09:47:34.632 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 66.8995 ms
+2026-10-18 09:47:34.765 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 208.0519 ms
+2026-10-18 09:47:39.794 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/4/run responded 204 in 0.1916 ms
+2026-10-18 09:47:46.127 +05:30 [INF] Applied migration ERP-005-BATCH-A-PRODUCT-FOUNDATION (v5) to tenant 1116.
+2026-10-18 09:47:46.280 +05:30 [INF] HTTP POST /api/tenants/1116/migration/4/run responded 200 in 4641.3548 ms
+2026-10-18 09:47:46.521 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0467 ms
+2026-10-18 09:47:46.521 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1711 ms
+2026-10-18 09:47:46.979 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 53.5905 ms
+2026-10-18 09:47:47.405 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 475.0097 ms
+2026-10-18 09:47:51.636 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/5/run responded 204 in 0.5183 ms
+2026-10-18 09:47:51.941 +05:30 [INF] Applied migration ERP-006-BATCH-B-CUSTOMER-PRICING-LOYALTY (v6) to tenant 1116.
+2026-10-18 09:47:51.961 +05:30 [INF] HTTP POST /api/tenants/1116/migration/5/run responded 200 in 303.9922 ms
+2026-10-18 09:47:51.988 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1204 ms
+2026-10-18 09:47:51.991 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0744 ms
+2026-10-18 09:47:52.187 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 65.4929 ms
+2026-10-18 09:47:52.429 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 337.0162 ms
+2026-10-18 09:47:56.706 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/6/run responded 204 in 0.0766 ms
+2026-10-18 09:47:56.971 +05:30 [INF] Applied migration ERP-007-COMPANY-ROWVERSION-CONCURRENCY (v7) to tenant 1116.
+2026-10-18 09:47:56.982 +05:30 [INF] HTTP POST /api/tenants/1116/migration/6/run responded 200 in 271.1268 ms
+2026-10-18 09:47:57.009 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 12.7349 ms
+2026-10-18 09:47:57.042 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 46.3310 ms
+2026-10-18 09:48:01.712 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/7/run responded 204 in 0.0607 ms
+2026-10-18 09:48:02.161 +05:30 [INF] Applied migration ERP-008-PURCHASE-WORKFLOW (v8) to tenant 1116.
+2026-10-18 09:48:02.184 +05:30 [INF] HTTP POST /api/tenants/1116/migration/7/run responded 200 in 362.4177 ms
+2026-10-18 09:48:02.194 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0599 ms
+2026-10-18 09:48:02.196 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.1656 ms
+2026-10-18 09:48:02.335 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 76.4645 ms
+2026-10-18 09:48:02.437 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 221.9115 ms
+2026-10-18 09:48:06.644 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/8/run responded 204 in 0.0729 ms
+2026-10-18 09:48:06.885 +05:30 [INF] Applied migration ERP-009-ATOMIC-IDEMPOTENCY (v9) to tenant 1116.
+2026-10-18 09:48:06.894 +05:30 [INF] HTTP POST /api/tenants/1116/migration/8/run responded 200 in 241.4648 ms
+2026-10-18 09:48:06.913 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 8.4676 ms
+2026-10-18 09:48:06.935 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 30.1052 ms
+2026-10-18 09:48:11.249 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/9/run responded 204 in 0.0789 ms
+2026-10-18 09:48:11.566 +05:30 [INF] Applied migration ERP-010-STOCK-POSTING-IDENTITY (v10) to tenant 1116.
+2026-10-18 09:48:11.577 +05:30 [INF] HTTP POST /api/tenants/1116/migration/9/run responded 200 in 309.4561 ms
+2026-10-18 09:48:11.585 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1036 ms
+2026-10-18 09:48:11.587 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0869 ms
+2026-10-18 09:48:11.608 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 11.3707 ms
+2026-10-18 09:48:11.619 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 25.4812 ms
+2026-10-18 09:48:17.820 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1243 ms
+2026-10-18 09:48:18.066 +05:30 [ERR] SQL file erp_audit_screen_seed.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Incorrect syntax near 'GO'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:a5f31bbe-69f4-4ac2-b2b9-bd7e5e4908d2
+Error Number:102,State:1,Class:15
+2026-10-18 09:48:29.336 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 11508.9184 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_audit_screen_seed.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-18 09:48:29.859 +05:30 [WRN] Domain error 500: SQL file 'erp_audit_screen_seed.sql' failed: SQL error 102: Incorrect syntax near 'GO'.
+2026-10-18 09:48:29.909 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0572 ms
+2026-10-18 09:48:29.928 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0514 ms
+2026-10-18 09:48:30.124 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 189.5187 ms
+2026-10-18 09:48:30.157 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 104.5051 ms
+2026-10-18 09:48:35.016 +05:30 [INF] HTTP OPTIONS /api/db-health/tenants/1116/seed-demo responded 204 in 0.2246 ms
+2026-10-18 09:48:40.085 +05:30 [ERR] HTTP POST /api/db-health/tenants/1116/seed-demo responded 500 in 5058.9336 ms
+ONEERP.Shared.Exceptions.DomainException: Demo seeding failed: SQL error 51059: Demo seed refused: connect only to the configured KUMAR_INDUS tenant database.
+   at ONEERP.Platform.API.Services.DemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\DemoDataSeedingService.cs:line 130
+   at ONEERP.Platform.API.Services.DemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\DemoDataSeedingService.cs:line 130
+   at ONEERP.Platform.API.Services.DemoDataSeedingService.SeedAsync(Int32 tenantId, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\DemoDataSeedingService.cs:line 130
+   at ONEERP.Platform.API.Controllers.DatabaseHealthController.SeedDemo(Int32 tenantId, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\DatabaseHealthController.cs:line 68
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-18 09:48:40.436 +05:30 [WRN] Domain error 500: Demo seeding failed: SQL error 51059: Demo seed refused: connect only to the configured KUMAR_INDUS tenant database.
+2026-10-18 09:48:40.564 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0469 ms
+2026-10-18 09:48:40.591 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0385 ms
+2026-10-18 09:48:40.601 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 25.5164 ms
+2026-10-18 09:48:40.607 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 9.4333 ms
+2026-10-18 09:48:44.845 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.0727 ms
+2026-10-18 09:48:44.948 +05:30 [ERR] SQL file erp_grocery_demo_seed.sql failed for tenant 1116.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Grocery demo seed is disabled: no authoritative disposable-demo-tenant approval guard exists in the platform schema. Use authenticated application master APIs; do not enable direct SQL writes.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 82
+ClientConnectionId:a5f31bbe-69f4-4ac2-b2b9-bd7e5e4908d2
+Error Number:51100,State:1,Class:16
+2026-10-18 09:48:50.046 +05:30 [ERR] HTTP POST /api/tenants/1116/migration/sql-file/run responded 500 in 5188.9848 ms
+ONEERP.Shared.Exceptions.DomainException: SQL file 'erp_grocery_demo_seed.sql' failed: SQL error 51100: Grocery demo seed is disabled: no authoritative disposable-demo-tenant approval guard exists in the platform schema. Use authenticated application master APIs; do not enable direct SQL writes.
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Services.TenantSqlFileExecutionService.RunAsync(Int32 tenantId, String scriptName, String executedBy, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Services\TenantSqlFileExecutionService.cs:line 104
+   at ONEERP.Platform.API.Controllers.TenantMigrationsController.RunSqlFile(Int32 tenantId, RunSqlFileRequest request, CancellationToken ct) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Controllers\TenantMigrationsController.cs:line 137
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-10-18 09:48:50.291 +05:30 [WRN] Domain error 500: SQL file 'erp_grocery_demo_seed.sql' failed: SQL error 51100: Grocery demo seed is disabled: no authoritative disposable-demo-tenant approval guard exists in the platform schema. Use authenticated application master APIs; do not enable direct SQL writes.
+2026-10-18 09:48:50.305 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0665 ms
+2026-10-18 09:48:50.307 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0588 ms
+2026-10-18 09:48:50.326 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 5.2423 ms
+2026-10-18 09:48:50.334 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 18.8967 ms
+2026-10-18 09:49:26.221 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:49:26.896 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:49:29.779 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 6.5138 ms
+2026-10-18 09:49:29.847 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 251.6134 ms
+2026-10-18 09:49:30.410 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 293.8062 ms
+2026-10-18 09:55:15.633 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 09:55:16.270 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 09:55:18.547 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 188.0146 ms
+2026-10-18 09:55:18.557 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 2.9754 ms
+2026-10-18 09:55:18.918 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 156.5417 ms
+2026-10-18 09:55:53.596 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 10.8341 ms
+2026-10-18 09:55:55.084 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.2810 ms
+2026-10-18 09:55:55.084 +05:30 [INF] HTTP OPTIONS /api/plans responded 204 in 0.8310 ms
+2026-10-18 09:55:56.045 +05:30 [INF] HTTP GET /api/tenants responded 200 in 931.7970 ms
+2026-10-18 09:55:56.045 +05:30 [INF] HTTP GET /api/plans responded 200 in 821.4312 ms
+2026-10-18 09:55:56.045 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 2382.5594 ms
+2026-10-18 09:55:56.956 +05:30 [INF] HTTP GET /api/plans responded 200 in 24.6879 ms
+2026-10-18 09:55:58.215 +05:30 [INF] HTTP OPTIONS /api/subscriptions responded 204 in 0.3606 ms
+2026-10-18 09:55:58.228 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1876 ms
+2026-10-18 09:55:58.282 +05:30 [INF] HTTP GET /api/plans responded 200 in 53.4883 ms
+2026-10-18 09:55:58.316 +05:30 [INF] HTTP GET /api/tenants responded 200 in 45.2543 ms
+2026-10-18 09:55:58.353 +05:30 [INF] HTTP GET /api/subscriptions responded 200 in 85.7970 ms
+2026-10-18 09:55:58.953 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 0.1239 ms
+2026-10-18 09:55:59.033 +05:30 [INF] HTTP GET /api/tenants responded 200 in 51.2182 ms
+2026-10-18 09:56:01.118 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.0894 ms
+2026-10-18 09:56:01.118 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0255 ms
+2026-10-18 09:56:01.350 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 222.0966 ms
+2026-10-18 09:56:01.518 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 392.9884 ms
+2026-10-18 09:56:28.347 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/sql-file/run responded 204 in 0.1278 ms
+2026-10-18 09:56:28.724 +05:30 [INF] HTTP POST /api/tenants/1116/migration/sql-file/run responded 200 in 373.0300 ms
+2026-10-18 09:56:28.732 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration-status responded 204 in 0.1804 ms
+2026-10-18 09:56:28.732 +05:30 [INF] HTTP OPTIONS /api/tenants/1116/migration/history responded 204 in 0.0926 ms
+2026-10-18 09:56:28.797 +05:30 [INF] HTTP GET /api/tenants/1116/migration/history responded 200 in 53.6813 ms
+2026-10-18 09:56:28.913 +05:30 [INF] HTTP GET /api/tenants/1116/migration-status responded 200 in 170.3722 ms
+2026-10-18 23:10:32.371 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 23:10:33.099 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 23:10:36.273 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 168.8872 ms
+2026-10-18 23:10:36.353 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.3331 ms
+2026-10-18 23:10:36.857 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 207.0799 ms
+2026-10-18 23:14:31.693 +05:30 [INF] Tenant migration catalog is ready
+2026-10-18 23:14:32.788 +05:30 [INF] ONE ERP Platform API starting
+2026-10-18 23:14:42.417 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 386.4235 ms
+2026-10-18 23:14:42.454 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 10.3892 ms
+2026-10-18 23:14:43.583 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 191.5165 ms

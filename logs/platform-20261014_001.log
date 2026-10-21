@@ -1,0 +1,107 @@
+2026-10-14 19:59:38.366 +05:30 [INF] Tenant migration catalog is ready
+2026-10-14 19:59:39.500 +05:30 [INF] ONE ERP Platform API starting
+2026-10-14 19:59:41.798 +05:30 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5180: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-10-14 19:59:42.244 +05:30 [FTL] ONE ERP Platform API terminated unexpectedly
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5180: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in D:\Old\Migrate\Atrifcial Intellegience\AWS\ERP\ONEERP.Platform.API\Program.cs:line 172
+2026-10-14 20:35:09.143 +05:30 [INF] Tenant migration catalog is ready
+2026-10-14 20:35:09.693 +05:30 [INF] ONE ERP Platform API starting
+2026-10-14 20:35:11.831 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 385.0751 ms
+2026-10-14 20:35:11.905 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.0949 ms
+2026-10-14 20:35:12.712 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 161.5872 ms
+2026-10-14 20:35:14.839 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 10.6156 ms
+2026-10-14 20:35:15.751 +05:30 [INF] HTTP GET /api/tenants responded 200 in 899.3850 ms
+2026-10-14 20:35:16.570 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.2106 ms
+2026-10-14 20:35:16.570 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.2106 ms
+2026-10-14 20:35:16.791 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 205.9992 ms
+2026-10-14 20:35:17.157 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 574.5076 ms
+2026-10-14 20:35:19.727 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/sql-file/run responded 204 in 0.1888 ms
+2026-10-14 20:35:20.452 +05:30 [INF] HTTP POST /api/tenants/1115/migration/sql-file/run responded 200 in 715.2637 ms
+2026-10-14 20:35:20.496 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 32.8419 ms
+2026-10-14 20:35:20.596 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 134.1820 ms
+2026-10-14 21:03:55.262 +05:30 [INF] Tenant migration catalog is ready
+2026-10-14 21:03:56.562 +05:30 [INF] ONE ERP Platform API starting
+2026-10-14 21:04:00.239 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 151.9504 ms
+2026-10-14 21:04:00.291 +05:30 [INF] HTTP GET /swagger/index.js responded 200 in 3.6110 ms
+2026-10-14 21:04:00.732 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 188.1518 ms
+2026-10-14 21:04:08.238 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 38.7599 ms
+2026-10-14 21:04:08.736 +05:30 [INF] HTTP GET /api/tenants responded 401 in 463.9111 ms
+2026-10-14 21:04:08.759 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.1712 ms
+2026-10-14 21:04:09.436 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 664.9844 ms
+2026-10-14 21:04:09.810 +05:30 [INF] HTTP GET /api/tenants responded 200 in 343.0986 ms
+2026-10-14 21:04:11.301 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1992 ms
+2026-10-14 21:04:11.309 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.3658 ms
+2026-10-14 21:04:11.551 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 221.7387 ms
+2026-10-14 21:04:12.073 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 750.8657 ms
+2026-10-14 21:04:20.315 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/sql-file/run responded 204 in 0.2879 ms
+2026-10-14 21:04:21.218 +05:30 [INF] HTTP POST /api/tenants/1115/migration/sql-file/run responded 200 in 893.2406 ms
+2026-10-14 21:04:21.264 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.1146 ms
+2026-10-14 21:04:21.266 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1490 ms
+2026-10-14 21:04:21.376 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 31.3887 ms
+2026-10-14 21:04:21.496 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 155.7786 ms
+2026-10-14 21:06:24.999 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/sql-file/run responded 204 in 0.1543 ms
+2026-10-14 21:06:25.540 +05:30 [INF] HTTP POST /api/tenants/1115/migration/sql-file/run responded 200 in 521.1710 ms
+2026-10-14 21:06:25.550 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.2579 ms
+2026-10-14 21:06:25.550 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.0491 ms
+2026-10-14 21:06:25.606 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 40.6204 ms
+2026-10-14 21:06:25.779 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 216.6782 ms
+2026-10-14 22:25:26.788 +05:30 [INF] HTTP OPTIONS /api/tenants responded 204 in 12.9108 ms
+2026-10-14 22:25:26.853 +05:30 [INF] HTTP GET /api/tenants responded 401 in 36.5797 ms
+2026-10-14 22:25:26.861 +05:30 [INF] HTTP OPTIONS /api/auth/refresh responded 204 in 0.0760 ms
+2026-10-14 22:25:27.076 +05:30 [INF] HTTP POST /api/auth/refresh responded 200 in 209.1979 ms
+2026-10-14 22:25:27.207 +05:30 [INF] HTTP GET /api/tenants responded 200 in 104.1581 ms
+2026-10-14 22:25:29.867 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration-status responded 204 in 0.7446 ms
+2026-10-14 22:25:29.869 +05:30 [INF] HTTP OPTIONS /api/tenants/1115/migration/history responded 204 in 0.1129 ms
+2026-10-14 22:25:30.035 +05:30 [INF] HTTP GET /api/tenants/1115/migration/history responded 200 in 157.2884 ms
+2026-10-14 22:25:30.233 +05:30 [INF] HTTP GET /api/tenants/1115/migration-status responded 200 in 330.2442 ms

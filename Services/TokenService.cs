@@ -16,10 +16,12 @@ public interface ITokenService
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
+    private readonly IPlatformPermissionResolver _permissionResolver;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService(IConfiguration configuration, IPlatformPermissionResolver permissionResolver)
     {
         _configuration = configuration;
+        _permissionResolver = permissionResolver;
     }
 
     public string GenerateAccessToken(PlatformUser user)
@@ -37,6 +39,13 @@ public class TokenService : ITokenService
             new(ClaimTypes.Role, user.Role),
             new(ONEERP.Shared.Constants.ClaimTypes.PlatformRole, user.Role)
         };
+
+        // One claim per granted platform permission so the API can enforce
+        // permission codes instead of inferring everything from the role.
+        foreach (var permission in _permissionResolver.Resolve(user.Role))
+        {
+            claims.Add(new Claim(ONEERP.Shared.Constants.ClaimTypes.Permission, permission));
+        }
 
         var token = new JwtSecurityToken(
             issuer: jwt["Issuer"],
